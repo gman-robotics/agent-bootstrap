@@ -198,31 +198,58 @@ See `manifest.yaml` for the full list.
 
 **How to use**:
 - Agent parses this at session start or on "switch project" command.
-- For each project: load its `memory_bank_path` (if different from default), read its memory-bank/ files, and relevant `wiki_sections`.
+- For each project: load its `memory_bank_path` (read all 6 memory-bank files), then load its `docs_path` for technical reference.
 - Example entry:
   ```yaml
   projects:
     - name: agent-bootstrap
-      path: /Users/tginter/dev/gman-robotics/agent-bootstrap
+      path: <REPO_ROOT>                          # update to your local absolute path
       description: This universal agent harness repo itself.
       primary_tech: Markdown, YAML
-      memory_bank_path: /Users/tginter/dev/gman-robotics/agent-bootstrap/memory-bank
-      wiki_sections: [knowledge/agent-patterns, projects/agent-bootstrap]
+      memory_bank_path: <REPO_ROOT>/memory-bank  # update to your local absolute path
+      docs_path: docs/projects/agent-bootstrap
     - name: my-release-app
       path: /path/to/your/app
       description: Production app with release branches.
       primary_tech: Node.js, React
       memory_bank_path: /path/to/your/app/memory-bank
-      wiki_sections: [knowledge/release-process]
+      docs_path: docs/projects/my-release-app
   ```
+
+> **Note on paths**: Replace `<REPO_ROOT>` with your actual absolute local path (e.g. `/Users/yourname/dev/agent-bootstrap`). See `ONBOARDING.md` step 2. Machine-specific paths are a known trade-off — see `docs/projects/agent-bootstrap/decisions.md` ADR-005.
 
 Add your projects here. Agents will automatically gain full context for them.
 
 ---
 
+## 6. Project Documentation (`docs/`)
+
+The `docs/` directory is the **persistent technical reference layer** — distinct from `memory-bank/` (operational state).
+
+```
+docs/
+├── shared/                  ← team-wide standards (API conventions, data types, CI/CD, ADRs)
+└── projects/<name>/         ← per-project technical docs (keyed to manifest.yaml name field)
+    ├── api-contracts.md
+    ├── data-models.md
+    ├── pipeline-overview.md
+    └── decisions.md
+```
+
+**When to use `docs/` vs `memory-bank/`**:
+- "What does the API look like?" → `docs/projects/<name>/api-contracts.md`
+- "What are we working on right now?" → `memory-bank/activeContext.md`
+
+**How agents navigate docs**: Use the `docs_path` field from `manifest.yaml`:
+```
+docs_path: docs/projects/agent-bootstrap
+```
+
+See `skills/docs-protocol.md` for the full playbook on creating, updating, and referencing project docs. See `docs/README.md` for the complete two-layer model explanation.
+
 ---
 
-## 6. Getting Started & Next Actions
+## 7. Getting Started & Next Actions
 
 1. Read this entire AGENTS.md (you just did).
 2. Read the 6 memory-bank/ files for this project.

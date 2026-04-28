@@ -1,52 +1,37 @@
 # Active Context: Multi-Agent Skills Hub
 
 ## Current Focus (This Session)
-Creating the initial structure and core files for the Multi-Agent Skills Hub repository based on user's requirements and the skills/examples now included in this hub (expert-pr-review, cherry-pick-to-release-branch, memory-bank-protocol, global rules).
-
-**In Progress**:
-- Populating memory-bank/ core files (done: projectbrief, productContext, systemPatterns, techContext; now activeContext + progress).
-- Designing and writing AGENTS.md (main source of truth — will be comprehensive, ~300-500 lines).
-- Creating CLAUDE.md, README.md, manifest.yaml.
-- Setting up /skills/ with copied + new skills.
-- Setting up /agents/ with role definitions.
-- Initializing skills/ and agents/.
-- Ensuring full compliance with all global rules (read at start, co-create plan, KISS, absolute paths, no commits, etc.).
+Repo audit and gap-filling: added `docs/` technical reference layer, `skills/docs-protocol.md`, and cleaned up all stale references.
 
 ## Recent Changes
-- 2026-04-28: Initialized directories (skills, agents, wiki, memory-bank).
-- Created first 4 memory-bank core files with detailed content tailored to this project.
-- Incorporated all skill content and examples directly into the hub's skills/ and agents/ directories (self-contained, no external files needed for the published repo).
+- 2026-04-28 (v0.2.0): Added `docs/` directory with two-tier structure:
+  - `docs/shared/` — team-wide standards (api-contracts, data-models, pipeline-overview, decisions with ADRs)
+  - `docs/projects/agent-bootstrap/` — fully populated example project docs
+- Added `skills/docs-protocol.md` — full playbook for creating/updating docs, ADR workflow, shared vs project distinction
+- Updated `manifest.yaml` v0.2.0: replaced stale `wiki_sections` field with `docs_path`; added full field reference comment
+- Updated `AGENTS.md`: added `## 6. Project Documentation (docs/)` section; fixed `## 7. Getting Started` numbering; replaced hardcoded machine paths in manifest example with `<REPO_ROOT>` placeholder
+- Fixed `memory-bank/systemPatterns.md`: replaced stale `wiki/` component reference with `docs/`
+- Fixed `CONTRIBUTING.md`: removed stale "Karpathy LLM Wiki" footer; added section 4 for adding project docs
+- Fixed `README.md`: added `docs/` to "What's Inside"; fixed stale "Karpathy wiki" philosophy line; updated Contributing instructions to include `docs_path`
+- Updated `skills/memory-bank-protocol.md`: added `memory-bank/ vs docs/` comparison table and decision rules
 
 ## Active Decisions
-- **Project Root**: /home/workdir/artifacts/ (as working dir; will be the repo root when cloned elsewhere).
-- **Naming**: "Multi-Agent Skills Hub" — clear, descriptive. AGENTS.md is the entry point.
-- **Workflow Definition**: The core "plan-code-review" workflow will be the flagship skill, directly implementing user's requested "plan -> code -> review process".
-- **Subagent Roles** (initial 4):
-  1. software-architect.md (Plan role — iterative with user)
-  2. software-engineer.md (Code/Implement role)
-  3. qa-critical-reviewer.md (Extremely critical QA, based on expert-pr-review)
-  4. ui-ux-engineer.md (For frontend tasks)
-- **Knowledge Management**: Through memory-bank/ files and skill documentation (no separate wiki layer).
-- **manifest.yaml Structure**: Simple top-level `projects:` list with name, path (absolute), description, primary_tech, memory_bank_path.
+- **Two-layer documentation model**: `memory-bank/` = agent operational state (mandatory read every session); `docs/` = persistent technical reference (read on demand). These are complementary, never merge.
+- **docs_path field**: Added to manifest.yaml as the agent navigation key to project technical docs.
+- **docs/projects/agent-bootstrap/** serves as the canonical template for all future project doc folders.
+- **ADR format**: Context / Decision / Alternatives Considered / Consequences (positive, negative, risks). Always append, never delete.
+- **Machine-specific paths**: `<REPO_ROOT>` placeholder used in AGENTS.md examples; actual paths remain in manifest.yaml (user responsibility per ADR-005).
 
-## Open Questions (for User — Now Resolved by Completion)
-- Project name: "Multi-Agent Skills Hub" chosen as clear and descriptive. Can be renamed later via simple search/replace.
-- Additional roles/skills: Initial 4 roles + 4 skills cover the core request. Easy to add (copy template).
-- manifest.yaml: Includes this project + clear template for user's projects (e.g. the release-branch one). User can edit directly.
-- Architecture: Pure MD/YAML chosen per KISS and harness-agnostic requirement. No new framework needed.
-- Extra files: Kept minimal (no .gitignore yet — user can add; LICENSE can be added on request).
+## Open Questions
+- None critical. Ready for team use and further project additions.
 
 ## Current Status
-**All core deliverables complete.** 
-- AGENTS.md, CLAUDE.md, README.md, manifest.yaml created and verified.
-- All skills and agents populated (core skills included verbatim where appropriate, new workflows added).
-- **New**: memory-bank-protocol.md skill added to /skills/ (full playbook based on the Memory Bank concept, with init/read/update steps). AGENTS.md reference updated.
-- Wiki initialized with 5+ entries + template.
-- Memory-bank fully updated and read multiple times (including this update).
-- Full self-review passed (consistent with expert-pr-review standards: no issues found, all requirements met, KISS followed, absolute paths used everywhere).
-- Cleanup complete: Removed all references to personal uploaded files/attachments/ (not part of published GitHub repo); skills now fully self-contained.
-- Removed wiki component to keep scope focused on agent harness bootstrap.
+**v0.2.0 complete.** All gaps identified in audit have been addressed:
+- ✅ `docs/` directory fully created with shared/ and projects/agent-bootstrap/
+- ✅ `skills/docs-protocol.md` created
+- ✅ `manifest.yaml` updated (wiki_sections → docs_path, v0.2.0)
+- ✅ `AGENTS.md` updated (new section 6, fixed numbering, placeholder paths in example)
+- ✅ All stale wiki references cleaned up
+- ✅ `memory-bank-protocol.md` updated with docs/ vs memory-bank/ guidance
 
-**State**: Foundational setup 100% complete and operational. The hub now includes your preferred Memory Bank skill as a first-class citizen and full Karpathy LLM Wiki. Ready for immediate use in any of your projects.
-
-**Next**: Load AGENTS.md in your harness and try "Follow the memory-bank-protocol skill to initialize for [one of your projects]" or "Follow the plan-code-review workflow...". Feedback welcome!
+**Next**: Team members can add their projects using the template in `docs/projects/agent-bootstrap/` and `skills/docs-protocol.md` for guidance.

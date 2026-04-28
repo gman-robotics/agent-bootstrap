@@ -28,9 +28,16 @@ We use the same workflows the agents use — this keeps quality high and consist
 3. Add usage examples in the relevant skill (e.g., plan-code-review-workflow.md).
 
 ### 3. Adding a Common Project to manifest.yaml
-1. Add the project with absolute path, description, primary tech, and `memory_bank_path`.
-2. Create the project's `memory-bank/` (copy the 6-file template).
-3. Update this CONTRIBUTING.md if the process changes.
+1. Add the project with absolute path, description, primary tech, `memory_bank_path`, and `docs_path`.
+2. Create the project's `memory-bank/` (copy the 6-file template from this hub's `memory-bank/`).
+3. Create the project's `docs/projects/<name>/` directory (copy templates from `docs/projects/agent-bootstrap/`).
+4. Update this CONTRIBUTING.md if the process changes.
+
+### 4. Adding or Updating Project Documentation
+1. Navigate to `docs/projects/<name>/` (or `docs/shared/` for team-wide standards).
+2. Follow the **docs-protocol skill** (`skills/docs-protocol.md`) for creating or updating docs.
+3. For architectural decisions: add an ADR to `docs/projects/<name>/decisions.md` (or `docs/shared/decisions.md` for cross-project decisions).
+4. Update `memory-bank/techContext.md` if the change is significant.
 
 ## Review Process (Mandatory for All Changes)
 - All contributions go through **Pull Request**.
@@ -51,4 +58,4 @@ We use the same workflows the agents use — this keeps quality high and consist
 
 **Thank you for helping make our agent harnesses and projects better for the whole team!**
 
-*Last updated: 2026-04-28 | Maintained by the team via the Karpathy LLM Wiki*
+*Last updated: 2026-04-28 | Maintained by the team*

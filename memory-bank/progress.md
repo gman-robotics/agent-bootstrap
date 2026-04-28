@@ -34,6 +34,45 @@
 
 **All initial setup complete.** Ready for user to test with their harness.
 
+---
+
+## v0.2.0 — docs/ Layer Addition (2026-04-28)
+
+### What Was Done
+- [x] Audited repo for logic and implementation gaps:
+  - Stale `wiki_sections` field in manifest.yaml (wiki was removed but field remained)
+  - Stale `wiki/` reference in systemPatterns.md
+  - Stale "Karpathy LLM Wiki" footer in CONTRIBUTING.md
+  - Missing technical reference layer (gap between memory-bank and nothing)
+  - No `docs_path` field in manifest.yaml for agents to navigate project docs
+  - No `docs-protocol` skill for governing documentation workflows
+  - Hardcoded machine paths in AGENTS.md manifest example
+  - Duplicate `## 6.` section number in AGENTS.md
+
+- [x] Created `docs/` two-tier structure:
+  - `docs/README.md` — explains two-layer model (docs/ vs memory-bank/)
+  - `docs/shared/api-contracts.md` — team-wide API standards
+  - `docs/shared/data-models.md` — shared entity definitions and type conventions
+  - `docs/shared/pipeline-overview.md` — CI/CD and release standards
+  - `docs/shared/decisions.md` — cross-project ADRs (ADR-001, ADR-002 documented)
+  - `docs/projects/agent-bootstrap/api-contracts.md` — component interface contracts
+  - `docs/projects/agent-bootstrap/data-models.md` — hub configuration schemas
+  - `docs/projects/agent-bootstrap/pipeline-overview.md` — contribution process
+  - `docs/projects/agent-bootstrap/decisions.md` — 5 ADRs documenting key decisions
+
+- [x] Created `skills/docs-protocol.md` — full playbook with ADR workflow, shared vs project guidance
+
+- [x] Updated `manifest.yaml` → v0.2.0 (wiki_sections → docs_path, field reference comment)
+- [x] Updated `AGENTS.md` → new §6 docs/, renumbered §7 Getting Started, placeholder paths in example
+- [x] Fixed `memory-bank/systemPatterns.md` → wiki/ → docs/
+- [x] Fixed `CONTRIBUTING.md` → removed stale wiki footer, added §4 for project docs
+- [x] Fixed `README.md` → added docs/ to What's Inside, fixed Karpathy wiki reference
+- [x] Updated `skills/memory-bank-protocol.md` → added memory-bank/ vs docs/ comparison table
+
+### Known Issues / Risks
+- None new. The docs/ layer is KISS by design — easy to extend.
+- Machine-specific absolute paths in manifest.yaml remain user responsibility (documented in ADR-005).
+
 ## Known Issues / Risks
 - None critical. This is pure documentation creation — low risk of bugs.
 - Potential: If user wants code execution in skills later, may need to add example scripts, but keeping pure MD for now per KISS.

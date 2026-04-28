@@ -43,6 +43,9 @@ That's it. The agent now has:
   - `qa-critical-reviewer.md` (Critical QA — reuses expert-pr-review)
   - `ui-ux-engineer.md`
 - **memory-bank/** — 6-file continuity system (projectbrief, productContext, systemPatterns, techContext, activeContext, progress). Read at every session start. This project uses it for its own development.
+- **docs/** — Persistent technical reference layer (distinct from memory-bank):
+  - `docs/shared/` — team-wide standards (API conventions, data types, CI/CD, ADRs)
+  - `docs/projects/<name>/` — per-project technical docs (api-contracts, data-models, pipeline-overview, decisions). Keyed to manifest.yaml `name` field.
 
 ## Core Philosophy (from Global Rules)
 
@@ -51,7 +54,7 @@ That's it. The agent now has:
 - **Memory is truth** — Memory Bank is non-optional.
 - **Roles matter** — Switch personas explicitly for better focus.
 - **Critical review always** — No code ships without extremely thorough QA (often via the expert-pr-review skill).
-- **Knowledge compounds** — Every task ends with Ingest into the Karpathy wiki (updates 2–15+ pages + index + log).
+- **Knowledge compounds** — Every task ends with updates to `docs/` and `memory-bank/` so knowledge persists and improves over time.
 - **Proactive but safe** — Helpful without unnecessary permission asks, but never destructive without confirmation. Never commit/push without explicit instruction.
 
 ## Compatibility & Requirements
@@ -72,7 +75,7 @@ No code changes needed in the harness — pure documentation + your existing too
 - Add a new agent: Copy `agents/software-architect.md` template, fill in persona + behaviors.
 - Add a new skill: Follow the detailed step-by-step + warnings + examples style of `expert-pr-review.md`.
 - Update skills and agents using the existing contribution process.
-- Add your project: Edit `manifest.yaml` with absolute path + memory_bank_path.
+- Add your project: Edit `manifest.yaml` with absolute path + `memory_bank_path` + `docs_path`. Create `docs/projects/<name>/` using templates from `docs/projects/agent-bootstrap/`.
 
 All changes to this repo itself should follow the plan-code-review workflow (self-hosting).
 

@@ -22,7 +22,7 @@ The system is a **documentation-driven, file-based agent operating system**:
 - agents/*.md → loaded dynamically by role name in workflows
 - skills/*.md → followed step-by-step; can call other skills
 - manifest.yaml → parsed by agents to build project list + context switcher
-- wiki/ → read/write via llm-wiki skill; linked from memory-bank and skills
+- docs/ → persistent technical reference (api-contracts, data-models, pipeline, ADRs); navigated via `docs_path` in manifest.yaml
 - memory-bank/ → read at start of every task (per core principle); updated at end
 
 ## Technical Decisions

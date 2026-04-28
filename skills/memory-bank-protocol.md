@@ -114,6 +114,26 @@ After completing work (especially in the FINALIZE phase of plan-code-review-work
 - **All agents**: software-architect, software-engineer, qa-critical-reviewer, and ui-ux-engineer must reference memory-bank/ in their behaviors.
 - memory-bank/ holds per-project state and is the primary knowledge layer.
 - **AGENTS.md**: This skill is now listed under "Other Key Skills" and is the enforcement mechanism for the global "Context Management" rule.
+- **docs-protocol.md**: Governs the complementary `docs/` layer. See below.
+
+## memory-bank/ vs docs/ — Know the Difference
+
+This hub uses two complementary layers. Never mix them:
+
+| Layer | `memory-bank/` | `docs/` |
+|---|---|---|
+| **Purpose** | Agent operational state | Persistent technical reference |
+| **Content** | Current focus, active decisions, session progress | API contracts, data schemas, pipeline, ADRs |
+| **Read by** | Agents at **every** session start (mandatory) | Humans + agents on demand |
+| **Updated** | After every significant task | When technical specs or decisions change |
+| **Analogy** | RAM / working memory | Engineering wiki |
+
+**Decision rule:**
+- "What are we working on?" → `memory-bank/activeContext.md`
+- "What does the API look like?" → `docs/projects/<name>/api-contracts.md`
+- "Why did we choose PostgreSQL?" → `docs/projects/<name>/decisions.md`
+
+> **Don't put technical reference in memory-bank.** It doesn't belong in operational state and will cause context bloat. Use `docs/` (see `skills/docs-protocol.md`).
 
 ## Example Invocation
 User: "Follow the memory-bank-protocol skill to set up a Memory Bank for my new 6-month refactor project at /home/user/my-refactor."
