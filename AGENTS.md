@@ -12,7 +12,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
 ## 1. How to Use This Repository with Your Harness
 
 ### Quick Start (Any Harness)
-1. Clone or have this repo available at a known absolute path (e.g. `/home/workdir/artifacts` or your preferred location).
+1. Clone or have this repo available at a known absolute path (e.g. `/Users/tginter/dev/gman-robotics/agent-bootstrap` or your preferred location).
 2. In your harness settings:
    - **Claude Code / Projects**: Paste the entire content of this AGENTS.md (or link the file if supported) as Custom Instructions / Project Instructions.
    - **Cline / Roo / Similar**: Set workspace rules or `.clinerules` to include the path to AGENTS.md and instruct the agent to always load it first.
@@ -54,7 +54,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
 - **Always request explicit user confirmation** before any deletions or destructive changes.
 - Choose the best tool for each step.
 - All terminal commands must run **non-interactively** (no paging, no manual input required).
-- **Always use absolute paths** when referring to files (e.g. `/home/workdir/artifacts/skills/expert-pr-review.md`).
+- **Always use absolute paths** when referring to files (e.g. `/Users/tginter/dev/gman-robotics/agent-bootstrap/skills/expert-pr-review.md`).
 
 ### Testing, Version Control & Workflows
 - Use the project's established testing framework.
@@ -83,6 +83,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
 ### Rule Management
 - **Global rules** (this section): Apply to **all** projects. Maintained here.
 - **Project-specific rules**: In each project's `memory-bank/` directory.
+- **Precedence (IDE vs. Memory Bank)**: If your environment uses local rule files (like `.clinerules`, `.cursorrules`, or `.LLMrules`), the `memory-bank/` is still the ultimate source of truth for project context. Local rule files should primarily be used to bootstrap the agent into reading the `memory-bank/` or for IDE-specific tool configs. If there is a conflict, `memory-bank/` wins.
 
 ---
 
@@ -201,12 +202,12 @@ See `manifest.yaml` for the full list.
 - Example entry:
   ```yaml
   projects:
-    - name: multi-agent-skills
-      path: /home/workdir/artifacts
+    - name: agent-bootstrap
+      path: /Users/tginter/dev/gman-robotics/agent-bootstrap
       description: This universal agent harness repo itself.
       primary_tech: Markdown, YAML
-      memory_bank_path: /home/workdir/artifacts/memory-bank
-      wiki_sections: [knowledge/agent-patterns, projects/multi-agent-skills]
+      memory_bank_path: /Users/tginter/dev/gman-robotics/agent-bootstrap/memory-bank
+      wiki_sections: [knowledge/agent-patterns, projects/agent-bootstrap]
     - name: my-release-app
       path: /path/to/your/app
       description: Production app with release branches.
@@ -234,4 +235,4 @@ Add your projects here. Agents will automatically gain full context for them.
 
 ---
 
-*Last updated: 2026-04-28 | Version: 0.1.0 | Maintained by the Multi-Agent Skills Hub itself (self-hosting)*
+*Last updated: 2026-04-28 | Version: 0.1.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting)*

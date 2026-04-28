@@ -1,14 +1,21 @@
-# Team Onboarding — Multi-Agent Skills Hub
+# Team Onboarding — Agent Bootstrap Hub
 
 **Welcome to the team!** This guide will help you get productive with our shared agent harness workflows quickly.
 
 ## Quick Start (First 20 Minutes)
 
 1. **Clone the repo** to a stable location on your machine.
-2. **Read `AGENTS.md`** (the single source of truth). This is the most important file.
-3. **Read the 6 files in `memory-bank/`** for this hub (especially `projectbrief.md` and `activeContext.md`).
-4. **Explore `skills/` and `agents/`** to understand what reusable workflows and roles are available.
-5. **Try it**: Open Claude Code / Cline / your preferred harness and paste the content of `AGENTS.md` into Custom Instructions (or follow the instructions in `AGENTS.md` → "How to Use This Repository with Your Harness").
+2. **Update absolute paths** in `manifest.yaml` and `AGENTS.md` to point to your new local clone directory.
+3. **Read `AGENTS.md`** (the single source of truth). This is the most important file.
+4. **Read the 6 files in `memory-bank/`** for this hub (especially `projectbrief.md` and `activeContext.md`).
+5. **Explore `skills/` and `agents/`** to understand what reusable workflows and roles are available.
+6. **Try it**: Open Claude Code / Cline / your preferred harness and paste the content of `AGENTS.md` into Custom Instructions (or follow the instructions in `AGENTS.md` → "How to Use This Repository with Your Harness").
+
+## Environment Prerequisites (MCP)
+
+Many of the advanced agent skills (like `expert-pr-review` and `cherry-pick-to-release-branch`) require specific Model Context Protocol (MCP) servers to function correctly. Ensure your IDE or agent harness has the following MCP servers configured:
+- **GitHub MCP Server** (`@modelcontextprotocol/server-github`): Required for PR reviews, fetching PR commits, inline commenting, etc. Ensure it is authenticated with a valid GitHub token.
+- *(Optional)* Additional servers for local shell commands or directory reads depending on your specific agent harness.
 
 ## Key Concepts
 

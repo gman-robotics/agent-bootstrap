@@ -8,13 +8,13 @@ version: 0.1.0
 last_updated: 2026-04-28
 
 projects:
-  - name: multi-agent-skills
-    path: /home/workdir/artifacts
+  - name: agent-bootstrap
+    path: /Users/tginter/dev/gman-robotics/agent-bootstrap
     description: |
       Universal agent harness repository itself. Defines reusable agents, skills, 
       workflows, and manifest system. Self-hosting example.
     primary_tech: Markdown, YAML, Mermaid
-    memory_bank_path: /home/workdir/artifacts/memory-bank
+    memory_bank_path: /Users/tginter/dev/gman-robotics/agent-bootstrap/memory-bank
     notes: |
       This is the hub. All other projects inherit its AGENTS.md, skills, and agents.
       Use it as the base for any new project setup.

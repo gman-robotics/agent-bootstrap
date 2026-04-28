@@ -1,4 +1,4 @@
-# Multi-Agent Skills Hub
+# Agent Bootstrap Hub
 
 **A shared team knowledge base for reusable AI agent roles, workflows (skills), and common projects.**
 
@@ -54,13 +54,16 @@ That's it. The agent now has:
 - **Knowledge compounds** — Every task ends with Ingest into the Karpathy wiki (updates 2–15+ pages + index + log).
 - **Proactive but safe** — Helpful without unnecessary permission asks, but never destructive without confirmation. Never commit/push without explicit instruction.
 
-## Compatibility
+## Compatibility & Requirements
 
 Works with **any** agent harness that supports custom instructions or persistent context:
 - Claude Code / Claude Projects
 - Cline, Roo Code, Cursor (via rules)
 - Open Code, Open Interpreter, custom MCP setups
 - Future harnesses (just point to AGENTS.md)
+
+**MCP Server Dependencies:**
+Several advanced skills in this hub (like `expert-pr-review` and `cherry-pick-to-release-branch`) require a working GitHub MCP server (`@modelcontextprotocol/server-github`) configured with a valid token to perform deep PR analysis and interaction.
 
 No code changes needed in the harness — pure documentation + your existing tools.
 

@@ -5,6 +5,7 @@ This workflow automates cherry-picking changes from a merged PR into an existing
 ## Parameters
 - **RELEASE_BRANCH**: The release branch name (e.g., `releases/2026.03.24`)
 - **PR_NUMBER**: The GitHub PR number whose commits should be cherry-picked (e.g., `4256`)
+- **VERSION_FILES**: A space-separated list of JSON files where the version string should be updated (e.g., `package.json apps/web/package.json`)
 
 ## Prerequisites
 - Git repository cloned locally and remote `origin` configured.
@@ -39,9 +40,9 @@ This workflow automates cherry-picking changes from a merged PR into an existing
    - If conflicts arise, resolve them manually, then `git cherry-pick --continue`.
 
 4. **Determine Current Version**
-   - Read the current version from the release branch:
+   - Read the current version from the primary release file (usually the first file in `VERSION_FILES`):
      ```bash
-     grep '"version"' package.json
+     grep '"version"' $(echo $VERSION_FILES | awk '{print $1}')
      ```
    - Note the current version string (e.g., `2026.03.24-build.002`).
 
@@ -51,7 +52,7 @@ This workflow automates cherry-picking changes from a merged PR into an existing
      - If it does **not** contain `-rc.N` (e.g., `2026.03.24-build.002`), append `-rc.2`.
    - Compute using bash:
      ```bash
-     CURRENT_VERSION=$(node -p "require('./package.json').version")
+     CURRENT_VERSION=$(node -p "require('./' + '$(echo $VERSION_FILES | awk '{print $1}')').version")
      if [[ "$CURRENT_VERSION" =~ -rc\.([0-9]+)$ ]]; then
        RC_NUM=$(( ${BASH_REMATCH[1]} + 1 ))
        BASE_VERSION="${CURRENT_VERSION%-rc.*}"
@@ -63,18 +64,20 @@ This workflow automates cherry-picking changes from a merged PR into an existing
      ```
 
 6. **Update Version Strings**
-   - Apply the new version to both `package.json` and `tsreact/package.json`:
+   - Apply the new version to all `VERSION_FILES`:
      ```bash
-     sed -i '' "s/\"version\": \"${CURRENT_VERSION}\"/\"version\": \"${NEW_VERSION}\"/" package.json tsreact/package.json
+     for file in $VERSION_FILES; do
+       sed -i '' "s/\"version\": \"${CURRENT_VERSION}\"/\"version\": \"${NEW_VERSION}\"/" $file
+     done
      ```
    - Verify:
      ```bash
-     grep '"version"' package.json tsreact/package.json
+     grep '"version"' $VERSION_FILES
      ```
 
 7. **Commit the Version Bump**
    ```bash
-   git add package.json tsreact/package.json
+   git add $VERSION_FILES
    git commit -m "VERSION UPDATE: ${NEW_VERSION}"
    ```
 
@@ -94,6 +97,7 @@ This workflow automates cherry-picking changes from a merged PR into an existing
 Cherry-pick PR #4256 into `releases/2026.03.24`:
 - `RELEASE_BRANCH` = `releases/2026.03.24`
 - `PR_NUMBER` = `4256`
+- `VERSION_FILES` = `package.json packages/api/package.json`
 
 **Scenario A** — No RC suffix yet (version is `2026.03.24-build.002`):
 Result: `2026.03.24-build.002` → `2026.03.24-build.002-rc.2`
