@@ -1,0 +1,47 @@
+# manifest.yaml — Multi-Project Registry for Agent Context Switching
+# 
+# Agents parse this file to instantly understand all projects they can work on.
+# Add your projects here. Use absolute paths only.
+# Each project should have its own memory-bank/ following the 6-file standard.
+
+version: 0.1.0
+last_updated: 2026-04-28
+
+projects:
+  - name: multi-agent-skills
+    path: /home/workdir/artifacts
+    description: |
+      Universal agent harness repository itself. Defines reusable agents, skills, 
+      workflows, and manifest system. Self-hosting example.
+    primary_tech: Markdown, YAML, Mermaid
+    memory_bank_path: /home/workdir/artifacts/memory-bank
+    notes: |
+      This is the hub. All other projects inherit its AGENTS.md, skills, and agents.
+      Use it as the base for any new project setup.
+
+  # === ADD YOUR PROJECTS BELOW ===
+  # Example for a typical app with release branches (inspired by the cherry-pick-to-release-branch skill in this hub):
+  # - name: my-release-app
+  #   path: /absolute/path/to/your/app
+  #   description: Production web app with monthly release branches (e.g. releases/2026.03.24).
+  #   primary_tech: Node.js, TypeScript, React, Vite
+  #   memory_bank_path: /absolute/path/to/your/app/memory-bank
+  #   notes: |
+  #     Uses cherry-pick-to-release-branch skill for hotfixes.
+  #     Version format: YYYY.MM.DD-build.N or -rc.N
+
+  # Another example:
+  # - name: internal-tools
+  #   path: /path/to/internal-tools
+  #   description: Collection of CLI and automation scripts.
+  #   primary_tech: Python, Bash
+  #   memory_bank_path: /path/to/internal-tools/memory-bank
+
+# How agents use this:
+# 1. At session start or "switch to project X": 
+#    - Load the project's memory_bank_path files (read all 6).
+#    - Set working directory context to path.
+# 2. When task mentions a project not listed: Ask user to add it to manifest.yaml first.
+# 3. For cross-project work: Load multiple memory-banks as needed.
+
+# Maintenance: After adding/updating projects, update memory-bank/ files as needed.

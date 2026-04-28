@@ -1,0 +1,43 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor & IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+
+# Local overrides / secrets
+*.local
+.env
+.env.*
+secrets/
+*.secret
+
+# Logs
+*.log
+logs/
+
+# Node (in case tooling is added later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (in case tooling is added later)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Temp / scratch files
+tmp/
+temp/
+scratch/
