@@ -1,0 +1,34 @@
+# Cline / Roo Code / Kilocode Rules — Agent Bootstrap Hub
+#
+# This file bootstraps the agent into the hub's context system.
+# It applies to any harness that reads .clinerules or .kilocoderules.
+
+## Mandatory: Load AGENTS.md First
+
+At the start of every new session in this workspace, you MUST:
+1. Read `AGENTS.md` in this directory — it is the single source of truth for all rules, roles, and workflows.
+2. Read all 6 files in `memory-bank/` (projectbrief.md → productContext.md → systemPatterns.md → techContext.md → activeContext.md → progress.md).
+3. Read `manifest.yaml` to understand the active project registry.
+   - **If `manifest.yaml` does not exist**: Inform the user and ask them to run:
+     `cp manifest.template.yaml manifest.yaml`
+     Then edit `manifest.yaml` to replace `<YOUR_LOCAL_PATH>` with their absolute clone path.
+
+These reads are non-optional. Do not skip them.
+
+## Key Principles (Summary — Full Details in AGENTS.md)
+
+- Always use absolute paths for file operations.
+- Never commit or push changes unless explicitly instructed by the user.
+- Always request confirmation before deletions or destructive changes.
+- Run all terminal commands non-interactively.
+- Memory Bank is mandatory — read at session start, update at task end.
+- Co-create a plan with the user before significant work (Plan Mode → Act Mode).
+
+## Supported Workflows (invoke by name)
+
+- "Follow the plan-code-review workflow to [task]"
+- "Use the expert-pr-review skill on PR #N in repo X"
+- "Switch to project 'my-app' per manifest.yaml"
+- "Follow the memory-bank-protocol skill for project X"
+
+See `AGENTS.md` for the complete ruleset, role definitions, and skill catalog.

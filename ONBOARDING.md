@@ -5,11 +5,18 @@
 ## Quick Start (First 20 Minutes)
 
 1. **Clone the repo** to a stable location on your machine.
-2. **Update absolute paths** in `manifest.yaml` and `AGENTS.md` to point to your new local clone directory.
+2. **Create your local manifest** — copy the template and fill in your absolute path:
+   ```bash
+   cd /path/to/agent-bootstrap
+   cp manifest.template.yaml manifest.yaml
+   # Edit manifest.yaml: replace all <YOUR_LOCAL_PATH> with your actual clone path
+   # e.g. sed -i '' 's|<YOUR_LOCAL_PATH>|/Users/yourname/dev/agent-bootstrap|g' manifest.yaml
+   ```
+   `manifest.yaml` is gitignored (your paths are local). `manifest.template.yaml` stays in git (team structure is shared).
 3. **Read `AGENTS.md`** (the single source of truth). This is the most important file.
 4. **Read the 6 files in `memory-bank/`** for this hub (especially `projectbrief.md` and `activeContext.md`).
 5. **Explore `skills/` and `agents/`** to understand what reusable workflows and roles are available.
-6. **Try it**: Open Claude Code / Cline / your preferred harness and paste the content of `AGENTS.md` into Custom Instructions (or follow the instructions in `AGENTS.md` → "How to Use This Repository with Your Harness").
+6. **Try it**: Open your preferred harness and configure it to load `AGENTS.md` (see `AGENTS.md` → "How to Use This Repository with Your Harness" for per-harness instructions).
 
 ## Environment Prerequisites (MCP)
 

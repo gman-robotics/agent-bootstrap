@@ -12,13 +12,20 @@ This repo is used by the whole **team of developers** to share reusable skills f
 ## 1. How to Use This Repository with Your Harness
 
 ### Quick Start (Any Harness)
-1. Clone or have this repo available at a known absolute path (e.g. `/Users/tginter/dev/gman-robotics/agent-bootstrap` or your preferred location).
-2. In your harness settings:
+1. Clone or have this repo available at a known absolute path (e.g. `/Users/yourname/dev/agent-bootstrap`).
+2. Create your local `manifest.yaml` from the template:
+   ```bash
+   cp manifest.template.yaml manifest.yaml
+   # Replace <YOUR_LOCAL_PATH> with your actual clone directory
+   ```
+3. Configure your harness to load `AGENTS.md` as the primary instruction file:
    - **Claude Code / Projects**: Paste the entire content of this AGENTS.md (or link the file if supported) as Custom Instructions / Project Instructions.
-   - **Cline / Roo / Similar**: Set workspace rules or `.clinerules` to include the path to AGENTS.md and instruct the agent to always load it first.
-   - **Open Code / Other MCP-based**: Add this file's content to system prompt or persistent context. Reference agents/ and skills/ as needed.
-3. For any task: Begin by saying "Load AGENTS.md context" or the harness will do it automatically if configured.
-4. To switch projects: "Switch to project 'my-app' per manifest.yaml" — agent will load that project's memory-bank.
+   - **Cline / Roo Code**: A `.clinerules` file is included at the root of this repo — Cline and Roo Code automatically read it at startup. It points here. No further config needed.
+   - **Kilocode (kilo.code)**: A `.kilocoderules` file is included at the root of this repo — Kilocode automatically reads it at startup. It points here. No further config needed.
+   - **OpenHands**: A `.openhands_instructions` file is included at the root of this repo — OpenHands automatically reads it at startup. It points here. No further config needed.
+   - **Cursor / Other MCP-based**: Add this file's content to `.cursorrules` or the equivalent persistent context/system prompt location for your tool.
+4. For any task: Begin by saying "Load AGENTS.md context" or the harness will do it automatically if configured.
+5. To switch projects: "Switch to project 'my-app' per manifest.yaml" — agent will load that project's memory-bank.
 
 **Always use absolute paths** for every file operation (global rule).
 
@@ -187,6 +194,7 @@ Skills are in `/skills/`. Invoke by name: "Follow the plan-code-review workflow 
 - **expert-pr-review.md**: Full detailed PR review workflow (included in this hub). Use for any GitHub PR.
 - **cherry-pick-to-release-branch.md**: Automated cherry-pick + RC version bump for release branches (included in this hub). Parameters: RELEASE_BRANCH, PR_NUMBER.
 - **memory-bank-protocol.md**: Full Memory Bank setup, mandatory read-all-6-files protocol at session/task start, and end-of-task update rules. Use for every project (see this hub's own memory-bank/ as live example).
+- **docs-protocol.md**: Full playbook for creating, updating, and referencing project docs and ADRs in the `docs/` layer.
 
 See `/skills/` directory for full definitions. New skills should follow the style of the examples in this hub (clear steps, warnings, examples, code blocks).
 
@@ -262,4 +270,4 @@ See `skills/docs-protocol.md` for the full playbook on creating, updating, and r
 
 ---
 
-*Last updated: 2026-04-28 | Version: 0.1.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting)*
+*Last updated: 2026-04-29 | Version: 0.2.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting)*

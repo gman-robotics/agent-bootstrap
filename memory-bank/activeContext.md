@@ -1,7 +1,7 @@
 # Active Context: Multi-Agent Skills Hub
 
 ## Current Focus (This Session)
-Repo audit and gap-filling: added `docs/` technical reference layer, `skills/docs-protocol.md`, and cleaned up all stale references.
+Harness compatibility audit and gap-filling: added `.clinerules`, `.openhands_instructions`, `manifest.template.yaml`, fixed all stale wiki references, synced version footers to v0.2.0, fixed CONTRIBUTING.md numbering bug, added `docs-protocol.md` to AGENTS.md skill list.
 
 ## Recent Changes
 - 2026-04-28 (v0.2.0): Added `docs/` directory with two-tier structure:
@@ -34,4 +34,15 @@ Repo audit and gap-filling: added `docs/` technical reference layer, `skills/doc
 - ✅ All stale wiki references cleaned up
 - ✅ `memory-bank-protocol.md` updated with docs/ vs memory-bank/ guidance
 
-**Next**: Team members can add their projects using the template in `docs/projects/agent-bootstrap/` and `skills/docs-protocol.md` for guidance.
+**v0.3.0 (2026-04-29) — Harness Compatibility Audit:**
+- ✅ `.clinerules` — created/updated: bootstraps Cline, Roo Code, Kilocode into hub context
+- ✅ `.openhands_instructions` — created: auto-loaded by OpenHands; points to AGENTS.md
+- ✅ `manifest.template.yaml` — created: team-shareable template with `<YOUR_LOCAL_PATH>` placeholders
+- ✅ `.gitignore` — updated: `manifest.yaml` now gitignored (local paths stay local)
+- ✅ `AGENTS.md` — updated: per-harness setup for Claude/Cline/Kilocode/OpenHands/Cursor; manifest template step; `docs-protocol.md` added to skill list; version → 0.2.0
+- ✅ `README.md` — updated: Quick Start with manifest template; `.clinerules`/`.openhands_instructions` in What's Inside; per-harness Compatibility list; version → 0.2.0
+- ✅ `ONBOARDING.md` — updated: Step 2 now explains manifest template copy+sed pattern
+- ✅ Stale wiki refs fixed: `projectbrief.md`, `software-engineer.md`, `memory-bank-protocol.md` (version footer → 1.1/v0.2.0)
+- ✅ `CONTRIBUTING.md` — fixed: step numbering bug (1,2,3,4,7 → 1,2,3,4,5)
+
+**Next**: Team members can add their projects using the template in `docs/projects/agent-bootstrap/` and `skills/docs-protocol.md` for guidance. No further critical gaps identified.

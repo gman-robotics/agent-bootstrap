@@ -73,6 +73,25 @@
 - None new. The docs/ layer is KISS by design — easy to extend.
 - Machine-specific absolute paths in manifest.yaml remain user responsibility (documented in ADR-005).
 
+## v0.3.0 — Harness Compatibility Audit (2026-04-29)
+
+### What Was Done
+- [x] Created `.clinerules` — auto-loaded by Cline, Roo Code, Kilocode; instructs agent to read AGENTS.md + memory-bank + manifest.yaml at session start
+- [x] Created `.openhands_instructions` — auto-loaded by OpenHands; same mandatory reads + workflow invocation reference
+- [x] Created `manifest.template.yaml` — gitignored-safe template with `<YOUR_LOCAL_PATH>` placeholders; team can share structure without leaking machine paths
+- [x] Updated `.gitignore` — added `manifest.yaml` so local absolute paths never get committed/conflicted across team
+- [x] Updated `AGENTS.md` (§1 Quick Start) — added manifest template copy step; explicit per-harness setup for Claude/Cline/Kilocode/OpenHands/Cursor; added `docs-protocol.md` to skill list; version footer → 0.2.0
+- [x] Updated `README.md` — Quick Start includes manifest template step; `.clinerules`/`.openhands_instructions` listed in What's Inside; Compatibility section lists all 6 harnesses explicitly
+- [x] Updated `ONBOARDING.md` — Step 2 is now "copy manifest.template.yaml → manifest.yaml, replace paths" with sed one-liner example
+- [x] Fixed all stale wiki references: `memory-bank/projectbrief.md`, `agents/software-engineer.md`, `skills/memory-bank-protocol.md`; version footer bumped to 1.1/v0.2.0
+- [x] Fixed CONTRIBUTING.md step numbering bug (1,2,3,4,7 → 1,2,3,4,5)
+
+### Known Issues / Risks (v0.3.0)
+- None new. Manifest template pattern is standard (.env.example analogy). Low risk.
+- Machine-specific paths in existing `manifest.yaml` remain (user's local copy) — expected and documented.
+
+---
+
 ## Known Issues / Risks
 - None critical. This is pure documentation creation — low risk of bugs.
 - Potential: If user wants code execution in skills later, may need to add example scripts, but keeping pure MD for now per KISS.

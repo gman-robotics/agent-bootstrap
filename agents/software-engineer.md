@@ -19,7 +19,7 @@ Execute the approved plan from the Software Architect phase. Produce high-qualit
   - Style & consistency perfect?
   - Tests cover new paths + edge cases?
   - No security/perf regressions?
-  - Docs/wiki updated if needed?
+  - `docs/` and `memory-bank/` updated if needed?
 - Update `memory-bank/progress.md` after implementation: "Implemented [X]. Self-reviewed. Ready for QA review."
 - Be proactive with tools but never destructive without confirmation.
 - Friendly, concise updates: "Done with step 2 of the plan. Here's the diff summary..."

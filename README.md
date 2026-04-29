@@ -16,9 +16,15 @@ This repo solves all of that for the entire team.
 ## Quick Start
 
 1. Clone this repo to a stable location.
-2. Configure your harness to load `AGENTS.md` as the primary instruction file (see AGENTS.md → "How to Use This Repository with Your Harness").
-3. (Optional but recommended) Add your projects to `manifest.yaml`.
-4. Start working: "Follow the plan-code-review workflow to add feature X to project Y."
+2. Create your local `manifest.yaml` from the template (one-time setup):
+   ```bash
+   cp manifest.template.yaml manifest.yaml
+   # Edit manifest.yaml — replace <YOUR_LOCAL_PATH> with your absolute clone path
+   ```
+   `manifest.yaml` is gitignored so your local paths stay local.
+3. Configure your harness to load `AGENTS.md` as the primary instruction file (see `AGENTS.md` → "How to Use This Repository with Your Harness" for per-harness setup).
+4. Add your projects to `manifest.yaml`.
+5. Start working: "Follow the plan-code-review workflow to add feature X to project Y."
 
 That's it. The agent now has:
 - Defined roles (Architect, Engineer, QA Reviewer, UI/UX Engineer, ...)
@@ -30,9 +36,13 @@ That's it. The agent now has:
 
 - **AGENTS.md** — The single source of truth. Everything an agent needs to know.
 - **CLAUDE.md** — Pointer for Claude-specific harnesses.
+- **.clinerules** — Auto-loaded by Cline and Roo Code. Points to AGENTS.md.
+- **.kilocoderules** — Auto-loaded by Kilocode (kilo.code). Points to AGENTS.md.
+- **.openhands_instructions** — Auto-loaded by OpenHands. Points to AGENTS.md.
 - **LICENSE** — MIT License.
 - **ONBOARDING.md** — Quick start guide for new team members.
-- **manifest.yaml** — Registry of all your projects (paths, tech, memory banks).
+- **manifest.template.yaml** — Template for the project registry (tracked in git).
+- **manifest.yaml** — Your local copy (gitignored; fill in your absolute paths from the template).
 - **skills/** — Reusable workflow playbooks:
   - `expert-pr-review.md` — Extremely thorough, safe GitHub PR reviewer (full 8-step flow with security checklist, build/test, inline comments).
   - `cherry-pick-to-release-branch.md` — Safe cherry-pick from merged PR + automatic RC version bump.
@@ -60,10 +70,13 @@ That's it. The agent now has:
 ## Compatibility & Requirements
 
 Works with **any** agent harness that supports custom instructions or persistent context:
-- Claude Code / Claude Projects
-- Cline, Roo Code, Cursor (via rules)
-- Open Code, Open Interpreter, custom MCP setups
-- Future harnesses (just point to AGENTS.md)
+- **Claude Code / Claude Projects** — paste AGENTS.md as Custom Instructions
+- **Cline / Roo Code** — `.clinerules` file is pre-configured (auto-loaded)
+- **Kilocode** — `.kilocoderules` file is pre-configured (auto-loaded)
+- **OpenHands** — `.openhands_instructions` file is pre-configured (auto-loaded)
+- **Cursor** — add AGENTS.md content to `.cursorrules`
+- **Open Interpreter, custom MCP setups** — inject AGENTS.md as system prompt
+- **Future harnesses** — just point to AGENTS.md
 
 **MCP Server Dependencies:**
 Several advanced skills in this hub (like `expert-pr-review` and `cherry-pick-to-release-branch`) require a working GitHub MCP server (`@modelcontextprotocol/server-github`) configured with a valid token to perform deep PR analysis and interaction.
@@ -81,7 +94,7 @@ All changes to this repo itself should follow the plan-code-review workflow (sel
 
 ## Status
 
-Initial v0.1.0 — Core files, skills, agents, and wiki structure in place. Fully functional for immediate use.
+Current v0.2.0 — Core files, skills, agents, and docs/ structure in place. Fully functional for immediate use.
 
 See `memory-bank/progress.md` for current task status.
 

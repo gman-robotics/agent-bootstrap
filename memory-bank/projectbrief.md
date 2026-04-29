@@ -16,8 +16,8 @@ Multi-Agent Skills Hub (or Universal Agent Harness)
 - **In Scope**: 
   - Core files: AGENTS.md, CLAUDE.md, README.md, manifest.yaml
   - Subagent role definitions (software architect/plan, software engineer/code, qa/critical reviewer, ui/ux, etc.)
-  - Skills directory with reusable workflows (PR review, cherry-pick, llm-wiki, plan-code-review, etc.)
-  - Wiki directory with initial structure and llm-wiki skill for management
+  - Skills directory with reusable workflows (PR review, cherry-pick, plan-code-review, docs-protocol, etc.)
+  - Docs directory (`docs/`) for persistent technical reference, governed by the docs-protocol skill
   - Memory bank integration as example and for this project's own continuity
   - Documentation on usage with popular harnesses
 - **Out of Scope** (initial):
@@ -27,7 +27,7 @@ Multi-Agent Skills Hub (or Universal Agent Harness)
 
 ## Success Criteria
 - Any team member can clone this repo and immediately have full multi-role, multi-workflow capability via AGENTS.md + agents/ + skills/.
-- New common projects are added to manifest.yaml with memory-bank + wiki sections.
+- New common projects are added to manifest.yaml with memory-bank + docs/ sections.
 - memory-bank/ is actively used and updated by the team for project context.
 - Team adoption: 80%+ of developers actively using the hub (contributing or consuming) within 30 days.
 - Follows KISS, consistency, and the global rules defined in this hub.

@@ -8,7 +8,7 @@ The Memory Bank is the **only** source of truth. Your memory resets completely b
 **When to Use This Skill**
 - **Initializing** a brand new project (create the directory + 6 core files)
 - **At the absolute start** of every new session or before **any significant task** (non-optional read of all 6 files)
-- **At the end of every task** (update activeContext.md + progress.md + propose wiki update)
+- **At the end of every task** (update activeContext.md + progress.md + update docs/ if technical reference changed)
 - When switching projects via `manifest.yaml`
 - When onboarding a new harness or team member to an existing project
 
@@ -98,7 +98,7 @@ After completing work (especially in the FINALIZE phase of plan-code-review-work
 
 2. **Update `progress.md`**:
    - Add a new bullet under "What Works" or "Important Learnings".
-   - Record: what was delivered, any gotchas discovered, links to wiki entries created.
+   - Record: what was delivered, any gotchas discovered, links to docs entries created.
    - Example:
      ```markdown
      - [x] Added memory-bank-protocol.md skill (complete playbook with init/read/update steps, based on the Memory Bank concept in this hub).
@@ -144,4 +144,4 @@ Agent (as Software Architect):
 ## Self-Hosting Note (This Repo)
 This very `memory-bank/` directory you are reading from was created and is maintained using this skill. It serves as the canonical, battle-tested example.
 
-**Last updated**: 2026-04-28 | Version: 1.0 | Part of Multi-Agent Skills Hub v0.1.0 (self-hosting)
+**Last updated**: 2026-04-29 | Version: 1.1 | Part of Multi-Agent Skills Hub v0.2.0 (self-hosting)

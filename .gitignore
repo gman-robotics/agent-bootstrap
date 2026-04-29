@@ -21,6 +21,9 @@
 secrets/
 *.secret
 
+# Local machine-specific manifest (copy from manifest.template.yaml and fill in your paths)
+manifest.yaml
+
 # Logs
 *.log
 logs/

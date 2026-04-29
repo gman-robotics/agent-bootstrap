@@ -1,0 +1,36 @@
+# OpenHands Instructions — Agent Bootstrap Hub
+
+This workspace uses **AGENTS.md** as the single source of truth for all agent roles, workflows, and context management.
+
+## Required Actions (Start of Every Session)
+
+1. **Read `AGENTS.md`** at the root of this repository — it contains all global rules, role definitions, workflow playbooks, and context management protocols.
+2. **Read all 6 files in `memory-bank/`** (in order: projectbrief.md → productContext.md → systemPatterns.md → techContext.md → activeContext.md → progress.md). This is non-optional.
+3. **Read `manifest.yaml`** to understand the project registry and active project context.
+   - **If `manifest.yaml` does not exist**: Inform the user — they need to run `cp manifest.template.yaml manifest.yaml` and replace `<YOUR_LOCAL_PATH>` with their absolute clone path (one-time setup per machine).
+
+## Key Files
+
+- `AGENTS.md` — Master instruction file (start here)
+- `manifest.yaml` — Project registry (paths, tech, memory banks)
+- `memory-bank/` — Persistent session context (read every session)
+- `skills/` — Reusable workflow playbooks
+- `agents/` — Persona definitions (Software Architect, Engineer, QA Reviewer, etc.)
+- `docs/` — Persistent technical reference (API contracts, ADRs, data models)
+
+## Invoking Workflows
+
+- **Plan a feature**: "Follow the plan-code-review workflow to [task]"
+- **Review a PR**: "Use the expert-pr-review skill on PR #N in repo X"
+- **Switch project**: "Switch to project 'my-app' per manifest.yaml"
+- **Set up memory bank**: "Follow the memory-bank-protocol skill for project X"
+
+## Rules Summary
+
+- Always use absolute paths for file operations.
+- Never commit or push changes unless explicitly instructed.
+- Always request confirmation before deletions or destructive changes.
+- Run all terminal commands non-interactively (no paging, no prompts).
+- Memory Bank is mandatory — read at session start, update at task end.
+
+See `AGENTS.md` for the full ruleset.

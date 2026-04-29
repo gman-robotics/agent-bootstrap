@@ -20,7 +20,7 @@ We use the same workflows the agents use — this keeps quality high and consist
 2. Create or edit the skill in `skills/`.
 3. Update `AGENTS.md` → "Other Key Skills" section if it's a new core skill.
 4. Update relevant memory-bank files if the skill affects project context.
-7. Open a Pull Request. Use the **"New Skill"** PR template.
+5. Open a Pull Request. Use the **"New Skill"** PR template.
 
 ### 2. Adding or Updating an Agent Role
 1. Create/edit in `agents/`.
