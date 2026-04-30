@@ -1,0 +1,53 @@
+# Cursor Rules — Agent Bootstrap Hub
+#
+# Legacy format (.cursorrules). Also see .cursor/rules/agent-bootstrap.mdc for the
+# Project Rules format supported by Cursor ≥ 0.43.
+#
+# Ensure this repo is open as a project/folder in Cursor for these rules to apply.
+
+## Required: Load at Session Start
+
+At the start of every session, you MUST:
+1. Read `AGENTS.md` — single source of truth for all rules, roles, and workflows.
+2. Read all 6 files in `memory-bank/` in order:
+   projectbrief.md → productContext.md → systemPatterns.md → techContext.md → activeContext.md → progress.md
+3. Read `manifest.yaml` — project registry; clone any missing repos listed there.
+4. Read `skills/INDEX.md` — full skill catalog with trigger conditions.
+
+These reads are non-optional. Do not skip them.
+
+## Skill Invocation Rule
+
+When any skill is triggered (see trigger conditions in skills/INDEX.md), read the full skill file before executing any steps. Do not rely on session memory of its contents.
+
+## Skill Triggers (Quick Reference)
+
+- `write-tests.md`              → any new feature, bug fix, or refactor — before writing code
+- `debug-investigation.md`      → bug report, unexpected behavior, "fix this" without clear diagnosis
+- `performance-profiling.md`    → "slow", "latency", "timeout", "optimize"
+- `feature-flag-lifecycle.md`   → creating, rolling out, or graduating a feature flag
+- `plan-code-review-workflow.md`→ any non-trivial task (>1 file, user-facing impact)
+- `expert-pr-review.md`         → any PR review request
+- `cherry-pick-to-release-branch.md` → hotfix or backport to a release branch
+- `memory-bank-protocol.md`     → session start, project switch, new project setup
+- `docs-protocol.md`            → creating or updating technical docs or ADRs
+
+## Key Principles
+
+- Always use absolute paths for file operations.
+- Never commit or push unless explicitly instructed by the user.
+- Request confirmation before deletions or destructive changes.
+- Run all terminal commands non-interactively.
+- TDD is mandatory: write a failing test before production code (docs/shared/tdd-standard.md).
+- Update memory-bank/activeContext.md and progress.md at the end of every task.
+
+## Supported Workflows
+
+- "Follow the plan-code-review workflow to [task]"
+- "Use the expert-pr-review skill on PR #N in repo X"
+- "Switch to project 'eg' per manifest.yaml"
+- "Debug [issue] using the debug-investigation skill"
+- "Profile [operation] using the performance-profiling skill"
+- "Follow the write-tests skill for [feature]"
+
+See `AGENTS.md` for the complete ruleset, role definitions, and full skill catalog.
