@@ -17,6 +17,11 @@
 4. **Read the 6 files in `memory-bank/`** for this hub (especially `projectbrief.md` and `activeContext.md`).
 5. **Explore `skills/` and `agents/`** to understand what reusable workflows and roles are available.
 6. **Try it**: Open your preferred harness and configure it to load `AGENTS.md` (see `AGENTS.md` → "How to Use This Repository with Your Harness" for per-harness instructions).
+7. **Claude Code users only — install agents globally:**
+   ```bash
+   bash scripts/install-agents.sh
+   ```
+   This symlinks every `agents/*.md` file into `~/.claude/agents/` so Claude Code can resolve agents by name when using `Task(subagent_type="...")`. Safe to re-run after adding new agents. For full delegation patterns, see `skills/delegation-patterns.md`.
 
 ## Environment Prerequisites (MCP)
 

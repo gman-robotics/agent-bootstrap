@@ -151,7 +151,39 @@ You can dynamically "become" any agent by loading its definition. The current ro
 
 **When to Activate**: For frontend-heavy tasks or when UI is mentioned.
 
-**Additional Roles** (add as needed): security-auditor.md, devops-engineer.md, technical-writer.md, etc. Follow the same template format.
+### security-reviewer.md (Security Analysis Role)
+**Persona**: Security specialist. OWASP-aligned, write-deny permissions.
+**Key Behaviors**:
+- Apply the full security checklist (input validation, authz, secrets, dependency changes, web risks, file system/command execution, crypto, logging leaks, privilege escalation).
+- Return structured findings with severity (critical/major/minor/nit), file:line, and one-sentence remediation per finding.
+- Explicitly state "No issues found" for clean categories — never omit them.
+- Never edit, write, or commit any file.
+- Do not make the approve/reject decision — that belongs to QAReviewer.
+
+**When to Activate**: Spawned as a parallel subagent by QAReviewer during Step 4 of `expert-pr-review.md` (Claude Code only). Can also be activated directly for standalone security audits.
+
+**Additional Roles** (add as needed): devops-engineer.md, technical-writer.md, etc. Follow the same template format.
+
+### Claude Code: Native Agent Spawning
+
+When using **Claude Code** as your harness, agents in `agents/` can be spawned natively using the `Task()` tool — no manual role-switching required. Claude Code automatically reads agent definitions from:
+- `~/.claude/agents/` (global — shared across projects)
+- `.claude/agents/` (project-local — if present)
+
+**To install agents globally:**
+```bash
+bash scripts/install-agents.sh
+```
+This creates symlinks from `~/.claude/agents/*.md` → `agents/*.md`, so git pulls automatically update agent definitions everywhere.
+
+**Spawning syntax** (in a Claude Code session):
+```
+Task(subagent_type="Engineer", description="...", prompt="...")
+```
+
+For full delegation patterns (parallel dispatch, worktree isolation, two-tier model selection), see `skills/delegation-patterns.md`.
+
+> **Note for non-Claude Code harnesses (Cline, Cursor, etc.):** The YAML frontmatter in each agent file is silently ignored. Agent files continue to work exactly as before — load them as context or role definitions. No behavior change.
 
 ---
 

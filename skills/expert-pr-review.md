@@ -13,6 +13,32 @@ Your job is to thoroughly review any GitHub PR the user asks you to review (the 
 >
 > **If you're already in PLAN mode** when the task arrives: gather context there, present a plan summary (including thread state and build/test intent), then ask the user to switch to Act mode. Don't re-gather once in Act mode — carry the context forward.
 
+## Claude Code: Parallel Agent Delegation for Step 4
+
+When running in Claude Code with `Task()` available, replace Step 4 (Analyze & Risk-Assess)
+with parallel subagent dispatch. In a **single message**, emit both `Task()` calls so they run
+simultaneously — each agent only needs the diff as input and their analyses are fully independent.
+
+```
+Task(
+  subagent_type="SecurityReviewer",
+  description="Security analysis: PR #<N>",
+  prompt="You are a security-focused code reviewer. Diff:\n\n<full diff here>\n\nRun the complete security checklist (input validation, authz, secrets, dependency changes, web risks, file system/command execution, crypto, logging leaks, privilege escalation). Return structured findings: each finding must include severity (critical/major/minor/nit), file:line, and a one-sentence remediation. If no issues found in a category, say so explicitly."
+)
+
+Task(
+  subagent_type="QAReviewer",
+  description="Code quality analysis: PR #<N>",
+  prompt="You are a code quality reviewer. Diff:\n\n<full diff here>\n\nAnalyze: correctness, style/consistency with surrounding code, readability, test coverage, edge cases, breaking changes, semver impact, docs updates needed. Return structured findings grouped by severity (critical/major/minor/nit) with file:line citations."
+)
+```
+
+Wait for both agents to return, then synthesize their findings into Step 5.
+
+**Why parallel:** Both analyses read the same diff but apply independent checklists. Running them simultaneously halves analysis time compared to sequential execution. Neither agent may edit files — the `SecurityReviewer` and `QAReviewer` definitions enforce write-deny permissions.
+
+> **Note:** This parallel dispatch replaces manual Step 4 execution. Skip the manual Security Review Checklist in Step 4 when using this pattern — the subagents cover it.
+
 ## Recommended Review Flow (follow in order, but adapt intelligently)
 
 1. **Gather Context (one-shot, parallel)**
