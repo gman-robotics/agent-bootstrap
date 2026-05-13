@@ -9,187 +9,245 @@ Your job is to thoroughly review any GitHub PR the user asks you to review (the 
 >
 > 2. **User approval is required** before posting any review that includes `APPROVE` or `REQUEST_CHANGES`. Present your findings and recommendation first (Step 5), then **wait for explicit user confirmation** before proceeding to post the review (Step 6). Do not auto-approve or auto-request-changes.
 
-> **Mode note:** Go straight to Act mode for PR reviews — no need to plan first. Gather context, run builds/tests, and report findings in one flow.
+> **Mode note:** Go straight to Act mode for PR reviews — no need to plan first.
 >
-> **If you're already in PLAN mode** when the task arrives: gather context there, present a plan summary (including thread state and build/test intent), then ask the user to switch to Act mode. Don't re-gather once in Act mode — carry the context forward.
+> **Fallback (no subagent support / inline mode):** Execute all 8 steps directly without spawning a subagent. The split between subagent body and parent steps is purely organisational — the flow is identical.
 
-## Claude Code: Parallel Agent Delegation for Step 4
+---
 
-When running in Claude Code with `Task()` available, replace Step 4 (Analyze & Risk-Assess)
-with parallel subagent dispatch. In a **single message**, emit both `Task()` calls so they run
-simultaneously — each agent only needs the diff as input and their analyses are fully independent.
+## Claude Code: Parent Invocation Pattern
+
+When a user asks to review a PR, spawn the `qa-critical-reviewer` subagent to execute Steps 1–4, then handle user approval and posting yourself (Steps 5–8).
+
+```
+Task(
+  subagent_type="QAReviewer",
+  model="sonnet",
+  description="PR review: <org>/<repo> #<N>",
+  prompt="""Review PR #<N> in repo <org>/<repo>.
+Working directory: <absolute path to repo on disk>.
+
+Read skills/expert-pr-review.md fully, then execute Steps 1–4
+(Gather Context, Resolve Threads, Checkout & Build/Test, Parallel Analysis).
+Return the Findings Report JSON defined in that skill's Findings Schema section.
+Populate every field."""
+)
+```
+
+Wait for the subagent to return the Findings Report, then execute the Parent Steps (5–8) below.
+
+---
+
+## Findings Schema
+
+The `qa-critical-reviewer` subagent returns this structure after completing Steps 1–4. The parent uses it to present findings and post the review.
+
+```json
+{
+  "pr": {
+    "number": 4597,
+    "title": "...",
+    "author": "...",
+    "head_branch": "...",
+    "base_branch": "..."
+  },
+  "build": { "status": "passed|failed|skipped", "summary": "..." },
+  "tests": { "status": "passed|failed|skipped", "summary": "..." },
+  "threads_resolved": ["description of resolved thread"],
+  "threads_unresolved": ["description of unresolved thread — factor into recommendation"],
+  "security_findings": [
+    { "severity": "critical|major|minor|nit", "file": "path/to/file.ts", "line": 42, "issue": "one sentence", "remediation": "one sentence" }
+  ],
+  "quality_findings": [
+    { "severity": "critical|major|minor|nit", "file": "path/to/file.ts", "line": 42, "issue": "one sentence", "remediation": "one sentence" }
+  ],
+  "recommendation": "APPROVE|REQUEST_CHANGES|COMMENT",
+  "summary": "2–4 sentence overall summary matching the Commenting Tone & Style below",
+  "inline_comments": [
+    { "path": "relative/file/path.ts", "line": 42, "body": "Inline comment text (derived from findings with specific file+line)" }
+  ]
+}
+```
+
+---
+
+## Subagent Body — Steps 1–4
+
+> `qa-critical-reviewer` executes these steps when spawned. In fallback/inline mode, the main Claude executes them directly.
+
+### Step 1: Gather Context (one-shot, parallel)
+
+Run these simultaneously — they are independent:
+- `gh pr view <PR#> --json number,title,body,author,state,headRefName,baseRefName,closingIssuesReferences,statusCheckRollup,reviewDecision,reviews,reviewRequests` → title, body, CI rollup, linked issues, existing review state
+- `gh pr diff <PR#>` → full diff
+- `pull_request_read method: get_review_comments` (MCP, if available) → existing review threads
+- If a closing issue exists (`closingIssuesReferences`): pull it for extra context
+
+**Haiku subagent — build/test command discovery (run in parallel with the above):**
+```
+Task(
+  model="haiku",
+  description="Discover build and test commands",
+  prompt="Read <absolute-path>/package.json (and Makefile if present).
+Return exactly: {\"build\": \"<command or null>\", \"test\": \"<command or null>\"}.
+No explanation."
+)
+```
+
+**Haiku subagent — CI summary (if statusCheckRollup is non-empty):**
+```
+Task(
+  model="haiku",
+  description="Summarize CI check results",
+  prompt="Given this gh pr checks output:\n<output>\nReturn one sentence: pass count, fail count, pending count, and overall status."
+)
+```
+
+### Step 2: Resolve Prior Review Threads (if any exist)
+
+After Step 1, check whether `get_review_comments` returned any open threads:
+- **0 threads** → nothing to do, proceed to Step 3.
+- **Open threads exist** → for each thread, check the diff to confirm whether the concern was addressed:
+  - If addressed: reply using `add_reply_to_pull_request_comment` (numeric comment ID), then resolve via GraphQL:
+    ```bash
+    gh api graphql -f query="mutation { resolveReviewThread(input: { threadId: \"PRRT_xxx\" }) { thread { isResolved } } }"
+    ```
+  - If NOT addressed: record in `threads_unresolved` — factor into your recommendation.
+
+### Step 3: Checkout & Build/Test
+
+> ⚠️ **Review ONLY — checkout is for building/testing only.** Do NOT edit files, commit, or push.
+
+```bash
+gh pr checkout <PR#>
+```
+
+Use commands discovered in Step 1. Start the build **in the background** immediately:
+```bash
+<build-command> 2>&1 | tee /tmp/build.log &
+echo "Build started (PID: $!)"
+```
+
+Run tests **in the foreground** while build runs:
+```bash
+<test-command> 2>&1 | tee /tmp/test.log
+```
+
+Poll build until done:
+```bash
+while pgrep -f "<build-process-name>" > /dev/null 2>&1; do sleep 5; done && tail -20 /tmp/build.log
+```
+
+### Step 4: Parallel Analysis
+
+In a **single message**, spawn both tasks so they run concurrently — each reads the same diff independently:
 
 ```
 Task(
   subagent_type="SecurityReviewer",
+  model="sonnet",
   description="Security analysis: PR #<N>",
-  prompt="You are a security-focused code reviewer. Diff:\n\n<full diff here>\n\nRun the complete security checklist (input validation, authz, secrets, dependency changes, web risks, file system/command execution, crypto, logging leaks, privilege escalation). Return structured findings: each finding must include severity (critical/major/minor/nit), file:line, and a one-sentence remediation. If no issues found in a category, say so explicitly."
+  prompt="You are a security-focused code reviewer. Diff:\n\n<full diff here>\n\nRun the complete security checklist: input validation, authz, secrets, dependency changes, web risks (XSS/CSRF/CORS/header injection), file system/command execution (path traversal/SSRF/RCE), crypto, logging leaks, privilege escalation, container/infra-as-code changes. For each finding: severity (critical/major/minor/nit), file:line, one-sentence issue, one-sentence remediation. For categories with no findings, state 'No issues found' explicitly."
 )
 
 Task(
-  subagent_type="QAReviewer",
+  model="sonnet",
   description="Code quality analysis: PR #<N>",
-  prompt="You are a code quality reviewer. Diff:\n\n<full diff here>\n\nAnalyze: correctness, style/consistency with surrounding code, readability, test coverage, edge cases, breaking changes, semver impact, docs updates needed. Return structured findings grouped by severity (critical/major/minor/nit) with file:line citations."
+  prompt="You are a code quality reviewer. Diff:\n\n<full diff here>\n\nAnalyze: correctness, style/consistency with surrounding code, readability, test coverage, edge cases, breaking changes, semver impact, docs updates needed. Return findings grouped by severity (critical/major/minor/nit) with file:line citations. If no issues found in a category, say so."
 )
 ```
 
-Wait for both agents to return, then synthesize their findings into Step 5.
+> **Dependency audit:** Only flag `npm audit` / `pip audit` findings if the PR modified `package.json` or lock files. Pre-existing vulnerabilities are out of scope — note that clearly rather than listing them as PR concerns.
 
-**Why parallel:** Both analyses read the same diff but apply independent checklists. Running them simultaneously halves analysis time compared to sequential execution. Neither agent may edit files — the `SecurityReviewer` and `QAReviewer` definitions enforce write-deny permissions.
+Wait for both tasks to return. Synthesize results into the Findings Schema above and return it.
 
-> **Note:** This parallel dispatch replaces manual Step 4 execution. Skip the manual Security Review Checklist in Step 4 when using this pattern — the subagents cover it.
+---
 
-## Recommended Review Flow (follow in order, but adapt intelligently)
+## Return: Findings Report
 
-1. **Gather Context (one-shot, parallel)**
-   Run these simultaneously — they are independent:
-   - `gh pr view <PR#> --json number,title,body,author,state,headRefName,baseRefName,closingIssuesReferences,statusCheckRollup,reviewDecision,reviews,reviewRequests` → title, body, CI rollup, linked issues, existing review state
-   - `gh pr diff <PR#>` → full diff
-   - `pull_request_read method: get_review_comments` → fetch all existing review threads (thread IDs, comment IDs, file/line, body)
-   - Read `package.json` (or equivalent) to discover build/test commands
-   - If a closing issue exists (`closingIssuesReferences`): pull it for extra context
+After completing Steps 1–4, populate and return the Findings Schema JSON defined above. Every field must be present. Derive `inline_comments` from any finding that has a specific `file` + `line` citation.
 
-2. **Resolve Prior Review Threads (if any exist)**
-   After Step 1, check whether `get_review_comments` returned any open threads:
-   - **0 threads** → nothing to do, proceed to Step 3.
-   - **Open threads exist** → for each thread, check the diff to confirm whether the concern was addressed:
-     - If addressed: reply using `add_reply_to_pull_request_comment` (use the numeric comment ID from the `#discussion_rNNNNNNNN` URL fragment), then resolve the thread via GraphQL:
-       ```bash
-       gh api graphql -f query="mutation { resolveReviewThread(input: { threadId: \"PRRT_xxx\" }) { thread { isResolved } } }"
-       ```
-     - If NOT addressed: note it — factor unresolved concerns into your final recommendation.
-   - See `pr-review-workflow.md` for full thread-resolution patterns including the base64 ID gotcha.
+---
 
-3. **Checkout & Build/Test (always do this when builds/tests are requested)**
-   > ⚠️ **Review ONLY — checkout is for building/testing only.** Do NOT edit files, commit, or push on the PR branch. If you need to suggest changes, do so via review comments only.
+## Parent Steps — Steps 5–8
 
-   ```bash
-   gh pr checkout <PR#>
-   ```
-   First, **discover the build and test commands** from `package.json` scripts, `Makefile`, `Gruntfile.js`, `README.md`, or equivalent — never assume.
+> Executed by the main Claude after receiving the Findings Report from the subagent (or inline after Step 4 in fallback mode).
 
-   Then kick off the dist/production build **in the background** immediately so it runs while you analyze the diff:
-   ```bash
-   <build-command> 2>&1 | tee /tmp/build.log &
-   echo "Build started (PID: $!)"
-   ```
-   Then run unit tests in the **foreground** (they're typically faster and you want the result now):
-   ```bash
-   <test-command> 2>&1 | tee /tmp/test.log
-   ```
-   Then poll the build log until it finishes:
-   ```bash
-   tail -20 /tmp/build.log
-   ```
-   - Confirm the build completes with no errors
-   - Confirm all tests pass before recommending approval
+### Step 5: Summarize & Recommend
 
-   **Project-specific commands (eg repo):** `grunt dist` for the production build, `npm test` for unit tests.
+Present to the user:
+- Build/test status
+- Security and quality findings grouped by severity
+- Unresolved prior threads (if any)
+- Recommendation: APPROVE / REQUEST_CHANGES / COMMENT
+- Ask: "Shall I proceed and post the review?"
 
-   **Long builds:** Dist builds (tsc + vite + npm install) can take 2–4 minutes. Pipe output with `tee` to a known `/tmp/` path so you can tail it reliably. Don't rely on the system background log path.
+> ⚠️ **Do NOT proceed to Step 6 until the user explicitly confirms.** If the user does not confirm, stop here.
 
-   **Build polling:** The `tail` command alone may time out the terminal if the build is still running. If `sleep N && tail` is likely to hit the 30s timeout, poll in a loop instead:
-   ```bash
-   while pgrep -f "grunt dist" > /dev/null 2>&1; do sleep 5; done && tail -20 /tmp/build.log
-   ```
-   Or just wait a bit and re-run `tail -20 /tmp/build.log` manually once the build is known to be long.
+### Step 6: Post Review with Inline Comments
 
-4. **Analyze & Risk-Assess**
-   Do this while builds/tests are running. For every meaningful change ask:
-   - Does it do what the PR description claims?
-   - Code quality, style, readability, architecture consistency
-   - Bugs, edge cases, performance, security
-   - Test coverage — were new behaviors exercised?
-   - Breaking changes? Semver impact? Docs updated?
-   - Dependencies changed? (run `npm audit` / `pip audit` / equivalent — see note below)
-   - Does it need a changeset / CHANGELOG entry?
-   - Large PR? Review highest-risk files first and note "I focused on X, Y, Z — let me know if you want deeper review elsewhere."
+> ⚠️ **Prerequisite:** Only execute after receiving explicit user approval.
 
-   **Security Review Checklist** (always run this):
-   - Any new or changed input handling (validation, sanitization, escaping)?
-   - Authentication / authorization changes (new routes, permissions, tokens)?
-   - Exposure of secrets, keys, PII, or sensitive data?
-   - Dependency changes (run audit + check for known CVEs)?
-   - Web-specific risks (XSS, CSRF, CORS, header injection)?
-   - File system / command execution / network calls (path traversal, SSRF, RCE)?
-   - Cryptography (weak algorithms, hard-coded keys, improper random)?
-   - Logging or error messages leaking sensitive info?
-   - Third-party library or API calls introducing new attack surface?
-   - Permission or privilege escalation possibilities?
-   - If applicable: container/Docker, infra-as-code, or cloud config changes.
+**Preferred (MCP inline comment flow):**
+```
+Step A: Create a pending review
+  → pull_request_review_write  method: "create"  (omit "event")
 
-   **`npm audit` / dependency audit results:**
-   Before flagging audit findings, check whether the PR actually added or modified any dependencies (`package.json` / lock file changed). If not, any vulnerabilities reported are pre-existing and out of scope for this review — note that clearly rather than listing them as PR concerns.
+Step B: For each entry in inline_comments[], add one comment
+  → add_comment_to_pending_review
+    path: <entry.path>
+    line: <entry.line>
+    side: "RIGHT"
+    subjectType: "LINE"
+    body: <entry.body>
 
-5. **Summarize & Recommend**
-   Report your findings directly to the user:
-   - Build/test status
-   - Bugs or issues found (grouped by severity)
-   - Minor nits
-   - Your recommendation: approve or request changes
-   - Ask: "Shall I proceed and post the review?"
+Step C: Submit
+  → pull_request_review_write  method: "submit_pending"
+    event: "APPROVE" | "REQUEST_CHANGES" | "COMMENT"
+    body: <findings_report.summary>
+```
 
-   > ⚠️ **Do NOT proceed to Step 6 until the user explicitly confirms.** User approval is required before posting any review with `APPROVE` or `REQUEST_CHANGES`. If the user does not confirm, stop here.
+**Finding the right line number:** The diff hunk header `@@ -old,count +new,start @@` gives the starting line in the new file. Count down from there to the specific changed line.
 
-6. **Post Review with Inline Comments (preferred method)**
-   > ⚠️ **Prerequisite:** Only execute this step after receiving explicit user approval from Step 5. Do not auto-submit reviews.
+**Fallback (no MCP):**
+- Approve: `gh pr review <PR#> --approve --body "..."`
+- Request changes: `gh pr review <PR#> --request-changes --body "..."`
 
-   When there are specific code issues to flag, use the MCP tools to post inline comments pinned to the exact lines — this is far more useful to the developer than a wall of text in the review body.
+### Step 7: Merge (if instructed)
 
-   **Workflow:**
-   ```
-   Step A: Create a pending review (no event = draft/pending)
-     → pull_request_review_write  method: "create"  (omit "event")
+Only after the review decision is confirmed and the user explicitly asks.
+```bash
+gh pr merge <PR#> --merge   # or --squash / --rebase per project convention
+```
+Check the project's merge strategy before choosing — look at existing merge commits or ask the user.
 
-   Step B: Add one inline comment per issue
-     → add_comment_to_pending_review
-       path: "relative/file/path.tsx"
-       line: <line number in the new file>
-       side: "RIGHT"
-       subjectType: "LINE"
-       body: "..."
+### Step 8: Cleanup
 
-   Step C: Submit the pending review
-     → pull_request_review_write  method: "submit_pending"
-       event: "APPROVE" | "REQUEST_CHANGES" | "COMMENT"
-       body: "<overall review summary>"
-   ```
+```bash
+git checkout main
+git branch -D <branch-name-from-checkout>
+```
 
-   **Finding the right line number:**  
-   The diff hunk header `@@ -old,count +new,start @@` gives you the starting line in the new file. Count down from there to the specific changed line.
+Do **not** delete the local branch before a potential merge — wait until the full workflow is done.
 
-   **Fallback (no MCP / simple reviews):**
-   - Approve: `gh pr review <PR#> --approve --body "..."`
-   - Request changes: `gh pr review <PR#> --request-changes --body "..."`
-
-7. **Merge (if instructed)**
-   - Only merge after the review decision is confirmed and the user explicitly asks.
-   - `gh pr merge <PR#> --merge` (or `--squash` / `--rebase` per project convention)
-   - Check the project's merge strategy before choosing — look at existing merge commits or ask the user.
-
-8. **Cleanup (after merge is confirmed, or if no merge was requested)**
-   ```bash
-   git checkout main
-   git branch -D <branch-name-from-checkout>
-   ```
-   Do **not** delete the local branch before a potential merge — wait until the full workflow is done.
-
+---
 
 ## Commenting Tone & Style (non-negotiable)
+
 - Start with: "Thanks @username!"
 - Be concise, friendly, and direct.
 - Suggestions → request changes (never approve with "but maybe…")
-- Use **inline comments** (via MCP pending review flow) for specific, actionable code issues — don't bury them in the review body.
+- Use **inline comments** (via MCP pending review) for specific, actionable code issues — don't bury them in the review body.
 - Reserve the review body for the overall summary, context, and minor nits.
 
-### Example Approve Comment (copy the vibe)
+### Example Approve Comment
 ```
 Thanks @username! This looks great.
 This PR adds global endpoint support by extending the ModelInfo interface and filtering the model list instead of hardcoding. Clean approach and the library bump was definitely needed.
 Docs update about limitations is a nice touch too. Approved!
 ```
 
-### Example Request-Changes Comment (copy the vibe)
+### Example Request-Changes Comment
 ```
 Hey @username, thanks for the PR!
 Overall direction looks solid, but I have a couple concerns (see inline comments):
@@ -199,6 +257,8 @@ Overall direction looks solid, but I have a couple concerns (see inline comments
 
 Could you address those? Happy to re-review once done.
 ```
+
+---
 
 ## Quick Reference — Most Useful Commands
 
@@ -215,3 +275,7 @@ Could you address those? Happy to re-review once done.
 - `pull_request_review_write` → `method: "create"` (create pending review)
 - `add_comment_to_pending_review` → pin comment to specific file + line
 - `pull_request_review_write` → `method: "submit_pending"` + `event: "REQUEST_CHANGES"` (submit)
+
+### Docker MCP Gateway — GitHub MCP Server
+The `github-official` server is available in the Docker MCP catalog and provides the MCP tools used in Step 6.
+To activate it, configure the `github.personal_access_token` secret in the Docker MCP gateway settings.

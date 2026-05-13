@@ -12,7 +12,10 @@
 *.swp
 *.swo
 *~
+.cline/
 .cursor/
+!.cursor/rules/
+!.cursor/rules/**
 
 # Local overrides / secrets
 *.local
@@ -20,9 +23,6 @@
 .env.*
 secrets/
 *.secret
-
-# Local machine-specific manifest (copy from manifest.template.yaml and fill in your paths)
-manifest.yaml
 
 # Logs
 *.log

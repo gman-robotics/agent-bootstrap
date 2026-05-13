@@ -1,0 +1,303 @@
+#!/usr/bin/env python3
+"""Export agent-bootstrap skills into Codex global-skill folders."""
+
+from __future__ import annotations
+
+import argparse
+import shutil
+from dataclasses import dataclass
+from pathlib import Path
+
+
+@dataclass(frozen=True)
+class SkillConfig:
+    description: str
+    short_description: str
+    trigger_summary: str
+    quick_start: tuple[str, ...]
+
+
+SKILL_CONFIGS: dict[str, SkillConfig] = {
+    "plan-code-review-workflow": SkillConfig(
+        description=(
+            "Use when work is non-trivial and should follow the team workflow of "
+            "planning with the user, implementing cleanly, critically reviewing, "
+            "and iterating before finalizing."
+        ),
+        short_description="Plan, code, review workflow",
+        trigger_summary=(
+            "Triggers on requests to follow the main team workflow, co-create a "
+            "plan for substantial work, or run a full plan-to-review delivery loop."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting; it is the authoritative workflow.",
+            "Run the phases in order: PLAN, CODE, REVIEW, ITERATE, FINALIZE.",
+            "Preserve all user-approval gates before posting reviews, committing, or pushing.",
+        ),
+    ),
+    "expert-pr-review": SkillConfig(
+        description=(
+            "Use for GitHub pull request reviews that need a deep, critical pass "
+            "covering context gathering, build and test verification, security review, "
+            "and a user-approved final review decision."
+        ),
+        short_description="Critical PR review workflow",
+        trigger_summary=(
+            "Triggers on requests to review a PR, inspect a diff, or provide an "
+            "approve/request-changes recommendation."
+        ),
+        quick_start=(
+            "Read `references/source.md` fully before starting the review.",
+            "Treat this as review-only work: do not edit the PR branch.",
+            "Present findings and wait for explicit user approval before posting APPROVE or REQUEST_CHANGES.",
+        ),
+    ),
+    "write-tests": SkillConfig(
+        description=(
+            "Use when implementing features, fixing bugs, or refactoring code that "
+            "requires strict red-green-refactor TDD with the project's existing test framework."
+        ),
+        short_description="TDD execution playbook",
+        trigger_summary=(
+            "Triggers on requests to add behavior, fix a bug, improve coverage, or "
+            "retrofit tests around existing code."
+        ),
+        quick_start=(
+            "Read `references/source.md` before changing production code.",
+            "Write one failing test for the next behavior, then make it pass with the minimum change.",
+            "Run the focused test and then the relevant full suite after each meaningful step.",
+        ),
+    ),
+    "debug-investigation": SkillConfig(
+        description=(
+            "Use for bug reports, flaky tests, or unexplained regressions that need "
+            "systematic reproduction, isolation, a failing test, and a verified fix."
+        ),
+        short_description="Systematic debugging workflow",
+        trigger_summary=(
+            "Triggers on requests to diagnose a bug, investigate flaky behavior, or "
+            "root-cause an incident before fixing it."
+        ),
+        quick_start=(
+            "Read `references/source.md` before attempting a fix.",
+            "Do not fix anything until you can reproduce it reliably.",
+            "Write a failing test that captures the reproduction before changing production code.",
+        ),
+    ),
+    "performance-profiling": SkillConfig(
+        description=(
+            "Use for slow requests, latency spikes, backlog growth, heavy renders, or "
+            "other performance issues that need measurement-first profiling and before/after validation."
+        ),
+        short_description="Performance bottleneck workflow",
+        trigger_summary=(
+            "Triggers on requests about slowness, timeouts, latency, throughput, or optimization."
+        ),
+        quick_start=(
+            "Read `references/source.md` before changing code.",
+            "Define the exact slow path and record a baseline measurement first.",
+            "Change one thing at a time and re-measure using the same method.",
+        ),
+    ),
+    "feature-flag-lifecycle": SkillConfig(
+        description=(
+            "Use when adding, rolling out, auditing, or removing feature flags so "
+            "flags stay default-off, tested on both paths, and removed on schedule."
+        ),
+        short_description="Feature flag lifecycle",
+        trigger_summary=(
+            "Triggers on requests to create a flag, stage a rollout, or clean up a retired flag."
+        ),
+        quick_start=(
+            "Read `references/source.md` before implementing the flag.",
+            "Create default-off flags with an explicit cleanup date and tracking entry.",
+            "Test both flag-off and flag-on behavior, then remove the flag promptly after rollout.",
+        ),
+    ),
+    "cherry-pick-to-release-branch": SkillConfig(
+        description=(
+            "Use when backporting a merged pull request onto an existing release branch "
+            "and incrementing the release-candidate version suffix safely."
+        ),
+        short_description="Release-branch cherry-pick",
+        trigger_summary=(
+            "Triggers on requests to hotfix or backport a merged PR onto a release branch."
+        ),
+        quick_start=(
+            "Read `references/source.md` before touching git state.",
+            "Fetch the release branch and the PR head, identify the exact PR commits, then cherry-pick them oldest first.",
+            "Update all configured version files consistently and verify the branch state before pushing.",
+        ),
+    ),
+    "memory-bank-protocol": SkillConfig(
+        description=(
+            "Use whenever a project needs the six-file memory-bank structure, when "
+            "starting a session, switching projects, or updating persistent project state."
+        ),
+        short_description="Memory-bank protocol",
+        trigger_summary=(
+            "Triggers on project initialization, session startup, project switching, "
+            "or requests to update long-lived project context."
+        ),
+        quick_start=(
+            "Read `references/source.md` before initializing or updating a memory bank.",
+            "At session start, read all six core files in the required order before significant work.",
+            "At task end, update `activeContext.md` and `progress.md`, then verify the edits.",
+        ),
+    ),
+    "docs-protocol": SkillConfig(
+        description=(
+            "Use when creating or updating project or shared technical documentation "
+            "so docs stay separate from operational memory-bank state."
+        ),
+        short_description="Technical docs protocol",
+        trigger_summary=(
+            "Triggers on requests to create or update API docs, data models, pipeline docs, or ADRs."
+        ),
+        quick_start=(
+            "Read `references/source.md` before editing technical docs.",
+            "Choose the correct target under `docs/shared/` or `docs/projects/<name>/`.",
+            "Keep `docs/` for technical reference and `memory-bank/` for operational state.",
+        ),
+    ),
+    "delegation-patterns": SkillConfig(
+        description=(
+            "Use when planning how to delegate work across subagents in Claude Code, "
+            "selecting the right model for a spawned agent, or deciding between "
+            "parallel and sequential execution patterns."
+        ),
+        short_description="Multi-agent delegation patterns",
+        trigger_summary=(
+            "Triggers when decomposing a task into parallel subtasks, selecting a "
+            "model tier for a spawned agent, or designing a two-tier delegation flow."
+        ),
+        quick_start=(
+            "Read `references/source.md` before designing a delegation flow.",
+            "Classify each subtask as Tier 1 (Haiku, simple retrieval) or Tier 2 (Sonnet, analysis/code).",
+            "Emit all independent Task() calls in a single message so they run concurrently.",
+        ),
+    ),
+    "subagent-routing": SkillConfig(
+        description=(
+            "Use before starting any task with independent subtasks, parallelizable "
+            "work, or when deciding which Claude model to assign to a spawned agent."
+        ),
+        short_description="Subagent use and model selection",
+        trigger_summary=(
+            "Triggers when deciding whether to delegate work to a subagent or run it "
+            "inline, and when selecting Haiku vs Sonnet for a spawned agent."
+        ),
+        quick_start=(
+            "Read `references/source.md` before delegating any subtask.",
+            "Use Haiku for reads, searches, formatting, and summarisation; use Sonnet for code, analysis, and judgment.",
+            "Emit all independent Agent calls in one response to run them in parallel.",
+        ),
+    ),
+}
+
+
+def load_source_skills(source_dir: Path) -> dict[str, str]:
+    skills: dict[str, str] = {}
+    for path in sorted(source_dir.glob("*.md")):
+        if path.name == "INDEX.md":
+            continue
+        skills[path.stem] = path.read_text(encoding="utf-8")
+    return skills
+
+
+def strip_trailing_footer(text: str) -> str:
+    lines = text.rstrip().splitlines()
+    while lines and not lines[-1].strip():
+        lines.pop()
+    if lines and lines[-1].lower().startswith("last updated:"):
+        lines.pop()
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def build_skill_markdown(skill_name: str, config: SkillConfig) -> str:
+    quick_start = "\n".join(f"{index}. {step}" for index, step in enumerate(config.quick_start, start=1))
+    return f"""---
+name: {skill_name}
+description: {config.description}
+metadata:
+  short-description: {config.short_description}
+---
+
+# {skill_name}
+
+{config.trigger_summary}
+
+## Quick Start
+
+{quick_start}
+
+## Compatibility Notes
+
+- The detailed workflow lives in `references/source.md`; treat that file as the authoritative procedure.
+- Translate harness-specific tool names from the source into Codex equivalents while preserving the workflow intent.
+- Keep all safety rules from the source, especially approval gates, review-only constraints, and absolute-path requirements.
+"""
+
+
+def export_skills(source_dir: Path, output_dir: Path, force: bool = False) -> list[Path]:
+    source_skills = load_source_skills(source_dir)
+    missing_configs = sorted(set(source_skills) - set(SKILL_CONFIGS))
+    if missing_configs:
+        raise ValueError(f"Missing exporter configs for skills: {', '.join(missing_configs)}")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    exported_paths: list[Path] = []
+
+    for skill_name, source_text in source_skills.items():
+        config = SKILL_CONFIGS[skill_name]
+        skill_dir = output_dir / skill_name
+        if skill_dir.exists():
+            if not force:
+                raise FileExistsError(f"{skill_dir} already exists; rerun with --force")
+            shutil.rmtree(skill_dir)
+        (skill_dir / "references").mkdir(parents=True, exist_ok=True)
+        (skill_dir / "SKILL.md").write_text(
+            build_skill_markdown(skill_name, config),
+            encoding="utf-8",
+        )
+        (skill_dir / "references" / "source.md").write_text(
+            strip_trailing_footer(source_text),
+            encoding="utf-8",
+        )
+        exported_paths.append(skill_dir)
+
+    return exported_paths
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--source-dir",
+        type=Path,
+        default=Path(__file__).parent.parent / "skills",
+        help="Directory containing the source skill markdown files.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        required=True,
+        help="Directory where Codex skill folders should be written.",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite existing generated skill folders in the output directory.",
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    exported_paths = export_skills(args.source_dir, args.output_dir, force=args.force)
+    for path in exported_paths:
+        print(path)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

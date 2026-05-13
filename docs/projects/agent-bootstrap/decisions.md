@@ -13,7 +13,7 @@
 | ADR-002 | Include skills verbatim in /skills/ (self-contained) | Accepted | 2026-04-28 |
 | ADR-003 | Remove wiki layer; use docs/ for technical reference | Accepted | 2026-04-28 |
 | ADR-004 | Four initial agent roles (Architect, Engineer, QA, UI/UX) | Accepted | 2026-04-28 |
-| ADR-005 | Hardcode machine-specific paths as user responsibility | Accepted | 2026-04-28 |
+| ADR-005 | Use relative paths in manifest.yaml for team shareability | Accepted | 2026-05-13 |
 
 ---
 
@@ -116,29 +116,30 @@ Additional roles (security-auditor, devops-engineer, technical-writer) follow th
 
 ---
 
-## ADR-005: Machine-Specific Paths Are User Responsibility
+## ADR-005: Use Relative Paths in manifest.yaml for Team Shareability
 
-**Date**: 2026-04-28  
+**Date**: 2026-05-13  
 **Status**: Accepted  
 **Deciders**: @tginter  
 
 ### Context
-`AGENTS.md` and `manifest.yaml` contain absolute paths (e.g., `/Users/tginter/dev/gman-robotics/agent-bootstrap`). These are machine-specific and break for other team members.
+The original ADR-005 (2026-04-28) chose absolute paths + gitignore as the solution to machine-specific paths. This required every team member to copy `manifest.template.yaml`, run a find-and-replace, and keep their `manifest.yaml` out of git. This was friction with no real benefit given the team's standard checkout layout.
 
 ### Decision
-Absolute paths in committed files are acceptable as templates/examples, with clear documentation in `ONBOARDING.md` that each team member must update these paths to match their local setup. The alternative (relative paths) conflicts with the global rule requiring absolute paths for agent reliability.
+`manifest.yaml` uses **relative paths** (e.g., `../my-app`, `./memory-bank`) resolved against the directory containing `manifest.yaml`. All repos are cloned as siblings under one parent — so `../my-app` works identically on every developer's machine regardless of where the parent directory lives. `manifest.yaml` is committed and shared; no per-machine setup required.
+
+The global rule "always use absolute paths" applies to **agent file operations** (tool calls, skill steps), not to manifest configuration. Agents must resolve manifest paths to absolute paths before use.
 
 ### Alternatives Considered
-- **Relative paths**: Causes agent errors when working directory differs from expectation.
-- **Environment variable substitution**: Requires runtime tooling; not KISS.
-- **Placeholder tokens (`<REPO_ROOT>`)**: Cleaner but requires find-and-replace setup step.
+- **Absolute paths + gitignore (original ADR-005)**: Required per-machine setup step; easy to forget; prevented sharing `manifest.yaml` in git.
+- **Environment variable substitution (`$HOME/dev/...`)**: Requires shell expansion at read time; not supported by YAML parsers without extra tooling.
 
 ### Consequences
-**Positive:** Works immediately after simple find-and-replace during onboarding.  
-**Negative:** Easy to accidentally commit machine-specific paths. Must document clearly.
-
-**Mitigation**: `ONBOARDING.md` step 2 explicitly instructs path update. `.gitignore` can exclude user-specific overrides if needed in future.
+**Positive:** `manifest.yaml` works for the whole team out of the box. No onboarding step needed. No risk of accidentally committing machine paths.  
+**Negative:** Assumes sibling checkout layout. Teams with non-standard layouts use `manifest.template.yaml` + local absolute-path override (documented in `ONBOARDING.md`).
 
 ---
 
-*Last updated: 2026-04-28 | Add new ADRs at the bottom; update the index table*
+---
+
+*Last updated: 2026-05-13 | Add new ADRs at the bottom; update the index table*

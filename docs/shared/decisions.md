@@ -45,6 +45,7 @@ What was decided? Be specific and unambiguous.
 |---|---|---|---|
 | ADR-001 | Use Markdown + YAML as primary format for agent harness hub | Accepted | 2026-04-28 |
 | ADR-002 | Remove wiki layer, use docs/ instead | Accepted | 2026-04-28 |
+| ADR-003 | Red/Green/Refactor TDD as mandatory development methodology | Accepted | 2026-04-30 |
 
 ---
 
@@ -118,4 +119,38 @@ This is simpler than a full wiki (no index management, no cross-linking complexi
 
 ---
 
-*Last updated: 2026-04-28 | Add new ADRs at the bottom; update the index table*
+## ADR-003: Red/Green/Refactor TDD as Mandatory Development Methodology
+
+**Date**: 2026-04-30  
+**Status**: Accepted  
+**Deciders**: @tginter  
+
+### Context
+Agent-assisted development moves fast but produces code that lacks test coverage unless the process explicitly enforces it. Without a clear standard, different team members and different agents apply wildly inconsistent testing discipline — some write tests after the fact, some skip them entirely for "small" changes, and some write tests that only cover happy paths. Regressions accumulate.
+
+### Decision
+Red/Green/Refactor TDD is the mandatory development methodology for all non-trivial logic across all projects. Agents enforce this during code review: new logic without a failing test written first is a blocking issue. The full standard lives in `docs/shared/tdd-standard.md`. The operational skill lives in `skills/write-tests.md`.
+
+### Alternatives Considered
+- **Test-after (write code, then tests)**: Easier to skip under time pressure; tests tend to mirror implementation rather than specify behavior; does not catch design problems early.
+- **Coverage thresholds only**: Coverage is gameable and does not enforce behavioral test quality. A 100% coverage suite with tautological assertions is worse than 60% with meaningful ones.
+- **Optional / team-discretion**: Results in no consistent standard; harder to enforce in code review; agent behavior becomes unpredictable.
+
+### Consequences
+**Positive:**
+- Every bug fix ships with a regression test by definition.
+- Design problems surface early (untestable code is a design smell).
+- Agent code review has a concrete, enforceable checklist item.
+- New team members have an unambiguous process to follow.
+
+**Negative / Trade-offs:**
+- Slower for trivial changes where the test feels like ceremony.
+- Requires discipline for agents to actually write the failing test first rather than the code first.
+
+**Mitigations:**
+- `docs/shared/tdd-standard.md` explicitly lists when TDD may be skipped (glue code, one-off scripts, pure layout).
+- Exceptions must be noted in the PR description; repeated exceptions should result in an ADR update.
+
+---
+
+*Last updated: 2026-04-30 | Add new ADRs at the bottom; update the index table*

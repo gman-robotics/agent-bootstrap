@@ -45,7 +45,7 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 
 - "Follow the plan-code-review workflow to [task]"
 - "Use the expert-pr-review skill on PR #N in repo X"
-- "Switch to project 'eg' per manifest.yaml"
+- "Switch to project 'my-app' per manifest.yaml"
 - "Debug [issue] using the debug-investigation skill"
 - "Profile [operation] using the performance-profiling skill"
 - "Follow the write-tests skill for [feature]"

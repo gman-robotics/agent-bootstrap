@@ -1,7 +1,7 @@
 ---
 name: SecurityReviewer
 description: Security-focused code reviewer. Applies the OWASP-aligned security checklist to a provided diff. Returns structured findings with severity ratings. Never edits files.
-model: claude-sonnet-4-5
+model: claude-sonnet-4-6
 maxTurns: 10
 permissions:
   allow:

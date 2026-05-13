@@ -4,19 +4,22 @@
 
 ## Quick Start (First 20 Minutes)
 
-1. **Clone the repo** to a stable location on your machine.
-2. **Create your local manifest** — copy the template and fill in your absolute path:
+1. **Clone only this repo** to a stable parent directory:
    ```bash
-   cd /path/to/agent-bootstrap
-   cp manifest.template.yaml manifest.yaml
-   # Edit manifest.yaml: replace all <YOUR_LOCAL_PATH> with your actual clone path
-   # e.g. sed -i '' 's|<YOUR_LOCAL_PATH>|/Users/yourname/dev/agent-bootstrap|g' manifest.yaml
+   mkdir -p ~/dev/my-org && cd ~/dev/my-org
+   git clone https://github.com/your-org/agent-bootstrap.git agent-bootstrap
    ```
-   `manifest.yaml` is gitignored (your paths are local). `manifest.template.yaml` stays in git (team structure is shared).
+2. **Let your agent clone the rest.** Open your preferred harness, point it at this repo, and say:
+   > "Clone any repos from manifest.yaml that are missing on disk."
+
+   The agent reads `manifest.yaml`, checks each project's `path`, and runs `git clone <git_url> <path>` for any that are absent. All repos land as siblings of `agent-bootstrap/` automatically.
+
+   > If your repos live in non-standard locations, copy `manifest.template.yaml` to a local `manifest.yaml`, fill in absolute paths, and add `manifest.yaml` to your `.gitignore`.
+
 3. **Read `AGENTS.md`** (the single source of truth). This is the most important file.
 4. **Read the 6 files in `memory-bank/`** for this hub (especially `projectbrief.md` and `activeContext.md`).
 5. **Explore `skills/` and `agents/`** to understand what reusable workflows and roles are available.
-6. **Try it**: Open your preferred harness and configure it to load `AGENTS.md` (see `AGENTS.md` → "How to Use This Repository with Your Harness" for per-harness instructions).
+6. **Configure your harness** to load `AGENTS.md` (see `AGENTS.md` → "How to Use This Repository with Your Harness" for per-harness instructions).
 7. **Claude Code users only — install agents globally:**
    ```bash
    bash scripts/install-agents.sh
@@ -69,4 +72,4 @@ Re-read `AGENTS.md` section 2 (Global Rules) — it usually has the answer.
 
 **We're building this together — your feedback and contributions make everyone's work better.**
 
-*Maintained by the team | Last updated: 2026-04-28*
+*Maintained by the team | Last updated: 2026-05-13*

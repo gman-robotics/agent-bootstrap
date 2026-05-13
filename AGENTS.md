@@ -12,18 +12,18 @@ This repo is used by the whole **team of developers** to share reusable skills f
 ## 1. How to Use This Repository with Your Harness
 
 ### Quick Start (Any Harness)
-1. Clone or have this repo available at a known absolute path (e.g. `/Users/yourname/dev/agent-bootstrap`).
-2. Create your local `manifest.yaml` from the template:
+1. Clone only this repo to a parent directory:
    ```bash
-   cp manifest.template.yaml manifest.yaml
-   # Replace <YOUR_LOCAL_PATH> with your actual clone directory
+   git clone https://github.com/your-org/agent-bootstrap.git
    ```
+2. Let your agent clone the remaining repos. Each project in `manifest.yaml` has a `git_url` and a relative `path`. The agent checks whether each path exists and runs `git clone <git_url> <path>` for any that are missing — all repos land as siblings of `agent-bootstrap/` automatically. Just say: **"Clone any repos from manifest.yaml that are missing on disk."**
+   > If your repos are in non-standard locations, copy `manifest.template.yaml` to `manifest.yaml`, fill in absolute paths, and gitignore your local copy.
 3. Configure your harness to load `AGENTS.md` as the primary instruction file:
    - **Claude Code / Projects**: Paste the entire content of this AGENTS.md (or link the file if supported) as Custom Instructions / Project Instructions.
    - **Cline / Roo Code**: A `.clinerules` file is included at the root of this repo — Cline and Roo Code automatically read it at startup. It points here. No further config needed.
    - **Kilocode (kilo.code)**: A `.kilocoderules` file is included at the root of this repo — Kilocode automatically reads it at startup. It points here. No further config needed.
    - **OpenHands**: A `.openhands_instructions` file is included at the root of this repo — OpenHands automatically reads it at startup. It points here. No further config needed.
-   - **Cursor / Other MCP-based**: Add this file's content to `.cursorrules` or the equivalent persistent context/system prompt location for your tool.
+   - **Cursor**: A `.cursor/rules/agent-bootstrap.mdc` file is included (Project Rules format, `alwaysApply: true`) for Cursor ≥ 0.43. A legacy `.cursorrules` file is also included for older versions. Open this repo as a project/folder in Cursor — the rules load automatically.
 4. For any task: Begin by saying "Load AGENTS.md context" or the harness will do it automatically if configured.
 5. To switch projects: "Switch to project 'my-app' per manifest.yaml" — agent will load that project's memory-bank.
 
@@ -61,10 +61,31 @@ This repo is used by the whole **team of developers** to share reusable skills f
 - **Always request explicit user confirmation** before any deletions or destructive changes.
 - Choose the best tool for each step.
 - All terminal commands must run **non-interactively** (no paging, no manual input required).
-- **Always use absolute paths** when referring to files (e.g. `/Users/tginter/dev/gman-robotics/agent-bootstrap/skills/expert-pr-review.md`).
+- **Always use absolute paths** when referring to files (e.g. `/Users/yourname/dev/agent-bootstrap/skills/expert-pr-review.md`).
+
+### Subagent Model Policy (MANDATORY)
+
+**Use subagents wherever possible.** Delegate any work that is parallelizable, isolatable, or repetitive to an Agent tool call rather than running it inline.
+
+**Model selection is non-negotiable:**
+- **Haiku** (`model: "haiku"`) — all non-logic tasks: file reads, searches, grep/find, directory listings, summarization of known content, formatting, simple transforms, single-file lookups, Explore-type research
+- **Sonnet** (`model: "sonnet"`) — code generation, cross-file reasoning, architectural analysis, implementation, judgment calls
+- **Opus** — complex multi-step planning only when Sonnet is insufficient
+
+Emit all independent Agent calls in a **single response** so they run concurrently. Never run independent subagents sequentially.
+
+Read `skills/subagent-routing.md` for the full decision tree, model selection table, decomposition checklist, and common mistakes.
 
 ### Testing, Version Control & Workflows
-- Use the project's established testing framework.
+
+**Red/Green/Refactor TDD is mandatory for every code change** — no exceptions. This is a hard rule, not a guideline:
+1. **Red**: Write one failing test asserting the next behavior. Confirm it fails with an assertion error (not an import/syntax error). Do not write any production code until the test is red.
+2. **Green**: Write the minimum production code to make the test pass. Run the full suite — fix any regressions before moving on.
+3. **Refactor**: Clean the code (remove duplication, clarify names) without adding behavior. Run the full suite after each change.
+
+Repeat this cycle for each behavior. Never write production code before a failing test exists. See `docs/shared/tdd-standard.md` for the authoritative standard and `skills/write-tests.md` for the operational playbook.
+
+- Use the project's established testing framework (Jest for Node.js/TS, Bun test for Bun services, pytest for Python).
 - **Never commit or push changes to source control unless explicitly instructed by the user.**
 - Follow established Git best practices and the cherry-pick skill when needed.
 
@@ -123,22 +144,23 @@ You can dynamically "become" any agent by loading its definition. The current ro
 
 **When to Activate**: After plan approved.
 
-### qa-critical-reviewer.md (Extremely Critical QA Role)
-**Persona**: Extremely critical, friendly senior code reviewer. Uses the full expert-pr-review skill.
+### qa-critical-reviewer.md (Orchestrating QA Reviewer)
+**Persona**: Extremely critical, friendly senior code reviewer. Orchestrates the full PR review pipeline across two modes.
+**Two Modes**:
+- **Spawned subagent** (any direct PR review request): Executes Steps 1–4 of `expert-pr-review.md` — gather context, resolve threads, checkout/build/test, parallel SecurityReviewer + code quality analysis — then returns a structured Findings Report. The parent presents findings, gates on user approval, and posts (Steps 5–8).
+- **Inline role** (plan-code-review REVIEW phase): Runs all 8 steps of `expert-pr-review.md` including the user approval gate, using Haiku subagents for simple lookups within the flow.
+
 **Key Behaviors**:
 - **Never** make code changes on the branch under review.
-- Follow the **exact 8-step Recommended Review Flow** from `skills/expert-pr-review.md`.
-- Gather context in parallel (gh pr view, diff, comments, package.json, etc.).
-- Resolve prior threads if addressed.
+- Read `skills/expert-pr-review.md` fully before executing — it is the authoritative playbook.
+- Gather context in parallel; use Haiku subagents for build/test command discovery and CI summary.
+- Resolve prior open review threads if addressed in the diff.
 - Checkout & build/test (background build, foreground tests).
-- Analyze with full Security Review Checklist.
-- Summarize findings + recommendation (Approve or Request Changes).
-- **User approval required** before posting any APPROVE/REQUEST_CHANGES review.
-- Present findings first, wait for explicit "yes, post the review".
-- Use inline comments via MCP for specific issues.
-- Tone: "Thanks @username! ... Approved!" or "Hey @username, thanks for the PR! ... Could you address those?"
+- Spawn SecurityReviewer (named agent) + code quality Task in parallel for Step 4.
+- Return structured Findings Report (schema in `expert-pr-review.md`) when in spawned mode.
+- User approval gate: handled by the parent in spawned mode; handled inline in role mode.
 
-**When to Activate**: After engineer completes implementation, or for any external PR review request.
+**When to Activate**: Spawned (`subagent_type="QAReviewer"`) for any direct PR review request. Inline during the REVIEW phase of plan-code-review-workflow.
 
 ### ui-ux-engineer.md (UI/UX Role)
 **Persona**: Thoughtful UI/UX engineer focused on usability, accessibility, visual polish.
@@ -189,7 +211,9 @@ For full delegation patterns (parallel dispatch, worktree isolation, two-tier mo
 
 ## 4. Workflows (Skills) — Standardized Processes
 
-Skills are in `/skills/`. Invoke by name: "Follow the plan-code-review workflow for ..."
+Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full catalog with trigger conditions.
+
+**Invoking skills**: When a skill is triggered, read the full `skills/<name>.md` file before executing any steps. Do not rely on session memory of its contents — skill files are the authoritative, versioned source of steps, commands, and caveats.
 
 ### Core Workflow: plan-code-review (plan → code → review → iterate)
 
@@ -223,10 +247,18 @@ Skills are in `/skills/`. Invoke by name: "Follow the plan-code-review workflow 
 **Always**: Use memory-bank for state. Never skip PLAN for significant work.
 
 ### Other Key Skills
-- **expert-pr-review.md**: Full detailed PR review workflow (included in this hub). Use for any GitHub PR.
-- **cherry-pick-to-release-branch.md**: Automated cherry-pick + RC version bump for release branches (included in this hub). Parameters: RELEASE_BRANCH, PR_NUMBER.
-- **memory-bank-protocol.md**: Full Memory Bank setup, mandatory read-all-6-files protocol at session/task start, and end-of-task update rules. Use for every project (see this hub's own memory-bank/ as live example).
-- **docs-protocol.md**: Full playbook for creating, updating, and referencing project docs and ADRs in the `docs/` layer.
+
+| Skill | Trigger | What it does |
+|---|---|---|
+| `expert-pr-review.md` | Any PR review request | 8-step review: gather context, resolve threads, build/test, security checklist, post with user approval |
+| `cherry-pick-to-release-branch.md` | Hotfix or backport to a release branch | Fetch branch → cherry-pick PR commits → bump RC version → push |
+| `memory-bank-protocol.md` | Session start, project switch, new project setup | 6-file memory bank structure, mandatory read protocol, end-of-task update rules |
+| `docs-protocol.md` | Creating or updating technical docs or ADRs | Two-layer docs model, ADR format, how agents navigate via `docs_path` |
+| `write-tests.md` | Any new feature, bug fix, refactor, or any code change — before writing production code | Red/Green/Refactor playbook with Jest/Bun/pytest commands, mocking guide, retrofit guide |
+| `subagent-routing.md` | Any task with independent subtasks or when selecting a model for a spawned agent | Decision tree for subagent delegation; model selection table (Haiku vs Sonnet); parallel spawn examples |
+| `debug-investigation.md` | Bug report, unexpected behavior, "fix" without clear diagnosis | Reproduce → isolate (bisect/binary search) → failing test → fix → verify |
+| `performance-profiling.md` | "slow", "latency", "timeout", "optimize" | Measure baseline → profile (clinic.js, EXPLAIN ANALYZE, py-spy) → fix one thing → measure again |
+| `feature-flag-lifecycle.md` | Creating, rolling out, or graduating a feature flag | Create (default-off, cleanup date) → staged rollout → graduate (remove dead code) |
 
 See `/skills/` directory for full definitions. New skills should follow the style of the examples in this hub (clear steps, warnings, examples, code blocks).
 
@@ -243,20 +275,20 @@ See `manifest.yaml` for the full list.
   ```yaml
   projects:
     - name: agent-bootstrap
-      path: <REPO_ROOT>                          # update to your local absolute path
+      path: .                        # relative to this manifest.yaml file
       description: This universal agent harness repo itself.
       primary_tech: Markdown, YAML
-      memory_bank_path: <REPO_ROOT>/memory-bank  # update to your local absolute path
+      memory_bank_path: ./memory-bank
       docs_path: docs/projects/agent-bootstrap
     - name: my-release-app
-      path: /path/to/your/app
+      path: ../my-release-app        # sibling repo
       description: Production app with release branches.
       primary_tech: Node.js, React
-      memory_bank_path: /path/to/your/app/memory-bank
+      memory_bank_path: ../my-release-app/memory-bank
       docs_path: docs/projects/my-release-app
   ```
 
-> **Note on paths**: Replace `<REPO_ROOT>` with your actual absolute local path (e.g. `/Users/yourname/dev/agent-bootstrap`). See `ONBOARDING.md` step 2. Machine-specific paths are a known trade-off — see `docs/projects/agent-bootstrap/decisions.md` ADR-005.
+> **Note on paths**: `path` and `memory_bank_path` are relative to the directory containing `manifest.yaml`. Agents must resolve them to absolute paths before use. If repos are not siblings, use `manifest.template.yaml` as a starting point for absolute paths instead.
 
 Add your projects here. Agents will automatically gain full context for them.
 
@@ -293,13 +325,14 @@ See `skills/docs-protocol.md` for the full playbook on creating, updating, and r
 
 1. Read this entire AGENTS.md (you just did).
 2. Read the 6 memory-bank/ files for this project.
-3. Explore `/skills/` and `/agents/`.
-4. Add your real projects to `manifest.yaml`.
-5. Start a task: "Follow the plan-code-review workflow to [your task]".
-6. The agent will handle role switching, planning, implementation, critical review, and memory-bank updates automatically.
+3. Read `skills/INDEX.md` — know what skills are available and their triggers before the first task.
+4. Explore `/skills/` and `/agents/`.
+5. Add your real projects to `manifest.yaml`.
+6. Start a task: "Follow the plan-code-review workflow to [your task]".
+7. The agent will handle role switching, planning, implementation, critical review, and memory-bank updates automatically.
 
 **This setup eliminates 90% of repetitive context and role explanation.** Welcome to consistent, powerful, multi-agent development.
 
 ---
 
-*Last updated: 2026-04-29 | Version: 0.2.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting)*
+*Last updated: 2026-05-13 | Version: 0.3.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting)*
