@@ -21,11 +21,13 @@ We use the same workflows the agents use — this keeps quality high and consist
 3. Update `AGENTS.md` → "Other Key Skills" section if it's a new core skill.
 4. Update relevant memory-bank files if the skill affects project context.
 5. Open a Pull Request. Use the **"New Skill"** PR template.
+6. Re-export the Grok packaging afterwards (`python scripts/export_codex_skills.py --output-dir .grok/skills --force`) and refresh symlinks under `.grok/agents/` so Grok users receive the updates with zero manual steps. See the Grok subsection in AGENTS.md.
 
 ### 2. Adding or Updating an Agent Role
 1. Create/edit in `agents/`.
 2. Update `AGENTS.md` → "Agents — Reusable Role Definitions".
 3. Add usage examples in the relevant skill (e.g., plan-code-review-workflow.md).
+4. Re-export the Grok packaging afterwards (`python scripts/export_codex_skills.py --output-dir .grok/skills --force`) and refresh symlinks under `.grok/agents/` so Grok users receive the updates with zero manual steps. See the Grok subsection in AGENTS.md.
 
 ### 3. Adding a Common Project to manifest.yaml
 1. Add the project with absolute path, description, primary tech, `memory_bank_path`, and `docs_path`.
@@ -58,4 +60,4 @@ We use the same workflows the agents use — this keeps quality high and consist
 
 **Thank you for helping make our agent harnesses and projects better for the whole team!**
 
-*Last updated: 2026-04-28 | Maintained by the team*
+*Last updated: 2026-05-19 | Maintained by the team*

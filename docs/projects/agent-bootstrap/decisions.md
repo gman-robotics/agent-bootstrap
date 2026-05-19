@@ -14,6 +14,7 @@
 | ADR-003 | Remove wiki layer; use docs/ for technical reference | Accepted | 2026-04-28 |
 | ADR-004 | Four initial agent roles (Architect, Engineer, QA, UI/UX) | Accepted | 2026-04-28 |
 | ADR-005 | Use relative paths in manifest.yaml for team shareability | Accepted | 2026-05-13 |
+| ADR-006 | First-Class Grok Support via .grok/ Packaging, Exporter, and Symlinks | Accepted | 2026-05-19 |
 
 ---
 
@@ -142,4 +143,44 @@ The global rule "always use absolute paths" applies to **agent file operations**
 
 ---
 
-*Last updated: 2026-05-13 | Add new ADRs at the bottom; update the index table*
+## ADR-006: First-Class Grok Support via .grok/ Packaging, Exporter, and Symlinks
+
+**Date**: 2026-05-19  
+**Status**: Accepted  
+**Deciders**: @tginter (implementation), Software Architect (doc plan) + user approval of plan
+
+### Context
+The agent-bootstrap hub's core value is "clone once, full multi-harness power everywhere with zero per-harness config." Previous harnesses (Claude via ~/.claude/agents + Task(), Cline via .clinerules, etc.) had dedicated integration points. Grok 4.3+ introduced its own conventional locations: `<repo_root>/.grok/skills/<name>/SKILL.md`, `.grok/agents/`, project-rules discovery of AGENTS.md, and the `task` subagent tool. Without packaging the hub's 11 skills + 5 roles into this layout, Grok users would still need manual steps — breaking the "first-class citizen" promise.
+
+### Decision
+- Add a `.grok/` tree at repo root (committed).
+- Export the 11 skills using the existing `scripts/export_codex_skills.py` (one-line wording tweak for "Grok (or Codex)") producing thin SKILL.md frontmatter + full source copy under references/.
+- Create symlinks under `.grok/agents/` pointing back to `../../agents/*.md` (DRY, single source of truth).
+- Include empty `personas/` and `roles/` directories as forward-compatible placeholders for Grok's custom role/persona TOML+md discovery.
+- Update AGENTS.md (harness list + new detailed Grok subsection), manifest version, and memory-bank/ only.
+- Document maintenance (re-export + symlink) in AGENTS.md, CONTRIBUTING.md, and this ADR.
+- Treat the generated .grok/skills/.../references/source.md as copies (never hand-edit).
+
+### Alternatives Considered
+- **Hand-maintained duplicate Markdown in .grok/**: High drift risk, violates KISS/DRY.
+- **Post-clone install script or git hook**: Adds friction; harnesses vary; against "zero config".
+- **Make the exporter part of every plan-code-review finalize step**: Overkill for docs-only changes.
+- **Ignore Grok**: Violates the universal harness-agnostic charter in projectbrief.md.
+
+### Consequences
+**Positive:**
+- Grok users get identical experience: AGENTS.md loaded, 11 skills as `/...`, 5 agents spawnable by name, full memory-bank + docs/ + manifest awareness.
+- Symlinks + exporter = no duplication; canonical files stay authoritative.
+- Future-proofs the hub for any Grok persona/role extensions.
+- Self-hosting win: the hub used its own plan-code-review + memory-bank protocol + docs-protocol to land the feature.
+
+**Negative / Trade-offs:**
+- Contributors must remember the re-export step after editing skills/agents (mitigated by clear docs in multiple places and the plan-code-review workflow checklist).
+- Generated files bloat the repo (~2000 lines in the initial commit) — acceptable because they are thin + the value of instant Grok usability is high.
+- Empty dirs may confuse (documented here and in AGENTS.md).
+
+**Risks:**
+- Drift between canonical `skills/`/`agents/` and the `.grok/` copies if maintenance step is skipped.
+- Mitigation: Explicit re-export command documented in AGENTS.md §3 (Grok subsection), CONTRIBUTING.md, and this ADR; plan-code-review workflow includes "update packaging" checklist item for future skill/agent work.
+
+*Last updated: 2026-05-19 | Add new ADRs at the bottom; update the index table*

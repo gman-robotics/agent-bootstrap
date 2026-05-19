@@ -2,6 +2,8 @@
 
 Agent-readable index of every skill in this hub. Read this file at session start to know what is available and when to apply each skill. When a skill is triggered, **read the full skill file before executing any steps** — do not rely on session memory of its contents.
 
+Grok users automatically receive all skills as slash commands (`/<skill-kebab-name>`) thanks to the `.grok/skills/` packaging committed in v0.4.0.
+
 ---
 
 ## Skill Entries

@@ -52,6 +52,10 @@ That's it. The agent now has:
   - `software-engineer.md` (Implementation)
   - `qa-critical-reviewer.md` (Critical QA — reuses expert-pr-review)
   - `ui-ux-engineer.md`
+- **.grok/** — Grok (and Codex) native packaging for zero-config experience:
+  - `skills/<name>/SKILL.md` + `references/source.md` (thin trigger frontmatter + authoritative playbook copy of each skill in /skills/).
+  - `agents/` — symlinks to the 5 canonical role definitions (enables native `subagent_type` spawning).
+  - `personas/` and `roles/` — empty placeholders for future custom persona/role TOML+md definitions (Grok layout convention).
 - **memory-bank/** — 6-file continuity system (projectbrief, productContext, systemPatterns, techContext, activeContext, progress). Read at every session start. This project uses it for its own development.
 - **docs/** — Persistent technical reference layer (distinct from memory-bank):
   - `docs/shared/` — team-wide standards (API conventions, data types, CI/CD, ADRs)
@@ -75,6 +79,7 @@ Works with **any** agent harness that supports custom instructions or persistent
 - **Kilocode** — `.kilocoderules` file is pre-configured (auto-loaded)
 - **OpenHands** — `.openhands_instructions` file is pre-configured (auto-loaded)
 - **Cursor** — add AGENTS.md content to `.cursorrules`
+- **Grok** (xAI Grok 4.3+ CLI/TUI and compatible environments) — **Zero-config native support**. The repo includes `.grok/skills/` (11 reusable workflows invocable as `/plan-code-review-workflow`, `/expert-pr-review`, `/memory-bank-protocol`, etc.) and `.grok/agents/` (symlinks for `Engineer`, `Architect`, `QAReviewer`, `SecurityReviewer`, `UIUXEngineer` usable via the `task` tool). AGENTS.md is auto-loaded via project-rules discovery. See AGENTS.md §1 and §3 for details.
 - **Open Interpreter, custom MCP setups** — inject AGENTS.md as system prompt
 - **Future harnesses** — just point to AGENTS.md
 
@@ -94,7 +99,7 @@ All changes to this repo itself should follow the plan-code-review workflow (sel
 
 ## Status
 
-Current v0.2.0 — Core files, skills, agents, and docs/ structure in place. Fully functional for immediate use.
+Current v0.4.0 — Core files, skills, agents, docs/, and first-class Grok 4.3+ native support (.grok/ packaging) in place. Fully functional for immediate use across Claude, Cline, Grok, Cursor, and others.
 
 See `memory-bank/progress.md` for current task status.
 
