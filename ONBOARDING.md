@@ -26,6 +26,8 @@
    ```
    This symlinks every `agents/*.md` file into `~/.claude/agents/` so Claude Code can resolve agents by name when using `Task(subagent_type="...")`. Safe to re-run after adding new agents. For full delegation patterns, see `skills/delegation-patterns.md`.
 
+**Grok users**: No install step required. The `.grok/skills/` and `.grok/agents/` directories (plus AGENTS.md project-rules) are discovered automatically the moment you open the repo in Grok. Skills appear as `/<name>`; roles are available to the `task` tool.
+
 ## Environment Prerequisites (MCP)
 
 Many of the advanced agent skills (like `expert-pr-review` and `cherry-pick-to-release-branch`) require specific Model Context Protocol (MCP) servers to function correctly. Ensure your IDE or agent harness has the following MCP servers configured:

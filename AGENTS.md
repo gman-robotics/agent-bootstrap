@@ -24,6 +24,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
    - **Kilocode (kilo.code)**: A `.kilocoderules` file is included at the root of this repo — Kilocode automatically reads it at startup. It points here. No further config needed.
    - **OpenHands**: A `.openhands_instructions` file is included at the root of this repo — OpenHands automatically reads it at startup. It points here. No further config needed.
    - **Cursor**: A `.cursor/rules/agent-bootstrap.mdc` file is included (Project Rules format, `alwaysApply: true`) for Cursor ≥ 0.43. A legacy `.cursorrules` file is also included for older versions. Open this repo as a project/folder in Cursor — the rules load automatically.
+   - **Grok** (xAI Grok 4.3+ CLI/TUI and compatible environments): `.grok/skills/` and `.grok/agents/` directories are included at the repo root. Grok auto-discovers the 11 packaged skills (invocable as `/plan-code-review-workflow`, `/expert-pr-review`, etc., with full playbooks in `references/source.md`) and the 5 agent roles (`Engineer`, `Architect`, `QAReviewer`, `SecurityReviewer`, `UIUXEngineer` for the `task` tool). AGENTS.md + memory-bank/ are loaded automatically via project-rules discovery. Zero extra configuration needed.
 4. For any task: Begin by saying "Load AGENTS.md context" or the harness will do it automatically if configured.
 5. To switch projects: "Switch to project 'my-app' per manifest.yaml" — agent will load that project's memory-bank.
 
@@ -207,6 +208,31 @@ For full delegation patterns (parallel dispatch, worktree isolation, two-tier mo
 
 > **Note for non-Claude Code harnesses (Cline, Cursor, etc.):** The YAML frontmatter in each agent file is silently ignored. Agent files continue to work exactly as before — load them as context or role definitions. No behavior change.
 
+### Grok: Native Skills, Agents, and Project Rules (v0.4.0+)
+
+When using **Grok 4.3+ CLI/TUI** (or compatible), the hub provides first-class native integration with **zero extra configuration**:
+
+- **Project Rules**: `AGENTS.md` (and CLAUDE.md alias) is auto-discovered and loaded at every level of the repo (see Grok user-guide 11-project-rules.md). The full global rules, memory-bank protocol, and workflows are active immediately.
+- **Skills**: All 11 skills are packaged under `.grok/skills/<name>/`. Grok surfaces them as slash commands (`/plan-code-review-workflow`, `/expert-pr-review`, `/write-tests`, `/memory-bank-protocol`, `/subagent-routing`, `/debug-investigation`, etc.). Each SKILL.md contains minimal frontmatter + quick-start; the complete authoritative steps live in `references/source.md` (kept in sync with the canonical `skills/*.md` files).
+- **Agents / Subagents**: The 5 reusable roles are exposed via `.grok/agents/` symlinks. They appear in `grok inspect`, the subagent catalog (Ctrl+Shift+A), and can be spawned with the `task` tool:
+  ```
+  task(subagent_type="Engineer", description="...", prompt="...", ...)
+  task(subagent_type="Architect", ...)
+  task(subagent_type="QAReviewer", ...)
+  task(subagent_type="SecurityReviewer", ...)
+  task(subagent_type="UIUXEngineer", ...)
+  ```
+  The YAML frontmatter `name:` in each `agents/*.md` determines the `subagent_type` value. Symlinks + the exporter script guarantee the canonical definitions in `agents/` remain the single source of truth.
+- **Personas / Roles placeholders**: `.grok/personas/` and `.grok/roles/` exist as empty directories to follow Grok's discovered layout for future custom persona or role TOML definitions (see user-guide 15-subagents.md). They are safe to ignore until the hub defines shared custom ones.
+
+**Maintenance for contributors**:
+- Edit the canonical sources in `skills/*.md` and `agents/*.md` only.
+- After changes: `python scripts/export_codex_skills.py --output-dir .grok/skills --force` (re-generates the 11 thin wrappers) and update any symlinks under `.grok/agents/`.
+- This keeps Grok users in sync without duplication or drift.
+- See `skills/delegation-patterns.md` and `skills/subagent-routing.md` for advanced spawning patterns (Haiku vs Sonnet model selection, parallel calls, worktree isolation).
+
+The result matches the project vision: clone the repo, open in Grok, everything (roles, workflows, memory-bank, manifest, docs/) just works.
+
 ---
 
 ## 4. Workflows (Skills) — Standardized Processes
@@ -335,4 +361,4 @@ See `skills/docs-protocol.md` for the full playbook on creating, updating, and r
 
 ---
 
-*Last updated: 2026-05-13 | Version: 0.3.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting)*
+*Last updated: 2026-05-19 | Version: 0.4.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — now with first-class Grok support*

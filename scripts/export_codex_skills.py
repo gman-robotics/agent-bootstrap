@@ -234,7 +234,7 @@ metadata:
 ## Compatibility Notes
 
 - The detailed workflow lives in `references/source.md`; treat that file as the authoritative procedure.
-- Translate harness-specific tool names from the source into Codex equivalents while preserving the workflow intent.
+- Translate harness-specific tool names from the source into Grok (or Codex) equivalents while preserving the workflow intent.
 - Keep all safety rules from the source, especially approval gates, review-only constraints, and absolute-path requirements.
 """
 
