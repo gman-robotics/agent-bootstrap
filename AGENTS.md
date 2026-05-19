@@ -24,6 +24,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
    - **Kilocode (kilo.code)**: A `.kilocoderules` file is included at the root of this repo — Kilocode automatically reads it at startup. It points here. No further config needed.
    - **OpenHands**: A `.openhands_instructions` file is included at the root of this repo — OpenHands automatically reads it at startup. It points here. No further config needed.
    - **Cursor**: A `.cursor/rules/agent-bootstrap.mdc` file is included (Project Rules format, `alwaysApply: true`) for Cursor ≥ 0.43. A legacy `.cursorrules` file is also included for older versions. Open this repo as a project/folder in Cursor — the rules load automatically.
+   - **Grok** (xAI Grok 4.3+ CLI/TUI and compatible environments): `.grok/skills/` and `.grok/agents/` directories are included at the repo root. Grok auto-discovers the 11 packaged skills (invocable as `/plan-code-review-workflow`, `/expert-pr-review`, etc., with full playbooks in `references/source.md`) and the 5 agent roles (`Engineer`, `Architect`, `QAReviewer`, `SecurityReviewer`, `UIUXEngineer` for the `task` tool). AGENTS.md + memory-bank/ are loaded automatically via project-rules discovery. Zero extra configuration needed.
 4. For any task: Begin by saying "Load AGENTS.md context" or the harness will do it automatically if configured.
 5. To switch projects: "Switch to project 'my-app' per manifest.yaml" — agent will load that project's memory-bank.
 
@@ -335,4 +336,4 @@ See `skills/docs-protocol.md` for the full playbook on creating, updating, and r
 
 ---
 
-*Last updated: 2026-05-13 | Version: 0.3.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting)*
+*Last updated: 2026-05-19 | Version: 0.4.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — now with first-class Grok support*

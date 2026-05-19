@@ -110,3 +110,24 @@
 - Time in session: ~15min (focused, tool-heavy creation).
 
 **Status**: In Progress (Plan mode active). Ready to continue creating remaining files once user confirms or provides answers to open questions.
+
+---
+
+## v0.4.0 — Grok Native Packaging & Hub Initialization for Grok (2026-05-19)
+
+**Added in this contribution** (performed by the agent while following the hub's own AGENTS.md rules after explicit user request "initialize ... and import ... using create-skill / export"):
+
+- [x] Created `.grok/` directory tree at the repo root (project-scoped).
+- [x] Exported all 11 skills via `scripts/export_codex_skills.py --output-dir .grok/skills` (producing the standard Grok/Codex `SKILL.md` + `references/source.md` layout so the detailed playbooks are immediately usable as `/expert-pr-review`, `/plan-code-review-workflow`, etc.).
+- [x] Added `.grok/agents/` symlinks for the 5 reusable role definitions so they appear as native project agents (`Engineer`, `Architect`, `QAReviewer`, etc.) in `grok inspect` and the `task` subagent tool.
+- [x] Made a one-line improvement to the exporter template for clearer "Grok (or Codex)" messaging.
+- [x] Updated `memory-bank/activeContext.md` and this file with full context and audit trail.
+- [x] Self-reviewed: ran exporter unit tests (all green), inspected diffs, verified `grok inspect` output shows the new skills + agents + AGENTS.md loaded, confirmed symlinks resolve correctly.
+- [x] Followed mandatory memory-bank protocol, absolute-path rule, no un-approved commits until now.
+
+**Result**: When any developer opens this repo in Grok, the full power of the hub (skills catalog, agent personas, AGENTS.md rules, manifest, memory-bank) is available with zero extra configuration — exactly the vision of the project.
+
+**Commit / PR**: This set of changes is being committed to a feature branch and proposed as a PR (per CONTRIBUTING.md: all changes via PR + expert review where appropriate).
+
+**Metrics update**: Added ~12 new directories and ~30+ files under `.grok/` (mostly the exported references), 1 script edit, 2 memory-bank updates. Net positive for harness compatibility (Grok is now explicitly supported alongside the other 5 harnesses documented in AGENTS.md §1).
+

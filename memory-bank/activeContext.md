@@ -46,3 +46,27 @@ Harness compatibility audit and gap-filling: added `.clinerules`, `.openhands_in
 - ✅ `CONTRIBUTING.md` — fixed: step numbering bug (1,2,3,4,7 → 1,2,3,4,5)
 
 **Next**: Team members can add their projects using the template in `docs/projects/agent-bootstrap/` and `skills/docs-protocol.md` for guidance. No further critical gaps identified.
+
+---
+
+## v0.4.0 — Grok Native Packaging (2026-05-19)
+
+**What was done in this session (initialization + import per user request):**
+
+- Initialized the hub for Grok 4.3+ by reading AGENTS.md + all 6 memory-bank files at session start (per mandatory protocol).
+- Created `.grok/` project-scoped configuration directory (standard location per Grok docs for skills, agents, roles/personas).
+- **Skills**: Used the hub's own `scripts/export_codex_skills.py` (with a one-line compatibility note improvement) to export all 11 skills into `.grok/skills/<name>/SKILL.md + references/source.md`. The thin SKILL.md files provide trigger descriptions so Grok can auto-invoke or let users run `/plan-code-review-workflow`, `/expert-pr-review`, `/memory-bank-protocol`, etc. The full authoritative playbooks live in the existing `skills/*.md` (referenced from the exported wrappers).
+- **Agents / Subagents**: Created symlinks under `.grok/agents/` to the 5 canonical role definitions. Grok now auto-discovers them as project agents: `Engineer`, `Architect`, `QAReviewer`, `SecurityReviewer`, `UIUXEngineer`. These can be spawned via the `task` tool with `subagent_type` matching the `name:` in their frontmatter.
+- Verified end-to-end with `grok inspect` (shows both AGENTS.md as loaded project instructions + all 11 skills + 5 agents under the agent-bootstrap repo).
+- Ran the exporter's own unit tests (`tests/test_export_codex_skills.py`) — all pass.
+- Updated this `activeContext.md` and `progress.md` to record the contribution.
+
+**Impact**: The agent-bootstrap hub is now a first-class, zero-config citizen for Grok users (just like for Claude Code, Cline, Cursor, etc.). Anyone who clones the repo and opens it in a Grok-powered environment immediately gets the full skill catalog and reusable agent personas without extra steps. AGENTS.md is auto-loaded via Grok's project-rules mechanism.
+
+**Files changed**:
+- `scripts/export_codex_skills.py` (minor wording for multi-harness clarity)
+- New: `.grok/skills/...` (11 exported skill packages)
+- New: `.grok/agents/` (5 symlinks to the role .md files)
+- `memory-bank/activeContext.md`, `memory-bank/progress.md` (this record)
+
+This change was performed while strictly following the hub's own global rules (absolute paths, memory-bank protocol, self-review, no destructive actions, explicit user instruction for the commit).
