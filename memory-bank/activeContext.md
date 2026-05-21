@@ -5,7 +5,31 @@
 
 Plan fully delivered. Awaiting user final gate before commit/push. Hub now has complete first-class Grok documentation parity.
 
-## Current Plan — Sync Grok Documentation Across README, AGENTS.md, and Supporting Files
+## Current Plan — Re-implement install-grok.sh + High-Priority Grok Improvements (post-PR #1)
+
+**Context**: After the merged `feat/grok-native-support` PR (now at d02f307 on main), the repo has a solid `.grok/skills/` + `.grok/agents/` tree committed. However, it lacks a first-class installation mechanism for using the bootstrap's skills and agents in *other projects* (the primary value of this hub).
+
+Our earlier session (commit 97874bd) built a good `scripts/install-grok.sh` + richer documentation. User explicitly chose Option B: Re-implement/adapt on top of the current merged structure (respecting its approach), starting with the two high-priority items.
+
+**High Priority (do first)**
+1. `scripts/install-grok.sh` — Adapted version that works cleanly with the current committed `.grok/` layout (exporter + current agent files).
+2. Enhanced Grok documentation in `AGENTS.md` (and supporting files) for cross-project usage.
+
+**Medium Priority (after high priority) — COMPLETED**
+- Improved agent handling in `install-grok.sh`: plugin installs now generate proper Grok frontmatter (model: sonnet, tools list, color, etc.) while --local mode respects the committed structure.
+- Enhanced TDD coverage in `InstallGrokScriptTests` (verifies skill count + Grok frontmatter in generated agents for user installs).
+- All tests green. Script is production-ready for the two main use cases.
+
+**Principles**
+- Respect the merged PR's packaging where reasonable.
+- Make the install script solve the "use bootstrap skills/agents in any project" problem.
+- Strict TDD for new script code.
+- Update memory-bank after significant steps.
+- Full self-review + critical checklist before any commit.
+
+---
+
+## Previous Plan — Sync Grok Documentation Across README, AGENTS.md, and Supporting Files (for reference)
 **Created by**: Software Architect (following mandatory memory-bank read of all 6 files + AGENTS.md + relevant user-guide/*.md + grep for "Grok" + git show of the feature commit + exploration of .grok/ tree and scripts/export_codex_skills.py).
 
 **Date**: 2026-05-19

@@ -24,7 +24,15 @@ This repo is used by the whole **team of developers** to share reusable skills f
    - **Kilocode (kilo.code)**: A `.kilocoderules` file is included at the root of this repo — Kilocode automatically reads it at startup. It points here. No further config needed.
    - **OpenHands**: A `.openhands_instructions` file is included at the root of this repo — OpenHands automatically reads it at startup. It points here. No further config needed.
    - **Cursor**: A `.cursor/rules/agent-bootstrap.mdc` file is included (Project Rules format, `alwaysApply: true`) for Cursor ≥ 0.43. A legacy `.cursorrules` file is also included for older versions. Open this repo as a project/folder in Cursor — the rules load automatically.
-   - **Grok** (xAI Grok 4.3+ CLI/TUI and compatible environments): `.grok/skills/` and `.grok/agents/` directories are included at the repo root. Grok auto-discovers the 11 packaged skills (invocable as `/plan-code-review-workflow`, `/expert-pr-review`, etc., with full playbooks in `references/source.md`) and the 5 agent roles (`Engineer`, `Architect`, `QAReviewer`, `SecurityReviewer`, `UIUXEngineer` for the `task` tool). AGENTS.md + memory-bank/ are loaded automatically via project-rules discovery. Zero extra configuration needed.
+   - **Grok** (xAI Grok 4.3+ CLI/TUI and compatible environments): `.grok/skills/` and `.grok/agents/` directories are committed at the repo root. When you open this repository, Grok automatically discovers the 11 skills (usable as `/plan-code-review-workflow`, `/expert-pr-review`, etc.) and the 5 agent roles. AGENTS.md and the memory-bank are loaded via normal project-rules discovery.
+
+     **Using the bootstrap in other projects** (recommended):
+     ```bash
+     # One-time setup for global access
+     ln -sf /path/to/agent-bootstrap/AGENTS.md ~/.grok/AGENTS.md
+     bash /path/to/agent-bootstrap/scripts/install-grok.sh
+     ```
+     Then run `grok inspect`, trust the plugin if prompted, and use `/plan-code-review-workflow` or `task(..., persona="software-architect")` from any project. Re-run the install script after pulling updates.
 4. For any task: Begin by saying "Load AGENTS.md context" or the harness will do it automatically if configured.
 5. To switch projects: "Switch to project 'my-app' per manifest.yaml" — agent will load that project's memory-bank.
 

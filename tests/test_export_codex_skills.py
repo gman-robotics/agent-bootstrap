@@ -1,3 +1,4 @@
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -46,6 +47,68 @@ class ExportCodexSkillsTests(unittest.TestCase):
             self.assertIn("# write-tests.md — Test Writing Skill", source_text)
             self.assertIn("## Step 1: Orient", source_text)
             self.assertNotIn("Last updated:", source_text.splitlines()[-1])
+
+
+class InstallGrokScriptTests(unittest.TestCase):
+    """TDD for scripts/install-grok.sh — adapted to the post-PR#1 structure."""
+
+    def test_install_grok_script_exists_and_has_help(self) -> None:
+        script = REPO_ROOT / "scripts" / "install-grok.sh"
+        self.assertTrue(script.is_file(), "install-grok.sh must exist")
+        result = subprocess.run(
+            ["bash", str(script), "--help"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("install-grok", result.stdout.lower())
+
+    def test_install_grok_local_runs_without_error(self) -> None:
+        """--local should succeed on the current repo (even if it is a no-op or refresh)."""
+        script = REPO_ROOT / "scripts" / "install-grok.sh"
+        with tempfile.TemporaryDirectory() as tmp:
+            result = subprocess.run(
+                ["bash", str(script), "--local", "--target", tmp, "--force"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            self.assertEqual(
+                result.returncode, 0,
+                f"install-grok.sh --local failed:\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+            )
+
+    def test_install_grok_user_mode_creates_expected_structure(self) -> None:
+        """User/plugin install should create skills + Grok-frontmatter agents."""
+        script = REPO_ROOT / "scripts" / "install-grok.sh"
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "plugin-install"
+            result = subprocess.run(
+                ["bash", str(script), "--target", str(target), "--force"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+
+            # Skills
+            skills_dir = target / ".grok" / "skills"
+            self.assertTrue(skills_dir.is_dir())
+            skill_files = list(skills_dir.glob("*/SKILL.md"))
+            self.assertGreaterEqual(len(skill_files), 10, "Should have most or all skills exported")
+
+            # Agents should have Grok-native frontmatter (model: sonnet, tools list)
+            agents_dir = target / ".grok" / "agents"
+            self.assertTrue(agents_dir.is_dir())
+            architect = agents_dir / "software-architect.md"
+            self.assertTrue(architect.is_file())
+            content = architect.read_text(encoding="utf-8")
+            self.assertIn("model: sonnet", content)
+            self.assertIn("tools:", content)
+            self.assertIn("software-architect", content.lower())
 
 
 if __name__ == "__main__":
