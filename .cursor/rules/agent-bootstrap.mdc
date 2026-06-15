@@ -1,0 +1,51 @@
+---
+description: Agent Bootstrap Hub — loads AGENTS.md, memory-bank, skills index, and manifest at session start
+globs: []
+alwaysApply: true
+---
+
+## Required: Load at Session Start
+
+At the start of every session, you MUST:
+1. Read `AGENTS.md` — single source of truth for all rules, roles, and workflows.
+2. Read the hot files `memory-bank/activeContext.md` + `memory-bank/progress.md` (every session); if mem0 is configured, search shared memory; read the 4 foundation files on first contact, after >=2 weeks away, or for architecture-touching tasks (see skills/memory-bank-protocol.md):
+   (foundation files: projectbrief.md → productContext.md → systemPatterns.md → techContext.md)
+3. Read `manifest.yaml` — project registry; clone any missing repos listed there.
+4. Read `skills/INDEX.md` — full skill catalog with trigger conditions.
+
+These reads are non-optional.
+
+## Skill Invocation Rule
+
+When any skill is triggered, read the full skill file (`skills/<name>.md`) before executing any steps.
+
+## Skill Triggers
+
+| Skill | Trigger |
+|---|---|
+| `write-tests.md` | Any new feature, bug fix, or refactor — before writing production code |
+| `debug-investigation.md` | Bug report, unexpected behavior, or "fix" without clear diagnosis |
+| `performance-profiling.md` | "slow", "latency", "timeout", "optimize", or monitoring p95/p99 spikes |
+| `feature-flag-lifecycle.md` | Creating, rolling out, or graduating a feature flag |
+| `plan-code-review-workflow.md` | Any non-trivial task (>1 file or user-facing impact) |
+| `expert-pr-review.md` | Any PR review request |
+| `triage-review-feedback.md` | Review feedback received on a PR WE authored (human, AI, or scanner) |
+| `pr-shepherd.md` | Start of day, PR status, "what's blocked?", after opening/un-drafting a PR |
+| `end-of-day-review.md` | End of working day, "wrap up", "plan tomorrow" |
+| `multi-harness-coordination.md` | Coordinating work across two or more agent harnesses |
+| `cherry-pick-to-release-branch.md` | Hotfix or backport to a release branch |
+| `memory-bank-protocol.md` | Session start, project switch, new project setup |
+| `docs-protocol.md` | Creating or updating technical docs or ADRs |
+| `subagent-routing.md` | Independent subtasks, parallelizable work, model selection |
+| `delegation-patterns.md` | Multi-agent delegation with worktree isolation |
+
+## Global Rules (Summary)
+
+- Absolute paths for all file operations.
+- Never commit or push unless explicitly instructed.
+- Confirm before deletions or destructive changes.
+- TDD mandatory: failing test before production code (`docs/shared/tdd-standard.md`).
+- Update `memory-bank/activeContext.md` and `progress.md` at end of every task.
+- Evidence rule: status claims must cite SHA/PR/log.
+
+See `AGENTS.md` for complete ruleset and role definitions.

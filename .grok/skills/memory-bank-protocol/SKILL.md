@@ -12,8 +12,8 @@ Triggers on project initialization, session startup, project switching, or reque
 ## Quick Start
 
 1. Read `references/source.md` before initializing or updating a memory bank.
-2. At session start, read all six core files in the required order before significant work.
-3. At task end, update `activeContext.md` and `progress.md`, then verify the edits.
+2. Every session: read hot files (activeContext + progress); foundation files conditionally.
+3. Apply evidence and compaction rules at task end; use mem0 only when configured.
 
 ## Compatibility Notes
 

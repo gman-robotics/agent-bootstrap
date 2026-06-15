@@ -1,147 +1,124 @@
 # memory-bank-protocol.md — Memory Bank Setup and Maintenance Skill
 
-**Purpose**  
-This skill formalizes the Memory Bank concept (as defined in this hub's memory-bank/ directory and protocol) into a reusable, mandatory protocol for **any** long-running project. It guarantees perfect context continuity across sessions, different agent harnesses (Claude, Cline, etc.), and even multi-month tasks where chat history is useless.
+**Purpose**
+This skill formalizes the Memory Bank concept into a reusable, mandatory protocol for **any** long-running project. It guarantees context continuity across sessions, different agent harnesses (Claude Code, Grok, Cline, Codex, etc.), and multi-month tasks where chat history is useless.
 
-The Memory Bank is the **only** source of truth. Your memory resets completely between sessions — this is the cure.
+Continuity rests on **one required layer** plus an **optional coordination layer**:
+- **`memory-bank/`** (required) — per-project durable state (current focus, decisions, progress). Versioned files, human-readable, the source of truth for *project* state.
+- **mem0 shared memory** (optional) — when your team configures it: cross-harness coordination (findings, handoffs, task state on `run_id: coord-YYYYMMDD`) and searchable session facts. Skip mem0 steps when not configured; the memory bank alone is sufficient for single-harness teams.
+
+Because optional mem0 can carry fine-grained session/coordination traffic, the memory bank stays **lean**: it holds distilled state, not a transcript.
 
 **When to Use This Skill**
 - **Initializing** a brand new project (create the directory + 6 core files)
-- **At the absolute start** of every new session or before **any significant task** (non-optional read of all 6 files)
-- **At the end of every task** (update activeContext.md + progress.md + update docs/ if technical reference changed)
+- **At the start** of every session or significant task (tiered read — see below)
+- **At the end of every task** (update + compaction rules below)
 - When switching projects via `manifest.yaml`
 - When onboarding a new harness or team member to an existing project
 
-**Core Principle** (verbatim from source)
-> My memory resets completely between sessions. The Memory Bank is the **only** source of continuity and the single source of truth for the project. I **must** read all core Memory Bank files at the start of every new session and before any significant task. This is non-optional.
+---
 
 ## File Structure
-All files live in the `memory-bank/` directory (create it if it does not exist) at the **project root** (use absolute path). Written in clean Markdown.
 
-### The 6 Core Files (Always Required — Read in This Exact Order)
+All files live in `memory-bank/` at the **project root** (absolute path). Clean Markdown.
 
-1. **`projectbrief.md`**  
-   Project foundation, scope, and core goals/requirements.  
-   *Rarely changes after initial setup.*
+### The 6 Core Files
 
-2. **`productContext.md`**  
-   Project purpose, problems solved, user experience goals, and success criteria.
+| Tier | File | Content | Volatility |
+|---|---|---|---|
+| Foundation | `projectbrief.md` | Scope, core goals/requirements | Rarely changes |
+| Foundation | `productContext.md` | Purpose, problems solved, UX goals | Rarely changes |
+| Foundation | `systemPatterns.md` | Architecture, design patterns, key decisions | Occasional |
+| Foundation | `techContext.md` | Stack, tooling, setup, constraints | Occasional |
+| **Hot** | `activeContext.md` | Current focus, plan, load-bearing decisions, next steps | Every session |
+| **Hot** | `progress.md` | Status log, what works, learnings | Every session |
 
-3. **`systemPatterns.md`**  
-   Architecture, design patterns, key technical decisions, and component relationships.
+Plus: `memory-bank/archive/` — superseded activeContext/progress sections, moved out by the compaction rule.
 
-4. **`techContext.md`**  
-   Technologies, tools, development setup, constraints, dependencies, and conventions.
+---
 
-5. **`activeContext.md`**  
-   Current focus, recent changes, active decisions, open questions, and next steps.  
-   *(Most volatile — update frequently.)*
+## Tiered Read Protocol (Start of Every Session / Task)
 
-6. **`progress.md`**  
-   Project status, what works, remaining work, known issues, and important learnings.
+**Always (every session):**
+1. Read the two **hot files**: `activeContext.md` + `progress.md` (in parallel).
+2. **If mem0 is configured**: search for task-relevant context — today's/yesterday's coordination bus (`run_id: coord-YYYYMMDD`) plus a semantic query for the task topic. This replaces re-reading history out of the bank.
 
-### Visual Hierarchy
-```mermaid
-flowchart TD
-    PB[projectbrief.md] --> PC[productContext.md]
-    PB --> SP[systemPatterns.md]
-    PB --> TC[techContext.md]
-    PC --> AC[activeContext.md]
-    SP --> AC
-    TC --> AC
-    AC --> P[progress.md]
-```
+**Conditionally (read the 4 foundation files when):**
+- First session ever in this project, or first session after ≥ 2 weeks away
+- The task touches architecture, cross-component design, stack/tooling choices, or anything `systemPatterns.md`/`techContext.md` governs
+- Something in the hot files doesn't make sense without deeper context
 
-## Initialization Steps (New Project)
-1. Create the directory using absolute path:
-   ```bash
-   mkdir -p /absolute/path/to/your-project/memory-bank
-   ```
-2. Create the 6 empty `.md` files (or copy templates from this hub's `memory-bank/` as starting point).
-3. Populate them based on current project understanding (use `write_file` tool).
-   - Start with `projectbrief.md` — be concise but complete.
-   - Fill others progressively as you learn.
-4. Add the project to `manifest.yaml` (with `memory_bank_path` pointing to the new directory).
-5. Run the **Mandatory Read Protocol** (below) to verify.
+When in doubt, read them — but a routine task in a familiar project needs only the hot files (plus optional mem0 search).
 
-**Pro Tip**: Use the 6 files in *this* repo's `memory-bank/` as live templates — they were created following this exact skill.
+If any file is missing or empty: pause and initialize it using this skill.
 
-## Mandatory Read Protocol (Start of Every Session / Task)
-**You MUST execute this before any other action on a significant task.**
+> **Warning**: Skipping the hot-file read = instant amnesia. Chat history is **not** the source of truth.
 
-1. Switch to the correct project context (via `manifest.yaml` if multi-project).
-2. Read **all 6 files in parallel** where your harness supports it (or sequentially in the order above):
-   ```bash
-   # Example using available tools (adapt to your harness)
-   read_file /absolute/path/to/project/memory-bank/projectbrief.md
-   read_file /absolute/path/to/project/memory-bank/productContext.md
-   # ... (repeat for systemPatterns, techContext, activeContext, progress)
-   ```
-3. **Internalize** the full context before responding to the user or starting work.
-4. If any file is missing or empty: Pause and initialize it using this skill.
-
-**Warning**  
-> Skipping this read = instant amnesia. The chat history is **not** the source of truth. The files are. Violating this rule breaks the entire system.
+---
 
 ## Update Protocol (End of Every Task)
-After completing work (especially in the FINALIZE phase of plan-code-review-workflow):
 
-1. **Update `activeContext.md`**:
-   - Clear any completed "Current Plan" or "Next Steps".
-   - Add new open questions, decisions made, or focus for next session.
-   - Example addition:
-     ```markdown
-     ## Current Focus (Post-Task)
-     - Memory Bank skill now fully implemented as `skills/memory-bank-protocol.md`.
-     - All references in AGENTS.md updated.
-     ```
+1. **Update `activeContext.md`**: clear completed plan items; record new decisions, open questions, and the next steps.
+2. **Update `progress.md`**: what was delivered, gotchas, learnings.
+3. **If mem0 is configured**: post coordination-relevant outcomes (PRs opened/merged, handoffs, blockers) to the coordination bus so other harnesses see them without reading this bank.
+4. **Verify** by re-reading what you changed.
 
-2. **Update `progress.md`**:
-   - Add a new bullet under "What Works" or "Important Learnings".
-   - Record: what was delivered, any gotchas discovered, links to docs entries created.
-   - Example:
-     ```markdown
-     - [x] Added memory-bank-protocol.md skill (complete playbook with init/read/update steps, based on the Memory Bank concept in this hub).
-     - Learned: Parallel reads of the 6 files dramatically improve context loading speed in supported harnesses.
-     ```
+### Evidence Rule (mandatory)
 
-3. Update memory-bank/ files with any new insights from the task.
+Any status claim of **implemented / merged / deployed / verified** MUST cite a verifiable artifact: commit SHA, PR link, CI run, log line, or task-def revision. A claim without an artifact is a *plan*, not a status — write it as one.
 
-4. **Verify** by re-reading the two updated files.
+> Why: a past "implementation complete" entry was recorded with no commit behind it; the false record survived two days and cost a full audit to correct. The rule makes optimistic logging structurally impossible.
+
+### Compaction Rule (keep the bank lean)
+
+`activeContext.md` target: **≤ ~150 lines** — current focus, the active plan, and load-bearing decisions only.
+
+During the end-of-day review (`end-of-day-review.md`) or whenever the file exceeds target:
+1. Move superseded plans, completed-day chronologies, and resolved investigations to `memory-bank/archive/activeContext-YYYY-MM.md` (append-only, dated headers).
+2. Keep in activeContext only: current focus, tomorrow's plan, decisions still constraining future work (with one-line context), open questions.
+3. `progress.md`: keep the most recent ~2 weeks of entries inline; archive older ones to `memory-bank/archive/progress-YYYY-MM.md`.
+4. Never delete — archive. The archive is grep-able history; activeContext is the working set every session pays to read.
+
+**Litmus test**: "Will a session two weeks from now act differently because this paragraph is in activeContext?" No → archive it.
+
+---
+
+## Initialization Steps (New Project)
+
+1. `mkdir -p /absolute/path/to/project/memory-bank/archive`
+2. Create the 6 files (use this hub's `memory-bank/` as live templates).
+3. Populate `projectbrief.md` first; fill others progressively.
+4. Add the project to `manifest.yaml` (`memory_bank_path` pointing at the directory).
+5. Run the Tiered Read Protocol to verify.
+
+---
+
+## What Goes Where — Decision Table
+
+| Question | Layer |
+|---|---|
+| "What are we working on right now?" | `memory-bank/activeContext.md` |
+| "What did another harness finish an hour ago?" | mem0 coordination bus (`coord-YYYYMMDD`) if configured; else `progress.md` |
+| "What did we learn last Tuesday?" | `memory-bank/progress.md` (or archive) |
+| "What does the API look like?" | `docs/projects/<name>/api-contracts.md` |
+| "Why did we choose X?" | `docs/projects/<name>/decisions.md` (ADR) |
+| "What's the deploy procedure?" | A skill or `docs/` runbook — never the memory bank |
+
+> **Don't put technical reference in memory-bank** (context bloat → use `docs/`, see `docs-protocol.md`). **Don't put per-session coordination chatter in memory-bank** when mem0 is available — that's mem0's job. The bank holds the distilled state that survives both.
+
+---
 
 ## Integration with Other Skills & Subagents
-- **plan-code-review-workflow.md**: Explicitly calls this protocol in PLAN phase (step 1) and FINALIZE phase (step 5).
-- **All agents**: software-architect, software-engineer, qa-critical-reviewer, and ui-ux-engineer must reference memory-bank/ in their behaviors.
-- memory-bank/ holds per-project state and is the primary knowledge layer.
-- **AGENTS.md**: This skill is now listed under "Other Key Skills" and is the enforcement mechanism for the global "Context Management" rule.
-- **docs-protocol.md**: Governs the complementary `docs/` layer. See below.
 
-## memory-bank/ vs docs/ — Know the Difference
+- **plan-code-review-workflow.md**: calls this protocol in PLAN (step 1) and FINALIZE (step 5).
+- **end-of-day-review.md**: runs the compaction pass and writes tomorrow's plan into activeContext.
+- **multi-harness-coordination.md**: uses mem0 (when configured) as the coordination bus; this bank stays the durable layer.
+- **All agents** reference memory-bank/ in their behaviors; AGENTS.md §2 "Context Management" is enforced by this skill.
 
-This hub uses two complementary layers. Never mix them:
-
-| Layer | `memory-bank/` | `docs/` |
-|---|---|---|
-| **Purpose** | Agent operational state | Persistent technical reference |
-| **Content** | Current focus, active decisions, session progress | API contracts, data schemas, pipeline, ADRs |
-| **Read by** | Agents at **every** session start (mandatory) | Humans + agents on demand |
-| **Updated** | After every significant task | When technical specs or decisions change |
-| **Analogy** | RAM / working memory | Engineering wiki |
-
-**Decision rule:**
-- "What are we working on?" → `memory-bank/activeContext.md`
-- "What does the API look like?" → `docs/projects/<name>/api-contracts.md`
-- "Why did we choose PostgreSQL?" → `docs/projects/<name>/decisions.md`
-
-> **Don't put technical reference in memory-bank.** It doesn't belong in operational state and will cause context bloat. Use `docs/` (see `skills/docs-protocol.md`).
-
-## Example Invocation
-User: "Follow the memory-bank-protocol skill to set up a Memory Bank for my new 6-month refactor project at /home/user/my-refactor."
-
-Agent (as Software Architect):  
-"Loading memory-bank-protocol... Creating directory and 6 core files at absolute path... Populating initial content from projectbrief... Running mandatory read... Context fully loaded. Here's the plan for the refactor..."
+---
 
 ## Self-Hosting Note (This Repo)
-This very `memory-bank/` directory you are reading from was created and is maintained using this skill. It serves as the canonical, battle-tested example.
 
-**Last updated**: 2026-04-29 | Version: 1.1 | Part of Multi-Agent Skills Hub v0.2.0 (self-hosting)
+This very `memory-bank/` is maintained using this skill. Commit policy varies by project — check `manifest.yaml` notes or project docs. This hub's memory-bank may be committed; application repos may keep theirs local.
+
+**Last updated**: 2026-06-15 | Version: 2.0 (lean tiered protocol + optional mem0 + compaction & evidence rules)

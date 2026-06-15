@@ -41,6 +41,18 @@ Choose the model by task complexity, not by default:
 
 ---
 
+## Rule 3 — Worktree Isolation Is MANDATORY for Editing Agents
+
+Any spawned agent that **edits files** must run with `isolation: "worktree"` whenever the main checkout could be in use by anything else (another agent, a checked-out PR branch, the user). This is a hard rule, not an optimization:
+
+- The main checkout's branch state is shared mutable state. Concurrent agents on the same checkout have caused branch collisions mid-task.
+- Read-only agents (Explore, reviewers) do not need isolation.
+- The only exception: the editing agent exclusively owns the checkout for the full task duration AND no other agent or PR-review checkout can run concurrently — if you can't guarantee that, use a worktree.
+
+See `delegation-patterns.md` Pattern 2 for the spawn syntax and merge-back options.
+
+---
+
 ## Step 1: Decompose the Task
 
 Before starting, list all subtasks. For each, ask:
@@ -84,6 +96,7 @@ Synthesize subagent results in the main context. Do not re-delegate synthesis �
 | Spawning a subagent for one trivial Bash command | Use the Bash tool directly — subagent overhead is not worth it for single commands |
 | Delegating synthesis ("based on findings, decide X") to a subagent | Synthesis belongs in the main context where full conversation history is available |
 | Running independent agents sequentially | Emit all independent Agent calls in one response to run them in parallel |
+| Spawning an editing agent against the shared checkout | Use `isolation: "worktree"` — the main checkout may be on another agent's branch (Rule 3) |
 
 ---
 
@@ -106,4 +119,4 @@ Both run concurrently. Implement after both return.
 
 ---
 
-Last updated: 2026-05-11
+Last updated: 2026-06-15

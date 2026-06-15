@@ -5,7 +5,7 @@ Your memory resets completely between sessions and across different harnesses (C
 
 This repo is used by the whole **team of developers** to share reusable skills for agent harnesses and persistent knowledge about our common projects.
 
-**You MUST read the relevant sections of this file + all core memory-bank/*.md files at the start of every new session and before any significant task.** This is non-optional.
+**You MUST read the relevant sections of this file + memory-bank/ per the tiered protocol at the start of every new session and before any significant task.** This is non-optional.
 
 ---
 
@@ -24,7 +24,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
    - **Kilocode (kilo.code)**: A `.kilocoderules` file is included at the root of this repo — Kilocode automatically reads it at startup. It points here. No further config needed.
    - **OpenHands**: A `.openhands_instructions` file is included at the root of this repo — OpenHands automatically reads it at startup. It points here. No further config needed.
    - **Cursor**: A `.cursor/rules/agent-bootstrap.mdc` file is included (Project Rules format, `alwaysApply: true`) for Cursor ≥ 0.43. A legacy `.cursorrules` file is also included for older versions. Open this repo as a project/folder in Cursor — the rules load automatically.
-   - **Grok** (xAI Grok 4.3+ CLI/TUI and compatible environments): `.grok/skills/` and `.grok/agents/` directories are committed at the repo root. When you open this repository, Grok automatically discovers the 11 skills (usable as `/plan-code-review-workflow`, `/expert-pr-review`, etc.) and the 5 agent roles. AGENTS.md and the memory-bank are loaded via normal project-rules discovery.
+   - **Grok** (xAI Grok 4.3+ CLI/TUI and compatible environments): `.grok/skills/` and `.grok/agents/` directories are committed at the repo root. When you open this repository, Grok automatically discovers packaged skills (invocable as `/plan-code-review-workflow`, `/expert-pr-review`, etc., with full playbooks in `references/source.md`) and the 5 agent roles (`Engineer`, `Architect`, `QAReviewer`, `SecurityReviewer`, `UIUXEngineer` for the `task` tool). AGENTS.md + memory-bank/ are loaded via normal project-rules discovery.
 
      **Using the bootstrap in other projects** (recommended):
      ```bash
@@ -32,7 +32,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
      ln -sf /path/to/agent-bootstrap/AGENTS.md ~/.grok/AGENTS.md
      bash /path/to/agent-bootstrap/scripts/install-grok.sh
      ```
-     Then run `grok inspect`, trust the plugin if prompted, and use `/plan-code-review-workflow` or `task(..., persona="software-architect")` from any project. Re-run the install script after pulling updates.
+     Then run `grok inspect`, trust the plugin if prompted, and use `/plan-code-review-workflow` or `task(subagent_type="Architect", ...)` from any project. Re-run the install script after pulling updates.
 4. For any task: Begin by saying "Load AGENTS.md context" or the harness will do it automatically if configured.
 5. To switch projects: "Switch to project 'my-app' per manifest.yaml" — agent will load that project's memory-bank.
 
@@ -60,8 +60,12 @@ This repo is used by the whole **team of developers** to share reusable skills f
 - Use the **plan-code-review workflow** (see Skills section) for all non-trivial work.
 
 ### Context Management
-- **Memory Bank is mandatory**: At the start of every session/task, read **all 6 core files** in `memory-bank/` (projectbrief.md → productContext.md → systemPatterns.md → techContext.md → activeContext.md → progress.md).
-- Maintain full context within the current session.
+- **Memory Bank is mandatory — tiered read** (full protocol in `skills/memory-bank-protocol.md`):
+  - **Every session**: read the two hot files — `activeContext.md` + `progress.md` — and, if mem0 is configured, search shared memory (coordination bus `coord-YYYYMMDD` + task-topic query).
+  - **Conditionally**: read the 4 foundation files (projectbrief, productContext, systemPatterns, techContext) on first contact with a project, after ≥ 2 weeks away, or when the task touches architecture/stack.
+- **Evidence rule**: any "implemented/merged/deployed" status written to the memory bank must cite a SHA, PR link, or log line. No artifact → write it as a plan, not a status.
+- **Compaction rule**: keep `activeContext.md` ≤ ~150 lines; archive superseded sections to `memory-bank/archive/` (see memory-bank-protocol). Never delete — archive.
+- mem0 shared memory is an **optional** cross-harness coordination layer when configured; the memory bank holds distilled per-project state. Don't duplicate session chatter into the bank.
 - Load project-specific knowledge from the active project's memory-bank (see manifest.yaml).
 - Start fresh only if no prior context provided.
 
@@ -97,6 +101,11 @@ Repeat this cycle for each behavior. Never write production code before a failin
 - Use the project's established testing framework (Jest for Node.js/TS, Bun test for Bun services, pytest for Python).
 - **Never commit or push changes to source control unless explicitly instructed by the user.**
 - Follow established Git best practices and the cherry-pick skill when needed.
+
+### Issue Lifecycle (GitHub Issues)
+- **Close, never delete.** Closing with a comment ("superseded by #N", "won't do because X") preserves every cross-reference in docs, memory banks, and other issues. Deleting breaks them silently.
+- **Don't pre-create speculative issues** for work more than one phase/milestone out. Plans change; far-future issues become cleanup debt. File the issue when the work is at most one step from actionable.
+- **When closing or superseding an issue**, sweep memory-bank and `docs/` for references to it and update them in the same session.
 
 ### Self-Review & Quality Assurance
 - Thoroughly review **all** code changes for correctness, completeness, style compliance, test coverage, and potential side effects **before presenting to the user or finalizing**.
@@ -216,12 +225,12 @@ For full delegation patterns (parallel dispatch, worktree isolation, two-tier mo
 
 > **Note for non-Claude Code harnesses (Cline, Cursor, etc.):** The YAML frontmatter in each agent file is silently ignored. Agent files continue to work exactly as before — load them as context or role definitions. No behavior change.
 
-### Grok: Native Skills, Agents, and Project Rules (v0.4.0+)
+### Grok: Native Skills, Agents, and Project Rules (v0.5.0+)
 
 When using **Grok 4.3+ CLI/TUI** (or compatible), the hub provides first-class native integration with **zero extra configuration**:
 
 - **Project Rules**: `AGENTS.md` (and CLAUDE.md alias) is auto-discovered and loaded at every level of the repo (see Grok user-guide 11-project-rules.md). The full global rules, memory-bank protocol, and workflows are active immediately.
-- **Skills**: All 11 skills are packaged under `.grok/skills/<name>/`. Grok surfaces them as slash commands (`/plan-code-review-workflow`, `/expert-pr-review`, `/write-tests`, `/memory-bank-protocol`, `/subagent-routing`, `/debug-investigation`, etc.). Each SKILL.md contains minimal frontmatter + quick-start; the complete authoritative steps live in `references/source.md` (kept in sync with the canonical `skills/*.md` files).
+- **Skills**: All skills are packaged under `.grok/skills/<name>/`. Grok surfaces them as slash commands (`/plan-code-review-workflow`, `/expert-pr-review`, `/write-tests`, `/memory-bank-protocol`, `/subagent-routing`, `/debug-investigation`, etc.). Each SKILL.md contains minimal frontmatter + quick-start; the complete authoritative steps live in `references/source.md` (kept in sync with the canonical `skills/*.md` files).
 - **Agents / Subagents**: The 5 reusable roles are exposed via `.grok/agents/` symlinks. They appear in `grok inspect`, the subagent catalog (Ctrl+Shift+A), and can be spawned with the `task` tool:
   ```
   task(subagent_type="Engineer", description="...", prompt="...", ...)
@@ -235,7 +244,7 @@ When using **Grok 4.3+ CLI/TUI** (or compatible), the hub provides first-class n
 
 **Maintenance for contributors**:
 - Edit the canonical sources in `skills/*.md` and `agents/*.md` only.
-- After changes: `python scripts/export_codex_skills.py --output-dir .grok/skills --force` (re-generates the 11 thin wrappers) and update any symlinks under `.grok/agents/`.
+- After changes: `python scripts/export_codex_skills.py --output-dir .grok/skills --force` (re-generates thin wrappers) and update any symlinks under `.grok/agents/`.
 - This keeps Grok users in sync without duplication or drift.
 - See `skills/delegation-patterns.md` and `skills/subagent-routing.md` for advanced spawning patterns (Haiku vs Sonnet model selection, parallel calls, worktree isolation).
 
@@ -285,13 +294,17 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | Skill | Trigger | What it does |
 |---|---|---|
 | `expert-pr-review.md` | Any PR review request | 8-step review: gather context, resolve threads, build/test, security checklist, post with user approval |
+| `triage-review-feedback.md` | A PR WE authored received review feedback (human, AI reviewer, or scanner) | Inventory all claims → verify each against the code → FIX/DISMISS-with-evidence/JUDGMENT → TDD fix batch → QA pass → reply + resolve threads + re-request review |
+| `pr-shepherd.md` | Start of day, after opening/un-drafting a PR, "what's blocked?" | Enumerate open PRs across manifest repos, classify blockers, front-load all reviewer asks in the first hour, fill the wait with reviewer-free work |
+| `end-of-day-review.md` | End of working day, "wrap up", "plan tomorrow" | Evidence-based day review → capture learnings → memory-bank compaction → write tomorrow's plan (reviewer asks first) → optional mem0 sync |
+| `multi-harness-coordination.md` | Coordinating work across two or more harnesses | Role map (planner/reviewer vs implementer) + Steps A–E adversarial loop with cumulative diff review and optional mem0 handoffs |
 | `cherry-pick-to-release-branch.md` | Hotfix or backport to a release branch | Fetch branch → cherry-pick PR commits → bump RC version → push |
-| `memory-bank-protocol.md` | Session start, project switch, new project setup | 6-file memory bank structure, mandatory read protocol, end-of-task update rules |
+| `memory-bank-protocol.md` | Session start, project switch, new project setup | Tiered read protocol (hot files always, foundation files conditionally), optional mem0, compaction + evidence rules |
 | `docs-protocol.md` | Creating or updating technical docs or ADRs | Two-layer docs model, ADR format, how agents navigate via `docs_path` |
 | `write-tests.md` | Any new feature, bug fix, refactor, or any code change — before writing production code | Red/Green/Refactor playbook with Jest/Bun/pytest commands, mocking guide, retrofit guide |
 | `subagent-routing.md` | Any task with independent subtasks or when selecting a model for a spawned agent | Decision tree for subagent delegation; model selection table (Haiku vs Sonnet); parallel spawn examples |
 | `debug-investigation.md` | Bug report, unexpected behavior, "fix" without clear diagnosis | Reproduce → isolate (bisect/binary search) → failing test → fix → verify |
-| `performance-profiling.md` | "slow", "latency", "timeout", "optimize" | Measure baseline → profile (clinic.js, EXPLAIN ANALYZE, py-spy) → fix one thing → measure again |
+| `performance-profiling.md` | "slow", "latency", "timeout", "optimize", or monitoring shows p95/p99 spikes | Measure baseline → profile (clinic.js, EXPLAIN ANALYZE, py-spy, CloudWatch) → fix one thing → measure again |
 | `feature-flag-lifecycle.md` | Creating, rolling out, or graduating a feature flag | Create (default-off, cleanup date) → staged rollout → graduate (remove dead code) |
 
 See `/skills/` directory for full definitions. New skills should follow the style of the examples in this hub (clear steps, warnings, examples, code blocks).
@@ -304,7 +317,7 @@ See `manifest.yaml` for the full list.
 
 **How to use**:
 - Agent parses this at session start or on "switch project" command.
-- For each project: load its `memory_bank_path` (read all 6 memory-bank files), then load its `docs_path` for technical reference.
+- For each project: load its `memory_bank_path` (tiered read per `memory-bank-protocol.md`), then load its `docs_path` for technical reference.
 - Example entry:
   ```yaml
   projects:
@@ -358,7 +371,7 @@ See `skills/docs-protocol.md` for the full playbook on creating, updating, and r
 ## 7. Getting Started & Next Actions
 
 1. Read this entire AGENTS.md (you just did).
-2. Read the 6 memory-bank/ files for this project.
+2. Read memory-bank/ per the tiered protocol (hot files always; foundation files when needed).
 3. Read `skills/INDEX.md` — know what skills are available and their triggers before the first task.
 4. Explore `/skills/` and `/agents/`.
 5. Add your real projects to `manifest.yaml`.
@@ -369,4 +382,4 @@ See `skills/docs-protocol.md` for the full playbook on creating, updating, and r
 
 ---
 
-*Last updated: 2026-05-19 | Version: 0.4.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — now with first-class Grok support*
+*Last updated: 2026-06-15 | Version: 0.5.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*

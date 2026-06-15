@@ -210,8 +210,28 @@ Step C: Submit
 **Finding the right line number:** The diff hunk header `@@ -old,count +new,start @@` gives the starting line in the new file. Count down from there to the specific changed line.
 
 **Fallback (no MCP):**
-- Approve: `gh pr review <PR#> --approve --body "..."`
-- Request changes: `gh pr review <PR#> --request-changes --body "..."`
+
+For `APPROVE` with no inline comments:
+```bash
+gh pr review <PR#> --approve --body "..."
+```
+
+For `REQUEST_CHANGES` or any review with inline comments, use the REST API — `gh pr review --request-changes` does not support inline comments:
+```bash
+gh api repos/<org>/<repo>/pulls/<PR#>/reviews --method POST --input /tmp/pr_review.json
+```
+where `/tmp/pr_review.json` is:
+```json
+{
+  "commit_id": "<head SHA from gh pr view --json headRefOid>",
+  "body": "<2-4 sentence summary>",
+  "event": "REQUEST_CHANGES",
+  "comments": [
+    { "path": "relative/path/to/file", "line": 42, "side": "RIGHT", "body": "Inline comment text" }
+  ]
+}
+```
+For multi-line comments add `"start_line"` and `"start_side": "RIGHT"` alongside `"line"` and `"side"`. Both lines must be within the diff hunk.
 
 ### Step 7: Merge (if instructed)
 
@@ -237,8 +257,9 @@ Do **not** delete the local branch before a potential merge — wait until the f
 - Start with: "Thanks @username!"
 - Be concise, friendly, and direct.
 - Suggestions → request changes (never approve with "but maybe…")
-- Use **inline comments** (via MCP pending review) for specific, actionable code issues — don't bury them in the review body.
-- Reserve the review body for the overall summary, context, and minor nits.
+- **Every requested change must be posted as an inline comment on the specific file and line it concerns — never as a bullet list in the review body.** A single large comment block is not acceptable for `REQUEST_CHANGES` reviews.
+- The review body is for the overall summary only (2–4 sentences). All actionable items belong on the lines.
+- Reserve the review body for minor nits that have no specific line to attach to.
 
 ### Example Approve Comment
 ```
