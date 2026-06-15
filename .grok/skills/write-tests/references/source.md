@@ -80,6 +80,19 @@ When adding tests to untested existing code:
 
 ---
 
+## Extraction Refactors Need Characterization-First + Parity QA
+
+This applies to **every** extraction refactor (pulling a hook, helper, or service out of existing code) — not just legacy code. A spec-compliant extraction can still silently change behavior the spec never mentioned.
+
+> Field lesson (polling-hook extraction): the first cut satisfied the written spec but broke two subtle behaviors — the old content stayed visible during regenerate in the original, and the original made 21 requests (initial + 20 retries) where the extraction made 20. Only a behavior-by-behavior comparison against the original caught both.
+
+1. **Before extracting**: write characterization tests against the **original** code covering every observable behavior — including the unglamorous ones: exact request counts, what stays visible during loading/error states, cleanup ordering, abort/supersession sequencing, timer behavior.
+2. Extract. The characterization tests must stay green against the new structure.
+3. **Parity QA pass**: a reviewer (or QA agent) explicitly compares new vs. original side by side, asking "what does the original do that no test asserts?" — the gaps found become new characterization tests, not review comments.
+4. Off-by-one counts (N vs N+1 attempts), state-visibility-during-transition, and effect-dependency staleness are the three most common silent breaks — check them by name.
+
+---
+
 ## Common Mistakes
 
 | Mistake | Fix |

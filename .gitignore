@@ -13,7 +13,7 @@
 *.swo
 *~
 .cline/
-.cursor/
+.cursor/*
 !.cursor/rules/
 !.cursor/rules/**
 

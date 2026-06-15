@@ -1,19 +1,19 @@
 ---
 name: delegation-patterns
-description: Use when planning how to delegate work across subagents in Claude Code, selecting the right model for a spawned agent, or deciding between parallel and sequential execution patterns.
+description: Use when spawning subagents in Claude Code or Grok: two-tier model selection, parallel dispatch patterns, and mandatory worktree isolation for editing agents.
 metadata:
-  short-description: Multi-agent delegation patterns
+  short-description: Subagent delegation patterns
 ---
 
 # delegation-patterns
 
-Triggers when decomposing a task into parallel subtasks, selecting a model tier for a spawned agent, or designing a two-tier delegation flow.
+Triggers when setting up multi-agent delegation, choosing agent tiers, or running parallel analysis or isolated parallel edits.
 
 ## Quick Start
 
-1. Read `references/source.md` before designing a delegation flow.
-2. Classify each subtask as Tier 1 (Haiku, simple retrieval) or Tier 2 (Sonnet, analysis/code).
-3. Emit all independent Task() calls in a single message so they run concurrently.
+1. Read `references/source.md` for the three canonical patterns.
+2. Use worktree isolation for ANY editing agent when the checkout may be shared.
+3. Emit independent agent calls in a single message so they run in parallel.
 
 ## Compatibility Notes
 

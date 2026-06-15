@@ -8,7 +8,7 @@ A disciplined workflow for finding and fixing performance bottlenecks. Prevents 
 - A background job queue is building backlog
 - A database query is causing timeouts or high CPU
 - A UI component is re-rendering excessively
-- Monitoring shows elevated p95/p99 latency or memory spikes
+- Monitoring (e.g., CloudWatch, Datadog, Grafana) shows elevated p95/p99 latency or memory spikes
 
 ---
 

@@ -141,8 +141,8 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         ),
         quick_start=(
             "Read `references/source.md` before initializing or updating a memory bank.",
-            "At session start, read all six core files in the required order before significant work.",
-            "At task end, update `activeContext.md` and `progress.md`, then verify the edits.",
+            "Every session: read hot files (activeContext + progress); foundation files conditionally.",
+            "Apply evidence and compaction rules at task end; use mem0 only when configured.",
         ),
     ),
     "docs-protocol": SkillConfig(
@@ -162,35 +162,98 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
     ),
     "delegation-patterns": SkillConfig(
         description=(
-            "Use when planning how to delegate work across subagents in Claude Code, "
-            "selecting the right model for a spawned agent, or deciding between "
-            "parallel and sequential execution patterns."
+            "Use when spawning subagents in Claude Code or Grok: two-tier model selection, "
+            "parallel dispatch patterns, and mandatory worktree isolation for editing agents."
         ),
-        short_description="Multi-agent delegation patterns",
+        short_description="Subagent delegation patterns",
         trigger_summary=(
-            "Triggers when decomposing a task into parallel subtasks, selecting a "
-            "model tier for a spawned agent, or designing a two-tier delegation flow."
+            "Triggers when setting up multi-agent delegation, choosing agent tiers, or "
+            "running parallel analysis or isolated parallel edits."
         ),
         quick_start=(
-            "Read `references/source.md` before designing a delegation flow.",
-            "Classify each subtask as Tier 1 (Haiku, simple retrieval) or Tier 2 (Sonnet, analysis/code).",
-            "Emit all independent Task() calls in a single message so they run concurrently.",
+            "Read `references/source.md` for the three canonical patterns.",
+            "Use worktree isolation for ANY editing agent when the checkout may be shared.",
+            "Emit independent agent calls in a single message so they run in parallel.",
         ),
     ),
     "subagent-routing": SkillConfig(
         description=(
-            "Use before starting any task with independent subtasks, parallelizable "
-            "work, or when deciding which Claude model to assign to a spawned agent."
+            "Use before any task with independent subtasks to decide what to delegate "
+            "and which model tier each subagent should use."
         ),
-        short_description="Subagent use and model selection",
+        short_description="Subagent and model routing",
         trigger_summary=(
-            "Triggers when deciding whether to delegate work to a subagent or run it "
-            "inline, and when selecting Haiku vs Sonnet for a spawned agent."
+            "Triggers before tasks with parallelizable or isolatable subtasks, or when "
+            "selecting a model for a spawned agent."
         ),
         quick_start=(
-            "Read `references/source.md` before delegating any subtask.",
-            "Use Haiku for reads, searches, formatting, and summarisation; use Sonnet for code, analysis, and judgment.",
-            "Emit all independent Agent calls in one response to run them in parallel.",
+            "Read `references/source.md` for the decomposition checklist and model table.",
+            "Use the cheap tier for retrieval tasks and the full tier for code and judgment.",
+            "Editing agents must run in worktree isolation when the checkout may be shared.",
+        ),
+    ),
+    "triage-review-feedback": SkillConfig(
+        description=(
+            "Use when a PR we authored receives review feedback from humans, AI reviewers, "
+            "or scanners: verify every claim against the code, then fix or dismiss with evidence."
+        ),
+        short_description="Respond to PR review feedback",
+        trigger_summary=(
+            "Triggers when our PR gets a review, inline comments, or scanner findings, or "
+            "the user asks to address review feedback on a PR."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Inventory all claims first; verify each at the cited code location before classifying.",
+            "Fix TDD-first, QA-pass before posting, reply to every thread, then re-request review.",
+        ),
+    ),
+    "pr-shepherd": SkillConfig(
+        description=(
+            "Use to keep open PRs moving: classify blockers, front-load all reviewer-dependent "
+            "asks in the first hour, and fill reviewer-wait time with reviewer-free work."
+        ),
+        short_description="PR pipeline shepherding",
+        trigger_summary=(
+            "Triggers at the start of the working day, after opening or un-drafting a PR, or "
+            "when asked what is blocked or for PR status."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Enumerate open PRs across manifest repos and classify each blocker.",
+            "Batch every review request and ping in the first hour, then pick disjoint fill work.",
+        ),
+    ),
+    "end-of-day-review": SkillConfig(
+        description=(
+            "Use at the end of each working day to verify outcomes against evidence, capture "
+            "learnings, compact the memory bank, and write tomorrow's plan."
+        ),
+        short_description="Daily wrap-up and planning",
+        trigger_summary=(
+            "Triggers on end-of-day wrap-up requests, EOD, plan-tomorrow requests, or before "
+            "an extended break."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Verify the day's outcomes from live git/GitHub state, never session memory.",
+            "Write tomorrow's plan with reviewer-dependent asks queued for the first hour.",
+        ),
+    ),
+    "multi-harness-coordination": SkillConfig(
+        description=(
+            "Use when coordinating work across two or more agent harnesses with separated "
+            "planner/reviewer and implementer roles and an adversarial review loop."
+        ),
+        short_description="Cross-harness coordination",
+        trigger_summary=(
+            "Triggers when routing tasks between harnesses, running the multi-harness workflow, "
+            "or establishing planner vs implementer roles across agents."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Step A: full-context plan, no production code. Step B: TDD on isolated branch.",
+            "Steps C/D: cumulative git diff review, max 3 iterations, then Step E PR if approved.",
         ),
     ),
 }

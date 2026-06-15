@@ -1,19 +1,19 @@
 ---
 name: subagent-routing
-description: Use before starting any task with independent subtasks, parallelizable work, or when deciding which Claude model to assign to a spawned agent.
+description: Use before any task with independent subtasks to decide what to delegate and which model tier each subagent should use.
 metadata:
-  short-description: Subagent use and model selection
+  short-description: Subagent and model routing
 ---
 
 # subagent-routing
 
-Triggers when deciding whether to delegate work to a subagent or run it inline, and when selecting Haiku vs Sonnet for a spawned agent.
+Triggers before tasks with parallelizable or isolatable subtasks, or when selecting a model for a spawned agent.
 
 ## Quick Start
 
-1. Read `references/source.md` before delegating any subtask.
-2. Use Haiku for reads, searches, formatting, and summarisation; use Sonnet for code, analysis, and judgment.
-3. Emit all independent Agent calls in one response to run them in parallel.
+1. Read `references/source.md` for the decomposition checklist and model table.
+2. Use the cheap tier for retrieval tasks and the full tier for code and judgment.
+3. Editing agents must run in worktree isolation when the checkout may be shared.
 
 ## Compatibility Notes
 

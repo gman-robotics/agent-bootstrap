@@ -28,8 +28,8 @@
 #   If your repos live in non-standard locations, copy manifest.template.yaml to a
 #   local manifest.yaml, fill in absolute paths, and add manifest.yaml to .gitignore.
 
-version: 0.4.0
-last_updated: 2026-05-19
+version: 0.5.0
+last_updated: 2026-06-15
 
 projects:
   - name: agent-bootstrap
@@ -61,7 +61,7 @@ projects:
 # 1. At session start or "switch to project X":
 #    - Resolve the project's path and memory_bank_path relative to this file's directory.
 #    - If the resolved path does not exist, clone it: git clone <git_url> <resolved_path>
-#    - Load the project's memory_bank_path files (read all 6).
+#    - Load the project's memory_bank_path files (tiered read per memory-bank-protocol).
 #    - Load the project's docs_path for technical reference (api-contracts, data-models, etc.).
 #    - Set working directory context to the resolved path.
 # 2. When task mentions a project not listed: Ask user to add it to manifest.yaml first.

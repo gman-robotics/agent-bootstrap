@@ -48,6 +48,8 @@ Task(
 
 Use when N agents each own a disjoint set of files and write simultaneously.
 
+> **Hard rule**: worktree isolation is **mandatory for ANY editing agent** when the shared checkout could be in use — by another agent, a PR-review checkout, or the user — not just for parallel edits. Read-only agents are exempt. See `subagent-routing.md` Rule 3.
+
 ```
 Task(
   subagent_type="Engineer",
@@ -113,4 +115,4 @@ This symlinks every `agents/*.md` into `~/.claude/agents/` so Claude Code's proj
 
 ---
 
-**Last updated**: 2026-05-12
+**Last updated**: 2026-06-15

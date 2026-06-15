@@ -2,7 +2,7 @@
 
 Agent-readable index of every skill in this hub. Read this file at session start to know what is available and when to apply each skill. When a skill is triggered, **read the full skill file before executing any steps** — do not rely on session memory of its contents.
 
-Grok users automatically receive all skills as slash commands (`/<skill-kebab-name>`) thanks to the `.grok/skills/` packaging committed in v0.4.0.
+Grok users automatically receive all skills as slash commands (`/<skill-kebab-name>`) thanks to the `.grok/skills/` packaging in v0.5.0.
 
 ---
 
@@ -22,10 +22,38 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 
 ---
 
+### triage-review-feedback.md
+**File**: `skills/triage-review-feedback.md`  
+**Trigger**: A PR **we authored** received review feedback — human reviewer, AI reviewer, or automated scanner (Amazon Inspector, CodeQL, etc.). "Address the review on PR #N."  
+**What it does**: Inventory every claim → verify each against the actual code/environment before classifying → FIX / DISMISS-with-evidence / JUDGMENT → TDD fix batch → QA pass before posting → reply to every thread, resolve, re-request review. The inverse of expert-pr-review.
+
+---
+
+### pr-shepherd.md
+**File**: `skills/pr-shepherd.md`  
+**Trigger**: Start of every working day; after opening/un-drafting/pushing fixes to a PR; "what's blocked?", "PR status"; or as a recurring check on merge-heavy days.  
+**What it does**: Enumerates open PRs across manifest repos, classifies each (human-blocked / us-blocked / stacked / unassigned / ready), front-loads ALL reviewer-dependent asks in the first hour, proposes reviewer-free work to fill the wait, reacts fast to reviewer responses.
+
+---
+
+### end-of-day-review.md
+**File**: `skills/end-of-day-review.md`  
+**Trigger**: End of every working day ("wrap up the day", "EOD", "plan tomorrow") or before an extended break.  
+**What it does**: Evidence-based review of the day's outcomes (live gh state, not session memory) → capture learnings → memory-bank update + compaction → write tomorrow's plan with reviewer-dependent asks queued first → optional mem0 sync.
+
+---
+
+### multi-harness-coordination.md
+**File**: `skills/multi-harness-coordination.md`  
+**Trigger**: Coordinating a task across two or more agent harnesses; "run the multi-harness workflow"; parent agent routing between planner and implementer harnesses.  
+**What it does**: Abstract role map (planner/reviewer vs implementer vs orchestrator) + Steps A–E workflow — full-context planning gate, TDD implementation on isolated branch, adversarial review loop with cumulative `git diff`, optional mem0 handoffs, PR submission.
+
+---
+
 ### write-tests.md
 **File**: `skills/write-tests.md`  
 **Trigger**: Writing any new feature, fixing a bug, or refactoring existing code — invoke *before* writing production code. Also invoke when a PR review flags missing tests.  
-**What it does**: Step-by-step Red/Green/Refactor TDD playbook with framework commands for Jest, Bun test, and pytest. Includes mocking decision guide, retrofitting guide for legacy code, and common mistake table. Implements `docs/shared/tdd-standard.md`.
+**What it does**: Step-by-step Red/Green/Refactor TDD playbook with framework commands for Jest, Bun test, and pytest. Includes mocking decision guide, retrofitting guide for legacy code, extraction-refactor characterization guide, and common mistake table. Implements `docs/shared/tdd-standard.md`.
 
 ---
 
@@ -38,8 +66,8 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 
 ### performance-profiling.md
 **File**: `skills/performance-profiling.md`  
-**Trigger**: User says "slow", "latency", "timeout", "optimize", "taking too long", or complains about response time.  
-**What it does**: Define target metric → Measure baseline (clinic.js, EXPLAIN ANALYZE, queue job timing, React DevTools Profiler, py-spy) → Identify bottleneck type → Fix one thing → Measure again. Includes bottleneck classification table.
+**Trigger**: User says "slow", "latency", "timeout", "optimize", "taking too long", or complains about response time. Also invoke when monitoring shows p95/p99 spikes.  
+**What it does**: Define target metric → Measure baseline (clinic.js, EXPLAIN ANALYZE, queue job timing, React DevTools Profiler, py-spy, CloudWatch) → Identify bottleneck type → Fix one thing → Measure again. Includes bottleneck classification table.
 
 ---
 
@@ -60,7 +88,7 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 ### memory-bank-protocol.md
 **File**: `skills/memory-bank-protocol.md`  
 **Trigger**: Session start (always), switching projects via manifest.yaml, onboarding a new project, or any significant task completion (to update the bank).  
-**What it does**: Defines the 6-file memory bank structure, mandatory read-all-6-files protocol at session start, and end-of-task update rules. Use for every project.
+**What it does**: Lean tiered read protocol — hot files (activeContext + progress) every session; foundation files conditionally. Optional mem0 integration, end-of-task update rules, evidence rule (status claims must cite SHA/PR/log), and compaction rule (activeContext ≤ ~150 lines, archive superseded sections).
 
 ---
 
@@ -74,7 +102,14 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 ### subagent-routing.md
 **File**: `skills/subagent-routing.md`  
 **Trigger**: Before any task with independent subtasks, parallelizable work, or when selecting a model for a spawned agent. Always consult when deciding whether to delegate or run inline.  
-**What it does**: Mandates subagent delegation for parallelizable/isolatable work. Defines model selection table: Haiku for non-logic tasks (reads, searches, formatting, summarization), Sonnet for code, analysis, and judgment. Includes decomposition checklist, parallel spawn examples, and common mistakes.
+**What it does**: Mandates subagent delegation for parallelizable/isolatable work. Defines model selection table: Haiku for non-logic tasks (reads, searches, formatting, summarization), Sonnet for code, analysis, and judgment. Includes worktree isolation Rule 3, decomposition checklist, parallel spawn examples, and common mistakes.
+
+---
+
+### delegation-patterns.md
+**File**: `skills/delegation-patterns.md`  
+**Trigger**: Planning how to delegate work across subagents in Claude Code or Grok, selecting the right model, or designing parallel execution with worktree isolation.  
+**What it does**: Three canonical delegation patterns (parallel analysis, isolated parallel edits, two-tier pipeline) with mandatory worktree isolation for editing agents on shared checkouts.
 
 ---
 
@@ -83,6 +118,7 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 1. Create `skills/<name>.md` following the style of existing skills (purpose, trigger, when to use, numbered steps, stack-specific tips, last updated footer).
 2. Add an entry to this INDEX.md.
 3. Add a one-line entry to AGENTS.md §4 "Other Key Skills" with trigger.
-4. Update `.clinerules`, `.kilocoderules`, `.openhands_instructions`, and `.cursor/rules/agent-bootstrap.mdc` to include the new skill in the supported workflows list.
+4. Update `.clinerules`, `.kilocoderules`, `.cursorrules`, `.openhands_instructions`, and `.cursor/rules/agent-bootstrap.mdc` to include the new skill in the skill-trigger lists.
+5. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
 
-*Last updated: 2026-05-13*
+*Last updated: 2026-06-15 | Hub version: 0.5.0*
