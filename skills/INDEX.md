@@ -50,6 +50,13 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 
 ---
 
+### task-loop-7-phase.md
+**File**: `skills/task-loop-7-phase.md`
+**Trigger**: User invokes the 7-Phase Algorithm, TaskLoopState, or an OBSERVE → THINK → PLAN → BUILD → EXECUTE → VERIFY → LEARN workflow.
+**What it does**: Strict seven-phase loop with phase transitions, mem0 TaskLoopState updates, measurable success criteria, automated/live verification, and structured lesson capture with optional company-wiki curation.
+
+---
+
 ### write-tests.md
 **File**: `skills/write-tests.md`  
 **Trigger**: Writing any new feature, fixing a bug, or refactoring existing code — invoke *before* writing production code. Also invoke when a PR review flags missing tests.  

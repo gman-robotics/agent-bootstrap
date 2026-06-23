@@ -298,6 +298,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `pr-shepherd.md` | Start of day, after opening/un-drafting a PR, "what's blocked?" | Enumerate open PRs across manifest repos, classify blockers, front-load all reviewer asks in the first hour, fill the wait with reviewer-free work |
 | `end-of-day-review.md` | End of working day, "wrap up", "plan tomorrow" | Evidence-based day review → capture learnings → memory-bank compaction → write tomorrow's plan (reviewer asks first) → optional mem0 sync |
 | `multi-harness-coordination.md` | Coordinating work across two or more harnesses | Role map (planner/reviewer vs implementer) + Steps A–E adversarial loop with cumulative diff review and optional mem0 handoffs |
+| `task-loop-7-phase.md` | 7-Phase Algorithm, TaskLoopState, or OBSERVE → THINK → PLAN → BUILD → EXECUTE → VERIFY → LEARN workflow | Strict phase loop with mem0 TaskLoopState updates, measurable success criteria, automated verification, structured lesson memory, and optional wiki curation |
 | `cherry-pick-to-release-branch.md` | Hotfix or backport to a release branch | Fetch branch → cherry-pick PR commits → bump RC version → push |
 | `memory-bank-protocol.md` | Session start, project switch, new project setup | Tiered read protocol (hot files always, foundation files conditionally), optional mem0, compaction + evidence rules |
 | `docs-protocol.md` | Creating or updating technical docs or ADRs | Two-layer docs model, ADR format, how agents navigate via `docs_path` |

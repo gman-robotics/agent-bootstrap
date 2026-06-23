@@ -28,6 +28,7 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 | `pr-shepherd.md` | Start of day, PR status, "what's blocked?", after opening/un-drafting a PR |
 | `end-of-day-review.md` | End of working day, "wrap up", "plan tomorrow" |
 | `multi-harness-coordination.md` | Coordinating work across two or more agent harnesses |
+| `task-loop-7-phase.md` | 7-Phase Algorithm, TaskLoopState, observe/think/plan/build/execute/verify/learn |
 | `cherry-pick-to-release-branch.md` | Hotfix or backport to a release branch |
 | `memory-bank-protocol.md` | Session start, project switch, or new project setup |
 | `docs-protocol.md` | Creating or updating technical documentation or ADRs |
@@ -52,6 +53,7 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 - "Run pr-shepherd" or "what's blocked on our PRs?"
 - "Wrap up the day" or "run end-of-day-review"
 - "Coordinate across harnesses using multi-harness-coordination"
+- "Run the 7-Phase Algorithm" or "use TaskLoopState"
 - "Switch to project 'my-app' per manifest.yaml"
 - "Debug [issue] using the debug-investigation skill"
 - "Profile [operation] using the performance-profiling skill"

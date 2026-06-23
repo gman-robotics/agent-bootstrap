@@ -1,9 +1,13 @@
 # Active Context: Multi-Agent Skills Hub
 
 ## Current Focus (This Session)
-**Act / Engineer + QA phase complete** (2026-05-19). Full execution of the "Current Plan — Sync Grok Documentation..." finished. All primary (README, AGENTS detailed Grok subsection, ADR-006) and secondary files updated following docs-protocol, plan-code-review, and memory-bank rules. Inline critical review (expert-pr-review equivalent) approved with only minor nits. Self-review via diff/grep/re-reads passed. Memory bank marked with granular progress after each chunk for visibility/parallel threads. 
+**Formatting and replay review complete** (2026-06-23). Reviewed the added skill/workflow updates in this checkout and fixed local formatting issues:
+- Replaced malformed `skills/agent-bootstrap/SKILL.md` placeholder text with valid skill frontmatter, quick-start steps, and replay guidance.
+- Added final trailing newlines to canonical skill Markdown files that were missing them.
+- Verification evidence: `python3 -m unittest tests.test_export_codex_skills` passed (6 tests), and `git diff --check` passed.
+- Added missing `skills/task-loop-7-phase.md` for the strict OBSERVE -> THINK -> PLAN -> BUILD -> EXECUTE -> VERIFY -> LEARN algorithm, wired it into `skills/INDEX.md`, `AGENTS.md`, harness trigger files, `scripts/export_codex_skills.py`, exporter tests, and regenerated `.grok/skills/task-loop-7-phase/`.
 
-Plan fully delivered. Awaiting user final gate before commit/push. Hub now has complete first-class Grok documentation parity.
+Replay finding for `/Users/tginter/dev/estategururepo/agent-bootstrap`: do not blind cherry-pick the generic gman-robotics commits. That checkout has EstateGuru-specific skills and local history, is `main...origin/main [ahead 1]`, lacks `.grok/`, `scripts/install-grok.sh`, `skills/multi-harness-coordination.md`, and `skills/agent-bootstrap/SKILL.md`, and direct `git apply --check` of the generic v0.5.0 patch fails against multiple customized files. Use a selective replay/merge plan instead.
 
 ## Current Plan — Re-implement install-grok.sh + High-Priority Grok Improvements (post-PR #1)
 

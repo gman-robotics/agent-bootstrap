@@ -227,3 +227,69 @@ User gate passed via explicit "start executing" + this review.
 
 All rules followed: absolute paths, no unapproved commits, proactive but safe, memory updates for continuity.
 
+---
+
+## 2026-06-23 — Formatting Review and EstateGuru Replay Check
+
+**Task**: Review another agent's added skills/workflows for fixable formatting issues, then check how to replay the updates into `/Users/tginter/dev/estategururepo/agent-bootstrap`.
+
+**What Was Done**
+- Fixed malformed `skills/agent-bootstrap/SKILL.md`, which contained only placeholder text, by adding valid skill frontmatter, quick-start steps, and replay guidance.
+- Fixed missing final newlines in canonical skill Markdown files:
+  - `skills/INDEX.md`
+  - `skills/end-of-day-review.md`
+  - `skills/memory-bank-protocol.md`
+  - `skills/multi-harness-coordination.md`
+  - `skills/plan-code-review-workflow.md`
+  - `skills/pr-shepherd.md`
+  - `skills/triage-review-feedback.md`
+- Verified generated `.grok` Markdown did not need newline fixes.
+
+**Verification Evidence**
+- `python3 -m unittest tests.test_export_codex_skills` from `/Users/tginter/dev/gman-robotics/agent-bootstrap`: 6 tests passed.
+- `git diff --check` from `/Users/tginter/dev/gman-robotics/agent-bootstrap`: passed.
+- EstateGuru checkout status: `/Users/tginter/dev/estategururepo/agent-bootstrap` is `main...origin/main [ahead 1]`.
+- EstateGuru exporter tests: `python3 -m unittest tests.test_export_codex_skills` from `/Users/tginter/dev/estategururepo/agent-bootstrap`: 3 tests passed.
+
+**Replay Finding**
+- Do not blindly cherry-pick `0144e99`, `7fae0b9`, or `a261e24` into EstateGuru's bootstrap checkout.
+- Direct patch checks failed because EstateGuru has custom hub content and local history:
+  - EstateGuru already has customized PR lifecycle skills from `8a4121f`.
+  - EstateGuru has project-specific skills not present in this generic checkout: `deploy-docuvault-stack.md`, `agent-orchestration-roles.md`, and `adversarial-coordination-workflow.md`.
+  - EstateGuru lacks `.grok/`, `scripts/install-grok.sh`, `skills/multi-harness-coordination.md`, and the new native `skills/agent-bootstrap/SKILL.md`.
+- Recommended path: create an EstateGuru branch, selectively add the missing generic pieces, preserve EstateGuru-specific skills/rules, update `scripts/export_codex_skills.py` by merging config entries rather than overwriting, regenerate packaging with the EstateGuru exporter target, and rerun the EstateGuru test suite.
+
+---
+
+## 2026-06-23 — Added Missing 7-Phase Task Loop Skill
+
+**Task**: User clarified that another agent was supposed to add a strict seven-phase workflow: OBSERVE, THINK, PLAN, BUILD, EXECUTE, VERIFY, LEARN, with mem0 TaskLoopState updates and lesson capture.
+
+**What Was Done**
+- Added `skills/task-loop-7-phase.md` with:
+  - strict phase ordering,
+  - phase transition output (`Phase X complete -> Phase Y`),
+  - mem0 `TaskLoopState` update requirements,
+  - measurable success criteria in PLAN,
+  - automated/live verification in VERIFY,
+  - mem0 lesson capture and optional company-wiki curation in LEARN.
+- Registered the skill in:
+  - `skills/INDEX.md`
+  - `AGENTS.md`
+  - `.clinerules`
+  - `.kilocoderules`
+  - `.cursorrules`
+  - `.openhands_instructions`
+  - `.cursor/rules/agent-bootstrap.mdc`
+  - `scripts/export_codex_skills.py`
+  - `tests/test_export_codex_skills.py`
+- Regenerated `.grok/skills/task-loop-7-phase/` from the canonical skill source.
+
+**Verification Evidence**
+- Red test first: `python3 -m unittest tests.test_export_codex_skills` failed because `task-loop-7-phase` was missing from `SKILL_CONFIGS`.
+- After implementation: `python3 -m unittest tests.test_export_codex_skills` passed (6 tests).
+- `git diff --check` passed after removing trailing whitespace in the new `skills/INDEX.md` entry.
+
+**EstateGuru Replay Note**
+- `/Users/tginter/dev/estategururepo/agent-bootstrap` does not currently contain `skills/task-loop-7-phase.md`, a plugin skill wrapper, or any `task-loop-7-phase` trigger references.
+- EstateGuru replay should add the canonical skill, add an EstateGuru-style `plugin/skills/task-loop-7-phase/SKILL.md`, merge one `SkillConfig` entry into its exporter, update the local trigger lists/catalogs, and rerun `python3 -m unittest tests.test_export_codex_skills`.

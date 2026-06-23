@@ -256,6 +256,23 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Steps C/D: cumulative git diff review, max 3 iterations, then Step E PR if approved.",
         ),
     ),
+    "task-loop-7-phase": SkillConfig(
+        description=(
+            "Use when a task should follow the strict 7-Phase Algorithm: OBSERVE, THINK, "
+            "PLAN, BUILD, EXECUTE, VERIFY, LEARN, with TaskLoopState updates in mem0 "
+            "and durable lessons captured at the end."
+        ),
+        short_description="Seven-phase task loop",
+        trigger_summary=(
+            "Triggers when the user invokes the 7-Phase Algorithm, TaskLoopState, or "
+            "an observe-think-plan-build-execute-verify-learn workflow."
+        ),
+        quick_start=(
+            "Read `references/source.md` before starting the loop.",
+            "Run phases strictly in order and announce each phase transition.",
+            "Update TaskLoopState in mem0 after each phase, then write a lesson in LEARN.",
+        ),
+    ),
 }
 
 
