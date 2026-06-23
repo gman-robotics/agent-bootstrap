@@ -1,0 +1,1 @@
+Full content from local perception-agent SKILL.md
