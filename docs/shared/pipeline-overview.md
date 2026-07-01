@@ -50,7 +50,7 @@ Document in `docs/projects/<name>/pipeline-overview.md`:
 
 ## Release Process (Standard)
 
-See `skills/cherry-pick-to-release-branch.md` for the full automated playbook.
+See `skills/cherry-pick-to-release-branch/SKILL.md` for the full automated playbook.
 
 High-level flow:
 1. Cut release branch: `releases/YYYY.MM.DD`

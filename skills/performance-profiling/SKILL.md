@@ -1,3 +1,9 @@
+---
+name: performance-profiling
+description: "This skill should be used when the user says \"slow\", \"latency\", \"timeout\", \"optimize\", or \"taking too long\", or when a specific operation has measurable performance issues. Runs a five-phase measure-first workflow: Define target metric -> Measure baseline -> Classify bottleneck type -> Fix one thing -> Measure again. Never change code without a before/after measurement."
+version: 1.0.0
+---
+
 # performance-profiling.md — Performance Investigation Skill
 
 **Purpose**  

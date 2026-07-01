@@ -1,3 +1,9 @@
+---
+name: cherry-pick-to-release-branch
+description: "This skill should be used when the user needs to hotfix or backport a merged PR to a release branch (releases/YYYY.MM.DD). Automates cherry-picking PR commits into the release branch and incrementing the release candidate version suffix (-rc.N). Parameters required: RELEASE_BRANCH, PR_NUMBER, VERSION_FILES (space-separated list of JSON files with version strings). Handles both initial RC creation and RC increments."
+version: 1.0.0
+---
+
 # Cherry-Pick to Release Branch Workflow
 
 This workflow automates cherry-picking changes from a merged PR into an existing release branch and incrementing the release candidate version suffix.

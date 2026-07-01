@@ -1,3 +1,9 @@
+---
+name: triage-review-feedback
+description: "This skill should be used when a PR we authored receives review feedback - from a human reviewer, an AI reviewer, or an automated scanner - or when the user says 'address the review feedback on PR #N' or 'triage the comments on my PR'. Workflow: inventory every claim, verify each against the actual code/environment before classifying (FIX / DISMISS-with-evidence / JUDGMENT), apply the fix batch TDD-first, run a QA pass before posting, then reply to every thread, resolve, and re-request review. The inverse of expert-pr-review."
+version: 1.0.0
+---
+
 # triage-review-feedback.md — Responding to Reviews on Our Own PRs
 
 **Purpose**

@@ -1,3 +1,9 @@
+---
+name: plan-code-review-workflow
+description: "This skill should be used for any non-trivial task touching more than one file or with user-facing impact. It is the default development workflow for all significant features, refactors, bugfixes, or changes. Runs a Plan -> Code -> Review -> Iterate -> Finalize cycle with dynamic role switching between Software Architect, Software Engineer, and QA Critical Reviewer. Enforces TDD, expert review via expert-pr-review, and user approval gates before committing or pushing."
+version: 1.0.0
+---
+
 # plan-code-review-workflow.md
 
 **Core Development Workflow for All Significant Work**

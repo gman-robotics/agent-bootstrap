@@ -1,3 +1,9 @@
+---
+name: debug-investigation
+description: "This skill should be used when a user reports a bug, unexpected behavior, or asks to \"fix\" something without a clear diagnosis. Also use for flaky test investigation and production incident root-cause analysis. Runs a five-phase disciplined workflow: Reproduce -> Isolate -> Write failing test -> Fix -> Verify, with stack-specific debugging tips."
+version: 1.0.0
+---
+
 # debug-investigation.md — Systematic Debugging Skill
 
 **Purpose**  

@@ -65,7 +65,7 @@
 - `activeContext.md` is the most volatile — agents update it every session.
 - `progress.md` tracks completion status of all tasks.
 
-See `skills/memory-bank-protocol.md` for the full playbook.
+See `skills/memory-bank-protocol/SKILL.md` for the full playbook.
 
 ---
 

@@ -1,3 +1,9 @@
+---
+name: delegation-patterns
+description: "This skill should be used when setting up multi-agent Task() delegation patterns in Claude Code, choosing between Tier 1 (lightweight classification/reads) and Tier 2 (structured analysis and code generation) models, or implementing parallel PR analysis with reviewer subagents. Provides the two-tier agent model, canonical delegation patterns (parallel read-only, parallel isolated edits with worktree isolation, parallel PR security+quality analysis), and the agent installation script."
+version: 1.0.0
+---
+
 # Delegation Patterns — Claude Code Multi-Agent Reference
 
 **Scope**: Claude Code native `Task()` delegation. These patterns are no-ops in Cline/Cursor/other harnesses — frontmatter is ignored and the agent definitions are simply read as context.

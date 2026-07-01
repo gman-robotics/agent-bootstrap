@@ -1,3 +1,9 @@
+---
+name: pr-shepherd
+description: "This skill should be used at the start of every working day, immediately after opening/un-drafting/pushing fixes to a PR, when the user asks 'what's blocked?' or 'PR status', or as a recurring check on merge-heavy days. Enumerates open PRs across all repos (including agent-authored ones via the mem0 coordination bus when configured), classifies each as human-blocked / us-blocked / stacked-blocked / unassigned / ready-to-merge, front-loads reviewer-dependent asks in the first hour, and fills the wait with reviewer-free work."
+version: 1.0.0
+---
+
 # pr-shepherd.md — PR Pipeline & Reviewer-Latency Management
 
 **Purpose**

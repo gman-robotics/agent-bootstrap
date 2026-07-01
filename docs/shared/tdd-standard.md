@@ -107,8 +107,8 @@ Pattern: **`[subject] [condition] [expected outcome]`**
 
 ## Relationship to Other Standards
 
-- **`skills/write-tests.md`** — operational playbook for applying this standard session-by-session.
-- **`skills/plan-code-review-workflow.md`** — QA Reviewer verifies TDD compliance in every review.
+- **`skills/write-tests/SKILL.md`** — operational playbook for applying this standard session-by-session.
+- **`skills/plan-code-review-workflow/SKILL.md`** — QA Reviewer verifies TDD compliance in every review.
 - **`docs/shared/decisions.md` ADR-003** — decision record for adopting this standard.
 
 ---

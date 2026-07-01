@@ -1,3 +1,9 @@
+---
+name: subagent-routing
+description: "This skill should be used before any task with independent subtasks, parallelizable work, or when selecting a model for a spawned agent. Mandates subagent delegation for parallelizable, isolatable, or repetitive work. Defines a model selection table, a task decomposition checklist, parallel spawn pattern examples, and common mistakes to avoid."
+version: 1.0.0
+---
+
 # subagent-routing.md — Subagent Use & Model Selection
 
 **Purpose**

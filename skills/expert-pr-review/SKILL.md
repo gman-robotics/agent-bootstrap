@@ -1,3 +1,9 @@
+---
+name: expert-pr-review
+description: "This skill should be used when the user asks to review a GitHub PR (\"review PR #N\", \"look at this PR\", \"check this diff\", \"review this before I merge\"). Runs an 8-step expert review workflow: parallel context gathering, prior thread resolution, checkout and build/test, parallel security and quality analysis, findings summary with user-approval gate, inline-comment review posting via MCP or gh CLI, optional merge, and cleanup. Enforces review-only discipline (no code edits) and requires explicit user confirmation before posting APPROVE or REQUEST_CHANGES."
+version: 1.0.0
+---
+
 # Expert PR Reviewer Skill
 
 **You are an expert, friendly code reviewer.**  

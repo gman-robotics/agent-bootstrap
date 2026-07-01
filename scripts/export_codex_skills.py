@@ -273,15 +273,66 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Update TaskLoopState in mem0 after each phase, then write a lesson in LEARN.",
         ),
     ),
+    "agent-orchestration-roles": SkillConfig(
+        description=(
+            "Use to orient a new harness or coordinate tasks when multiple agent "
+            "harnesses (e.g. a planner/reviewer harness and an implementer harness) "
+            "collaborate across the projects in this hub's manifest.yaml."
+        ),
+        short_description="Multi-harness role division",
+        trigger_summary=(
+            "Triggers when setting up or clarifying the division of labor between "
+            "a planning/reviewing harness and an implementing harness."
+        ),
+        quick_start=(
+            "Read `references/source.md` for the full role split and workflow loop.",
+            "Resolve the coordination root directory from manifest.yaml, not a hardcoded path.",
+            "Keep the planner harness out of bulk implementation when an implementer harness is available.",
+        ),
+    ),
+    "adversarial-coordination-workflow": SkillConfig(
+        description=(
+            "Use when an Orchestrator (human or automated) needs to run a planner "
+            "harness and an implementer harness as adversarial peers through a "
+            "plan → implement → adversarial-review → PR loop."
+        ),
+        short_description="Adversarial plan/implement/review loop",
+        trigger_summary=(
+            "Triggers when starting multi-agent implementation work that requires "
+            "a critical, adversarial review pass before any PR is created."
+        ),
+        quick_start=(
+            "Read `references/source.md` for the full Step A–E loop.",
+            "Step A: full-context plan, no production code. Step B: TDD on isolated branch.",
+            "Steps C/D: cumulative `git diff main...HEAD` review, max 3 iterations, then Step E PR if approved.",
+        ),
+    ),
+    "close-out": SkillConfig(
+        description=(
+            "Use at the end of any significant task or conversation thread to "
+            "verify memory-bank/shared-memory continuity (Phase 1) and turn session "
+            "friction into concrete skill/process improvement proposals (Phase 2)."
+        ),
+        short_description="Task close-out & retrospective",
+        trigger_summary=(
+            "Triggers on 'close this out', 'wrap this up', or after completing a "
+            "multi-step implementation session — task-scoped, not day-scoped."
+        ),
+        quick_start=(
+            "Read `references/source.md` for the full two-phase protocol.",
+            "Phase 1: audit activeContext.md/progress.md and sync shared memory if configured.",
+            "Phase 2: scan for friction/skill gaps and propose specific, filed improvements.",
+        ),
+    ),
 }
 
 
 def load_source_skills(source_dir: Path) -> dict[str, str]:
     skills: dict[str, str] = {}
-    for path in sorted(source_dir.glob("*.md")):
-        if path.name == "INDEX.md":
+    for path in sorted(source_dir.glob("*/SKILL.md")):
+        if path.parent.name == "agent-bootstrap":
             continue
-        skills[path.stem] = path.read_text(encoding="utf-8")
+        skills[path.parent.name] = path.read_text(encoding="utf-8")
     return skills
 
 

@@ -129,7 +129,7 @@ This is simpler than a full wiki (no index management, no cross-linking complexi
 Agent-assisted development moves fast but produces code that lacks test coverage unless the process explicitly enforces it. Without a clear standard, different team members and different agents apply wildly inconsistent testing discipline — some write tests after the fact, some skip them entirely for "small" changes, and some write tests that only cover happy paths. Regressions accumulate.
 
 ### Decision
-Red/Green/Refactor TDD is the mandatory development methodology for all non-trivial logic across all projects. Agents enforce this during code review: new logic without a failing test written first is a blocking issue. The full standard lives in `docs/shared/tdd-standard.md`. The operational skill lives in `skills/write-tests.md`.
+Red/Green/Refactor TDD is the mandatory development methodology for all non-trivial logic across all projects. Agents enforce this during code review: new logic without a failing test written first is a blocking issue. The full standard lives in `docs/shared/tdd-standard.md`. The operational skill lives in `skills/write-tests/SKILL.md`.
 
 ### Alternatives Considered
 - **Test-after (write code, then tests)**: Easier to skip under time pressure; tests tend to mirror implementation rather than specify behavior; does not catch design problems early.

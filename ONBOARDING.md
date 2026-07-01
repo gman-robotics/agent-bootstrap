@@ -24,7 +24,7 @@
    ```bash
    bash scripts/install-agents.sh
    ```
-   This symlinks every `agents/*.md` file into `~/.claude/agents/` so Claude Code can resolve agents by name when using `Task(subagent_type="...")`. Safe to re-run after adding new agents. For full delegation patterns, see `skills/delegation-patterns.md`.
+   This symlinks every `agents/*.md` file into `~/.claude/agents/` so Claude Code can resolve agents by name when using `Task(subagent_type="...")`. Safe to re-run after adding new agents. For full delegation patterns, see `skills/delegation-patterns/SKILL.md`.
 
 **Grok users**: No install step required. The `.grok/skills/` and `.grok/agents/` directories (plus AGENTS.md project-rules) are discovered automatically the moment you open the repo in Grok. Skills appear as `/<name>`; roles are available to the `task` tool.
 

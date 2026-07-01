@@ -1,3 +1,9 @@
+---
+name: multi-harness-coordination
+description: "This skill should be used when multiple agent harnesses (Claude Code, Codex, Cline, etc.) are collaborating on the same repository and need a shared role assignment and an adversarial plan/implement/review loop. Defines cross-harness role assignment and the coordination workspace conventions for handing work between harnesses."
+version: 1.0.0
+---
+
 # multi-harness-coordination.md — Cross-Harness Role Assignment & Adversarial Implementation Workflow
 
 **Purpose**

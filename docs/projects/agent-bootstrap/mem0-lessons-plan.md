@@ -135,7 +135,7 @@ The initial plugin should expose the existing skills and optional hooks. MCP sho
 
 Deliverables:
 
-- Add `skills/context-recall-protocol.md`.
+- Add `skills/context-recall-protocol/SKILL.md`.
 - Update `skills/INDEX.md` to include the new skill and trigger conditions.
 - Add examples for multi-angle `rg` searches using `manifest.yaml` and project memory-bank paths.
 - Clarify how this protocol complements, rather than replaces, `memory-bank-protocol.md`.
@@ -150,7 +150,7 @@ Acceptance criteria:
 
 Deliverables:
 
-- Update `skills/memory-bank-protocol.md` with the recommended `type`, `scope`, and `status` block format.
+- Update `skills/memory-bank-protocol/SKILL.md` with the recommended `type`, `scope`, and `status` block format.
 - Add guidance for durable vs temporary memory.
 - Add examples to the hub `memory-bank/` files or a dedicated template section.
 

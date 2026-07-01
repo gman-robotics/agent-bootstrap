@@ -1,3 +1,9 @@
+---
+name: task-loop-7-phase
+description: "This skill should be used when a task should follow the strict 7-Phase Algorithm: OBSERVE, THINK, PLAN, BUILD, EXECUTE, VERIFY, LEARN, with mem0 TaskLoopState updates after each phase, measurable success criteria, automated/live verification, structured Lesson memory in mem0, and optional company-wiki curation when wiki tools are available."
+version: 1.0.0
+---
+
 # task-loop-7-phase.md — Observe/Think/Plan/Build/Execute/Verify/Learn Loop
 
 **Purpose**

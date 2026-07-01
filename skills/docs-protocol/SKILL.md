@@ -1,3 +1,9 @@
+---
+name: docs-protocol
+description: "This skill should be used when creating or updating technical documentation, adding an ADR (Architecture Decision Record), or updating docs/projects/<name>/ or docs/shared/. Governs the two-layer docs model: docs/shared/ for team-wide standards and docs/projects/<name>/ for project-specific reference, including the four doc types, ADR creation and numbering, and the docs/ vs memory-bank/ distinction."
+version: 1.0.0
+---
+
 # Skill: docs-protocol
 
 **Purpose**: Governs how agents create, update, and reference technical documentation in the `docs/` directory. Use this skill whenever you need to write or update project technical docs (API contracts, data models, pipeline, decisions).

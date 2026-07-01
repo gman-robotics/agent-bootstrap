@@ -1,3 +1,9 @@
+---
+name: memory-bank-protocol
+description: "This skill should be used at the start of every session (tiered read - hot files activeContext + progress plus a mem0 search when configured), when initializing a brand-new project, when switching projects via manifest.yaml, or at the end of every task. Defines the memory bank structure, the mem0 shared-memory split (cross-agent coordination vs. distilled per-project state), the evidence rule (implemented/merged/deployed claims must cite a SHA/PR/log), and the compaction rule."
+version: 1.0.0
+---
+
 # memory-bank-protocol.md — Memory Bank Setup and Maintenance Skill
 
 **Purpose**

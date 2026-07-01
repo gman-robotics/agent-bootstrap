@@ -1,3 +1,9 @@
+---
+name: plan-code-review-workflow
+description: "This skill should be used for any non-trivial task touching more than one file or with user-facing impact. It is the default development workflow for all significant features, refactors, bugfixes, or changes. Runs a Plan -> Code -> Review -> Iterate -> Finalize cycle with dynamic role switching between Software Architect, Software Engineer, and QA Critical Reviewer. Enforces TDD, expert review via expert-pr-review, and user approval gates before committing or pushing."
+version: 1.0.0
+---
+
 # plan-code-review-workflow.md
 
 **Core Development Workflow for All Significant Work**
@@ -56,7 +62,7 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 **Exit Criteria**: All planned changes complete + self-review passed. Hand off to QA.
 
 ### Phase 3: REVIEW (QA Critical Reviewer Role)
-1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review.md` if this results in a PR.
+1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review/SKILL.md` if this results in a PR.
 2. **Perform Critical Review**
    - If GitHub PR: Follow **exact** 8-step flow in expert-pr-review.md (gather context in parallel, resolve threads, build/test, security checklist, summarize).
    - If internal changes (no PR yet): Use the same rigor — checklist for correctness, style, tests, security, performance, accessibility (if UI), breaking changes.

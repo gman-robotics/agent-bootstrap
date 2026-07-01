@@ -1,3 +1,9 @@
+---
+name: write-tests
+description: "This skill should be used when starting any new feature, bug fix, or refactor (invoke before writing production code), when a PR review flags missing or insufficient tests, or when adding coverage to untested legacy code. Implements the Red/Green/Refactor TDD playbook with framework commands for common JS/TS and Python test runners, mocking guidance, a characterization test pattern for legacy code, and a common TDD mistakes table."
+version: 1.0.0
+---
+
 # write-tests.md — Test Writing Skill
 
 **Purpose**  

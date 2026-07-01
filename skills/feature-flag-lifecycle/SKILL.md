@@ -1,3 +1,9 @@
+---
+name: feature-flag-lifecycle
+description: "This skill should be used when creating a feature flag, enabling a flag for rollout, or cleaning up and graduating a flag. Also invoke during any PR review that introduces a conditional code path labeled as a flag. Covers the full lifecycle: Create (naming convention, default-off, mandatory cleanup date) -> Implement (flag at boundary layer, test both paths) -> Roll Out (staged rollout) -> Graduate (remove flag and dead code path, update tests)."
+version: 1.0.0
+---
+
 # feature-flag-lifecycle.md — Feature Flag Lifecycle Skill
 
 **Purpose**  

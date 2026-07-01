@@ -1,3 +1,9 @@
+---
+name: end-of-day-review
+description: "This skill should be used at the end of every working day (user says 'wrap up the day', 'EOD', 'plan tomorrow') or before an extended break. Runs an evidence-based review of the day's outcomes against live git/issue-tracker state (never session memory), captures process and technical learnings, updates and compacts the memory bank, writes tomorrow's plan with reviewer-dependent asks queued for the first hour, and syncs the mem0 coordination bus when configured."
+version: 1.0.0
+---
+
 # end-of-day-review.md — Daily Wrap-Up & Next-Day Plan
 
 **Purpose**

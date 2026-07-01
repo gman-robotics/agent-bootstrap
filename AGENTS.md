@@ -60,7 +60,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
 - Use the **plan-code-review workflow** (see Skills section) for all non-trivial work.
 
 ### Context Management
-- **Memory Bank is mandatory — tiered read** (full protocol in `skills/memory-bank-protocol.md`):
+- **Memory Bank is mandatory — tiered read** (full protocol in `skills/memory-bank-protocol/SKILL.md`):
   - **Every session**: read the two hot files — `activeContext.md` + `progress.md` — and, if mem0 is configured, search shared memory (coordination bus `coord-YYYYMMDD` + task-topic query).
   - **Conditionally**: read the 4 foundation files (projectbrief, productContext, systemPatterns, techContext) on first contact with a project, after ≥ 2 weeks away, or when the task touches architecture/stack.
 - **Evidence rule**: any "implemented/merged/deployed" status written to the memory bank must cite a SHA, PR link, or log line. No artifact → write it as a plan, not a status.
@@ -74,7 +74,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
 - **Always request explicit user confirmation** before any deletions or destructive changes.
 - Choose the best tool for each step.
 - All terminal commands must run **non-interactively** (no paging, no manual input required).
-- **Always use absolute paths** when referring to files (e.g. `/Users/yourname/dev/agent-bootstrap/skills/expert-pr-review.md`).
+- **Always use absolute paths** when referring to files (e.g. `/Users/yourname/dev/agent-bootstrap/skills/expert-pr-review/SKILL.md`).
 
 ### Subagent Model Policy (MANDATORY)
 
@@ -87,7 +87,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
 
 Emit all independent Agent calls in a **single response** so they run concurrently. Never run independent subagents sequentially.
 
-Read `skills/subagent-routing.md` for the full decision tree, model selection table, decomposition checklist, and common mistakes.
+Read `skills/subagent-routing/SKILL.md` for the full decision tree, model selection table, decomposition checklist, and common mistakes.
 
 ### Testing, Version Control & Workflows
 
@@ -96,7 +96,7 @@ Read `skills/subagent-routing.md` for the full decision tree, model selection ta
 2. **Green**: Write the minimum production code to make the test pass. Run the full suite — fix any regressions before moving on.
 3. **Refactor**: Clean the code (remove duplication, clarify names) without adding behavior. Run the full suite after each change.
 
-Repeat this cycle for each behavior. Never write production code before a failing test exists. See `docs/shared/tdd-standard.md` for the authoritative standard and `skills/write-tests.md` for the operational playbook.
+Repeat this cycle for each behavior. Never write production code before a failing test exists. See `docs/shared/tdd-standard.md` for the authoritative standard and `skills/write-tests/SKILL.md` for the operational playbook.
 
 - Use the project's established testing framework (Jest for Node.js/TS, Bun test for Bun services, pytest for Python).
 - **Never commit or push changes to source control unless explicitly instructed by the user.**
@@ -165,17 +165,17 @@ You can dynamically "become" any agent by loading its definition. The current ro
 ### qa-critical-reviewer.md (Orchestrating QA Reviewer)
 **Persona**: Extremely critical, friendly senior code reviewer. Orchestrates the full PR review pipeline across two modes.
 **Two Modes**:
-- **Spawned subagent** (any direct PR review request): Executes Steps 1–4 of `expert-pr-review.md` — gather context, resolve threads, checkout/build/test, parallel SecurityReviewer + code quality analysis — then returns a structured Findings Report. The parent presents findings, gates on user approval, and posts (Steps 5–8).
-- **Inline role** (plan-code-review REVIEW phase): Runs all 8 steps of `expert-pr-review.md` including the user approval gate, using Haiku subagents for simple lookups within the flow.
+- **Spawned subagent** (any direct PR review request): Executes Steps 1–4 of `skills/expert-pr-review/SKILL.md` — gather context, resolve threads, checkout/build/test, parallel SecurityReviewer + code quality analysis — then returns a structured Findings Report. The parent presents findings, gates on user approval, and posts (Steps 5–8).
+- **Inline role** (plan-code-review REVIEW phase): Runs all 8 steps of `skills/expert-pr-review/SKILL.md` including the user approval gate, using Haiku subagents for simple lookups within the flow.
 
 **Key Behaviors**:
 - **Never** make code changes on the branch under review.
-- Read `skills/expert-pr-review.md` fully before executing — it is the authoritative playbook.
+- Read `skills/expert-pr-review/SKILL.md` fully before executing — it is the authoritative playbook.
 - Gather context in parallel; use Haiku subagents for build/test command discovery and CI summary.
 - Resolve prior open review threads if addressed in the diff.
 - Checkout & build/test (background build, foreground tests).
 - Spawn SecurityReviewer (named agent) + code quality Task in parallel for Step 4.
-- Return structured Findings Report (schema in `expert-pr-review.md`) when in spawned mode.
+- Return structured Findings Report (schema in `skills/expert-pr-review/SKILL.md`) when in spawned mode.
 - User approval gate: handled by the parent in spawned mode; handled inline in role mode.
 
 **When to Activate**: Spawned (`subagent_type="QAReviewer"`) for any direct PR review request. Inline during the REVIEW phase of plan-code-review-workflow.
@@ -200,7 +200,7 @@ You can dynamically "become" any agent by loading its definition. The current ro
 - Never edit, write, or commit any file.
 - Do not make the approve/reject decision — that belongs to QAReviewer.
 
-**When to Activate**: Spawned as a parallel subagent by QAReviewer during Step 4 of `expert-pr-review.md` (Claude Code only). Can also be activated directly for standalone security audits.
+**When to Activate**: Spawned as a parallel subagent by QAReviewer during Step 4 of `skills/expert-pr-review/SKILL.md` (Claude Code only). Can also be activated directly for standalone security audits.
 
 **Additional Roles** (add as needed): devops-engineer.md, technical-writer.md, etc. Follow the same template format.
 
@@ -221,7 +221,7 @@ This creates symlinks from `~/.claude/agents/*.md` → `agents/*.md`, so git pul
 Task(subagent_type="Engineer", description="...", prompt="...")
 ```
 
-For full delegation patterns (parallel dispatch, worktree isolation, two-tier model selection), see `skills/delegation-patterns.md`.
+For full delegation patterns (parallel dispatch, worktree isolation, two-tier model selection), see `skills/delegation-patterns/SKILL.md`.
 
 > **Note for non-Claude Code harnesses (Cline, Cursor, etc.):** The YAML frontmatter in each agent file is silently ignored. Agent files continue to work exactly as before — load them as context or role definitions. No behavior change.
 
@@ -230,7 +230,7 @@ For full delegation patterns (parallel dispatch, worktree isolation, two-tier mo
 When using **Grok 4.3+ CLI/TUI** (or compatible), the hub provides first-class native integration with **zero extra configuration**:
 
 - **Project Rules**: `AGENTS.md` (and CLAUDE.md alias) is auto-discovered and loaded at every level of the repo (see Grok user-guide 11-project-rules.md). The full global rules, memory-bank protocol, and workflows are active immediately.
-- **Skills**: All skills are packaged under `.grok/skills/<name>/`. Grok surfaces them as slash commands (`/plan-code-review-workflow`, `/expert-pr-review`, `/write-tests`, `/memory-bank-protocol`, `/subagent-routing`, `/debug-investigation`, etc.). Each SKILL.md contains minimal frontmatter + quick-start; the complete authoritative steps live in `references/source.md` (kept in sync with the canonical `skills/*.md` files).
+- **Skills**: All skills are packaged under `.grok/skills/<name>/`. Grok surfaces them as slash commands (`/plan-code-review-workflow`, `/expert-pr-review`, `/write-tests`, `/memory-bank-protocol`, `/subagent-routing`, `/debug-investigation`, etc.). Each SKILL.md contains minimal frontmatter + quick-start; the complete authoritative steps live in `references/source.md` (kept in sync with the canonical `skills/*/SKILL.md` files).
 - **Agents / Subagents**: The 5 reusable roles are exposed via `.grok/agents/` symlinks. They appear in `grok inspect`, the subagent catalog (Ctrl+Shift+A), and can be spawned with the `task` tool:
   ```
   task(subagent_type="Engineer", description="...", prompt="...", ...)
@@ -246,7 +246,7 @@ When using **Grok 4.3+ CLI/TUI** (or compatible), the hub provides first-class n
 - Edit the canonical sources in `skills/*.md` and `agents/*.md` only.
 - After changes: `python scripts/export_codex_skills.py --output-dir .grok/skills --force` (re-generates thin wrappers) and update any symlinks under `.grok/agents/`.
 - This keeps Grok users in sync without duplication or drift.
-- See `skills/delegation-patterns.md` and `skills/subagent-routing.md` for advanced spawning patterns (Haiku vs Sonnet model selection, parallel calls, worktree isolation).
+- See `skills/delegation-patterns/SKILL.md` and `skills/subagent-routing/SKILL.md` for advanced spawning patterns (Haiku vs Sonnet model selection, parallel calls, worktree isolation).
 
 The result matches the project vision: clone the repo, open in Grok, everything (roles, workflows, memory-bank, manifest, docs/) just works.
 
@@ -260,7 +260,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 
 ### Core Workflow: plan-code-review (plan → code → review → iterate)
 
-**Defined in**: `skills/plan-code-review-workflow.md`
+**Defined in**: `skills/plan-code-review-workflow/SKILL.md`
 
 **Steps** (follow exactly, adapt intelligently):
 1. **PLAN** (Software Architect role)
@@ -293,20 +293,23 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 
 | Skill | Trigger | What it does |
 |---|---|---|
-| `expert-pr-review.md` | Any PR review request | 8-step review: gather context, resolve threads, build/test, security checklist, post with user approval |
-| `triage-review-feedback.md` | A PR WE authored received review feedback (human, AI reviewer, or scanner) | Inventory all claims → verify each against the code → FIX/DISMISS-with-evidence/JUDGMENT → TDD fix batch → QA pass → reply + resolve threads + re-request review |
-| `pr-shepherd.md` | Start of day, after opening/un-drafting a PR, "what's blocked?" | Enumerate open PRs across manifest repos, classify blockers, front-load all reviewer asks in the first hour, fill the wait with reviewer-free work |
-| `end-of-day-review.md` | End of working day, "wrap up", "plan tomorrow" | Evidence-based day review → capture learnings → memory-bank compaction → write tomorrow's plan (reviewer asks first) → optional mem0 sync |
-| `multi-harness-coordination.md` | Coordinating work across two or more harnesses | Role map (planner/reviewer vs implementer) + Steps A–E adversarial loop with cumulative diff review and optional mem0 handoffs |
-| `task-loop-7-phase.md` | 7-Phase Algorithm, TaskLoopState, or OBSERVE → THINK → PLAN → BUILD → EXECUTE → VERIFY → LEARN workflow | Strict phase loop with mem0 TaskLoopState updates, measurable success criteria, automated verification, structured lesson memory, and optional wiki curation |
-| `cherry-pick-to-release-branch.md` | Hotfix or backport to a release branch | Fetch branch → cherry-pick PR commits → bump RC version → push |
-| `memory-bank-protocol.md` | Session start, project switch, new project setup | Tiered read protocol (hot files always, foundation files conditionally), optional mem0, compaction + evidence rules |
-| `docs-protocol.md` | Creating or updating technical docs or ADRs | Two-layer docs model, ADR format, how agents navigate via `docs_path` |
-| `write-tests.md` | Any new feature, bug fix, refactor, or any code change — before writing production code | Red/Green/Refactor playbook with Jest/Bun/pytest commands, mocking guide, retrofit guide |
-| `subagent-routing.md` | Any task with independent subtasks or when selecting a model for a spawned agent | Decision tree for subagent delegation; model selection table (Haiku vs Sonnet); parallel spawn examples |
-| `debug-investigation.md` | Bug report, unexpected behavior, "fix" without clear diagnosis | Reproduce → isolate (bisect/binary search) → failing test → fix → verify |
-| `performance-profiling.md` | "slow", "latency", "timeout", "optimize", or monitoring shows p95/p99 spikes | Measure baseline → profile (clinic.js, EXPLAIN ANALYZE, py-spy, CloudWatch) → fix one thing → measure again |
-| `feature-flag-lifecycle.md` | Creating, rolling out, or graduating a feature flag | Create (default-off, cleanup date) → staged rollout → graduate (remove dead code) |
+| `skills/expert-pr-review/SKILL.md` | Any PR review request | 8-step review: gather context, resolve threads, build/test, security checklist, post with user approval |
+| `skills/triage-review-feedback/SKILL.md` | A PR WE authored received review feedback (human, AI reviewer, or scanner) | Inventory all claims → verify each against the code → FIX/DISMISS-with-evidence/JUDGMENT → TDD fix batch → QA pass → reply + resolve threads + re-request review |
+| `skills/pr-shepherd/SKILL.md` | Start of day, after opening/un-drafting a PR, "what's blocked?" | Enumerate open PRs across manifest repos, classify blockers, front-load all reviewer asks in the first hour, fill the wait with reviewer-free work |
+| `skills/end-of-day-review/SKILL.md` | End of working day, "wrap up", "plan tomorrow" | Evidence-based day review → capture learnings → memory-bank compaction → write tomorrow's plan (reviewer asks first) → optional mem0 sync |
+| `skills/multi-harness-coordination/SKILL.md` | Coordinating work across two or more harnesses | Role map (planner/reviewer vs implementer) + Steps A–E adversarial loop with cumulative diff review and optional mem0 handoffs |
+| `skills/agent-orchestration-roles/SKILL.md` | Orienting a new harness or clarifying planner/implementer role split | Standard role division + shared coordination workspace + plan → implement → review loop (same pattern as `multi-harness-coordination`, alternate framing) |
+| `skills/adversarial-coordination-workflow/SKILL.md` | An Orchestrator needs a planner and implementer harness to run as adversarial peers | Step A–E loop: full-context plan gate → TDD on isolated branch → cumulative `git diff` adversarial review (max 3 iterations) → PR submission |
+| `skills/close-out/SKILL.md` | "Close this out", "wrap this up", after a multi-step session (task-scoped, not day-scoped) | Phase 1: verify memory-bank/shared-memory continuity. Phase 2: scan for friction/skill gaps and propose specific improvements |
+| `skills/task-loop-7-phase/SKILL.md` | 7-Phase Algorithm, TaskLoopState, or OBSERVE → THINK → PLAN → BUILD → EXECUTE → VERIFY → LEARN workflow | Strict phase loop with mem0 TaskLoopState updates, measurable success criteria, automated verification, structured lesson memory, and optional wiki curation |
+| `skills/cherry-pick-to-release-branch/SKILL.md` | Hotfix or backport to a release branch | Fetch branch → cherry-pick PR commits → bump RC version → push |
+| `skills/memory-bank-protocol/SKILL.md` | Session start, project switch, new project setup | Tiered read protocol (hot files always, foundation files conditionally), optional mem0, compaction + evidence rules |
+| `skills/docs-protocol/SKILL.md` | Creating or updating technical docs or ADRs | Two-layer docs model, ADR format, how agents navigate via `docs_path` |
+| `skills/write-tests/SKILL.md` | Any new feature, bug fix, refactor, or any code change — before writing production code | Red/Green/Refactor playbook with Jest/Bun/pytest commands, mocking guide, retrofit guide |
+| `skills/subagent-routing/SKILL.md` | Any task with independent subtasks or when selecting a model for a spawned agent | Decision tree for subagent delegation; model selection table (Haiku vs Sonnet); parallel spawn examples |
+| `skills/debug-investigation/SKILL.md` | Bug report, unexpected behavior, "fix" without clear diagnosis | Reproduce → isolate (bisect/binary search) → failing test → fix → verify |
+| `skills/performance-profiling/SKILL.md` | "slow", "latency", "timeout", "optimize", or monitoring shows p95/p99 spikes | Measure baseline → profile (clinic.js, EXPLAIN ANALYZE, py-spy, CloudWatch) → fix one thing → measure again |
+| `skills/feature-flag-lifecycle/SKILL.md` | Creating, rolling out, or graduating a feature flag | Create (default-off, cleanup date) → staged rollout → graduate (remove dead code) |
 
 See `/skills/` directory for full definitions. New skills should follow the style of the examples in this hub (clear steps, warnings, examples, code blocks).
 
@@ -318,7 +321,7 @@ See `manifest.yaml` for the full list.
 
 **How to use**:
 - Agent parses this at session start or on "switch project" command.
-- For each project: load its `memory_bank_path` (tiered read per `memory-bank-protocol.md`), then load its `docs_path` for technical reference.
+- For each project: load its `memory_bank_path` (tiered read per `skills/memory-bank-protocol/SKILL.md`), then load its `docs_path` for technical reference.
 - Example entry:
   ```yaml
   projects:
@@ -365,7 +368,7 @@ docs/
 docs_path: docs/projects/agent-bootstrap
 ```
 
-See `skills/docs-protocol.md` for the full playbook on creating, updating, and referencing project docs. See `docs/README.md` for the complete two-layer model explanation.
+See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating, and referencing project docs. See `docs/README.md` for the complete two-layer model explanation.
 
 ---
 

@@ -85,7 +85,7 @@ Introduce a focused `docs/` directory:
 - `docs/shared/` — team-wide standards
 - `docs/projects/<name>/` — per-project technical reference (api-contracts, data-models, pipeline-overview, decisions)
 - `manifest.yaml` gains `docs_path` field, replacing the removed `wiki_sections` field.
-- New skill `skills/docs-protocol.md` governs how agents create and update docs.
+- New skill `skills/docs-protocol/SKILL.md` governs how agents create and update docs.
 
 ### Consequences
 **Positive:** Fills the documentation gap. KISS. Agents can navigate via `docs_path`.  

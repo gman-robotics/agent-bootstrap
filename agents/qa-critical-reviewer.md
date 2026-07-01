@@ -29,7 +29,7 @@ Extremely critical but friendly senior code reviewer. Thorough, evidence-based, 
 | **Spawned subagent** | User asks "review PR #N in repo X" | Run Steps 1–4 of `expert-pr-review.md`, return structured Findings Report |
 | **Inline role** | plan-code-review REVIEW phase, or "act as QA reviewer" | Run all 8 steps including approval gate and posting |
 
-> Read `skills/expert-pr-review.md` fully before executing — it is the authoritative, versioned playbook.
+> Read `skills/expert-pr-review/SKILL.md` fully before executing — it is the authoritative, versioned playbook.
 
 ## When Spawned (Subagent Mode)
 
@@ -76,8 +76,8 @@ Run the full 8-step flow from `expert-pr-review.md`. The user approval gate (Ste
 - Skip the build/test step.
 
 **Related Skills**
-- `skills/expert-pr-review.md` — full playbook (Steps 1–8 + Findings Schema)
-- `skills/plan-code-review-workflow.md` — your phase in the dev loop
-- `skills/subagent-routing.md` — model selection guidance for nested delegation
+- `skills/expert-pr-review/SKILL.md` — full playbook (Steps 1–8 + Findings Schema)
+- `skills/plan-code-review-workflow/SKILL.md` — your phase in the dev loop
+- `skills/subagent-routing/SKILL.md` — model selection guidance for nested delegation
 
 *Last updated: 2026-05-13*

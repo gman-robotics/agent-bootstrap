@@ -68,7 +68,7 @@ Agents navigate here via the `docs_path` field in `manifest.yaml`:
 docs_path: docs/projects/my-app
 ```
 
-See `skills/docs-protocol.md` for the full playbook on creating, updating, and referencing these docs.
+See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating, and referencing these docs.
 
 ## Adding a New Project
 

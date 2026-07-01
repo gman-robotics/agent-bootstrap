@@ -37,7 +37,7 @@ We use the same workflows the agents use — this keeps quality high and consist
 
 ### 4. Adding or Updating Project Documentation
 1. Navigate to `docs/projects/<name>/` (or `docs/shared/` for team-wide standards).
-2. Follow the **docs-protocol skill** (`skills/docs-protocol.md`) for creating or updating docs.
+2. Follow the **docs-protocol skill** (`skills/docs-protocol/SKILL.md`) for creating or updating docs.
 3. For architectural decisions: add an ADR to `docs/projects/<name>/decisions.md` (or `docs/shared/decisions.md` for cross-project decisions).
 4. Update `memory-bank/techContext.md` if the change is significant.
 
