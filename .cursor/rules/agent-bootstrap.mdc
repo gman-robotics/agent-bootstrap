@@ -33,6 +33,7 @@ When any skill is triggered, read the full skill file (`skills/<name>.md`) befor
 | `pr-shepherd.md` | Start of day, PR status, "what's blocked?", after opening/un-drafting a PR |
 | `reply-contract.md` | Status, "your turn", smoke / tap-through, anything the human must do |
 | `codebase-simplification-audit.md` | Whole-repo read-only audit of data/state/ownership; no edits until user accepts a rec |
+| `grill-with-docs.md` | Align on a plan/design before code; CONTEXT.md glossary; no implement until they confirm |
 | `end-of-day-review.md` | End of working day, "wrap up", "plan tomorrow" |
 | `multi-harness-coordination.md` | Coordinating work across two or more agent harnesses |
 | `task-loop-7-phase.md` | 7-Phase Algorithm, TaskLoopState, observe/think/plan/build/execute/verify/learn |

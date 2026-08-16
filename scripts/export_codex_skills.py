@@ -359,6 +359,23 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Inventory every subsystem, bound workers to \u22642 material recs or skip, verify, audit the audit, then stop.",
         ),
     ),
+    "grill-with-docs": SkillConfig(
+        description=(
+            "Use when aligning on a plan or design before code: grill the user in "
+            "rounds, keep CONTEXT.md as a glossary, and offer ADRs only for "
+            "hard-to-reverse trade-offs. Do not implement until they confirm."
+        ),
+        short_description="Align on domain language before code",
+        trigger_summary=(
+            "Triggers on grill this, grill-with-docs, align on the domain, or "
+            "build CONTEXT.md before a change."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting; it is the authoritative workflow.",
+            "Hard rule: no implement skills, feature branches, or PRs until the user confirms shared understanding.",
+            "Ask the whole decision frontier each round; look up facts yourself; write glossary-only CONTEXT.md as terms resolve.",
+        ),
+    ),
 }
 
 
