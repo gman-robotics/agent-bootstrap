@@ -29,6 +29,7 @@ When any skill is triggered (see trigger conditions below), read the full skill 
 - `triage-review-feedback.md`        → review feedback received on a PR WE authored (human, AI, or scanner)
 - `pr-shepherd.md`                   → start of day, PR status, "what's blocked?", after opening/un-drafting a PR
 - `reply-contract.md`                → status, "your turn", smoke / tap-through, anything the human must do
+- `codebase-simplification-audit.md` → whole-repo read-only audit of data/state/ownership; no edits until user accepts a rec
 - `end-of-day-review.md`             → end of working day, "wrap up", "plan tomorrow"
 - `multi-harness-coordination.md`    → coordinating work across two or more agent harnesses
 - `task-loop-7-phase.md`             → 7-Phase Algorithm, TaskLoopState, observe/think/plan/build/execute/verify/learn
@@ -51,6 +52,7 @@ When any skill is triggered (see trigger conditions below), read the full skill 
 ## Supported Workflows (invoke by name)
 
 - "Follow the plan-code-review workflow to [task]"
+- "Run a codebase-simplification-audit on [repo]"
 - "Use the expert-pr-review skill on PR #N in repo X"
 - "Address review feedback on PR #N using triage-review-feedback"
 - "Run pr-shepherd" or "what's blocked on our PRs?"

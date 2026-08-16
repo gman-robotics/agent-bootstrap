@@ -342,6 +342,23 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Gloss only the jargon you used. Say leftover vs bug and who is waiting.",
         ),
     ),
+    "codebase-simplification-audit": SkillConfig(
+        description=(
+            "Use when the user wants a whole-repo read-only audit for simpler data "
+            "structures, state representation, control flow, algorithms, or ownership. "
+            "Do not edit, test, implement, commit, or push until they accept a recommendation."
+        ),
+        short_description="Read-only whole-repo representation audit",
+        trigger_summary=(
+            "Triggers on codebase simplification audit, messy state/ownership reviews, "
+            "or a paste of the Aaron Francis audit-your-codebase gist."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting; it is the authoritative workflow.",
+            "Hard rule: no file edits, tests, implement skills, commits, or pushes until the user accepts a rec.",
+            "Inventory every subsystem, bound workers to \u22642 material recs or skip, verify, audit the audit, then stop.",
+        ),
+    ),
 }
 
 

@@ -13,6 +13,7 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 ## When to Use
 - Any feature, refactor, bugfix, or change that touches >1 file or has user impact.
 - **Never skip** for greenfield or complex work (global rule).
+- **Do not start this skill** during a `codebase-simplification-audit`. That audit is read-only until the user accepts a recommendation.
 
 ## Roles Involved (Dynamic Switching)
 - **Software Architect** (plan phase)
@@ -62,7 +63,7 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 **Exit Criteria**: All planned changes complete + self-review passed. Hand off to QA.
 
 ### Phase 3: REVIEW (QA Critical Reviewer Role)
-1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review.md` if this results in a PR.
+1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review/SKILL.md` if this results in a PR.
 2. **Perform Critical Review**
    - If GitHub PR: Follow **exact** 8-step flow in expert-pr-review.md (gather context in parallel, resolve threads, build/test, security checklist, summarize).
    - If internal changes (no PR yet): Use the same rigor — checklist for correctness, style, tests, security, performance, accessibility (if UI), breaking changes.
