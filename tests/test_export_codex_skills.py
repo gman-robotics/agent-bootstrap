@@ -1,3 +1,4 @@
+import os
 import subprocess
 import tempfile
 import unittest
@@ -111,6 +112,39 @@ class InstallGrokScriptTests(unittest.TestCase):
             self.assertIn("model: sonnet", content)
             self.assertIn("tools:", content)
             self.assertIn("software-architect", content.lower())
+
+
+class InstallAgentsScriptTests(unittest.TestCase):
+    """TDD for scripts/install-agents.sh — it must symlink every agent, not just the first."""
+
+    def test_install_agents_symlinks_all_agent_files(self) -> None:
+        script = REPO_ROOT / "scripts" / "install-agents.sh"
+        agent_sources = sorted((REPO_ROOT / "agents").glob("*.md"))
+        self.assertGreater(len(agent_sources), 1, "expected multiple agent files to symlink")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env = {**os.environ, "HOME": tmp}
+            result = subprocess.run(
+                ["bash", str(script)],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                env=env,
+            )
+            self.assertEqual(
+                result.returncode, 0,
+                f"install-agents.sh failed:\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}",
+            )
+
+            installed_dir = Path(tmp) / ".claude" / "agents"
+            installed = sorted(installed_dir.glob("*.md"))
+            self.assertEqual(
+                {p.name for p in installed},
+                {p.name for p in agent_sources},
+                "every agent file must be symlinked",
+            )
+            for link in installed:
+                self.assertTrue(link.is_symlink(), f"{link.name} should be a symlink")
 
 
 if __name__ == "__main__":

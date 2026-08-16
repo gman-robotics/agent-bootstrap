@@ -23,7 +23,7 @@ for agent_file in "${AGENTS_SRC}"/*.md; do
   target="${CLAUDE_AGENTS_DIR}/${filename}"
   ln -sf "${agent_file}" "${target}"
   echo "  ✓  ${filename}"
-  ((installed++))
+  installed=$((installed + 1))
 done
 
 echo ""
