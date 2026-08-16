@@ -14,6 +14,7 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 - Any feature, refactor, bugfix, or change that touches >1 file or has user impact.
 - **Never skip** for greenfield or complex work (global rule).
 - **Do not start this skill** during a `codebase-simplification-audit`. That audit is read-only until the user accepts a recommendation.
+- **Do not start this skill** during `grill-with-docs` until the user confirms shared understanding.
 
 ## Roles Involved (Dynamic Switching)
 - **Software Architect** (plan phase)

@@ -71,6 +71,13 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 
 ---
 
+### grill-with-docs
+**File**: `skills/grill-with-docs/SKILL.md`  
+**Trigger**: “Grill this”, align on a plan/design before code, build or update CONTEXT.md.  
+**What it does**: Round-based interview (facts vs decisions). Writes glossary-only `CONTEXT.md` as terms resolve; offers ADRs only for hard-to-reverse trade-offs. **Hard rule:** no implement skills until the user confirms shared understanding.
+
+---
+
 ### end-of-day-review
 **File**: `skills/end-of-day-review/SKILL.md`  
 **Trigger**: End of every working day ("wrap up the day", "EOD", "plan tomorrow") or before an extended break.  

@@ -15,7 +15,8 @@ version: 1.0.0
 > **IMPORTANT**: `docs/` is the **technical reference layer** — not the operational state layer.  
 > - Use `docs/` for: API contracts, schemas, ADRs, pipeline configs, long-lived technical facts.  
 > - Use `memory-bank/` for: current session focus, active decisions, task progress.  
-> Never mix these two layers.
+> - Use root `CONTEXT.md` (via `grill-with-docs`) for **domain glossary only** — not a spec and not session state.  
+> Never mix these layers.
 
 ---
 
