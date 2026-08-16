@@ -20,6 +20,7 @@ class ExportCodexSkillsTests(unittest.TestCase):
             self.assertEqual(len(exported), len(SKILL_CONFIGS))
             self.assertIn("task-loop-7-phase", SKILL_CONFIGS)
             self.assertIn("reply-contract", SKILL_CONFIGS)
+            self.assertIn("codebase-simplification-audit", SKILL_CONFIGS)
             for skill_name in SKILL_CONFIGS:
                 skill_dir = output_dir / skill_name
                 self.assertTrue(skill_dir.is_dir(), skill_name)

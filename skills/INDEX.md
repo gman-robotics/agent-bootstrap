@@ -64,6 +64,13 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 
 ---
 
+### codebase-simplification-audit
+**File**: `skills/codebase-simplification-audit/SKILL.md`  
+**Trigger**: Whole-repo audit for simpler data structures / state / ownership; "codebase simplification audit"; paste of the Aaron Francis audit gist.  
+**What it does**: Read-only coordinator + bounded workers. Inventory every subsystem, ≤2 material recs or skip, verify, audit the audit, ranked report. **Hard rule:** no edits, tests, implement skills, commits, or pushes until the user accepts a recommendation.
+
+---
+
 ### end-of-day-review
 **File**: `skills/end-of-day-review/SKILL.md`  
 **Trigger**: End of every working day ("wrap up the day", "EOD", "plan tomorrow") or before an extended break.  
