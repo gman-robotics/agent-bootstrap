@@ -1,0 +1,22 @@
+---
+name: reply-contract
+description: Use when giving status, a your-turn / smoke checklist, or any longer explanation to a human who may have just switched projects. Write as if they are new: one show-me visual, gloss jargon, leftover vs bug, who is waiting.
+metadata:
+  short-description: Status and your-turn as if they just walked in
+---
+
+# reply-contract
+
+Triggers on status after another agent finished, smoke / tap-through, or anything the human must do or decide.
+
+## Quick Start
+
+1. Read `references/source.md` before writing the reply.
+2. Pair with show-me: one tree, stack, or diff. No mermaid/HTML on Photon unless asked.
+3. Gloss only the jargon you used. Say leftover vs bug and who is waiting.
+
+## Compatibility Notes
+
+- The detailed workflow lives in `references/source.md`; treat that file as the authoritative procedure.
+- Translate harness-specific tool names from the source into Grok (or Codex) equivalents while preserving the workflow intent.
+- Keep all safety rules from the source, especially approval gates, review-only constraints, and absolute-path requirements.

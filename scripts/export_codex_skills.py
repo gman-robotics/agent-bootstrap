@@ -324,6 +324,24 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Phase 2: scan for friction/skill gaps and propose specific, filed improvements.",
         ),
     ),
+    "reply-contract": SkillConfig(
+        description=(
+            "Use when giving status, a your-turn / smoke checklist, or any longer "
+            "explanation to a human who may have just switched projects. Write as "
+            "if they are new: one show-me visual, gloss jargon, leftover vs bug, "
+            "who is waiting."
+        ),
+        short_description="Status and your-turn as if they just walked in",
+        trigger_summary=(
+            "Triggers on status after another agent finished, smoke / tap-through, "
+            "or anything the human must do or decide."
+        ),
+        quick_start=(
+            "Read `references/source.md` before writing the reply.",
+            "Pair with show-me: one tree, stack, or diff. No mermaid/HTML on Photon unless asked.",
+            "Gloss only the jargon you used. Say leftover vs bug and who is waiting.",
+        ),
+    ),
 }
 
 

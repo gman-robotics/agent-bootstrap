@@ -57,6 +57,13 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 
 ---
 
+### reply-contract
+**File**: `skills/reply-contract/SKILL.md`  
+**Trigger**: Status after another agent finished; "your turn"; smoke / tap-through; anything the human must do or decide.  
+**What it does**: Write as if they just switched projects. Pair with show-me (one tree/stack/diff). Gloss jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked.
+
+---
+
 ### end-of-day-review
 **File**: `skills/end-of-day-review/SKILL.md`  
 **Trigger**: End of every working day ("wrap up the day", "EOD", "plan tomorrow") or before an extended break.  
