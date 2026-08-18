@@ -22,3 +22,5 @@ Forbidden unless the user asks: mermaid fences, HTML files, emoji-led outlines.
 ## One visual
 
 If you want mermaid *and* a tree, pick one.
+
+The tree *is* the sequence. Do not also number the steps. One step → a bullet.
