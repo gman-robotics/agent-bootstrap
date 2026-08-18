@@ -60,7 +60,7 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 ### reply-contract
 **File**: `skills/reply-contract/SKILL.md`  
 **Trigger**: Status after another agent finished; "your turn"; smoke / tap-through; anything the human must do or decide.  
-**What it does**: Write as if they just switched projects. Pair with show-me (one tree/stack/diff). Gloss jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked.
+**What it does**: Write as if they just switched projects. Pair with show-me (one tree/stack/diff). Gloss or replace jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked. Voice/marks from Google+Apple+Red Hat (`references/style-sources.md`).
 
 ---
 

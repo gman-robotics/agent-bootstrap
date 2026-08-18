@@ -1,13 +1,15 @@
 ---
 name: reply-contract
 description: "Use when status or your-turn. Write as if the user is new to the project."
-version: 1.1.0
+version: 1.2.0
 ---
 
 # reply-contract — Status and your-turn as if they just walked in
 
 **Purpose**  
 When more than one project is in flight, slash-jargon and heading walls both fail. Pair with **show-me** (trees / stacks / diffs). Do not reimplement those visuals here.
+
+House style wins. Google / Apple / Red Hat only change voice and marks. See `references/style-sources.md`.
 
 **Trigger**  
 Status after another agent finished; “your turn”; smoke / tap-through; anything the human must do or decide; a longer explanation of a system they did not just build.
@@ -32,14 +34,16 @@ Smallest view that makes the next action obvious. One primary visual per reply.
 
 Photon/iMessage home: **bold + lists + fenced trees/diffs only.**
 
+The tree *is* the sequence. If you skip the tree, number the steps. Never both. One step → a single bullet, not `1.`
+
 ## Content that must still be true
 
-The visual is not a substitute for orientation. Next to it:
+The visual is not a substitute for orientation. New facts must also exist in prose. Next to the visual:
 
 1. **Project** — name + one sentence what it is
 2. **Where it stands** — what just landed, in English (SHA after, not instead)
 3. **Your turn** — the tree *is* the steps
-4. **Words** — only jargon you used, one line each
+4. **Words** — only jargon you used; prefer a plain word; if you keep the term, define once then reuse
 5. **Leftover vs bug**
 6. **Who is waiting**
 
@@ -47,10 +51,25 @@ Skip 3–6 if there is no human action.
 
 ## Voice
 
-- Assume they do not remember this project’s vocabulary
-- Prefer a tree of screens/buttons over milestone codes as the lead
-- A tree plus four gloss lines beats a six-heading essay
-- No “great” / “perfect” / restating a bot notification
+Write as if they just walked in from another project.
+
+- Second person, active voice. Conditions before the tap.
+- Imperative, one action per line. A tree plus four gloss lines beats a six-heading essay.
+- Prefer a tree of screens/buttons over milestone codes as the lead.
+- No “great” / “perfect” / restating a bot notification.
+- No please / simply / easy / quickly / let’s / basically / “as expected” / “please note” / `!`
+- No pre-announce. No promised ship date for a leftover.
+- Sentence cap ~26 words. Serial commas. Spell out “and”.
+- No idioms. Describe what happens (`a message appears`), not a sense (`you see`).
+- Don’t use position or color as the only cue.
+
+## Marks
+
+- **Bold** labeled UI
+- `code` for tokens, files, flags, SHAs, and values to type
+- Placeholder the human must replace: `<value_name>` in code font
+- Dates unambiguous (`2026-08-18`). Links name the target — never “click here”. `See` is fine.
+- **Words** as a short description list, not a slash-run
 
 ## Bad / good
 
@@ -60,27 +79,32 @@ Skip 3–6 if there is no human action.
 
 **Also bad** — six headings, no shape.
 
+**Also bad** — numbered list *and* a tree.
+
 **Good** — project line + show-me tree + gloss
 
-> **Wod** is the iPhone workout app. Simulator is already open with the gym loop (today’s workout → type sets → finish the day).
+> **Wod** is the iPhone workout app. Simulator is already open with the gym loop.
 >
 > ```text
 > Simulator / Wod iPhone 17
->   Profile → sign in as A          # fake test user, not Google
->   Today → start today’s workout
->   Session
+>   **Profile** → sign in as A     # fake test user, not Google
+>   **Today** → start today’s workout
+>   **Session**
 >     type two sets on one lift
 >     leftover-set counts should move
 >     undo last set → it vanishes
 >     swap or drop one planned lift
 >     close out: finished / short / missed
->   Profile → sign out
+>   **Profile** → sign out
 >   sign in as A again → history empty
 > ```
 >
-> **Words:** leftover-set count = sets still owed. undo = take back last typed set. swap/drop = change or remove a planned lift. close-out = mark the session done.
+> **Words**
+> - leftover-set count — sets still owed
+> - undo — take back the last typed set
+> - close-out — mark the session done
 >
-> Extra/bonus sets still omit from close-out — known leftover. Backend work waits until the human says the loop feels right.
+> Extra sets still omit from close-out — known leftover. Backend work waits until the human says the loop feels right.
 
 ## Pitfalls
 
@@ -90,6 +114,8 @@ Skip 3–6 if there is no human action.
 4. Reimplementing show-me instead of loading it
 5. Leading with SHAs / card ids
 6. Defining every noun — only what you used
+7. Numbered steps *and* a tree
+8. New facts only inside the tree
 
 ## Verification
 
@@ -97,6 +123,7 @@ Skip 3–6 if there is no human action.
 - [ ] One primary visual; channel-legal
 - [ ] A new-to-the-thread reader could do the next action
 - [ ] Jargon in the reply is glossed or replaced
+- [ ] UI is bold; tokens are `code`
 - [ ] Who is blocked on the human is explicit, or there is no human action
 
-Last updated: 2026-08-15
+Last updated: 2026-08-18
