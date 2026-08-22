@@ -136,6 +136,50 @@ class InstallGrokScriptTests(unittest.TestCase):
             text = manifest.read_text(encoding="utf-8")
             self.assertIn('"name": "agent-bootstrap"', text)
 
+    def test_install_grok_equivalent_repo_paths_do_not_select_plugin_layout(self) -> None:
+        """TARGET that *is* the hub must not use plugin layout.
+
+        A raw string compare misses trailing slashes, `.`, and symlink spellings.
+        Plugin layout would export into committed skills/ (FileExistsError without
+        --force; rmtree of source with --force). Discriminator: exporter path
+        `<repo>/skills/` vs `<repo>/.grok/skills/`.
+        """
+        script = REPO_ROOT / "scripts" / "install-grok.sh"
+        index_before = (REPO_ROOT / "skills" / "INDEX.md").read_bytes()
+        plugin_skills_prefix = str(REPO_ROOT / "skills") + os.sep
+        cases = [
+            str(REPO_ROOT) + "/",
+            ".",
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            link = Path(tmp) / "hub-link"
+            link.symlink_to(REPO_ROOT)
+            cases.append(str(link))
+            for target in cases:
+                with self.subTest(target=target):
+                    result = subprocess.run(
+                        ["bash", str(script), "--target", target],
+                        cwd=REPO_ROOT,
+                        capture_output=True,
+                        text=True,
+                        timeout=60,
+                    )
+                    combined = result.stdout + result.stderr
+                    self.assertEqual(
+                        (REPO_ROOT / "skills" / "INDEX.md").read_bytes(),
+                        index_before,
+                        "canonical skills/INDEX.md must not change",
+                    )
+                    self.assertFalse(
+                        (REPO_ROOT / ".claude-plugin").exists(),
+                        "plugin-mode side dir must not appear in the hub",
+                    )
+                    self.assertNotIn(
+                        plugin_skills_prefix,
+                        combined,
+                        f"--target {target!r} selected plugin layout:\n{combined[-800:]}",
+                    )
+
 
 class InstallAgentsScriptTests(unittest.TestCase):
     """TDD for scripts/install-agents.sh — it must symlink every agent, not just the first."""

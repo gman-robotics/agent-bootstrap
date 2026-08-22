@@ -18,6 +18,13 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 
+# Resolve . / trailing slashes / symlinks so TARGET==REPO_ROOT is a real directory
+# compare, not a string compare. Plugin mode against the hub checkout would export
+# into committed skills/ and --force could rmtree extra references/ with no copy-back.
+canonical_path() {
+  python3 -c 'import os, sys; print(os.path.realpath(os.path.expanduser(sys.argv[1])))' "$1"
+}
+
 MODE="user"     # user | local
 TARGET=""
 FORCE=0
@@ -60,6 +67,9 @@ if [[ -z "$TARGET" ]]; then
   fi
 fi
 
+REPO_ROOT="$(canonical_path "$REPO_ROOT")"
+TARGET="$(canonical_path "$TARGET")"
+
 # --local refreshes the committed project tree (.grok/skills, discovered when
 # this repo is the cwd). Plugin / user installs use Grok's plugin layout:
 #   <plugin>/skills/  <plugin>/agents/  .grok-plugin/plugin.json
@@ -68,6 +78,7 @@ if [[ "$MODE" == "local" || "$TARGET" == "$REPO_ROOT" ]]; then
   SKILLS_DIR="${TARGET}/.grok/skills"
   AGENTS_DIR="${TARGET}/.grok/agents"
   PLUGIN_MODE=0
+  MODE="local"
 else
   SKILLS_DIR="${TARGET}/skills"
   AGENTS_DIR="${TARGET}/agents"
@@ -76,6 +87,7 @@ fi
 
 echo "→ Mode:   ${MODE}"
 echo "→ Target: ${TARGET}"
+echo "→ Layout: $([[ "$PLUGIN_MODE" -eq 1 ]] && echo plugin || echo local)"
 echo ""
 
 mkdir -p "${SKILLS_DIR}" "${AGENTS_DIR}"
@@ -180,8 +192,9 @@ JSON
   printf '%s\n' "${plugin_json}" > "${TARGET}/.claude-plugin/plugin.json"
   echo "  ✓ plugin.json created (${skill_count} skills, ${agent_count} agents)"
   # Stale nested layout from older install-grok.sh must not linger beside the
-  # plugin-root skills/ agents/ Grok actually scans.
-  if [[ $FORCE -eq 1 && -d "${TARGET}/.grok" ]]; then
+  # plugin-root skills/ agents/ Grok actually scans. Never touch the hub's
+  # committed .grok/ even if mode detection were wrong.
+  if [[ $FORCE -eq 1 && -d "${TARGET}/.grok" && "$TARGET" != "$REPO_ROOT" ]]; then
     rm -rf "${TARGET}/.grok"
     echo "  ✓ Removed leftover ${TARGET}/.grok (pre-plugin layout)"
   fi
