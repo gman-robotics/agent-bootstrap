@@ -87,10 +87,30 @@ This skill establishes a standardized division of labor and coordination workspa
 
 ---
 
+## Optional: four-field envelope stanza
+
+When publishing a plan or finding to shared memory (Step A) or writing a handoff note for the implementer/planner (Steps B–D), lead with a four-field markdown stanza — idea only, from a Scout memo comparing swarm-forge's inter-agent envelope format against this hub (`unclebob/swarm-forge`, no files/scripts copied; that repo has no LICENSE):
+
+```text
+> type: handoff
+> to: Engineer
+> priority: normal
+> task: <stable-task-name>
+```
+
+- `type` — `handoff`, `review`, `finding`, or similar; keep the vocabulary small.
+- `to` — the receiving role or harness.
+- `priority` — `low` / `normal` / `high`.
+- `task` — the thread's stable task Name (see `reply-contract` "Task name"), unchanged for the thread's life.
+
+This is a descriptive markdown header, not a message-bus contract. Explicitly **not** adopted from swarm-forge: `merge_and_process` semantics, 10-char SHA identity, outbox file paths, helper `TASK:`/`NO_TASK` stdout conventions, or auto-generated envelope bodies.
+
+---
+
 ## Operational Guidelines for the Orchestrator
 
 1. **Be the Router:** You are the air traffic controller. Do not write code or design solutions directly. Move the active context, git branch state, and shared-memory pointers between the two agents.
 2. **Setup the Branch First:** Before starting Step B, ensure a clean branch is created from `main` (e.g., `feature/issue-<ID>`) so both agents are isolated and working on the exact same commit history.
 3. **Verify Git State:** Run `git status` and `git diff` after each agent's turn to understand precisely what has been modified on disk.
 
-*Last updated: 2026-07-01*
+*Last updated: 2026-08-22*
