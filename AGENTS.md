@@ -32,7 +32,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
      ln -sf /path/to/agent-bootstrap/AGENTS.md ~/.grok/AGENTS.md
      bash /path/to/agent-bootstrap/scripts/install-grok.sh
      ```
-     Then run `grok inspect`, trust the plugin if prompted, and use `/plan-code-review-workflow` or `task(subagent_type="Architect", ...)` from any project. Re-run the install script after pulling updates.
+     Then `grok plugin install --trust ~/.grok/plugins/agent-bootstrap` (or re-run it after pulling updates), run `grok inspect`, and use `/plan-code-review-workflow` or `task(subagent_type="Architect", ...)` from any project. The plugin layout is `skills/` + `agents/` at the plugin root — not nested under `.grok/`.
 4. For any task: Begin by saying "Load AGENTS.md context" or the harness will do it automatically if configured.
 5. To switch projects: "Switch to project 'my-app' per manifest.yaml" — agent will load that project's memory-bank.
 

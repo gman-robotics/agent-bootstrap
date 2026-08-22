@@ -1,0 +1,5 @@
+{
+  "name": "agent-bootstrap",
+  "description": "Reusable skills and agent roles from the gman-robotics/agent-bootstrap hub. Works with Grok, Claude, and other harnesses.",
+  "version": "0.6.0"
+}

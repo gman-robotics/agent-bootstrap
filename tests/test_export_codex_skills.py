@@ -84,9 +84,19 @@ class InstallGrokScriptTests(unittest.TestCase):
                 result.returncode, 0,
                 f"install-grok.sh --local failed:\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
             )
+            local_skills = Path(tmp) / ".grok" / "skills"
+            self.assertTrue(
+                local_skills.is_dir(),
+                "--local refreshes project .grok/skills, not plugin-root skills/",
+            )
+            self.assertGreaterEqual(len(list(local_skills.glob("*/SKILL.md"))), 10)
 
     def test_install_grok_user_mode_creates_expected_structure(self) -> None:
-        """User/plugin install should create skills + Grok-frontmatter agents."""
+        """User/plugin install should create plugin-root skills + Grok-frontmatter agents.
+
+        Grok plugin discovery scans <plugin>/skills/ and <plugin>/agents/, not
+        a nested .grok/ tree. See ~/.grok/docs/user-guide/09-plugins.md.
+        """
         script = REPO_ROOT / "scripts" / "install-grok.sh"
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "plugin-install"
@@ -99,21 +109,32 @@ class InstallGrokScriptTests(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0, result.stderr)
 
-            # Skills
-            skills_dir = target / ".grok" / "skills"
-            self.assertTrue(skills_dir.is_dir())
+            skills_dir = target / "skills"
+            self.assertTrue(skills_dir.is_dir(), "plugin skills live at <plugin>/skills/")
+            self.assertFalse(
+                (target / ".grok" / "skills").is_dir(),
+                "plugin mode must not nest skills under .grok/",
+            )
             skill_files = list(skills_dir.glob("*/SKILL.md"))
             self.assertGreaterEqual(len(skill_files), 10, "Should have most or all skills exported")
+            self.assertTrue(
+                (skills_dir / "grill-with-docs" / "references" / "adr-format.md").is_file(),
+                "exporter --force deletes extra skill references; installer must restore them",
+            )
 
-            # Agents should have Grok-native frontmatter (model: sonnet, tools list)
-            agents_dir = target / ".grok" / "agents"
-            self.assertTrue(agents_dir.is_dir())
+            agents_dir = target / "agents"
+            self.assertTrue(agents_dir.is_dir(), "plugin agents live at <plugin>/agents/")
             architect = agents_dir / "software-architect.md"
             self.assertTrue(architect.is_file())
             content = architect.read_text(encoding="utf-8")
             self.assertIn("model: sonnet", content)
             self.assertIn("tools:", content)
             self.assertIn("software-architect", content.lower())
+
+            manifest = target / ".grok-plugin" / "plugin.json"
+            self.assertTrue(manifest.is_file(), "Grok plugin manifest")
+            text = manifest.read_text(encoding="utf-8")
+            self.assertIn('"name": "agent-bootstrap"', text)
 
 
 class InstallAgentsScriptTests(unittest.TestCase):

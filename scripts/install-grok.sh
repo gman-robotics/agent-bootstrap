@@ -60,9 +60,19 @@ if [[ -z "$TARGET" ]]; then
   fi
 fi
 
-GROK_DIR="${TARGET}/.grok"
-SKILLS_DIR="${GROK_DIR}/skills"
-AGENTS_DIR="${GROK_DIR}/agents"
+# --local refreshes the committed project tree (.grok/skills, discovered when
+# this repo is the cwd). Plugin / user installs use Grok's plugin layout:
+#   <plugin>/skills/  <plugin>/agents/  .grok-plugin/plugin.json
+# Nested <plugin>/.grok/skills is invisible to `grok plugin validate`.
+if [[ "$MODE" == "local" || "$TARGET" == "$REPO_ROOT" ]]; then
+  SKILLS_DIR="${TARGET}/.grok/skills"
+  AGENTS_DIR="${TARGET}/.grok/agents"
+  PLUGIN_MODE=0
+else
+  SKILLS_DIR="${TARGET}/skills"
+  AGENTS_DIR="${TARGET}/agents"
+  PLUGIN_MODE=1
+fi
 
 echo "→ Mode:   ${MODE}"
 echo "→ Target: ${TARGET}"
@@ -79,6 +89,23 @@ fi
 python3 "${REPO_ROOT}/scripts/export_codex_skills.py" "${EXPORT_ARGS[@]}"
 echo "  ✓ Skills exported to ${SKILLS_DIR}"
 
+# export --force rmtree's each skill dir and only regenerates references/source.md.
+# Copy any other canonical reference files the exporter does not emit.
+echo "→ Restoring extra skill references ..."
+for skill_src in "${REPO_ROOT}/skills"/*/; do
+  [[ -d "${skill_src}/references" ]] || continue
+  skill_name="$(basename "${skill_src}")"
+  dest_ref="${SKILLS_DIR}/${skill_name}/references"
+  mkdir -p "${dest_ref}"
+  for ref in "${skill_src}/references"/*; do
+    [[ -f "$ref" ]] || continue
+    base="$(basename "$ref")"
+    [[ "$base" == "source.md" ]] && continue
+    cp "$ref" "${dest_ref}/${base}"
+    echo "  ✓ Restored ${skill_name}/references/${base}"
+  done
+done
+
 # --- Agents ---
 # For --local (source repo): we keep the committed versions as decided by the packaging PR
 #   (they use the original frontmatter + the body is the canonical role definition).
@@ -91,7 +118,7 @@ if [[ $FORCE -eq 1 ]]; then
   rm -rf "${AGENTS_DIR}"/*
 fi
 
-if [[ "$MODE" == "local" || "$TARGET" == "$REPO_ROOT" ]]; then
+if [[ "$PLUGIN_MODE" -eq 0 ]]; then
   # Development mode inside the hub: copy the committed .grok/agents/ as-is
   cp -r "${REPO_ROOT}/.grok/agents/"* "${AGENTS_DIR}/" 2>/dev/null || true
   echo "  ✓ Agents copied from committed .grok/agents/ (local mode)"
@@ -137,16 +164,27 @@ AGENT
 fi
 
 # Create plugin.json only for actual user/plugin installs (not when refreshing the source repo)
-if [[ "$MODE" != "local" && "$TARGET" != "$REPO_ROOT" ]]; then
-  mkdir -p "${TARGET}/.claude-plugin"
-  cat > "${TARGET}/.claude-plugin/plugin.json" <<JSON
+if [[ "$PLUGIN_MODE" -eq 1 ]]; then
+  skill_count="$(find "${SKILLS_DIR}" -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l | tr -d ' ')"
+  agent_count="$(find "${AGENTS_DIR}" -maxdepth 1 -name '*.md' | wc -l | tr -d ' ')"
+  plugin_json="$(cat <<JSON
 {
   "name": "agent-bootstrap",
-  "description": "11 reusable skills and 5 agent roles from the gman-robotics/agent-bootstrap hub. Works with Grok, Claude, and other harnesses.",
-  "version": "0.4.0"
+  "description": "${skill_count} reusable skills and ${agent_count} agent roles from the gman-robotics/agent-bootstrap hub. Works with Grok, Claude, and other harnesses.",
+  "version": "0.6.0"
 }
 JSON
-  echo "  ✓ plugin.json created"
+)"
+  mkdir -p "${TARGET}/.grok-plugin" "${TARGET}/.claude-plugin"
+  printf '%s\n' "${plugin_json}" > "${TARGET}/.grok-plugin/plugin.json"
+  printf '%s\n' "${plugin_json}" > "${TARGET}/.claude-plugin/plugin.json"
+  echo "  ✓ plugin.json created (${skill_count} skills, ${agent_count} agents)"
+  # Stale nested layout from older install-grok.sh must not linger beside the
+  # plugin-root skills/ agents/ Grok actually scans.
+  if [[ $FORCE -eq 1 && -d "${TARGET}/.grok" ]]; then
+    rm -rf "${TARGET}/.grok"
+    echo "  ✓ Removed leftover ${TARGET}/.grok (pre-plugin layout)"
+  fi
 fi
 
 echo ""
@@ -156,8 +194,9 @@ if [[ "$MODE" == "local" ]]; then
   echo "The .grok/ tree in this checkout is now up to date."
 else
   echo "Next steps for using in any project:"
+  echo "  grok plugin install --trust ${TARGET}"
+  echo "  grok plugin validate ${TARGET}"
   echo "  grok inspect"
-  echo "  /plugins trust ${TARGET}"
   echo "  /plan-code-review-workflow"
 fi
 echo ""
