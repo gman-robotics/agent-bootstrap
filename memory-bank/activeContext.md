@@ -26,6 +26,13 @@ Blair's adversarial review verdict: **revise**. Blocker: `docs/shared/constituti
 - Not addressed in this revision (not in the user's required-fix list for this pass): Blair's should-fix items on the four-field envelope being "file, not pane chat" (`multi-harness-coordination`) and Article 5's dangling `expert-pr-review` enforcement claim — left for a future pass.
 - Pushed to the same branch/PR; still not merged, still not self-reviewed.
 
+### Revision after Blair pass 2 (PR #9, 2026-08-22)
+Blair pass 2 blocker: `AGENTS.md` §3's own Architect-role summary bullet (line ~148, distinct from the §4 PLAN bullet fixed in pass 1) still said "End planning by asking: 'Does this plan look good? Shall we switch to Act mode...'" — a leftover chat-prose closer that Article 1 lists `agents/software-architect.md` as already enforcing via the card. Fix (scope-limited to this one bullet, per task instructions — no `plan-code-review-workflow.md` rewrite):
+- `AGENTS.md` §3 software-architect.md bullet: now points at `agents/software-architect.md`'s spec-gate card (`skills/reply-contract/SKILL.md` format, `docs/shared/constitution.md` Article 1 cross-ref) instead of the "Does this plan look good?" question — same contract as the §4 PLAN bullet and the persona file: `Documents:` names the held plan, only a literal **Approve**/**Reject** counts as the stamp ("looks good"/"ok"/silence do not), and the card cannot show `Approve` while a leftover question sits beside it.
+- No other files touched — `skills/plan-code-review-workflow/SKILL.md` left as-is (out of scope, per the Article 1 note and this task's explicit instruction); grok export does not mirror `AGENTS.md` (`grep` for the old phrase across `.grok/` returns no matches), so no re-export needed.
+- Verification: `python3 -m unittest tests.test_export_codex_skills` — 7/7 pass; `git diff --check` clean.
+- Pushed to the same branch/PR (#9); still not merged, still not self-reviewed.
+
 ## Previous Focus (superseded)
 **Formatting and replay review complete** (2026-06-23). Reviewed the added skill/workflow updates in this checkout and fixed local formatting issues:
 - Replaced malformed `skills/agent-bootstrap/SKILL.md` placeholder text with valid skill frontmatter, quick-start steps, and replay guidance.

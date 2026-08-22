@@ -145,7 +145,7 @@ You can dynamically "become" any agent by loading its definition. The current ro
 - Output plans to `memory-bank/activeContext.md` and `progress.md`.
 - Never write code — only plan and document.
 - Use **Plan mode** for all complex work.
-- End planning by asking: "Does this plan look good? Shall we switch to Act mode and have the Software Engineer implement?"
+- End planning with `agents/software-architect.md`'s spec-gate card (`skills/reply-contract/SKILL.md` format; see `docs/shared/constitution.md` Article 1) — never a chat-prose "Does this plan look good?" ask. `Documents:` names the held plan (`memory-bank/activeContext.md` under "Current Plan"). Only a literal **Approve** or **Reject** counts as the stamp — "looks good" / "ok" / silence do not — and the card must not show `Approve` while a leftover question from the session still sits beside it.
 
 **When to Activate**: User says "Act as Software Architect for task X" or at start of plan-code-review workflow.
 

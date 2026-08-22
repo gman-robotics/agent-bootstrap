@@ -346,3 +346,19 @@ All rules followed: absolute paths, no unapproved commits, proactive but safe, m
 - `git diff --check`: clean (no whitespace errors introduced).
 - `git status --porcelain` after re-export + restore: only the two `references/source.md` files for the touched skills changed under `.grok/`; the two manually-restored reference files show no diff against their pre-existing committed content.
 - Branch: `cursor/steal-swarm-forge-skill-updates-a543`. PR: [#9](https://github.com/gman-robotics/agent-bootstrap/pull/9) (existing draft, revised in place — not a new PR, not merged, not self-reviewed).
+
+---
+
+## 2026-08-22 — PR #9 revision (pass 2): fix the leftover §3 Architect chat-prose closer
+
+**Task**: Blair pass 2 blocker — `AGENTS.md` §3's Architect-role summary bullet (line ~148) still asked the chat-prose "Does this plan look good? Shall we switch to Act mode..." question. This is a separate bullet from the §4 PLAN bullet fixed in pass 1; it was missed then. Article 1's `Enforced by` list already names `agents/software-architect.md` as card-enforcing, so this stale §3 summary line contradicted that claim. Scope explicitly limited by the task instructions to this one fix — no `plan-code-review-workflow.md` rewrite, no new PR, no merge.
+
+**What Was Done**
+- [x] `AGENTS.md` §3 software-architect.md `Key Behaviors` — replaced the "End planning by asking: 'Does this plan look good?...'" bullet with a spec-gate-card closer matching the contract already used by `agents/software-architect.md` and the §4 PLAN bullet: named `Documents:` (the held plan), a literal **Approve**/**Reject** stamp (not "looks good"/"ok"/silence), and no leftover open question allowed beside `Approve`. Cross-references `skills/reply-contract/SKILL.md` and `docs/shared/constitution.md` Article 1.
+- [x] Confirmed no other stale copies of the old phrase exist (`grep -rn "Does this plan look good"` → only the one line, now fixed) and that grok export does not mirror `AGENTS.md` content (`grep` across `.grok/` for the old phrase → no matches), so no `.grok/` re-export was required.
+- [x] `skills/plan-code-review-workflow/SKILL.md` — not touched, per explicit task instruction and the existing Article 1 "Explicitly out of scope" note.
+
+**Verification Evidence**
+- `python3 -m unittest tests.test_export_codex_skills` from `/workspace`: 7/7 pass before and after the edit (AGENTS.md is not exporter input, so no change expected — confirmed).
+- `git diff --check`: clean.
+- Branch: `cursor/steal-swarm-forge-skill-updates-a543`. PR: [#9](https://github.com/gman-robotics/agent-bootstrap/pull/9) (existing draft, revised in place — not a new PR, not merged, not self-reviewed).
