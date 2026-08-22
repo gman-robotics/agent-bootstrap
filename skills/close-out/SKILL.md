@@ -27,6 +27,7 @@ Identify what was worked on this session:
 - Which project (check manifest.yaml if unclear)
 - Which PRs, issues, branches, or infra resources were touched
 - What the user's original goal was vs. what was actually delivered
+- If a `reply-contract` spec-gate or clarify card set a stable task Name earlier in the thread, reuse that exact Name in the completed-log entry below so cross-references line up
 
 ### Step 2: Audit the memory bank hot files
 
@@ -177,5 +178,6 @@ For each finding the user approves:
 - **multi-harness-coordination** — defines cross-harness role assignment and coordination conventions this skill assumes.
 - **memory-bank-protocol** — defines the memory bank update protocol used in Steps 2–3.
 - **docs-protocol** — governs any `docs/` additions proposed in Phase 2.
+- **reply-contract** — if this thread used a spec-gate/clarify card, its stable task Name is the identifier to reuse in the completed-log entry (Step 1).
 
-*Last updated: 2026-07-01*
+*Last updated: 2026-08-22*
