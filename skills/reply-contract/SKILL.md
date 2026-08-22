@@ -1,7 +1,7 @@
 ---
 name: reply-contract
 description: "Use when status or your-turn. Write as if the user is new to the project."
-version: 1.2.0
+version: 1.3.0
 ---
 
 # reply-contract — Status and your-turn as if they just walked in
@@ -29,12 +29,60 @@ Smallest view that makes the next action obvious. One primary visual per reply.
 | Where the work sits | file/screen tree | yes |
 | What changed | diff | yes |
 | Who waits on whom | stack | yes |
+| A human must approve/reject a held artifact | spec-gate card (below) | yes |
+| A human must answer one question, not gate a decision | clarify card (below) | yes |
 | Control flow (desktop/web) | mermaid | no unless asked |
 | Dense UI / compare | one HTML file | no unless asked |
 
 Photon/iMessage home: **bold + lists + fenced trees/diffs only.**
 
 The tree *is* the sequence. If you skip the tree, number the steps. Never both. One step → a single bullet, not `1.`
+
+## Gate cards
+
+Two small markdown cards for the two things a human is asked to do mid-task. Both are **fenced text, not HTML, not a dashboard** — same Photon/iMessage-safe rule as every other visual here. Idea credit: a Scout memo comparing swarm-forge's dashboard spec-gate/clarify UI against this hub (`unclebob/swarm-forge`, ideas only — no files, prompts, or dashboard HTML copied; that repo carries no LICENSE). Rewritten here as plain reply-contract markdown.
+
+**Rule: gate ≠ question.** A spec-gate card always resolves to a binary Approve/Reject on a held artifact. A clarify card always resolves to one answer to one question. Never put Approve/Reject on a clarify card, and never leave a spec-gate open-ended — if you need more than a yes/no, it is a clarify card (or a `grill-with-docs` round), not a gate.
+
+### Spec-gate card
+
+Use when a **held artifact** (plan, glossary, ADR, diff) needs a human stamp before the next phase starts — e.g. before `plan-code-review-workflow` CODE, or before `grill-with-docs` hands off to an implement skill. Never ask for this only in chat prose; use the card.
+
+```text
+**Spec gate** — spec → <next-phase> · <task-name>
+
+Documents:
+- `<path/to/doc-1>`
+- `<path/to/doc-2>`
+
+Approve · Reject
+```
+
+- `<next-phase>` — the phase this unblocks (`CODE`, `implement`, `PR`).
+- `<task-name>` — the thread's stable Name (see **Task name** below); identical on every card for this thread.
+- `Documents` — every artifact the human is stamping, named, not pasted inline.
+- **No leftover questions beside Approve.** Do not show this card while any question from the session is still open. Close every question first — another round, or a clarify card for one blocking fact — then present the gate on its own.
+- **The stamp is the literal word.** Only an explicit **Approve** or **Reject** counts. "Ok" / "looks good" / "sounds right" / silence are not a stamp; re-present the same card unchanged.
+- Reject → state what changes before re-presenting the same card; do not silently keep working.
+
+### Clarify card
+
+Use for one blocking question that is not a gate — you need a fact only the human has, not a decision on a held artifact.
+
+```text
+**Request clarification** — <task-name>
+
+<question>
+
+_Reply with your answer, then_ **Submit**.
+```
+
+- Pill label is always "Request clarification", never "Approve"/"Reject".
+- One question per card. If several are ready, that is a `grill-with-docs` round (numbered ❓ format), not a clarify card.
+
+## Task name
+
+The first time a gate card (spec-gate or clarify) appears in a thread, pick one short Name (2–4 words, stable for the thread's life) and reuse it verbatim on every later card, in `grill-with-docs`, and in `close-out`'s Phase 1 handoff entry for this task. Do not rename mid-thread; if the work outgrows the name, say so explicitly and note the old name for continuity. When the four-field envelope stanza (see `adversarial-coordination-workflow` / `multi-harness-coordination`) is also in play for this task, the card Name **is** the envelope `task:` value — one string, reused, not two identifiers that happen to match. Whichever of the two appears first in the thread fixes that string; everything after copies it verbatim.
 
 ## Content that must still be true
 
@@ -116,6 +164,11 @@ Write as if they just walked in from another project.
 6. Defining every noun — only what you used
 7. Numbered steps *and* a tree
 8. New facts only inside the tree
+9. Approve/Reject on a clarify card, or an open-ended spec-gate
+10. Asking for a gate stamp only in chat prose instead of the card
+11. Renaming the task mid-thread without saying so
+12. Treating "ok" / "looks good" / silence as an Approve stamp
+13. Showing a spec-gate with a leftover open question still listed beside it
 
 ## Verification
 
@@ -125,5 +178,9 @@ Write as if they just walked in from another project.
 - [ ] Jargon in the reply is glossed or replaced
 - [ ] UI is bold; tokens are `code`
 - [ ] Who is blocked on the human is explicit, or there is no human action
+- [ ] Gate cards used only for held artifacts; clarify cards only for questions — never mixed
+- [ ] Task name (if any card used) is stable across this thread, and matches the envelope `task:` value when both are in play
+- [ ] No leftover open question shown beside a spec-gate's Approve/Reject
+- [ ] Only a literal Approve/Reject counted as the stamp, never "ok" / "looks good" / silence
 
-Last updated: 2026-08-18
+Last updated: 2026-08-22

@@ -14,6 +14,7 @@ Triggers when routing tasks between harnesses, running the multi-harness workflo
 1. Read `references/source.md` before acting.
 2. Step A: full-context plan, no production code. Step B: TDD on isolated branch.
 3. Steps C/D: cumulative git diff review, max 3 iterations, then Step E PR if approved.
+4. Optional: lead a handoff with the four-field envelope stanza (type/to/priority/task).
 
 ## Compatibility Notes
 

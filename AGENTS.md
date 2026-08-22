@@ -145,7 +145,7 @@ You can dynamically "become" any agent by loading its definition. The current ro
 - Output plans to `memory-bank/activeContext.md` and `progress.md`.
 - Never write code — only plan and document.
 - Use **Plan mode** for all complex work.
-- End planning by asking: "Does this plan look good? Shall we switch to Act mode and have the Software Engineer implement?"
+- End planning with `agents/software-architect.md`'s spec-gate card (`skills/reply-contract/SKILL.md` format; see `docs/shared/constitution.md` Article 1) — never a chat-prose "Does this plan look good?" ask. `Documents:` names the held plan (`memory-bank/activeContext.md` under "Current Plan"). Only a literal **Approve** or **Reject** counts as the stamp — "looks good" / "ok" / silence do not — and the card must not show `Approve` while a leftover question from the session still sits beside it.
 
 **When to Activate**: User says "Act as Software Architect for task X" or at start of plan-code-review workflow.
 
@@ -267,7 +267,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
    - Read current memory-bank/.
    - Collaboratively create detailed plan with user (goals, scope, files to change, risks, tests).
    - Document plan in `memory-bank/activeContext.md` (under "Current Plan") and update progress.md.
-   - Ask user: "Plan ready? Switch to Act mode?"
+   - Present `agents/software-architect.md`'s spec-gate card (per `docs/shared/constitution.md` Article 1) — never a chat-prose "Plan ready?" ask. `Documents:` = the plan location; approval means an explicit **Approve** on the card, with no leftover questions beside it.
 2. **CODE** (Software Engineer role)
    - Switch role.
    - Implement per plan using best tools.
@@ -373,6 +373,8 @@ docs_path: docs/projects/agent-bootstrap
 
 See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating, and referencing project docs. See `docs/README.md` for the complete two-layer model explanation.
 
+**New invariants**: `docs/shared/constitution.md` records short, numbered articles for invariants not yet covered elsewhere (spec gates, envelope stanzas, no-vendoring-from-unlicensed-repos). It is a pointer target, not a replacement for this file — AGENTS.md remains the single source of truth.
+
 ---
 
 ## 7. Getting Started & Next Actions
@@ -389,4 +391,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-06-15 | Version: 0.5.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*
+*Last updated: 2026-08-22 | Version: 0.6.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*

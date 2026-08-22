@@ -19,7 +19,7 @@ Adapted from Aaron Francis’s gist [`audit-your-codebase.md`](https://gist.gith
 - A planned change / refactor the user already accepted → `plan-code-review-workflow`
 - A PR/diff review → `expert-pr-review`
 - “Make it faster” with a measured symptom → `performance-profiling`
-- Recent-diff cleanup / style
+- Recent-diff cleanup / style → the implementer's own bounded cleanup pass on touched files (see `agents/software-engineer.md` "Cleanup pass"), not a whole-repo audit
 
 ---
 
@@ -73,6 +73,14 @@ Skip a companion if the harness cannot load it. The hard rule still holds.
 - Unclear state/behavior ownership → small module boundary
 - Repeated scans / transforms / lookups → a more appropriate collection or index
 - Lifecycle / concurrency / async representation that can go stale or contradict
+
+**Architectural Review Phases (optional named lens, ownership rows only)**  
+For a subsystem row about module boundaries or ownership, a worker may frame findings against these four checklist names (canonical definition in `agents/software-architect.md`; names only — no CRAP/mutation/DRY tooling to install):
+1. **UI/Core Separation**
+2. **Dependency Rule**
+3. **Information Hiding And Encapsulation**
+4. **Local Code Quality**
+This is a lens for phrasing an existing recommendation, not an extra required pass — do not add rows just to cover all four names.
 
 **Do not recommend**
 - Style, naming, import order
@@ -218,4 +226,4 @@ Only then, and only for accepted IDs:
 - [ ] Did **not** invoke implement skills or create a change branch
 - [ ] Report used `reply-contract`; user must accept before any edit
 
-*Last updated: 2026-08-16 | Hub version: 0.6.0*
+*Last updated: 2026-08-22 | Hub version: 0.6.0*

@@ -1,7 +1,7 @@
 ---
 name: grill-with-docs
 description: "Use when aligning on a plan or design before code: grill the user in rounds, keep CONTEXT.md as a glossary, and offer ADRs only for hard-to-reverse trade-offs. Do not implement until the user confirms shared understanding."
-version: 1.0.0
+version: 1.1.0
 ---
 
 # grill-with-docs — Align, then write the language down
@@ -41,7 +41,7 @@ After confirm: stop this skill. Load `plan-code-review-workflow` + `write-tests`
 |---|---|
 | `docs-protocol` | If the project already records decisions under `docs/projects/<name>/`, put the ADR there instead of a second tree |
 | `memory-bank-protocol` | Session state stays in the bank. `CONTEXT.md` is **domain language**, not progress |
-| `reply-contract` | Present the “frontier empty — confirm?” close as if they just switched projects |
+| `reply-contract` | Present the “frontier empty — confirm?” close via its spec-gate card (and a clarify card for a single blocking fact-question) |
 | `subagent-routing` | Look up **facts** yourself (or via a cheap worker). Never ask the user what you can read |
 
 ---
@@ -112,9 +112,13 @@ If any is missing, skip. Format: `references/adr-format.md`. Default path `docs/
 
 ### 4. Stop and confirm
 
-Use `reply-contract`. Show: settled decisions, glossary/ADR paths touched, leftover open questions (should be none).
+Use `reply-contract`'s **spec-gate card** — a held artifact (the glossary/ADRs from this session) gets a binary Approve/Reject, not a chat-prose ask. `Documents` lists every `CONTEXT.md` / ADR path touched this session; `<next-phase>` is the implement skill you will load once approved (usually `plan-code-review-workflow`). Pick the thread's stable **task Name** on the first card if none exists yet; reuse it on every later card (and on the envelope `task:` field if one is also in play).
 
-Ask: **confirm shared understanding** before any implement skill.
+**Do not present this card while any question is still open.** The frontier must be empty first (Step 2) — a leftover question sitting beside Approve is not a gate, it is a trap. If one blocking fact-question surfaces late, resolve it with a clarify card (or one more grill round) before showing the spec-gate. Show alongside the card only settled decisions; there must be zero leftover open questions on it.
+
+Only a literal **Approve** or **Reject** stamps the card — "ok" / "looks good" / silence do not count; re-present the same card. Reject → state what is unresolved and keep grilling; do not silently start implementing. Approve → stop this skill, load the named implement skill.
+
+If mid-round you hit one blocking fact-question that cannot wait for the next full frontier round, use `reply-contract`'s **clarify card** instead — it is a question, not a gate, so it never carries Approve/Reject.
 
 ---
 
@@ -126,6 +130,10 @@ Ask: **confirm shared understanding** before any implement skill.
 4. Starting `plan-code-review-workflow` because the last answer “felt like go.”
 5. An ADR for an easy-to-reverse or obvious choice.
 6. Batching glossary updates until the end (they get lost).
+7. Asking for the final confirm only in chat prose instead of the spec-gate card.
+8. Using a clarify card as a gate (attaching Approve/Reject to a plain question).
+9. Presenting the spec-gate card with a leftover open question still listed beside Approve.
+10. Treating "ok" / "looks good" / silence as an Approve stamp instead of the literal word.
 
 ---
 
@@ -137,5 +145,8 @@ Ask: **confirm shared understanding** before any implement skill.
 - [ ] ADRs only when all three tests passed (or none offered)
 - [ ] Did **not** invoke implement skills
 - [ ] User must confirm before any code change beyond glossary/ADR
+- [ ] Final confirm used the spec-gate card (Documents + Approve/Reject), not chat prose
+- [ ] Zero leftover open questions on the card when it is shown; only a literal Approve/Reject counted as the stamp
+- [ ] Any mid-round blocking fact-question used a clarify card, never Approve/Reject
 
-*Last updated: 2026-08-16 | Hub version: 0.6.0*
+*Last updated: 2026-08-22 | Hub version: 0.6.0*

@@ -57,6 +57,24 @@ Planner/Orchestrator: open PR (Step E)
 
 When mem0 is configured, publish plans (`type: "handoff"`), review findings, and iteration state to `run_id: coord-YYYYMMDD`. When not configured, use `memory-bank/activeContext.md` under a `## Multi-Harness Handoff` section and tell the next harness which file to read.
 
+### Optional: four-field envelope stanza
+
+When a handoff needs a quick-triage header before the prose (either in a mem0 entry or the `activeContext.md` section above), lead with a four-field markdown stanza — idea only, from a Scout memo comparing swarm-forge's inter-agent envelope format against this hub (`unclebob/swarm-forge`, no files/scripts copied; that repo has no LICENSE):
+
+```text
+> type: handoff
+> to: Engineer
+> priority: normal
+> task: <stable-task-name>
+```
+
+- `type` — `handoff`, `review`, `finding`, or similar; keep the vocabulary small and project-local.
+- `to` — the receiving role or harness (matches an `agents/*.md` name where applicable).
+- `priority` — `low` / `normal` / `high`; do not invent more levels than the team actually triages.
+- `task` — the thread's stable task Name (see `reply-contract` "Task name"), unchanged for the thread's life.
+
+This stanza is purely descriptive markdown — a header on a plan or finding, not a message bus contract. Explicitly **not** adopted from swarm-forge: `merge_and_process` semantics, 10-char SHA identity, outbox file paths, helper `TASK:`/`NO_TASK` stdout conventions, or auto-generated envelope bodies. If your team needs those, build them as project-local tooling outside this hub.
+
 ---
 
 ## §2 Coordination Workflow (Steps A–E)
@@ -163,4 +181,4 @@ Some teams prefer the human to open the PR — note that in project docs and ski
 | `triage-review-feedback.md` | After PR is open and reviewers respond |
 | `memory-bank-protocol.md` | Durable state layer; mem0 optional on top |
 
-**Last updated**: 2026-06-15
+**Last updated**: 2026-08-22
