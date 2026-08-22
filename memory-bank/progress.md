@@ -293,3 +293,33 @@ All rules followed: absolute paths, no unapproved commits, proactive but safe, m
 **EstateGuru Replay Note**
 - `/Users/tginter/dev/estategururepo/agent-bootstrap` does not currently contain `skills/task-loop-7-phase.md`, a plugin skill wrapper, or any `task-loop-7-phase` trigger references.
 - EstateGuru replay should add the canonical skill, add an EstateGuru-style `plugin/skills/task-loop-7-phase/SKILL.md`, merge one `SkillConfig` entry into its exporter, update the local trigger lists/catalogs, and rerun `python3 -m unittest tests.test_export_codex_skills`.
+
+---
+
+## 2026-08-22 — Issue #8: Rewrite swarm-forge steal set as bootstrap skills
+
+**Task**: Implement [gman-robotics/agent-bootstrap#8](https://github.com/gman-robotics/agent-bootstrap/issues/8). Steal ideas (not files) from `unclebob/swarm-forge` (no LICENSE) via Scout memos pasted into the issue/task, land as in-house skill/doc rewrites, open one draft PR, no merge, no self-review.
+
+**What Was Done**
+- [x] `skills/reply-contract/SKILL.md`: new `## Gate cards` section — spec-gate card (held artifact, `Documents` list, binary Approve/Reject) and clarify card (question + Submit, never a gate); new `## Task name` section (stable per-thread Name); updated show-me table, pitfalls, verification checklist.
+- [x] `skills/grill-with-docs/SKILL.md`: Step 4 rewritten to use the spec-gate card (and clarify card for one mid-round blocking question) instead of chat-prose confirmation; companions table, pitfalls, verification checklist updated.
+- [x] `skills/close-out/SKILL.md`: Step 1 and "Relationship to Other Skills" reference the stable task Name set by a `reply-contract` card.
+- [x] `skills/adversarial-coordination-workflow/SKILL.md` and `skills/multi-harness-coordination/SKILL.md`: new "Optional: four-field envelope stanza" section (`type`/`to`/`priority`/`task`), explicitly excluding `merge_and_process`, SHA identity, outbox paths, `TASK:`/`NO_TASK` stdout helpers, and generated bodies.
+- [x] `agents/software-architect.md`: new "Architectural Review Phases (checklist names only)" — UI/Core Separation, Dependency Rule, Information Hiding And Encapsulation, Local Code Quality — explicitly no CRAP/mutation/DRY tooling.
+- [x] `skills/codebase-simplification-audit/SKILL.md`: cross-references the same checklist names for ownership-boundary rows (optional lens, not a new pass); "Do not use for" bullet now points recent-diff cleanup at the Engineer's own bounded pass.
+- [x] `agents/software-engineer.md`: new "Cleanup pass (quality slice, bounded)" — folded into the existing role, scoped to touched files only, no new role.
+- [x] `docs/shared/constitution.md` (new): 5 short numbered articles for new invariants (spec gate, clarify-is-not-a-gate, stable task name, envelope-is-descriptive, no-vendoring-from-unlicensed-repos). Explicit pointer note: does not replace `AGENTS.md`.
+- [x] `docs/shared/decisions.md`: new ADR-004 recording the "steal ideas, not files" sourcing decision + index row.
+- [x] `AGENTS.md` §6 and `skills/INDEX.md`: one-line pointers to `docs/shared/constitution.md`; footer dates/version bumped (0.5.0 → 0.6.0 to match `skills/INDEX.md`'s already-declared hub version).
+- [x] `skills/INDEX.md`: "What it does" one-liners updated for the 5 touched skills (`reply-contract`, `grill-with-docs`, `codebase-simplification-audit`, `adversarial-coordination-workflow`, `multi-harness-coordination`).
+- [x] `scripts/export_codex_skills.py`: added one matching quick-start bullet per touched skill's `SkillConfig` so the Grok wrapper trigger text stays in sync with the new source content.
+- [x] Re-exported `.grok/skills/` via `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`; caught and restored two pre-existing manually-added reference files (`grill-with-docs/references/adr-format.md`, `context-format.md`) that the exporter's `--force` path deletes and does not regenerate — a pre-existing exporter gap unrelated to this issue, noted here rather than fixed (out of scope; worth a future `close-out` friction-log item for the exporter script itself).
+- [x] Explicitly did **not**: rewrite `skills/expert-pr-review/SKILL.md` or `skills/plan-code-review-workflow/SKILL.md` (no edit needed, so no pointer added either); build/vendor `./swarm`, `handoffd`, cockpit/dashboard, `pack_web`/curl\|tar packs, tmux/worktree control plane, CRAP/mutation/DRY tool installs, Gherkin-as-spec, or any new cleaner/hardener/specifier role; copy any swarm-forge file, script, prompt, or dashboard HTML; invent a LICENSE for `unclebob/swarm-forge`.
+
+**Verification Evidence**
+- `python3 -m unittest tests.test_export_codex_skills` from `/workspace`: 7/7 pass, run both before adding `SkillConfig` bullets (baseline) and after the full edit + re-export (final).
+- `git diff --check`: only pre-existing two-trailing-space markdown line-break lines flagged (matches existing `docs/shared/decisions.md` ADR style and `agents/*.md` persona style; not a real whitespace defect).
+- `git status --porcelain` after re-export + restore: no unintended deletions remain (verified the two restored `.grok/skills/grill-with-docs/references/*.md` files are back to their pre-export content via `git diff`, which shows no diff for them).
+- Branch: `cursor/steal-swarm-forge-skill-updates-a543`. PR: opened as a single draft PR against `main` (see PR body for swarm-forge/Scout-memo provenance citations — ideas only, no copied text).
+
+**Next**: User's own review flow (issue notes claude-sonnet-5 implementer, Blair grok-4.6 reviewer, CoS squash-merges) — no self-review performed here per instructions.

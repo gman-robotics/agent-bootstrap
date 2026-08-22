@@ -1,6 +1,19 @@
 # Active Context: Multi-Agent Skills Hub
 
 ## Current Focus (This Session)
+**GitHub issue #8 — "Rewrite swarm-forge steal set as bootstrap skills"** (2026-08-22, cloud agent, branch `cursor/steal-swarm-forge-skill-updates-a543`). Per the issue and the pasted Scout memo steal list, landed the "full useful steal set" as native in-house skill/doc edits — ideas only from `unclebob/swarm-forge` (no LICENSE on that repo; no files/scripts/prompts/dashboard HTML copied):
+- Spec-gate card + clarify card: new `## Gate cards` section in `skills/reply-contract/SKILL.md` (binary Approve/Reject on a held `Documents` list vs. a plain question+Submit — gate ≠ question). Wired into `skills/grill-with-docs/SKILL.md` Step 4.
+- Stable task Name: new `## Task name` section in `reply-contract`; referenced from `grill-with-docs` and `skills/close-out/SKILL.md` Step 1.
+- Four-field envelope stanza (`type`/`to`/`priority`/`task`) as an **optional** markdown block in `skills/adversarial-coordination-workflow/SKILL.md` and `skills/multi-harness-coordination/SKILL.md` — explicitly excludes `merge_and_process`, SHA identity, outbox paths, stdout `TASK:`/`NO_TASK` helpers, generated bodies.
+- Architectural Review Phases checklist **names only** (UI/Core Separation; Dependency Rule; Information Hiding And Encapsulation; Local Code Quality) added to `agents/software-architect.md` and cross-referenced from `skills/codebase-simplification-audit/SKILL.md` — no CRAP/mutation/DRY tool install.
+- New-invariant constitution articles: `docs/shared/constitution.md` (5 short articles) + `docs/shared/decisions.md` ADR-004 (provenance/no-vendoring decision) + one-line pointers from `AGENTS.md` §6 and `skills/INDEX.md` (AGENTS.md remains the source of truth, not replaced).
+- Quality-slice cleanup pass folded into the existing Engineer role (`agents/software-engineer.md`, bounded to touched files) — no new cleaner/hardener/specifier role, no Gherkin-as-spec.
+- Housekeeping: `skills/INDEX.md` entries updated for the 5 touched skills; `.grok/skills/` re-exported via `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force` after adding matching `SKILL_CONFIGS` quick-start bullets in `scripts/export_codex_skills.py`; restored two grill-with-docs `.grok` reference files (`adr-format.md`, `context-format.md`) that the exporter's `--force` rmtree does not regenerate (pre-existing exporter gap, not part of this issue's scope — worth a future skill-gap note).
+- Explicitly **not** touched/copied per the issue: `./swarm`, `handoffd`, cockpit/dashboard, `pack_web`/curl\|tar packs, tmux/worktree control plane, CRAP/mutation/DRY tooling, `skills/expert-pr-review/SKILL.md`, `skills/plan-code-review-workflow/SKILL.md` (no rewrite, no pointer added — not needed for this scope).
+- Verification: `python3 -m unittest tests.test_export_codex_skills` — 7/7 pass (both before and after the re-export). `git diff --check` flags only pre-existing two-trailing-space markdown line-break style (matches existing ADR/agent file convention, not a real issue).
+- Opened as **one draft PR** against `main`; not merged, not self-reviewed (per issue instructions — user's own reviewers, e.g. Blair grok-4.6, own the review).
+
+## Previous Focus (superseded)
 **Formatting and replay review complete** (2026-06-23). Reviewed the added skill/workflow updates in this checkout and fixed local formatting issues:
 - Replaced malformed `skills/agent-bootstrap/SKILL.md` placeholder text with valid skill frontmatter, quick-start steps, and replay guidance.
 - Added final trailing newlines to canonical skill Markdown files that were missing them.
