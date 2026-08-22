@@ -84,9 +84,19 @@ class InstallGrokScriptTests(unittest.TestCase):
                 result.returncode, 0,
                 f"install-grok.sh --local failed:\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
             )
+            local_skills = Path(tmp) / ".grok" / "skills"
+            self.assertTrue(
+                local_skills.is_dir(),
+                "--local refreshes project .grok/skills, not plugin-root skills/",
+            )
+            self.assertGreaterEqual(len(list(local_skills.glob("*/SKILL.md"))), 10)
 
     def test_install_grok_user_mode_creates_expected_structure(self) -> None:
-        """User/plugin install should create skills + Grok-frontmatter agents."""
+        """User/plugin install should create plugin-root skills + Grok-frontmatter agents.
+
+        Grok plugin discovery scans <plugin>/skills/ and <plugin>/agents/, not
+        a nested .grok/ tree. See ~/.grok/docs/user-guide/09-plugins.md.
+        """
         script = REPO_ROOT / "scripts" / "install-grok.sh"
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "plugin-install"
@@ -99,21 +109,76 @@ class InstallGrokScriptTests(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0, result.stderr)
 
-            # Skills
-            skills_dir = target / ".grok" / "skills"
-            self.assertTrue(skills_dir.is_dir())
+            skills_dir = target / "skills"
+            self.assertTrue(skills_dir.is_dir(), "plugin skills live at <plugin>/skills/")
+            self.assertFalse(
+                (target / ".grok" / "skills").is_dir(),
+                "plugin mode must not nest skills under .grok/",
+            )
             skill_files = list(skills_dir.glob("*/SKILL.md"))
             self.assertGreaterEqual(len(skill_files), 10, "Should have most or all skills exported")
+            self.assertTrue(
+                (skills_dir / "grill-with-docs" / "references" / "adr-format.md").is_file(),
+                "exporter --force deletes extra skill references; installer must restore them",
+            )
 
-            # Agents should have Grok-native frontmatter (model: sonnet, tools list)
-            agents_dir = target / ".grok" / "agents"
-            self.assertTrue(agents_dir.is_dir())
+            agents_dir = target / "agents"
+            self.assertTrue(agents_dir.is_dir(), "plugin agents live at <plugin>/agents/")
             architect = agents_dir / "software-architect.md"
             self.assertTrue(architect.is_file())
             content = architect.read_text(encoding="utf-8")
             self.assertIn("model: sonnet", content)
             self.assertIn("tools:", content)
             self.assertIn("software-architect", content.lower())
+
+            manifest = target / ".grok-plugin" / "plugin.json"
+            self.assertTrue(manifest.is_file(), "Grok plugin manifest")
+            text = manifest.read_text(encoding="utf-8")
+            self.assertIn('"name": "agent-bootstrap"', text)
+
+    def test_install_grok_equivalent_repo_paths_do_not_select_plugin_layout(self) -> None:
+        """TARGET that *is* the hub must not use plugin layout.
+
+        A raw string compare misses trailing slashes, `.`, and symlink spellings.
+        Plugin layout would export into committed skills/ (FileExistsError without
+        --force; rmtree of source with --force). Discriminator: exporter path
+        `<repo>/skills/` vs `<repo>/.grok/skills/`.
+        """
+        script = REPO_ROOT / "scripts" / "install-grok.sh"
+        index_before = (REPO_ROOT / "skills" / "INDEX.md").read_bytes()
+        plugin_skills_prefix = str(REPO_ROOT / "skills") + os.sep
+        cases = [
+            str(REPO_ROOT) + "/",
+            ".",
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            link = Path(tmp) / "hub-link"
+            link.symlink_to(REPO_ROOT)
+            cases.append(str(link))
+            for target in cases:
+                with self.subTest(target=target):
+                    result = subprocess.run(
+                        ["bash", str(script), "--target", target],
+                        cwd=REPO_ROOT,
+                        capture_output=True,
+                        text=True,
+                        timeout=60,
+                    )
+                    combined = result.stdout + result.stderr
+                    self.assertEqual(
+                        (REPO_ROOT / "skills" / "INDEX.md").read_bytes(),
+                        index_before,
+                        "canonical skills/INDEX.md must not change",
+                    )
+                    self.assertFalse(
+                        (REPO_ROOT / ".claude-plugin").exists(),
+                        "plugin-mode side dir must not appear in the hub",
+                    )
+                    self.assertNotIn(
+                        plugin_skills_prefix,
+                        combined,
+                        f"--target {target!r} selected plugin layout:\n{combined[-800:]}",
+                    )
 
 
 class InstallAgentsScriptTests(unittest.TestCase):
