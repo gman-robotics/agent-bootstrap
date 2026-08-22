@@ -254,6 +254,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` before acting.",
             "Step A: full-context plan, no production code. Step B: TDD on isolated branch.",
             "Steps C/D: cumulative git diff review, max 3 iterations, then Step E PR if approved.",
+            "Optional: lead a handoff with the four-field envelope stanza (type/to/priority/task).",
         ),
     ),
     "task-loop-7-phase": SkillConfig(
@@ -305,6 +306,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` for the full Step A–E loop.",
             "Step A: full-context plan, no production code. Step B: TDD on isolated branch.",
             "Steps C/D: cumulative `git diff main...HEAD` review, max 3 iterations, then Step E PR if approved.",
+            "Optional: lead a handoff with the four-field envelope stanza (type/to/priority/task).",
         ),
     ),
     "close-out": SkillConfig(
@@ -340,6 +342,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` before writing the reply.",
             "Pair with show-me: one tree, stack, or diff. No mermaid/HTML on Photon unless asked.",
             "Gloss only the jargon you used. Say leftover vs bug and who is waiting.",
+            "Use the spec-gate card for a binary Approve/Reject on a held artifact; use the clarify card for a plain question, never both.",
         ),
     ),
     "codebase-simplification-audit": SkillConfig(
@@ -357,6 +360,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` before acting; it is the authoritative workflow.",
             "Hard rule: no file edits, tests, implement skills, commits, or pushes until the user accepts a rec.",
             "Inventory every subsystem, bound workers to \u22642 material recs or skip, verify, audit the audit, then stop.",
+            "Ownership rows may use the Architectural Review Phases checklist names (no CRAP/mutation/DRY tooling).",
         ),
     ),
     "grill-with-docs": SkillConfig(
@@ -374,6 +378,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` before acting; it is the authoritative workflow.",
             "Hard rule: no implement skills, feature branches, or PRs until the user confirms shared understanding.",
             "Ask the whole decision frontier each round; look up facts yourself; write glossary-only CONTEXT.md as terms resolve.",
+            "Final confirm uses reply-contract's spec-gate card, not chat prose; a single blocking fact-question uses its clarify card.",
         ),
     ),
 }

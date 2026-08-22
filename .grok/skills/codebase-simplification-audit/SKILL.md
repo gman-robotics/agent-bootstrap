@@ -14,6 +14,7 @@ Triggers on codebase simplification audit, messy state/ownership reviews, or a p
 1. Read `references/source.md` before acting; it is the authoritative workflow.
 2. Hard rule: no file edits, tests, implement skills, commits, or pushes until the user accepts a rec.
 3. Inventory every subsystem, bound workers to ≤2 material recs or skip, verify, audit the audit, then stop.
+4. Ownership rows may use the Architectural Review Phases checklist names (no CRAP/mutation/DRY tooling).
 
 ## Compatibility Notes
 

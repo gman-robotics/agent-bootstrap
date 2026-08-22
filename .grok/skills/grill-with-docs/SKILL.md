@@ -14,6 +14,7 @@ Triggers on grill this, grill-with-docs, align on the domain, or build CONTEXT.m
 1. Read `references/source.md` before acting; it is the authoritative workflow.
 2. Hard rule: no implement skills, feature branches, or PRs until the user confirms shared understanding.
 3. Ask the whole decision frontier each round; look up facts yourself; write glossary-only CONTEXT.md as terms resolve.
+4. Final confirm uses reply-contract's spec-gate card, not chat prose; a single blocking fact-question uses its clarify card.
 
 ## Compatibility Notes
 
