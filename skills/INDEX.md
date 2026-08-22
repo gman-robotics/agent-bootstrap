@@ -4,6 +4,8 @@ Agent-readable index of every skill in this hub. Read this file at session start
 
 Grok users automatically receive all skills as slash commands (`/<skill-kebab-name>`) thanks to the `.grok/skills/` packaging in v0.5.0.
 
+New cross-skill invariants (spec-gate/clarify cards, stable task names, the optional envelope stanza, no-vendoring-from-unlicensed-repos) are recorded as short numbered articles in `docs/shared/constitution.md` — read it once; this INDEX and `AGENTS.md` remain the entry points.
+
 ---
 
 ## Skill Entries
@@ -18,7 +20,7 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 ### adversarial-coordination-workflow
 **File**: `skills/adversarial-coordination-workflow/SKILL.md`  
 **Trigger**: An Orchestrator (human or automated) needs to run a planner harness and an implementer harness as adversarial peers through a full plan → implement → adversarial-review → PR loop.  
-**What it does**: Step A–E workflow — full-context planning gate (no production code), TDD implementation on an isolated branch, cumulative `git diff main...HEAD` adversarial review loop (max 3 iterations), then PR submission. Same underlying pattern as `multi-harness-coordination`, framed around an explicit human Orchestrator role.
+**What it does**: Step A–E workflow — full-context planning gate (no production code), TDD implementation on an isolated branch, cumulative `git diff main...HEAD` adversarial review loop (max 3 iterations), then PR submission. Same underlying pattern as `multi-harness-coordination`, framed around an explicit human Orchestrator role. Includes an optional four-field envelope markdown stanza (`type`/`to`/`priority`/`task`) for handoff headers.
 
 ---
 
@@ -60,21 +62,21 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 ### reply-contract
 **File**: `skills/reply-contract/SKILL.md`  
 **Trigger**: Status after another agent finished; "your turn"; smoke / tap-through; anything the human must do or decide.  
-**What it does**: Write as if they just switched projects. Pair with show-me (one tree/stack/diff). Gloss or replace jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked. Voice/marks from Google+Apple+Red Hat (`references/style-sources.md`).
+**What it does**: Write as if they just switched projects. Pair with show-me (one tree/stack/diff). Gloss or replace jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked. Voice/marks from Google+Apple+Red Hat (`references/style-sources.md`). Defines the spec-gate card (held artifact, binary Approve/Reject, named Documents) and the clarify card (question + Submit, never a gate), plus the stable per-thread task Name shared with `grill-with-docs` and `close-out`.
 
 ---
 
 ### codebase-simplification-audit
 **File**: `skills/codebase-simplification-audit/SKILL.md`  
 **Trigger**: Whole-repo audit for simpler data structures / state / ownership; "codebase simplification audit"; paste of the Aaron Francis audit gist.  
-**What it does**: Read-only coordinator + bounded workers. Inventory every subsystem, ≤2 material recs or skip, verify, audit the audit, ranked report. **Hard rule:** no edits, tests, implement skills, commits, or pushes until the user accepts a recommendation.
+**What it does**: Read-only coordinator + bounded workers. Inventory every subsystem, ≤2 material recs or skip, verify, audit the audit, ranked report. **Hard rule:** no edits, tests, implement skills, commits, or pushes until the user accepts a recommendation. Ownership-boundary rows may frame findings with the Architectural Review Phases checklist names (UI/Core Separation, Dependency Rule, Information Hiding And Encapsulation, Local Code Quality — see `agents/software-architect.md`).
 
 ---
 
 ### grill-with-docs
 **File**: `skills/grill-with-docs/SKILL.md`  
 **Trigger**: “Grill this”, align on a plan/design before code, build or update CONTEXT.md.  
-**What it does**: Round-based interview (facts vs decisions). Writes glossary-only `CONTEXT.md` as terms resolve; offers ADRs only for hard-to-reverse trade-offs. **Hard rule:** no implement skills until the user confirms shared understanding.
+**What it does**: Round-based interview (facts vs decisions). Writes glossary-only `CONTEXT.md` as terms resolve; offers ADRs only for hard-to-reverse trade-offs. **Hard rule:** no implement skills until the user confirms shared understanding. Final confirm uses `reply-contract`'s spec-gate card; a single blocking fact-question mid-round uses its clarify card instead.
 
 ---
 
@@ -88,7 +90,7 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 ### multi-harness-coordination
 **File**: `skills/multi-harness-coordination/SKILL.md`  
 **Trigger**: Coordinating a task across two or more agent harnesses; "run the multi-harness workflow"; parent agent routing between planner and implementer harnesses.  
-**What it does**: Abstract role map (planner/reviewer vs implementer vs orchestrator) + Steps A–E workflow — full-context planning gate, TDD implementation on isolated branch, adversarial review loop with cumulative `git diff`, optional mem0 handoffs, PR submission.
+**What it does**: Abstract role map (planner/reviewer vs implementer vs orchestrator) + Steps A–E workflow — full-context planning gate, TDD implementation on isolated branch, adversarial review loop with cumulative `git diff`, optional mem0 handoffs, PR submission. Includes an optional four-field envelope markdown stanza (`type`/`to`/`priority`/`task`) for handoff headers.
 
 ---
 
@@ -170,4 +172,4 @@ Grok users automatically receive all skills as slash commands (`/<skill-kebab-na
 4. Update `.clinerules`, `.kilocoderules`, `.cursorrules`, `.openhands_instructions`, and `.cursor/rules/agent-bootstrap.mdc` to include the new skill in the skill-trigger lists.
 5. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
 
-*Last updated: 2026-07-01 | Hub version: 0.6.0*
+*Last updated: 2026-08-22 | Hub version: 0.6.0*

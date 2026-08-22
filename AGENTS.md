@@ -373,6 +373,8 @@ docs_path: docs/projects/agent-bootstrap
 
 See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating, and referencing project docs. See `docs/README.md` for the complete two-layer model explanation.
 
+**New invariants**: `docs/shared/constitution.md` records short, numbered articles for invariants not yet covered elsewhere (spec gates, envelope stanzas, no-vendoring-from-unlicensed-repos). It is a pointer target, not a replacement for this file — AGENTS.md remains the single source of truth.
+
 ---
 
 ## 7. Getting Started & Next Actions
@@ -389,4 +391,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-06-15 | Version: 0.5.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*
+*Last updated: 2026-08-22 | Version: 0.6.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*

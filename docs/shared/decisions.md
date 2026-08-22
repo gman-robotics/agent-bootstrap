@@ -46,6 +46,7 @@ What was decided? Be specific and unambiguous.
 | ADR-001 | Use Markdown + YAML as primary format for agent harness hub | Accepted | 2026-04-28 |
 | ADR-002 | Remove wiki layer, use docs/ instead | Accepted | 2026-04-28 |
 | ADR-003 | Red/Green/Refactor TDD as mandatory development methodology | Accepted | 2026-04-30 |
+| ADR-004 | Steal ideas, not files, from unlicensed repos (swarm-forge) | Accepted | 2026-08-22 |
 
 ---
 
@@ -153,4 +154,38 @@ Red/Green/Refactor TDD is the mandatory development methodology for all non-triv
 
 ---
 
-*Last updated: 2026-04-30 | Add new ADRs at the bottom; update the index table*
+## ADR-004: Steal Ideas, Not Files, From Unlicensed Repos (swarm-forge)
+
+**Date**: 2026-08-22  
+**Status**: Accepted  
+**Deciders**: @ThomasGinter (issue), Software Architect (doc plan)
+
+### Context
+GitHub issue #8 asked the hub to adopt the "full useful set" of coordination-format ideas from `unclebob/swarm-forge` — a spec-gate/clarify UI pattern, a stable task-name convention, a four-field inter-agent envelope, named architectural review phases, and a quality-slice cleanup idea. That repo carries **no LICENSE**, so none of its files, scripts, prompts, dashboard HTML, or constitution `.prompt` files may be copied, vendored, or assumed to carry any particular license here. `agent-bootstrap` remains the hub; nothing about its own licensing changes.
+
+### Decision
+- Treat swarm-forge (via Scout memos summarizing it) strictly as an **idea source**, cited by name in the affected skills and this record — never quoted at length or copied file-for-file.
+- Rewrite each adopted idea as a native hub artifact matching this repo's own Markdown/YAML conventions: a reply-contract card format (not a dashboard), a checklist of names (not a tool install), a descriptive markdown stanza (not a message-bus contract).
+- Explicitly exclude runtime/tooling pieces that only make sense inside swarm-forge's own control plane: `./swarm`, `handoffd`, cockpit/dashboard, `pack_web`/curl\|tar packs, tmux/worktree control plane, CRAP/mutation/DRY tool installs, and Gherkin-as-spec.
+- Record the resulting invariants as short numbered articles in `docs/shared/constitution.md` rather than importing swarm-forge's own constitution file.
+
+### Alternatives Considered
+- **Vendor the relevant swarm-forge files directly**: Rejected — no LICENSE on that repo makes redistribution legally unclear regardless of the idea's merit.
+- **Build the missing dashboard/`./swarm` control plane in this hub**: Rejected — out of scope per the issue, and this hub is explicitly Markdown/YAML-first with no runtime component.
+- **Skip the request rather than risk any resemblance to swarm-forge**: Rejected — the underlying ideas (gate vs. question, stable task naming, a lightweight handoff header, named architectural review lenses) are generic patterns, not copyrightable implementation, and are useful independent of their prompting source.
+
+### Consequences
+**Positive**:
+- The hub gains a clearer gate/clarify distinction, a naming convention that ties `reply-contract` + `grill-with-docs` + `close-out` together, and an optional lightweight handoff header — all as native, hub-style Markdown.
+- No legal exposure from redistributing unlicensed code.
+- Provenance is auditable: every adopted idea cites the source and lists what was explicitly excluded.
+
+**Negative / Trade-offs**:
+- Some swarm-forge capabilities (dashboard, typed git handoff files, tool-backed architecture metrics) are intentionally not reproduced; teams that want them must build them as project-local tooling outside this hub.
+
+**Risks**:
+- Low. All changes are additive documentation/skill edits; no production code or runtime behavior changes.
+
+---
+
+*Last updated: 2026-08-22 | Add new ADRs at the bottom; update the index table*

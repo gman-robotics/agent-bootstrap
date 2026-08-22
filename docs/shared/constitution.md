@@ -1,0 +1,43 @@
+# Constitution — New Invariants
+
+> **Scope**: Team-wide, short. Records **new** invariants only — rules not already covered by an existing skill, standard, or ADR. This file is not the pointer to the hub; `AGENTS.md` remains the single source of truth for all agent instructions. See `AGENTS.md` §2 and `skills/INDEX.md` for the full rule set.
+
+Each article is a short, testable rule plus the skill(s) that enforce it. No article restates a whole skill; it names the invariant and points at where it lives operationally. Add new articles at the bottom, numbered sequentially. Do not rewrite an existing article — supersede it explicitly and say so.
+
+Provenance note: the invariants below were prompted by a Scout memo comparing `unclebob/swarm-forge`'s coordination format against this hub. Ideas only — no files, prompts, scripts, or dashboard HTML were copied. That repo carries no LICENSE, so nothing from it is vendored, quoted at length, or assumed to carry a license here.
+
+---
+
+## Article 1 — Spec gate
+
+A held artifact (plan, glossary, ADR, diff) that gates a phase transition must be stamped by a human with a binary **Approve** or **Reject** against a named `Documents` list — never approved implicitly by silence, and never requested only in chat prose.
+
+**Enforced by**: `skills/reply-contract/SKILL.md` (spec-gate card format), `skills/grill-with-docs/SKILL.md` (Step 4 uses it before any implement skill).
+
+## Article 2 — Clarify is not a gate
+
+A single blocking question that needs a fact, not a decision on a held artifact, must never carry Approve/Reject. Use the clarify card (question + one-line answer + Submit) instead.
+
+**Enforced by**: `skills/reply-contract/SKILL.md` (clarify card format), `skills/grill-with-docs/SKILL.md`.
+
+## Article 3 — Stable task name
+
+Once a thread has a gate card, it has exactly one short task Name for its life, reused verbatim on every later card and in the close-out handoff entry. Renaming mid-thread must be explicit, with the old name noted.
+
+**Enforced by**: `skills/reply-contract/SKILL.md` ("Task name"), `skills/close-out/SKILL.md` (Step 1), `skills/grill-with-docs/SKILL.md`.
+
+## Article 4 — Envelope stanza is descriptive, not a bus
+
+A four-field markdown stanza (`type` / `to` / `priority` / `task`) may head a handoff or finding as a quick-triage aid. It is plain markdown, never a message-bus contract: no SHA-based identity, no outbox file paths, no stdout `TASK:`/`NO_TASK` helper convention, no auto-generated bodies.
+
+**Enforced by**: `skills/adversarial-coordination-workflow/SKILL.md`, `skills/multi-harness-coordination/SKILL.md`.
+
+## Article 5 — No vendored runtime from unlicensed sources
+
+Ideas may be adapted in-house from a repository with no LICENSE (e.g. `unclebob/swarm-forge`); files, scripts, prompts, dashboard HTML, or constitution `.prompt` files from such a repository may never be copied or vendored, and no LICENSE is invented on their behalf. Cite the source repo and the idea in the PR body, not as copied text.
+
+**Enforced by**: this file (provenance note above), PR review discipline in `skills/expert-pr-review/SKILL.md`.
+
+---
+
+*Last updated: 2026-08-22 | Pointer only — `AGENTS.md` remains the single source of truth for all agent instructions.*
