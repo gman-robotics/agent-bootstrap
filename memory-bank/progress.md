@@ -323,3 +323,26 @@ All rules followed: absolute paths, no unapproved commits, proactive but safe, m
 - Branch: `cursor/steal-swarm-forge-skill-updates-a543`. PR: opened as a single draft PR against `main` (see PR body for swarm-forge/Scout-memo provenance citations — ideas only, no copied text).
 
 **Next**: User's own review flow (issue notes claude-sonnet-5 implementer, Blair grok-4.6 reviewer, CoS squash-merges) — no self-review performed here per instructions.
+
+---
+
+## 2026-08-22 — PR #9 revision: reconcile constitution Article 1 with the plan→code gate
+
+**Task**: Blair grok-4.6's review of PR #9 verdict was **revise**: `docs/shared/constitution.md` Article 1 (binary Approve/Reject, never chat prose) contradicted `AGENTS.md` §4 PLAN's "Plan ready? Switch to Act mode?" and `agents/software-architect.md`'s chat-prose closer. Required fix (5 items) provided directly by the task instructions; implemented on the same branch (`cursor/steal-swarm-forge-skill-updates-a543`), same PR (#9).
+
+**What Was Done**
+- [x] `agents/software-architect.md`: closer converted from the chat-prose "Does this look good? … switch to Act mode?" question to `reply-contract`'s spec-gate card (`Documents:` = plan location in `memory-bank/activeContext.md` + any ADRs; `<next-phase>` = `CODE`); explicit rule that only a literal Approve stamps it and Reject means keep planning; `reply-contract` added to Related Skills.
+- [x] `AGENTS.md` §4 PLAN step 1: last bullet now points at the spec-gate card (with a `docs/shared/constitution.md` Article 1 cross-reference) instead of the chat-prose "Plan ready?" ask.
+- [x] `docs/shared/constitution.md` Article 1: added an explicit **Scope** paragraph (binds only the named `Enforced by` list, not every gate in the hub), an **Explicitly out of scope** paragraph naming `skills/plan-code-review-workflow/SKILL.md`'s own literal PLAN-step text as intentionally untouched (Tom lock), and two new body rules — the stamp must be the literal word Approve/Reject, and a card must not carry a leftover open question beside Approve. `agents/software-architect.md` and `AGENTS.md` §4 PLAN added to `Enforced by`.
+- [x] `skills/plan-code-review-workflow/SKILL.md` — **not touched** (per the lock; no pointer added either, since the constitution's own "Explicitly out of scope" note already documents the exception).
+- [x] `skills/reply-contract/SKILL.md` (should-fix): "Task name" section rewritten — the stable per-thread Name **is** the four-field envelope `task:` value when both are in play (one string, reused), not two identifiers hoping to match. Spec-gate card section gained the same two body rules as the constitution (literal-word stamp, no leftover questions beside Approve); pitfalls list +2, verification checklist +2. Frontmatter `version: 1.2.0` → `1.3.0`.
+- [x] `skills/grill-with-docs/SKILL.md` (should-fix): Step 4 rewritten to forbid presenting the spec-gate card while any question is open (route to a clarify card or another grill round instead) and to require the literal Approve/Reject word as the stamp; pitfalls +2, verification checklist +1. Frontmatter `version: 1.0.0` → `1.1.0`.
+- [x] `skills/INDEX.md`: constitution pointer sentence now states Article 1's scope explicitly and names the `plan-code-review-workflow` exception by name.
+- [x] Re-exported `.grok/skills/grill-with-docs/` and `.grok/skills/reply-contract/` via `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force` (only these two `references/source.md` changed, as expected); restored the two pre-existing `grill-with-docs/references/{adr-format,context-format}.md` files that `--force`'s rmtree deletes and does not regenerate (same pre-existing exporter gap noted in the prior session, not fixed here — out of scope for this revision). `agents/software-architect.md` required no re-export since `.grok/agents/software-architect.md` is a symlink to the canonical file.
+- [x] Not addressed in this revision (outside the user-provided required-fix list): Blair's should-fix items on the four-field envelope needing to be a typed *file* handoff rather than an optional chat header (`skills/multi-harness-coordination/SKILL.md`), and Article 5's dangling claim that `skills/expert-pr-review/SKILL.md` enforces no-vendoring. Left for a future pass.
+
+**Verification Evidence**
+- `python3 -m unittest tests.test_export_codex_skills` from `/workspace`: 7/7 pass, both immediately before touching any file (baseline) and after the full edit + re-export (final).
+- `git diff --check`: clean (no whitespace errors introduced).
+- `git status --porcelain` after re-export + restore: only the two `references/source.md` files for the touched skills changed under `.grok/`; the two manually-restored reference files show no diff against their pre-existing committed content.
+- Branch: `cursor/steal-swarm-forge-skill-updates-a543`. PR: [#9](https://github.com/gman-robotics/agent-bootstrap/pull/9) (existing draft, revised in place — not a new PR, not merged, not self-reviewed).

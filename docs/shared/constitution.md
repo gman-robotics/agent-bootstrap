@@ -10,9 +10,16 @@ Provenance note: the invariants below were prompted by a Scout memo comparing `u
 
 ## Article 1 — Spec gate
 
-A held artifact (plan, glossary, ADR, diff) that gates a phase transition must be stamped by a human with a binary **Approve** or **Reject** against a named `Documents` list — never approved implicitly by silence, and never requested only in chat prose.
+**Scope**: this article binds only the card-using skills/personas named under **Enforced by** below — it is not a claim that every phase-transition gate in the hub already uses the card. A skill not listed there is out of scope until it is migrated; that is a gap to close in a future change, not a silent exception to this article.
 
-**Enforced by**: `skills/reply-contract/SKILL.md` (spec-gate card format), `skills/grill-with-docs/SKILL.md` (Step 4 uses it before any implement skill).
+Within scope, a held artifact (plan, glossary, ADR, diff) that gates a phase transition must be stamped by a human with a binary **Approve** or **Reject** against a named `Documents` list — never approved implicitly by silence, and never requested only in chat prose. Two refinements close the common ways this gets faked:
+
+- **The stamp is the literal word.** Only an explicit **Approve** or **Reject** counts. "Ok", "looks good", "sounds right", or silence are not a stamp; re-present the same card.
+- **No leftover questions beside Approve.** A card must not show `Approve` while an open question from the same session sits next to it. Resolve every question first (another grill round, or a clarify card for one blocking fact) — a card with leftovers is not ready to gate anything.
+
+**Enforced by**: `skills/reply-contract/SKILL.md` (spec-gate card format), `skills/grill-with-docs/SKILL.md` (Step 4, before any implement skill), `agents/software-architect.md` (Plan-phase closer), `AGENTS.md` §4 PLAN (points here instead of a chat-prose question).
+
+**Explicitly out of scope (not migrated by this article)**: `skills/plan-code-review-workflow/SKILL.md`'s own literal Phase 1 Step 5 text still asks in chat prose. That file is intentionally not rewritten here; when its Architect role is played via `agents/software-architect.md`, the persona's card closer applies, but the workflow file's own wording is unchanged pending a dedicated update.
 
 ## Article 2 — Clarify is not a gate
 

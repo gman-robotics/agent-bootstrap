@@ -1,7 +1,7 @@
 ---
 name: grill-with-docs
 description: "Use when aligning on a plan or design before code: grill the user in rounds, keep CONTEXT.md as a glossary, and offer ADRs only for hard-to-reverse trade-offs. Do not implement until the user confirms shared understanding."
-version: 1.0.0
+version: 1.1.0
 ---
 
 # grill-with-docs — Align, then write the language down
@@ -112,11 +112,11 @@ If any is missing, skip. Format: `references/adr-format.md`. Default path `docs/
 
 ### 4. Stop and confirm
 
-Use `reply-contract`'s **spec-gate card** — a held artifact (the glossary/ADRs from this session) gets a binary Approve/Reject, not a chat-prose ask. `Documents` lists every `CONTEXT.md` / ADR path touched this session; `<next-phase>` is the implement skill you will load once approved (usually `plan-code-review-workflow`). Pick the thread's stable **task Name** on the first card if none exists yet; reuse it on every later card.
+Use `reply-contract`'s **spec-gate card** — a held artifact (the glossary/ADRs from this session) gets a binary Approve/Reject, not a chat-prose ask. `Documents` lists every `CONTEXT.md` / ADR path touched this session; `<next-phase>` is the implement skill you will load once approved (usually `plan-code-review-workflow`). Pick the thread's stable **task Name** on the first card if none exists yet; reuse it on every later card (and on the envelope `task:` field if one is also in play).
 
-Show alongside the card: settled decisions, leftover open questions (should be none).
+**Do not present this card while any question is still open.** The frontier must be empty first (Step 2) — a leftover question sitting beside Approve is not a gate, it is a trap. If one blocking fact-question surfaces late, resolve it with a clarify card (or one more grill round) before showing the spec-gate. Show alongside the card only settled decisions; there must be zero leftover open questions on it.
 
-Reject → state what is unresolved and keep grilling; do not silently start implementing. Approve → stop this skill, load the named implement skill.
+Only a literal **Approve** or **Reject** stamps the card — "ok" / "looks good" / silence do not count; re-present the same card. Reject → state what is unresolved and keep grilling; do not silently start implementing. Approve → stop this skill, load the named implement skill.
 
 If mid-round you hit one blocking fact-question that cannot wait for the next full frontier round, use `reply-contract`'s **clarify card** instead — it is a question, not a gate, so it never carries Approve/Reject.
 
@@ -132,6 +132,8 @@ If mid-round you hit one blocking fact-question that cannot wait for the next fu
 6. Batching glossary updates until the end (they get lost).
 7. Asking for the final confirm only in chat prose instead of the spec-gate card.
 8. Using a clarify card as a gate (attaching Approve/Reject to a plain question).
+9. Presenting the spec-gate card with a leftover open question still listed beside Approve.
+10. Treating "ok" / "looks good" / silence as an Approve stamp instead of the literal word.
 
 ---
 
@@ -144,6 +146,7 @@ If mid-round you hit one blocking fact-question that cannot wait for the next fu
 - [ ] Did **not** invoke implement skills
 - [ ] User must confirm before any code change beyond glossary/ADR
 - [ ] Final confirm used the spec-gate card (Documents + Approve/Reject), not chat prose
+- [ ] Zero leftover open questions on the card when it is shown; only a literal Approve/Reject counted as the stamp
 - [ ] Any mid-round blocking fact-question used a clarify card, never Approve/Reject
 
 *Last updated: 2026-08-22 | Hub version: 0.6.0*

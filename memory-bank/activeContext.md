@@ -13,6 +13,19 @@
 - Verification: `python3 -m unittest tests.test_export_codex_skills` — 7/7 pass (both before and after the re-export). `git diff --check` flags only pre-existing two-trailing-space markdown line-break style (matches existing ADR/agent file convention, not a real issue).
 - Opened as **one draft PR** against `main`; not merged, not self-reviewed (per issue instructions — user's own reviewers, e.g. Blair grok-4.6, own the review).
 
+### Revision after Blair grok-4.6 review (PR #9, 2026-08-22)
+Blair's adversarial review verdict: **revise**. Blocker: `docs/shared/constitution.md` Article 1 (binary Approve/Reject, never chat prose) contradicted `AGENTS.md` §4 PLAN's "Plan ready? Switch to Act mode?" and `agents/software-architect.md`'s chat-prose closer, which this PR itself edited. Fix landed on the same branch/PR (`3ec3d90` → new HEAD, see progress.md):
+- `agents/software-architect.md`: closer now presents `reply-contract`'s spec-gate card (`Documents:` = plan location, `<next-phase>` = `CODE`) instead of "Does this look good? Switch to Act mode?"; Related Skills lists `reply-contract`.
+- `AGENTS.md` §4 PLAN step 1: last bullet now points at the spec-gate card, not the chat-prose question.
+- `docs/shared/constitution.md` Article 1: added an explicit **Scope** line (binds only the named `Enforced by` list) + an **Explicitly out of scope** note naming `skills/plan-code-review-workflow/SKILL.md`'s own literal PLAN-step wording as intentionally untouched (Tom lock — not rewritten). Added `agents/software-architect.md` + `AGENTS.md` §4 PLAN to `Enforced by`.
+- `skills/plan-code-review-workflow/SKILL.md` — **not touched**, per the lock.
+- Should-fix landed too: `skills/reply-contract/SKILL.md` "Task name" now says the card Name **is** the envelope `task:` value (one string, not two identifiers hoping to match) — version bumped 1.2.0 → 1.3.0. Spec-gate card rules gained "no leftover questions beside Approve" and "only the literal word Approve/Reject stamps it" in both `reply-contract` (spec-gate card section, pitfalls, verification checklist) and `grill-with-docs` Step 4 (pitfalls, verification checklist) — `grill-with-docs` version bumped 1.0.0 → 1.1.0. Constitution Article 1 body also states both rules directly.
+- `skills/INDEX.md` constitution pointer now states Article 1's scope explicitly and names the `plan-code-review-workflow` exception.
+- Re-exported `.grok/skills/grill-with-docs/` and `.grok/skills/reply-contract/` (`python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`); restored the two pre-existing `grill-with-docs/references/{adr-format,context-format}.md` files the `--force` rmtree deletes (same known exporter gap as before). `agents/software-architect.md` needed no re-export — `.grok/agents/software-architect.md` is a symlink to the canonical file.
+- Verification: `python3 -m unittest tests.test_export_codex_skills` — 7/7 pass before and after re-export; `git diff --check` clean; `git status --porcelain` clean after restoring the two reference files.
+- Not addressed in this revision (not in the user's required-fix list for this pass): Blair's should-fix items on the four-field envelope being "file, not pane chat" (`multi-harness-coordination`) and Article 5's dangling `expert-pr-review` enforcement claim — left for a future pass.
+- Pushed to the same branch/PR; still not merged, still not self-reviewed.
+
 ## Previous Focus (superseded)
 **Formatting and replay review complete** (2026-06-23). Reviewed the added skill/workflow updates in this checkout and fixed local formatting issues:
 - Replaced malformed `skills/agent-bootstrap/SKILL.md` placeholder text with valid skill frontmatter, quick-start steps, and replay guidance.

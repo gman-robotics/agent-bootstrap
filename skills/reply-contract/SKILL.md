@@ -1,7 +1,7 @@
 ---
 name: reply-contract
 description: "Use when status or your-turn. Write as if the user is new to the project."
-version: 1.2.0
+version: 1.3.0
 ---
 
 # reply-contract — Status and your-turn as if they just walked in
@@ -61,6 +61,8 @@ Approve · Reject
 - `<next-phase>` — the phase this unblocks (`CODE`, `implement`, `PR`).
 - `<task-name>` — the thread's stable Name (see **Task name** below); identical on every card for this thread.
 - `Documents` — every artifact the human is stamping, named, not pasted inline.
+- **No leftover questions beside Approve.** Do not show this card while any question from the session is still open. Close every question first — another round, or a clarify card for one blocking fact — then present the gate on its own.
+- **The stamp is the literal word.** Only an explicit **Approve** or **Reject** counts. "Ok" / "looks good" / "sounds right" / silence are not a stamp; re-present the same card unchanged.
 - Reject → state what changes before re-presenting the same card; do not silently keep working.
 
 ### Clarify card
@@ -80,7 +82,7 @@ _Reply with your answer, then_ **Submit**.
 
 ## Task name
 
-The first time a gate card (spec-gate or clarify) appears in a thread, pick one short Name (2–4 words, stable for the thread's life) and reuse it verbatim on every later card, in `grill-with-docs`, and in `close-out`'s Phase 1 handoff entry for this task. Do not rename mid-thread; if the work outgrows the name, say so explicitly and note the old name for continuity. This is naming discipline only — it is not the four-field envelope `task` field (see `adversarial-coordination-workflow` / `multi-harness-coordination`), though the two should carry the same value when both are in play.
+The first time a gate card (spec-gate or clarify) appears in a thread, pick one short Name (2–4 words, stable for the thread's life) and reuse it verbatim on every later card, in `grill-with-docs`, and in `close-out`'s Phase 1 handoff entry for this task. Do not rename mid-thread; if the work outgrows the name, say so explicitly and note the old name for continuity. When the four-field envelope stanza (see `adversarial-coordination-workflow` / `multi-harness-coordination`) is also in play for this task, the card Name **is** the envelope `task:` value — one string, reused, not two identifiers that happen to match. Whichever of the two appears first in the thread fixes that string; everything after copies it verbatim.
 
 ## Content that must still be true
 
@@ -165,6 +167,8 @@ Write as if they just walked in from another project.
 9. Approve/Reject on a clarify card, or an open-ended spec-gate
 10. Asking for a gate stamp only in chat prose instead of the card
 11. Renaming the task mid-thread without saying so
+12. Treating "ok" / "looks good" / silence as an Approve stamp
+13. Showing a spec-gate with a leftover open question still listed beside it
 
 ## Verification
 
@@ -175,6 +179,8 @@ Write as if they just walked in from another project.
 - [ ] UI is bold; tokens are `code`
 - [ ] Who is blocked on the human is explicit, or there is no human action
 - [ ] Gate cards used only for held artifacts; clarify cards only for questions — never mixed
-- [ ] Task name (if any card used) is stable across this thread
+- [ ] Task name (if any card used) is stable across this thread, and matches the envelope `task:` value when both are in play
+- [ ] No leftover open question shown beside a spec-gate's Approve/Reject
+- [ ] Only a literal Approve/Reject counted as the stamp, never "ok" / "looks good" / silence
 
 Last updated: 2026-08-22

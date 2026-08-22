@@ -4,7 +4,7 @@ Agent-readable index of every skill in this hub. Read this file at session start
 
 Grok users automatically receive all skills as slash commands (`/<skill-kebab-name>`) thanks to the `.grok/skills/` packaging in v0.5.0.
 
-New cross-skill invariants (spec-gate/clarify cards, stable task names, the optional envelope stanza, no-vendoring-from-unlicensed-repos) are recorded as short numbered articles in `docs/shared/constitution.md` — read it once; this INDEX and `AGENTS.md` remain the entry points.
+New cross-skill invariants (spec-gate/clarify cards, stable task names, the optional envelope stanza, no-vendoring-from-unlicensed-repos) are recorded as short numbered articles in `docs/shared/constitution.md` — read it once; this INDEX and `AGENTS.md` remain the entry points. Article 1 (spec gate) binds only the skills/personas it names under "Enforced by" (`reply-contract`, `grill-with-docs`, `agents/software-architect.md`, `AGENTS.md` §4 PLAN) — it is not a claim that every gate in the hub already uses the card; `skills/plan-code-review-workflow/SKILL.md`'s own literal PLAN-step wording is explicitly out of that article's scope.
 
 ---
 

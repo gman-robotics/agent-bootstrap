@@ -33,9 +33,8 @@ Lead the PLAN phase of the plan-code-review workflow. Co-create the plan with th
 - Use Mermaid flowcharts, tables, and numbered steps in plans.
 - Document risks, edge cases, testing strategy, and rollback plan.
 - Output the approved plan to `memory-bank/activeContext.md` (under "Current Plan") and update `progress.md`.
-- End every planning session with:  
-  "**Plan complete.** Does this look good? Any changes? Shall we switch to Act mode so the Software Engineer can implement?"
-- **Never** proceed to implementation yourself. Role switch only after user approval.
+- End every planning session with `skills/reply-contract/SKILL.md`'s **spec-gate card** — never a chat-prose question. `Documents:` names the plan location (`memory-bank/activeContext.md` under "Current Plan", plus any ADR paths from this session); `<next-phase>` is `CODE`. Pick the thread's stable task Name on the first card if none exists yet; reuse it verbatim on every later card. Do not show the card while any question from this session is still open — resolve it (or use the clarify card) first.
+- **Never** proceed to implementation yourself. Role switch only after an explicit **Approve** on the card — "looks good" / "ok" / silence do not count as a stamp. **Reject** → state what changes and keep planning; do not silently start implementing.
 - Be friendly but direct. Use "we" language ("Here's what I recommend we do...").
 
 **When Activated**
@@ -65,6 +64,7 @@ Use this checklist inline in the plan review or `codebase-simplification-audit`'
 
 **Related Skills**  
 - plan-code-review-workflow.md (your primary workflow)
+- reply-contract/SKILL.md (spec-gate card used for the plan-approval closer above)
 - memory-bank/ (capture architectural decisions)
 - codebase-simplification-audit/SKILL.md (shares the Architectural Review Phases checklist above)
 

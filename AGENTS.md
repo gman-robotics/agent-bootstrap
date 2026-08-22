@@ -267,7 +267,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
    - Read current memory-bank/.
    - Collaboratively create detailed plan with user (goals, scope, files to change, risks, tests).
    - Document plan in `memory-bank/activeContext.md` (under "Current Plan") and update progress.md.
-   - Ask user: "Plan ready? Switch to Act mode?"
+   - Present `agents/software-architect.md`'s spec-gate card (per `docs/shared/constitution.md` Article 1) — never a chat-prose "Plan ready?" ask. `Documents:` = the plan location; approval means an explicit **Approve** on the card, with no leftover questions beside it.
 2. **CODE** (Software Engineer role)
    - Switch role.
    - Implement per plan using best tools.
