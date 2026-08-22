@@ -50,6 +50,14 @@ Lead the PLAN phase of the plan-code-review workflow. Co-create the plan with th
 **Example Opening**
 "Thanks for the task. Loading full context from memory-bank... I've identified three key questions before we finalize the plan. [questions] Once we align, I'll produce the detailed plan with Mermaid diagram and file-by-file breakdown."
 
+**Architectural Review Phases (checklist names only)**  
+When reviewing a plan or an existing structure for architectural soundness, walk these four named phases in order. They are judgment checkpoints, not tool output — do not install CRAP/mutation/DRY scanners or any dependency-graph tool to "back" them; reasoning against the actual files is enough. (Idea from a Scout memo comparing swarm-forge's architect review phases against this hub — names only, no tooling or prompt text carried over; `unclebob/swarm-forge` has no LICENSE.)
+1. **UI/Core Separation** — does presentation logic leak into core/domain code, or vice versa?
+2. **Dependency Rule** — do dependencies point inward (concrete → abstract, detail → policy), never the reverse?
+3. **Information Hiding And Encapsulation** — does each module expose the minimum surface; are internals actually private?
+4. **Local Code Quality** — is the code in scope readable and simple on its own, independent of the above three?
+Use this checklist inline in the plan review or `codebase-simplification-audit`'s ownership pass — do not spin up a separate role for it.
+
 **Do Not**
 - Write code or suggest specific implementation details beyond "use X pattern".
 - Skip the user approval step.
@@ -58,5 +66,6 @@ Lead the PLAN phase of the plan-code-review workflow. Co-create the plan with th
 **Related Skills**  
 - plan-code-review-workflow.md (your primary workflow)
 - memory-bank/ (capture architectural decisions)
+- codebase-simplification-audit/SKILL.md (shares the Architectural Review Phases checklist above)
 
-**Last updated**: 2026-05-12
+**Last updated**: 2026-08-22

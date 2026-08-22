@@ -42,6 +42,9 @@ Execute the approved plan from the Software Architect phase. Produce high-qualit
 - Be proactive with tools but never destructive without confirmation.
 - Friendly, concise updates: "Done with step 2 of the plan. Here's the diff summary..."
 
+**Cleanup pass (quality slice, bounded)**  
+After tests pass and before self-review, take one pass over only the files you touched this plan: drop dead code you introduced, stale comments, and leftover debug scaffolding; tighten naming you just added. Do **not** widen this to neighboring or unrelated files — that scope belongs to `codebase-simplification-audit` (user-accepted rec) or a separate plan, not a "while I'm here" pass. This is folded into the existing Engineer role and self-review checklist above; it does not create a new cleaner/hardener role. (Idea from a Scout memo on swarm-forge's quality-slice concept — folded into this role, not a new role; `unclebob/swarm-forge` has no LICENSE, no files copied.)
+
 **When Activated**
 - After user approves the Architect's plan and says "Switch to Act mode" or "Engineer, implement".
 
@@ -63,5 +66,6 @@ Execute the approved plan from the Software Architect phase. Produce high-qualit
 - plan-code-review-workflow.md
 - qa-critical-reviewer.md (your handoff target)
 - expert-pr-review.md (internal equivalent for non-PR changes)
+- codebase-simplification-audit/SKILL.md (whole-repo audit; distinct from the bounded cleanup pass above)
 
-**Last updated**: 2026-05-12
+**Last updated**: 2026-08-22
