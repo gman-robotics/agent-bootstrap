@@ -17,6 +17,23 @@ class as PR #11 blocker #3 ("reading the skill Markdown is not a pass"). Checks 
 and check 8 proves the scanner is not vacuous by running it against a synthetic
 fixture of the exact violating shape and requiring it to fail loudly.
 
+**Revision (adversarial review pass 2, heading-negation leak, REPEAT of the "reading Markdown is not
+a pass" class)**: the scanner's negation check originally joined a unit's nearest
+heading into the same negation-context string as the unit itself
+(`f"{heading} {unit}"`). A heading merely naming an opt-in recipe
+(`## Recipe: mermaid (opt-in only)`) or a category of bad outcomes (`## Pitfalls`,
+whose own name contains the substring "pitfall") then cancelled a violation in *any*
+unnegated body line beneath it — reproduced live: `## Recipe: mermaid (opt-in only)`
+followed by a bare `Bash(open diagram.html)` body line, and the same body line under
+`## Pitfalls`, both returned zero violations before this fix. Checks 9 and 10 below
+close that gap; negation is now scoped to a unit's own text only, never its heading.
+Fixing this also surfaced a real false positive on the committed file itself: Pitfalls
+item 4 named the forbidden `Bash(open ...html)` pattern descriptively with no in-unit
+negation word (it relied on the heading's "pitfall" to stay green) — reworded to start
+with "Never", matching how every other prohibition in this file is already phrased, so
+it now carries its own negation marker and the real file stays green under the
+stricter, heading-blind check.
+
 ## Input fixture
 
 Run `python3 -m unittest tests.test_show_me_skill -v` from the repo root.
@@ -29,7 +46,7 @@ Exit code `0`, stderr contains `OK` (the real `unittest` summary line).
 
 `tests/test_show_me_skill.py` asserts, against the real committed files:
 
-1. `skills/show-me/SKILL.md` exists, with `name: show-me` and `version: 1.0.0` in
+1. `skills/show-me/SKILL.md` exists, with `name: show-me` and `version: 1.0.1` in
    its frontmatter.
 2. `skills/reply-contract/SKILL.md` contains the literal string
    `skills/show-me/SKILL.md` and no longer contains the old fictional pairing
@@ -53,7 +70,8 @@ Exit code `0`, stderr contains `OK` (the real `unittest` summary line).
    into markdown units (one bullet/paragraph, tagged with its nearest heading) so one
    bullet's negation word can't mask a violation in a different bullet, then flags any
    unit that matches a forbidden-guidance pattern with no negation marker (`never`,
-   `no `, `without`, `opt-in`, `pitfall`, ...) in that unit or its heading.
+   `no `, `without`, `opt-in`, `pitfall`, ...) in that unit *itself* — a heading's own
+   words never count toward negating a body line beneath it (see checks 9–10).
 8. **Proof the scanner is not vacuous**: the same function is run against
    `OLD_FICTIONAL_CASE_SKILL_TEXT`, a synthetic bullet list stating a mermaid/HTML
    default and a `Bash(open diagram.html)` command — check 8 requires this to return
@@ -62,6 +80,15 @@ Exit code `0`, stderr contains `OK` (the real `unittest` summary line).
    real "opt-in only ... never by default" bullet with that same violating pair of
    bullets made `python3 -m unittest tests.test_show_me_skill -v` fail
    (`FAILED (failures=1)`, exit code `1`) on check 7, before the file was restored.
+9. **Heading-negation leak, probe A**: `find_photon_safe_violations` run against a
+   synthetic `## Recipe: mermaid (opt-in only)` heading followed by a bare, unnegated
+   `Bash(open diagram.html)` body line — must return violations. Reproduced red
+   against the unfixed scanner (zero violations) before this fix; permanently red on
+   this fixture, permanently green on the real file, afterward.
+10. **Heading-negation leak, probe B**: the same bare body line under a `## Pitfalls`
+    heading instead — must also return violations, proving the earlier heading-level
+    negation leak is closed regardless of which negation word the heading happens to
+    contain.
 
 Invoke the black-box-agent-qa run for real with:
 
