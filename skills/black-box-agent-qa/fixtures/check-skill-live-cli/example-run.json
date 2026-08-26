@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-08-26T03:59:33.078730+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "check-skill-live-cli",
+  "description": "Non-unittest worked example: run the plain scripts/check_skill_live.py CLI directly (no test runner involved) and confirm the real system under test is a script's argv/exit-code/stdout contract, not only Python's unittest output. Demonstrates run_black_box_fixture.py works against any subprocess, not just `python3 -m unittest ...`.",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "live-eligible"
+    ]
+  },
+  "fixture": "skills/black-box-agent-qa/fixtures/check-skill-live-cli",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/check_skill_live.py",
+      "black-box-agent-qa"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "5a8fd8705906fbd72c905dac59737c0db8ddf51897e85267a8d4eb6ff606c198",
+  "stderr_tail": "",
+  "stdout_tail": "live-eligible: run record verdict is pass and matches the current SKILL.md\n",
+  "verdict": "pass"
+}

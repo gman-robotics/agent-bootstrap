@@ -1,7 +1,7 @@
 ---
 name: close-out
-description: "Two-phase task close-out. Phase 1: verify memory bank + shared memory (mem0, if configured) are accurate so a fresh agent can pick up without reconstruction (completed log, updated todo list, evidence-backed progress entry). Phase 2: scan the session for patterns, friction, and skill gaps and produce specific improvement proposals (new skill / skill update / AGENTS.md rule / feedback memory / docs entry)."
-version: 1.0.0
+description: "Two-phase task close-out. Phase 1: verify memory bank + shared memory (mem0, if configured) are accurate so a fresh agent can pick up without reconstruction (completed log, updated todo list, evidence-backed progress entry). Phase 2: scan the session for patterns, friction, and skill gaps and produce specific improvement proposals (new skill / skill update / AGENTS.md rule / feedback memory / docs entry). A new or edited skill only goes live once scripts/check_skill_live.py <name> exits 0 against a black-box-agent-qa run record captured by scripts/run_black_box_fixture.py — user approval to write it is not a ship, editing the file after capture invalidates the record, and tests/test_index_live_binding.py enforces the gate against skills/INDEX.md on every test run."
+version: 1.3.0
 ---
 
 # close-out — Task Close-Out & Continuous Improvement
@@ -146,16 +146,36 @@ For each finding from Steps 5–7, classify and propose the fix:
 | **Shared-memory feedback** | A user preference or correction that should shape future behavior | Write it immediately with the shared-memory tool (e.g. `add_memory`), if configured. |
 | **docs/ entry** | A technical fact (credential pattern, API behavior, config trap) that belongs in the project's `docs/` layer | Identify the target doc file and propose the addition. |
 
-Present findings to the user as a numbered list: **Finding** → **Proposed fix** → **Effort** (one-liner / 5 min / 30 min).
+Present findings to the user as a numbered list: **Finding** → **Proposed fix** → **Effort** (one-liner / 5 min / 30 min). For a **New skill** or **Existing skill update** finding, the **Proposed fix** must also name one concrete I/O case as a real `fixtures/<case-name>/case.json` (schema: `skills/black-box-agent-qa/SCHEMA.md`) — a literal `input.command` and a literal `expected` outcome — that Step 9 will actually run with `scripts/run_black_box_fixture.py` before that skill goes live. A skill proposal with no named `case.json` path is not ready to present.
 
-### Step 9: Apply approved improvements
+### Step 9: Apply Approved Improvements — Approval to Write Is Not a Ship
 
-For each finding the user approves:
-- **New skill**: Follow the process in `skills/INDEX.md §Adding a New Skill` — write the skill file, update INDEX.md, AGENTS.md, and the exporter config.
-- **Skill update**: Edit the skill file in-place. Bump the "Last updated" footer.
+A user's **Approve** on a Step 8 finding authorizes writing or editing the skill file. It does **not** authorize treating that skill as live. **The live-flip is defined mechanically, not by judgment call**:
+
+1. Write or edit `skills/<name>/SKILL.md` (see the per-finding steps below).
+2. Capture a real run against the Step 8 I/O case:
+   ```bash
+   python3 scripts/run_black_box_fixture.py \
+     --fixture <fixture-dir-from-step-8> \
+     --skill <name> \
+     --out skills/<name>/black-box-run.json
+   ```
+   This is `skills/black-box-agent-qa/SKILL.md` end to end — it actually runs the fixture's command and writes `skills/<name>/black-box-run.json` with a real `verdict` and a `skill_sha256` of the file just written.
+3. Run the gate: `python3 scripts/check_skill_live.py <name>`. **The skill is live only when this exits `0`.** It exits non-zero (never live) when: no run record exists yet, the record's verdict is not `pass`, the record's `skill_sha256` is stale (`SKILL.md` changed since capture), or the record is JSON-invalid.
+4. Only after step 3 exits `0` may the skill be added to `skills/INDEX.md`, `AGENTS.md` §4, and the session-start trigger tables. `tests/test_index_live_binding.py::test_every_non_grandfathered_index_entry_is_live` runs this same check against every `skills/INDEX.md` listing on every test run — that is the actual bind, not just this step's instructions (`skills/INDEX.md §Adding a New Skill` gates the exporter config the same way).
+
+Reading the finished skill Markdown back to the user, or getting a second "looks good," is not step 2 or step 3 — nothing substitutes for actually running `run_black_box_fixture.py` and seeing `check_skill_live.py` exit `0`.
+
+**The stale-record guard is the same mechanism, not a separate rule.** `check_skill_live.py` ties the run record to one exact `SKILL.md` by content hash (`skill_sha256`). Edit the skill again after capturing a pass — for any reason, including a well-intentioned trajectory refine — and the hash no longer matches; the gate reports the record stale and fails until a fresh run is captured against the new content. There is no code path where an edited skill stays live on an old pass.
+
+For each finding the user approves, before running the gate above:
+- **New skill**: Follow the process in `skills/INDEX.md §Adding a New Skill` — write the skill file, then run the black-box-agent-qa gate above, and only then update INDEX.md, AGENTS.md (and the session-start trigger tables), and the exporter config.
+- **Skill update**: Edit the skill file in-place. Bump the version and the "Last updated" footer. Then run the black-box-agent-qa gate above before treating the update as live — an edited skill with a stale or missing run record is no more trustworthy than a brand-new one.
 - **AGENTS.md rule**: Add to the appropriate section. Keep it under 2 lines.
 - **Shared-memory feedback**: Add immediately, if configured.
 - **docs/ entry**: Follow `docs-protocol`.
+
+**Watch for the failure class this step can institutionalize**: a skill edited because *this one session's run* happened to go a certain way can quietly turn a one-off shortcut into a standing rule for every future run. Treat a run-driven skill edit as a candidate **pattern** to cite and route through Step 8 like any other finding — never as a live rule installed straight from the run's outcome just because it was convenient this time. If the edit really is only this session's convenience, say so and leave the skill alone. The `skill_sha256` staleness check above is what makes this mechanical: a run-driven edit applied without a fresh gate pass simply does not ship as live.
 
 ---
 
@@ -169,6 +189,11 @@ For each finding the user approves:
 | Phase 2 producing only vague "could be better" observations | Improvements must be specific enough to act on: file, section, proposed text |
 | Proposing a new skill for a one-off workflow | Skills are for reusable patterns; one-offs belong in docs/ or a memory note |
 | Running Phase 2 without looking at the actual conversation | Generates hypothetical improvements; the real ones come from what actually happened |
+| Treating the user's Approve on a Step 8 finding as the skill going live | Only `scripts/check_skill_live.py <name>` exiting `0` authorizes calling it live |
+| Presenting a skill proposal in Step 8 with no named `case.json` path | Add the literal `input.command` + `expected` before presenting; an un-checkable proposal is not ready |
+| Editing a skill straight from one run's outcome without flagging it | Cite it as a pattern proposal through Step 8, not a silent live install of this session's shortcut |
+| Listing a skill in INDEX.md/trigger tables before running the gate | `skills/INDEX.md §Adding a New Skill` requires `check_skill_live.py` to exit `0` first |
+| Assuming an old run record still counts after editing the skill again | It doesn't — `skill_sha256` ties the record to one exact file; re-run after every edit |
 
 ---
 
@@ -179,5 +204,6 @@ For each finding the user approves:
 - **memory-bank-protocol** — defines the memory bank update protocol used in Steps 2–3.
 - **docs-protocol** — governs any `docs/` additions proposed in Phase 2.
 - **reply-contract** — if this thread used a spec-gate/clarify card, its stable task Name is the identifier to reuse in the completed-log entry (Step 1).
+- **black-box-agent-qa** — required gate before Step 9 treats a new or edited skill as live; run `scripts/run_black_box_fixture.py` against the Step 8 `case.json`, then confirm `scripts/check_skill_live.py <name>` exits `0`, and escalate (verdict `blocked`) rather than pass if the environment blocks the run.
 
-*Last updated: 2026-08-22*
+*Last updated: 2026-08-26*

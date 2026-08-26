@@ -28,7 +28,7 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `feature-flag-lifecycle.md`   → creating, rolling out, or graduating a feature flag
 - `plan-code-review-workflow.md`→ any non-trivial task (>1 file, user-facing impact)
 - `expert-pr-review.md`         → any PR review request
-- `triage-review-feedback.md`   → review feedback on a PR WE authored (human, AI, or scanner)
+- `triage-review-feedback.md`   → review feedback on a PR WE authored (human, AI, or scanner); tags every FIX NEW/REPEAT
 - `pr-shepherd.md`              → start of day, PR status, "what's blocked?"
 - `end-of-day-review.md`        → end of working day, "wrap up", "plan tomorrow"
 - `multi-harness-coordination.md` → coordinating across two or more agent harnesses
@@ -38,6 +38,7 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `docs-protocol.md`            → creating or updating technical docs or ADRs
 - `subagent-routing.md`         → independent subtasks, parallelizable work, model selection
 - `delegation-patterns.md`      → multi-agent delegation with worktree isolation
+- `black-box-agent-qa.md`       → before treating any agent/harness/verb/skill change as tested; required by close-out Step 9
 
 ## Key Principles
 

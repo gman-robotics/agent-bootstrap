@@ -24,7 +24,7 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 | `feature-flag-lifecycle.md` | Creating, rolling out, or graduating a feature flag |
 | `plan-code-review-workflow.md` | Any non-trivial task (>1 file or user-facing impact) |
 | `expert-pr-review.md` | Any PR review request |
-| `triage-review-feedback.md` | Review feedback on a PR WE authored (human, AI, or scanner) |
+| `triage-review-feedback.md` | Review feedback on a PR WE authored (human, AI, or scanner); tags every FIX NEW/REPEAT |
 | `pr-shepherd.md` | Start of day, PR status, "what's blocked?", after opening/un-drafting a PR |
 | `reply-contract.md` | Status, "your turn", smoke / tap-through, anything the human must do |
 | `codebase-simplification-audit.md` | Whole-repo read-only audit of data/state/ownership; no edits until user accepts a rec |
@@ -37,6 +37,7 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 | `docs-protocol.md` | Creating or updating technical documentation or ADRs |
 | `subagent-routing.md` | Independent subtasks, parallelizable work, model selection |
 | `delegation-patterns.md` | Multi-agent delegation with worktree isolation |
+| `black-box-agent-qa.md` | Before treating any agent/harness/verb/skill change as tested; required by close-out Step 9 |
 
 ## Key Files
 

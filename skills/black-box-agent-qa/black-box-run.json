@@ -1,0 +1,29 @@
+{
+  "captured_at": "2026-08-26T03:59:14.724208+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "repeat-lock-mechanical-check",
+  "description": "Worked example for both black-box-agent-qa's runnable contract and triage-review-feedback's REPEAT lock: actually run the REPEAT-lock mechanical check (tests/test_export_codex_skills.py::test_force_reexport_preserves_hand_added_reference_files) and confirm it really passes.",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stderr_contains": [
+      "OK"
+    ]
+  },
+  "fixture": "skills/black-box-agent-qa/fixtures/repeat-lock-mechanical-check",
+  "input": {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "tests.test_export_codex_skills.ExportCodexSkillsTests.test_force_reexport_preserves_hand_added_reference_files",
+      "-v"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "5a8fd8705906fbd72c905dac59737c0db8ddf51897e85267a8d4eb6ff606c198",
+  "stderr_tail": "test_force_reexport_preserves_hand_added_reference_files (tests.test_export_codex_skills.ExportCodexSkillsTests.test_force_reexport_preserves_hand_added_reference_files)\nREPEAT-lock mechanical check. ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.015s\n\nOK\n",
+  "stdout_tail": "",
+  "verdict": "pass"
+}

@@ -206,6 +206,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` before acting.",
             "Inventory all claims first; verify each at the cited code location before classifying.",
             "Fix TDD-first, QA-pass before posting, reply to every thread, then re-request review.",
+            "Tag every FIX NEW or REPEAT; REPEAT closes only with a mechanical check (lint/diagnostic/test/CI rule), never an instance fix or a comment — worked example: fixtures/repeat-exporter-dropped-references/.",
         ),
     ),
     "pr-shepherd": SkillConfig(
@@ -324,6 +325,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` for the full two-phase protocol.",
             "Phase 1: audit activeContext.md/progress.md and sync shared memory if configured.",
             "Phase 2: scan for friction/skill gaps and propose specific, filed improvements.",
+            "Step 8 proposals for a skill need a named case.json; Step 9 requires scripts/run_black_box_fixture.py to capture a pass and scripts/check_skill_live.py <name> to exit 0 before the skill is live — approval to write it is not a ship, and re-editing invalidates the record.",
         ),
     ),
     "reply-contract": SkillConfig(
@@ -381,7 +383,46 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Final confirm uses reply-contract's spec-gate card, not chat prose; a single blocking fact-question uses its clarify card.",
         ),
     ),
+    "black-box-agent-qa": SkillConfig(
+        description=(
+            "Use before treating any agent, harness, verb, or skill change as verified: "
+            "name an input fixture and expected output, then actually run it. Reading the "
+            "PR or skill Markdown is not a pass; mocking the system under test is not the "
+            "only proof; an environment-blocked run escalates, it never passes."
+        ),
+        short_description="Black-box run-it verification for agent/harness/skill changes",
+        trigger_summary=(
+            "Triggers before marking a change to an agent persona, harness wiring, a "
+            "verb/command, or a skill file as tested, passing, or ready to ship."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting; it is the authoritative workflow.",
+            "Write fixtures/<case>/case.json (schema: SCHEMA.md), then run scripts/run_black_box_fixture.py to actually execute it against the real system under test.",
+            "A diff read, a description, or a mock-only suite is not a pass; check scripts/check_skill_live.py <name> exits 0 before treating a skill as live.",
+            "Environment-blocked runs escalate (verdict blocked), they do not pass; never authorize auto-merge or a silent harness/agent-state refine from the run.",
+        ),
+    ),
 }
+
+
+def collect_preserved_files(skill_dir: Path) -> dict[Path, bytes]:
+    """Return every file under skill_dir the exporter does not itself generate.
+
+    `SKILL.md` and `references/source.md` are fully regenerated on every export; anything
+    else (a hand-added reference file, for example) must survive a `force=True` re-export
+    byte-for-byte. See the REPEAT-lock fixture at
+    `skills/triage-review-feedback/fixtures/repeat-exporter-dropped-references/`.
+    """
+    if not skill_dir.is_dir():
+        return {}
+    generated = {Path("SKILL.md"), Path("references") / "source.md"}
+    preserved: dict[Path, bytes] = {}
+    for path in skill_dir.rglob("*"):
+        if path.is_file():
+            rel = path.relative_to(skill_dir)
+            if rel not in generated:
+                preserved[rel] = path.read_bytes()
+    return preserved
 
 
 def load_source_skills(source_dir: Path) -> dict[str, str]:
@@ -439,9 +480,11 @@ def export_skills(source_dir: Path, output_dir: Path, force: bool = False) -> li
     for skill_name, source_text in source_skills.items():
         config = SKILL_CONFIGS[skill_name]
         skill_dir = output_dir / skill_name
+        preserved_files: dict[Path, bytes] = {}
         if skill_dir.exists():
             if not force:
                 raise FileExistsError(f"{skill_dir} already exists; rerun with --force")
+            preserved_files = collect_preserved_files(skill_dir)
             shutil.rmtree(skill_dir)
         (skill_dir / "references").mkdir(parents=True, exist_ok=True)
         (skill_dir / "SKILL.md").write_text(
@@ -452,6 +495,10 @@ def export_skills(source_dir: Path, output_dir: Path, force: bool = False) -> li
             strip_trailing_footer(source_text),
             encoding="utf-8",
         )
+        for rel_path, content in preserved_files.items():
+            target = skill_dir / rel_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(content)
         exported_paths.append(skill_dir)
 
     return exported_paths
