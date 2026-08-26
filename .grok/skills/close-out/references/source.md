@@ -1,7 +1,7 @@
 ---
 name: close-out
-description: "Two-phase task close-out. Phase 1: verify memory bank + shared memory (mem0, if configured) are accurate so a fresh agent can pick up without reconstruction (completed log, updated todo list, evidence-backed progress entry). Phase 2: scan the session for patterns, friction, and skill gaps and produce specific improvement proposals (new skill / skill update / AGENTS.md rule / feedback memory / docs entry). A new or edited skill only goes live once scripts/check_skill_live.py <name> exits 0 against a black-box-agent-qa run record captured by scripts/run_black_box_fixture.py — user approval to write it is not a ship, and editing the file after capture invalidates the record."
-version: 1.2.0
+description: "Two-phase task close-out. Phase 1: verify memory bank + shared memory (mem0, if configured) are accurate so a fresh agent can pick up without reconstruction (completed log, updated todo list, evidence-backed progress entry). Phase 2: scan the session for patterns, friction, and skill gaps and produce specific improvement proposals (new skill / skill update / AGENTS.md rule / feedback memory / docs entry). A new or edited skill only goes live once scripts/check_skill_live.py <name> exits 0 against a black-box-agent-qa run record captured by scripts/run_black_box_fixture.py — user approval to write it is not a ship, editing the file after capture invalidates the record, and tests/test_index_live_binding.py enforces the gate against skills/INDEX.md on every test run."
+version: 1.3.0
 ---
 
 # close-out — Task Close-Out & Continuous Improvement
@@ -161,8 +161,8 @@ A user's **Approve** on a Step 8 finding authorizes writing or editing the skill
      --out skills/<name>/black-box-run.json
    ```
    This is `skills/black-box-agent-qa/SKILL.md` end to end — it actually runs the fixture's command and writes `skills/<name>/black-box-run.json` with a real `verdict` and a `skill_sha256` of the file just written.
-3. Run the gate: `python3 scripts/check_skill_live.py <name>`. **The skill is live only when this exits `0`.** It exits non-zero (never live) when: no run record exists yet, the record's verdict is not `pass`, or the record is JSON-invalid.
-4. Only after step 3 exits `0` may the skill be added to `skills/INDEX.md`, `AGENTS.md` §4, the session-start trigger tables, and the exporter config (`skills/INDEX.md §Adding a New Skill` gates on this same check — see there for the full listing sequence).
+3. Run the gate: `python3 scripts/check_skill_live.py <name>`. **The skill is live only when this exits `0`.** It exits non-zero (never live) when: no run record exists yet, the record's verdict is not `pass`, the record's `skill_sha256` is stale (`SKILL.md` changed since capture), or the record is JSON-invalid.
+4. Only after step 3 exits `0` may the skill be added to `skills/INDEX.md`, `AGENTS.md` §4, and the session-start trigger tables. `tests/test_index_live_binding.py::test_every_non_grandfathered_index_entry_is_live` runs this same check against every `skills/INDEX.md` listing on every test run — that is the actual bind, not just this step's instructions (`skills/INDEX.md §Adding a New Skill` gates the exporter config the same way).
 
 Reading the finished skill Markdown back to the user, or getting a second "looks good," is not step 2 or step 3 — nothing substitutes for actually running `run_black_box_fixture.py` and seeing `check_skill_live.py` exit `0`.
 

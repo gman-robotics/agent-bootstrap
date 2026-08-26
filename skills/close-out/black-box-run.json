@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-08-26T03:40:45.969417+00:00",
+  "captured_at": "2026-08-26T03:59:14.730525+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "close-out-live-gate-check",
   "description": "Worked example for close-out Step 9's live-flip: actually run the scripts/check_skill_live.py test suite (no-record / non-pass-verdict / stale-hash-after-silent-refine / valid-pass cases) and confirm the gate really works end to end.",
@@ -22,8 +22,8 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "f5dace3a44a2c41b5cf838b25eb8785399fc034097f53f0e270e5c09af9d1f9a",
-  "stderr_tail": "test_fails_when_no_run_record_exists (tests.test_check_skill_live.CheckSkillLiveTests.test_fails_when_no_run_record_exists) ... ok\ntest_fails_when_run_record_is_not_valid_json (tests.test_check_skill_live.CheckSkillLiveTests.test_fails_when_run_record_is_not_valid_json) ... ok\ntest_fails_when_run_record_verdict_is_not_pass (tests.test_check_skill_live.CheckSkillLiveTests.test_fails_when_run_record_verdict_is_not_pass) ... ok\ntest_fails_when_skill_md_changed_since_the_run_record_was_captured (tests.test_check_skill_live.CheckSkillLiveTests.test_fails_when_skill_md_changed_since_the_run_record_was_captured)\nSilent-refine guard: editing SKILL.md after a pass was captured (even a ... ok\ntest_passes_when_run_record_matches_current_skill_content (tests.test_check_skill_live.CheckSkillLiveTests.test_passes_when_run_record_matches_current_skill_content) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.002s\n\nOK\n",
+  "skill_sha256": "a0034dfd364ca306072dbb0bbcd03a5fd2e2cf60547f54603aab046dfa3c2992",
+  "stderr_tail": "test_fails_when_no_run_record_exists (tests.test_check_skill_live.CheckSkillLiveTests.test_fails_when_no_run_record_exists) ... ok\ntest_fails_when_run_record_is_not_valid_json (tests.test_check_skill_live.CheckSkillLiveTests.test_fails_when_run_record_is_not_valid_json) ... ok\ntest_fails_when_run_record_verdict_is_not_pass (tests.test_check_skill_live.CheckSkillLiveTests.test_fails_when_run_record_verdict_is_not_pass) ... ok\ntest_fails_when_skill_md_changed_since_the_run_record_was_captured (tests.test_check_skill_live.CheckSkillLiveTests.test_fails_when_skill_md_changed_since_the_run_record_was_captured)\nSilent-refine guard: editing SKILL.md after a pass was captured (even a ... ok\ntest_passes_when_run_record_matches_current_skill_content (tests.test_check_skill_live.CheckSkillLiveTests.test_passes_when_run_record_matches_current_skill_content) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.003s\n\nOK\n",
   "stdout_tail": "",
   "verdict": "pass"
 }

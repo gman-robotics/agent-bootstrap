@@ -66,6 +66,11 @@ will refuse to call the skill live until a fresh pass matches the current file.
 
 ## Worked examples in this repo
 
+`input.command` is an arbitrary argv — it is not specific to Python's `unittest`. Two of the
+three examples below happen to run a `unittest` module because that is the most direct
+evidence for the mechanism each is proving; the third deliberately runs a plain CLI script
+with no test runner involved, so the contract's generality is not only asserted, it is shown.
+
 - `fixtures/repeat-lock-mechanical-check/` — runs the REPEAT-lock mechanical check itself
   (`tests/test_export_codex_skills.py::test_force_reexport_preserves_hand_added_reference_files`)
   and expects `OK` on a clean run — evidence that `triage-review-feedback`'s REPEAT mechanism
@@ -73,6 +78,10 @@ will refuse to call the skill live until a fresh pass matches the current file.
 - `fixtures/close-out-live-gate-check/` — runs `tests/test_check_skill_live.py` and expects
   `OK` — evidence that `close-out`'s Step 9 live-flip gate (`scripts/check_skill_live.py`)
   actually works end to end.
+- `fixtures/check-skill-live-cli/` — runs `python3 scripts/check_skill_live.py black-box-agent-qa`
+  directly (no `unittest`, no test runner) and expects `live-eligible` in stdout — evidence
+  that the runner's contract is a generic subprocess argv/exit-code/stdout check, not a
+  `unittest`-specific wrapper.
 
 Every skill's `black-box-run.json` in this repo (e.g. `skills/close-out/black-box-run.json`)
 was produced by an actual invocation of one of these fixtures, not written by hand.

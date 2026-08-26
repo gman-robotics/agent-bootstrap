@@ -1,7 +1,7 @@
 ---
 name: black-box-agent-qa
-description: "Use before treating any agent persona, harness (config/wiring/tool registration), verb/command, or skill change as verified. Define a named input fixture and its expected output, then actually run it end-to-end against the real system under test using scripts/run_black_box_fixture.py (see SCHEMA.md for the case.json contract). Reading the PR diff or the skill Markdown is not a pass. A test suite that only mocks the system under test is not sufficient proof on its own. An environment-blocked run escalates for a human decision; it never counts as a pass. Never authorizes auto-merge or a silent refine of harness/agent state from the run's outcome."
-version: 1.1.0
+description: "Use before treating any agent persona, harness (config/wiring/tool registration), verb/command, or skill change as verified. Define a named input fixture and its expected output, then actually run it end-to-end against the real system under test using scripts/run_black_box_fixture.py (see SCHEMA.md for the case.json contract; the contract is a generic subprocess argv/exit-code/stdout check, not unittest-specific). Reading the PR diff or the skill Markdown is not a pass. A test suite that only mocks the system under test is not sufficient proof on its own. An environment-blocked run escalates for a human decision; it never counts as a pass. Never authorizes auto-merge or a silent refine of harness/agent state from the run's outcome."
+version: 1.2.0
 ---
 
 # black-box-agent-qa — Black-Box Verification for Agent, Harness, Verb, and Skill Changes
@@ -25,7 +25,7 @@ This skill ships with a real, executable I/O contract, not only these steps in M
 | Piece | Where |
 |---|---|
 | Minimum schema for a fixture's `case.json` | `SCHEMA.md` in this directory |
-| Worked example fixtures | `fixtures/repeat-lock-mechanical-check/`, `fixtures/close-out-live-gate-check/` |
+| Worked example fixtures | `fixtures/repeat-lock-mechanical-check/`, `fixtures/close-out-live-gate-check/`, `fixtures/check-skill-live-cli/` (non-`unittest` example) |
 | The runner ("a way to invoke it") | `scripts/run_black_box_fixture.py` |
 | The live-flip gate this feeds (`close-out` Step 9) | `scripts/check_skill_live.py` |
 

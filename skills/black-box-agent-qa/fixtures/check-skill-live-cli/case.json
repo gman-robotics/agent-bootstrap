@@ -1,0 +1,12 @@
+{
+  "name": "check-skill-live-cli",
+  "description": "Non-unittest worked example: run the plain scripts/check_skill_live.py CLI directly (no test runner involved) and confirm the real system under test is a script's argv/exit-code/stdout contract, not only Python's unittest output. Demonstrates run_black_box_fixture.py works against any subprocess, not just `python3 -m unittest ...`.",
+  "input": {
+    "command": ["python3", "scripts/check_skill_live.py", "black-box-agent-qa"],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": ["live-eligible"]
+  }
+}
