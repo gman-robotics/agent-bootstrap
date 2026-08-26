@@ -10,6 +10,18 @@ from scripts.export_codex_skills import SKILL_CONFIGS, export_skills
 REPO_ROOT = Path(__file__).parent.parent
 SOURCE_DIR = REPO_ROOT / "skills"
 
+# REPEAT fixture (see skills/triage-review-feedback/fixtures/repeat-exporter-dropped-references/
+# README.md): same failure class was called NEW then REPEATed twice in memory-bank/progress.md
+# (2026-08-22 swarm-forge session, PR #9 revision pass 1, PR #9 revision pass 2) with no
+# mechanical check until this test.
+REPEAT_FIXTURE = (
+    SOURCE_DIR
+    / "triage-review-feedback"
+    / "fixtures"
+    / "repeat-exporter-dropped-references"
+    / "hand-added-reference.md"
+)
+
 
 class ExportCodexSkillsTests(unittest.TestCase):
     def test_export_creates_expected_skill_folders(self) -> None:
@@ -53,6 +65,39 @@ class ExportCodexSkillsTests(unittest.TestCase):
             self.assertIn("# write-tests.md — Test Writing Skill", source_text)
             self.assertIn("## Step 1: Orient", source_text)
             self.assertNotIn("Last updated:", source_text.splitlines()[-1])
+
+    def test_force_reexport_preserves_hand_added_reference_files(self) -> None:
+        """REPEAT-lock mechanical check.
+
+        Fixture: skills/triage-review-feedback/fixtures/repeat-exporter-dropped-references/
+        hand-added-reference.md. This reproduces the exact failure class called NEW then
+        REPEATed twice (memory-bank/progress.md, 2026-08-22) before any mechanical check
+        existed: `export_skills(..., force=True)` used to `shutil.rmtree` the whole skill
+        directory and drop any hand-added `references/` file that was not the generated
+        `source.md` (e.g. `grill-with-docs/references/adr-format.md`), never regenerating it.
+
+        Before the preserve-extra-files fix in `scripts/export_codex_skills.py`, this test
+        fails red because the fixture file below does not survive the second export.
+        """
+        self.assertTrue(REPEAT_FIXTURE.is_file(), "REPEAT fixture file must exist in-tree")
+        fixture_content = REPEAT_FIXTURE.read_text(encoding="utf-8")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            export_skills(SOURCE_DIR, output_dir)
+
+            extra_file = output_dir / "grill-with-docs" / "references" / "hand-added-reference.md"
+            extra_file.write_text(fixture_content, encoding="utf-8")
+
+            export_skills(SOURCE_DIR, output_dir, force=True)
+
+            self.assertTrue(
+                extra_file.is_file(),
+                "force re-export dropped a hand-added references/ file (REPEAT regression: "
+                "same failure class called NEW then REPEATed twice with no mechanical check "
+                "in memory-bank/progress.md 2026-08-22)",
+            )
+            self.assertEqual(extra_file.read_text(encoding="utf-8"), fixture_content)
 
 
 class InstallGrokScriptTests(unittest.TestCase):

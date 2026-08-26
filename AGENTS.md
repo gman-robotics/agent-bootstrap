@@ -303,7 +303,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/multi-harness-coordination/SKILL.md` | Coordinating work across two or more harnesses | Role map (planner/reviewer vs implementer) + Steps A–E adversarial loop with cumulative diff review and optional mem0 handoffs |
 | `skills/agent-orchestration-roles/SKILL.md` | Orienting a new harness or clarifying planner/implementer role split | Standard role division + shared coordination workspace + plan → implement → review loop (same pattern as `multi-harness-coordination`, alternate framing) |
 | `skills/adversarial-coordination-workflow/SKILL.md` | An Orchestrator needs a planner and implementer harness to run as adversarial peers | Step A–E loop: full-context plan gate → TDD on isolated branch → cumulative `git diff` adversarial review (max 3 iterations) → PR submission |
-| `skills/close-out/SKILL.md` | "Close this out", "wrap this up", after a multi-step session (task-scoped, not day-scoped) | Phase 1: verify memory-bank/shared-memory continuity. Phase 2: scan for friction/skill gaps and propose specific improvements with a named I/O case; a new/edited skill goes live only after `black-box-agent-qa` passes |
+| `skills/close-out/SKILL.md` | "Close this out", "wrap this up", after a multi-step session (task-scoped, not day-scoped) | Phase 1: verify memory-bank/shared-memory continuity. Phase 2: scan for friction/skill gaps and propose specific improvements with a named `case.json`; Step 9 requires `scripts/check_skill_live.py <name>` to exit `0` (a captured black-box-agent-qa run record with matching `skill_sha256`) before a new/edited skill is treated as live |
 | `skills/task-loop-7-phase/SKILL.md` | 7-Phase Algorithm, TaskLoopState, or OBSERVE → THINK → PLAN → BUILD → EXECUTE → VERIFY → LEARN workflow | Strict phase loop with mem0 TaskLoopState updates, measurable success criteria, automated verification, structured lesson memory, and optional wiki curation |
 | `skills/cherry-pick-to-release-branch/SKILL.md` | Hotfix or backport to a release branch | Fetch branch → cherry-pick PR commits → bump RC version → push |
 | `skills/memory-bank-protocol/SKILL.md` | Session start, project switch, new project setup | Tiered read protocol (hot files always, foundation files conditionally), optional mem0, compaction + evidence rules |
@@ -313,7 +313,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/debug-investigation/SKILL.md` | Bug report, unexpected behavior, "fix" without clear diagnosis | Reproduce → isolate (bisect/binary search) → failing test → fix → verify |
 | `skills/performance-profiling/SKILL.md` | "slow", "latency", "timeout", "optimize", or monitoring shows p95/p99 spikes | Measure baseline → profile (clinic.js, EXPLAIN ANALYZE, py-spy, CloudWatch) → fix one thing → measure again |
 | `skills/feature-flag-lifecycle/SKILL.md` | Creating, rolling out, or graduating a feature flag | Create (default-off, cleanup date) → staged rollout → graduate (remove dead code) |
-| `skills/black-box-agent-qa/SKILL.md` | Before treating any agent, harness, verb, or skill change as tested/passing/ready to ship | Name a literal input fixture + checkable expected output, actually run it end-to-end; reading a diff/skill Markdown or mocking the system under test is not a pass; environment-blocked runs escalate, never authorizes auto-merge or a silent harness/agent-state refine |
+| `skills/black-box-agent-qa/SKILL.md` | Before treating any agent, harness, verb, or skill change as tested/passing/ready to ship | Runnable I/O contract: `fixtures/<case>/case.json` (schema `SCHEMA.md`) + `scripts/run_black_box_fixture.py` to actually run it + `scripts/check_skill_live.py` to gate on the captured record; reading a diff/skill Markdown or mocking the system under test is not a pass; environment-blocked runs escalate, never authorizes auto-merge or a silent harness/agent-state refine |
 
 See `/skills/` directory for full definitions. New skills should follow the style of the examples in this hub (clear steps, warnings, examples, code blocks).
 
@@ -392,4 +392,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-08-26 | Version: 0.7.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*
+*Last updated: 2026-08-26 | Version: 0.8.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*

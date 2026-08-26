@@ -18,10 +18,12 @@ We use the same workflows the agents use — this keeps quality high and consist
 ### 1. Adding or Improving a Skill
 1. **Follow the plan-code-review workflow** (highly recommended for any non-trivial change).
 2. Create or edit the skill in `skills/`.
-3. Update `AGENTS.md` → "Other Key Skills" section if it's a new core skill.
-4. Update relevant memory-bank files if the skill affects project context.
-5. Open a Pull Request. Use the **"New Skill"** PR template.
-6. Re-export the Grok packaging afterwards (`python scripts/export_codex_skills.py --output-dir .grok/skills --force`) and refresh symlinks under `.grok/agents/` so Grok users receive the updates with zero manual steps. See the Grok subsection in AGENTS.md.
+3. **Gate on a black-box-agent-qa pass before listing it anywhere**: write `fixtures/<case-name>/case.json` (schema in `skills/black-box-agent-qa/SCHEMA.md`), run `python3 scripts/run_black_box_fixture.py --fixture <dir> --skill <name> --out skills/<name>/black-box-run.json`, and confirm `python3 scripts/check_skill_live.py <name>` exits `0`. A skill is not live — not in INDEX.md, AGENTS.md, or a trigger table — until this passes; see `skills/close-out/SKILL.md` Step 9 and `skills/INDEX.md §Adding a New Skill`.
+4. Update `AGENTS.md` → "Other Key Skills" section if it's a new core skill.
+5. Update relevant memory-bank files if the skill affects project context.
+6. Open a Pull Request. Use the **"New Skill"** PR template.
+7. Re-export the Grok packaging afterwards (`python scripts/export_codex_skills.py --output-dir .grok/skills --force`) and refresh symlinks under `.grok/agents/` so Grok users receive the updates with zero manual steps. See the Grok subsection in AGENTS.md.
+8. If you edit the skill again later, re-run step 3 first — `check_skill_live.py` fails on the stale `skill_sha256` until you do.
 
 ### 2. Adding or Updating an Agent Role
 1. Create/edit in `agents/`.

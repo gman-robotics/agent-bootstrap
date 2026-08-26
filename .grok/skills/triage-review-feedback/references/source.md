@@ -1,7 +1,7 @@
 ---
 name: triage-review-feedback
-description: "This skill should be used when a PR we authored receives review feedback - from a human reviewer, an AI reviewer, or an automated scanner - or when the user says 'address the review feedback on PR #N' or 'triage the comments on my PR'. Workflow: inventory every claim, verify each against the actual code/environment before classifying (FIX / DISMISS-with-evidence / JUDGMENT), tag every FIX NEW or REPEAT (REPEAT closes only with a mechanical check, never an instance fix or a comment), apply the fix batch TDD-first, run a QA pass before posting, then reply to every thread, resolve, and re-request review. The inverse of expert-pr-review."
-version: 1.1.0
+description: "This skill should be used when a PR we authored receives review feedback - from a human reviewer, an AI reviewer, or an automated scanner - or when the user says 'address the review feedback on PR #N' or 'triage the comments on my PR'. Workflow: inventory every claim, verify each against the actual code/environment before classifying (FIX / DISMISS-with-evidence / JUDGMENT), tag every FIX NEW or REPEAT (REPEAT closes only with a mechanical check, never an instance fix or a comment - worked example in fixtures/repeat-exporter-dropped-references/), apply the fix batch TDD-first, run a QA pass before posting, then reply to every thread, resolve, and re-request review. The inverse of expert-pr-review."
+version: 1.2.0
 ---
 
 # triage-review-feedback.md — Responding to Reviews on Our Own PRs
@@ -80,6 +80,8 @@ Every item classified FIX also gets a second, orthogonal tag:
 REPEAT is a class match, not a location match: a different file or function with the same underlying failure still counts.
 
 **Closing a REPEAT tag is stricter than closing a NEW one.** A REPEAT item is never closed by an instance fix alone, and it is never closed by adding another PR comment, AGENTS.md line, skill line, or style-guide line — none of those are mechanical, and none of them stop the same class from recurring. Closing REPEAT requires the fix batch (Step 4) to also add one mechanical check that goes red on a fixture reproducing the old bug and green once the fix lands: a lint rule, a compiler/type-checker diagnostic, a failing-then-green test, or a CI rule. If no mechanical check is added, the item stays open no matter how many times it has been fixed by hand.
+
+**Worked example in this repo**: `fixtures/repeat-exporter-dropped-references/` — a real failure class (`scripts/export_codex_skills.py`'s `--force` re-export dropping hand-added `references/` files) called NEW once, then REPEATed twice with no mechanical check, then finally closed by `tests/test_export_codex_skills.py::test_force_reexport_preserves_hand_added_reference_files` (red before the exporter fix, green after) plus the fix itself. This is not a hypothetical — that exact history is logged in `memory-bank/progress.md` (2026-08-22, three separate entries).
 
 **Record the class on every NEW tag.** Note, in one line, what actually broke (the failure class, not just the file:line) so the next occurrence is recognized as REPEAT instead of re-classified NEW. See Step 7.
 

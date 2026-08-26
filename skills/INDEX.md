@@ -27,7 +27,7 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### close-out
 **File**: `skills/close-out/SKILL.md`  
 **Trigger**: "Close this out", "wrap this up", or after completing a multi-step implementation session. Task-scoped (contrast with `end-of-day-review`, which is day-scoped).  
-**What it does**: Two-phase protocol — Phase 1 verifies memory-bank/shared-memory continuity so a fresh agent can pick up cold; Phase 2 scans the session for friction and skill gaps and proposes concrete, filed improvements (new skill / skill update / AGENTS.md rule / feedback memory / docs entry). Step 8 proposals for a new/updated skill must name a concrete I/O case; Step 9 requires that case to pass `black-box-agent-qa` before the skill is treated as live — user approval to write it is not a ship.
+**What it does**: Two-phase protocol — Phase 1 verifies memory-bank/shared-memory continuity so a fresh agent can pick up cold; Phase 2 scans the session for friction and skill gaps and proposes concrete, filed improvements (new skill / skill update / AGENTS.md rule / feedback memory / docs entry). Step 8 proposals for a new/updated skill must name a concrete `case.json`; Step 9 requires `scripts/run_black_box_fixture.py` to capture a pass and `scripts/check_skill_live.py <name>` to exit `0` before the skill is treated as live — user approval to write it is not a ship, and re-editing the file invalidates the record (stale `skill_sha256`) until re-run.
 
 ---
 
@@ -48,7 +48,7 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### triage-review-feedback
 **File**: `skills/triage-review-feedback/SKILL.md`  
 **Trigger**: A PR **we authored** received review feedback — human reviewer, AI reviewer, or automated scanner (Amazon Inspector, CodeQL, etc.). "Address the review on PR #N."  
-**What it does**: Inventory every claim → verify each against the actual code/environment before classifying → FIX / DISMISS-with-evidence / JUDGMENT → TDD fix batch → QA pass before posting → reply to every thread, resolve, re-request review. The inverse of expert-pr-review. Every FIX also gets tagged NEW or REPEAT (same failure class already called on this repo or product family); REPEAT closes only with a mechanical check (lint, compiler diagnostic, failing-then-green test, or CI rule) added in the same fix commit — never with an instance fix or another comment/AGENTS.md/style-guide line.
+**What it does**: Inventory every claim → verify each against the actual code/environment before classifying → FIX / DISMISS-with-evidence / JUDGMENT → TDD fix batch → QA pass before posting → reply to every thread, resolve, re-request review. The inverse of expert-pr-review. Every FIX also gets tagged NEW or REPEAT (same failure class already called on this repo or product family); REPEAT closes only with a mechanical check (lint, compiler diagnostic, failing-then-green test, or CI rule) added in the same fix commit — never with an instance fix or another comment/AGENTS.md/style-guide line. Worked example in-tree: `fixtures/repeat-exporter-dropped-references/`.
 
 ---
 
@@ -167,16 +167,18 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### black-box-agent-qa
 **File**: `skills/black-box-agent-qa/SKILL.md`  
 **Trigger**: Before treating any change to an agent persona, harness config/wiring, verb/command, or skill file as tested, passing, or ready to ship. Required by `close-out` Step 9 before a new or edited skill goes live.  
-**What it does**: Name a literal input fixture and a specific, checkable expected output, then actually run it end-to-end against the real system under test. Reading the PR or the skill Markdown is not a pass; a suite that only mocks the system under test is not sufficient proof on its own. An environment-blocked run escalates for a human decision — it never counts as a pass. Never authorizes auto-merge or a silent refine of harness/agent state from the run's outcome.
+**What it does**: Name a literal input fixture as `fixtures/<case-name>/case.json` (schema: `SCHEMA.md`), actually run it with `scripts/run_black_box_fixture.py`, and write a captured run record (`skills/<name>/black-box-run.json`). Reading the PR or the skill Markdown is not a pass; a suite that only mocks the system under test is not sufficient proof on its own. An environment-blocked run escalates (`"verdict": "blocked"`) — it never counts as a pass. `scripts/check_skill_live.py` reads the run record's `skill_sha256` to detect a stale record (the skill edited since capture, including a silent trajectory refine) and refuses to call it live until re-run; never authorizes auto-merge.
 
 ---
 
 ## Adding a New Skill
 
 1. Create `skills/<name>/SKILL.md` following the style of existing skills: YAML frontmatter (`name`, `description`, `version`; quote the description or avoid inner `: ` — unquoted YAML breaks on colon+space), then purpose, trigger, when to use, numbered steps, stack-specific tips, last updated footer.
-2. Add an entry to this INDEX.md.
-3. Add a one-line entry to AGENTS.md §4 "Other Key Skills" with trigger.
-4. Update `.clinerules`, `.kilocoderules`, `.cursorrules`, `.openhands_instructions`, and `.cursor/rules/agent-bootstrap.mdc` to include the new skill in the skill-trigger lists.
-5. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
+2. **Gate before any listing below**: write a `fixtures/<case-name>/case.json` for the skill (schema: `skills/black-box-agent-qa/SCHEMA.md`), run `python3 scripts/run_black_box_fixture.py --fixture <dir> --skill <name> --out skills/<name>/black-box-run.json`, then confirm `python3 scripts/check_skill_live.py <name>` exits `0`. A skill with no passing, current run record is not discoverable yet — do not proceed to step 3 until this gate is green. See `skills/close-out/SKILL.md` Step 9 for the same sequence when the skill came from a close-out proposal.
+3. Add an entry to this INDEX.md.
+4. Add a one-line entry to AGENTS.md §4 "Other Key Skills" with trigger.
+5. Update `.clinerules`, `.kilocoderules`, `.cursorrules`, `.openhands_instructions`, and `.cursor/rules/agent-bootstrap.mdc` to include the new skill in the skill-trigger lists.
+6. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
+7. If any later edit changes `SKILL.md`, re-run step 2 before the edit ships — `check_skill_live.py` will fail on the stale `skill_sha256` until you do.
 
-*Last updated: 2026-08-26 | Hub version: 0.7.0*
+*Last updated: 2026-08-26 | Hub version: 0.8.0*

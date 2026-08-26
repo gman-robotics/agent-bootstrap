@@ -14,7 +14,7 @@ Triggers on 'close this out', 'wrap this up', or after completing a multi-step i
 1. Read `references/source.md` for the full two-phase protocol.
 2. Phase 1: audit activeContext.md/progress.md and sync shared memory if configured.
 3. Phase 2: scan for friction/skill gaps and propose specific, filed improvements.
-4. Step 8 proposals for a skill need a named I/O case; Step 9 requires a black-box-agent-qa pass before the skill is live — approval to write it is not a ship.
+4. Step 8 proposals for a skill need a named case.json; Step 9 requires scripts/run_black_box_fixture.py to capture a pass and scripts/check_skill_live.py <name> to exit 0 before the skill is live — approval to write it is not a ship, and re-editing invalidates the record.
 
 ## Compatibility Notes
 

@@ -12,9 +12,9 @@ Triggers before marking a change to an agent persona, harness wiring, a verb/com
 ## Quick Start
 
 1. Read `references/source.md` before acting; it is the authoritative workflow.
-2. Name a literal input fixture and a specific, checkable expected output before running anything.
-3. Actually run the real system under test; a diff read or a mock-only suite is not a pass.
-4. Environment-blocked runs escalate, they do not pass; never authorize auto-merge or a silent harness/agent-state refine from the run.
+2. Write fixtures/<case>/case.json (schema: SCHEMA.md), then run scripts/run_black_box_fixture.py to actually execute it against the real system under test.
+3. A diff read, a description, or a mock-only suite is not a pass; check scripts/check_skill_live.py <name> exits 0 before treating a skill as live.
+4. Environment-blocked runs escalate (verdict blocked), they do not pass; never authorize auto-merge or a silent harness/agent-state refine from the run.
 
 ## Compatibility Notes
 
