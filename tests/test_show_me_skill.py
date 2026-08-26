@@ -33,11 +33,21 @@ FICTIONAL_PAIRING_LINE = "Pair with **show-me** (trees / stacks / diffs)."
 # exactly this way (see memory-bank/progress.md for the reproduction). Each unit is
 # then checked for a forbidden-guidance pattern (recommending an HTML/browser open, a
 # `Bash(open ...)` command, or mermaid/HTML framed as the default visual); a match only
-# counts as a violation if that unit plus its heading contains no negation marker
-# (`never`, `no `, `without`, `opt-in`, `only if`, `pitfall`, ...). A forbidding bullet
-# (what the real file contains) carries its own negation marker and does not trip the
-# check; a recommending bullet (the violating case this exists to catch) has none and
-# does.
+# counts as a violation if the unit *itself* -- never its heading -- contains no
+# negation marker (`never`, `no `, `without`, `opt-in`, `only if`, `pitfall`, ...). A
+# forbidding bullet (what the real file contains) carries its own negation marker and
+# does not trip the check; a recommending bullet (the violating case this exists to
+# catch) has none and does.
+#
+# REPEAT finding (adversarial review pass 2 on the merged PR #13): an earlier version of this scanner
+# joined the heading text into the same negation-context string as the unit
+# (`f"{heading} {unit}"`). A heading naming an opt-in recipe (`## Recipe: mermaid
+# (opt-in only)`) or a category of bad outcomes (`## Pitfalls`, whose own name contains
+# the substring "pitfall") then cancelled a violation in *any* body line beneath it,
+# including an unrelated, unnegated `Bash(open diagram.html)` line -- a heading is not a
+# protocol for the specific body line under it. The heading is still carried alongside
+# each unit purely for the violation message's own readability; it plays no role in
+# deciding whether a match counts as a violation.
 NEGATION_MARKERS = (
     "never", "no ", "not ", "n't", "without", "opt-in", "avoid", "forbid",
     "pitfall", "only if", "unless",
@@ -100,7 +110,10 @@ def find_photon_safe_violations(skill_text: str) -> list[str]:
         (_DEFAULT_MERMAID_HTML_PATTERN, "treats mermaid/HTML as the default visual"),
     )
     for heading, unit in _iter_markdown_units(skill_text):
-        negation_context = f"{heading} {unit}".lower()
+        # Negation is scoped to the unit's own text only -- a heading's words must
+        # never cancel a violation in the body line(s) beneath it (see the
+        # heading-negation-leak comment above `NEGATION_MARKERS`).
+        negation_context = unit.lower()
         for pattern, label in checks:
             if pattern.search(unit) and not any(
                 marker in negation_context for marker in NEGATION_MARKERS
@@ -125,6 +138,28 @@ OLD_FICTIONAL_CASE_SKILL_TEXT = """
   they can see it.
 """
 
+# REPEAT finding, adversarial review pass 2 on the merged PR #13 (heading-negation leak): the checker
+# above joined `heading + unit` into one negation-context string, so a *heading's* own
+# words ("opt-in", "pitfall") could cancel a violation in a *different*, unrelated body
+# line under that heading -- a heading is not a protocol; only the unit's own text may
+# negate a match in that unit. Both fixtures below are exactly the probe named in the
+# review: a `## Recipe: ... (opt-in only)` heading, and a `## Pitfalls` heading (its own
+# name contains the literal substring "pitfall", one of NEGATION_MARKERS), each paired
+# with a body line that is a bare, unnegated `Bash(open diagram.html)` recommendation.
+# Reproduced red against the unfixed checker before this fix (see
+# memory-bank/progress.md) -- both fixtures below are required to return violations.
+HEADING_NEGATION_LEAK_RECIPE_CASE = """
+## Recipe: mermaid (opt-in only)
+
+Bash(open diagram.html)
+"""
+
+HEADING_NEGATION_LEAK_PITFALLS_CASE = """
+## Pitfalls
+
+Bash(open diagram.html)
+"""
+
 
 class ShowMeSkillTests(unittest.TestCase):
     """Mechanical check that show-me exists and reply-contract's pairing line
@@ -144,7 +179,7 @@ class ShowMeSkillTests(unittest.TestCase):
     def test_show_me_frontmatter_declares_the_skill_name_and_version(self) -> None:
         text = SHOW_ME_SKILL_MD.read_text(encoding="utf-8")
         self.assertTrue(text.startswith("---\nname: show-me\n"))
-        self.assertIn("version: 1.0.0", text)
+        self.assertIn("version: 1.0.1", text)
 
     def test_reply_contract_pairing_line_points_at_the_real_show_me_path(self) -> None:
         text = REPLY_CONTRACT_SKILL_MD.read_text(encoding="utf-8")
@@ -222,6 +257,34 @@ class ShowMeSkillTests(unittest.TestCase):
         joined = " ".join(violations).lower()
         self.assertIn("default", joined)
         self.assertIn("open", joined)
+
+    def test_heading_words_do_not_negate_a_violating_body_line_under_an_opt_in_recipe_heading(
+        self,
+    ) -> None:
+        """Must-fix (adversarial review pass 2, REPEAT of the heading-negation class): a heading
+        that merely names an opt-in recipe must not cancel an unnegated
+        `Bash(open diagram.html)` body line under it. This stayed green (0
+        violations) on the unfixed checker -- it must be red-then-green permanently."""
+        violations = find_photon_safe_violations(HEADING_NEGATION_LEAK_RECIPE_CASE)
+        self.assertTrue(
+            violations,
+            "a heading's own negation word ('opt-in') must not cancel a violating "
+            "body line that carries no negation marker of its own",
+        )
+
+    def test_heading_words_do_not_negate_a_violating_body_line_under_a_pitfalls_heading(
+        self,
+    ) -> None:
+        """Same leak, different heading: '## Pitfalls' contains the literal substring
+        'pitfall' (one of NEGATION_MARKERS), but a heading naming a category of bad
+        outcomes is not itself a prohibition of the specific body line beneath it. A
+        heading is not a protocol."""
+        violations = find_photon_safe_violations(HEADING_NEGATION_LEAK_PITFALLS_CASE)
+        self.assertTrue(
+            violations,
+            "the heading '## Pitfalls' must not cancel a violating body line that "
+            "carries no negation marker of its own",
+        )
 
     def test_show_me_owns_the_visual_recipes_not_reply_contract(self) -> None:
         """show-me is a fold of recipes only — it is not a rewrite of reply-contract's

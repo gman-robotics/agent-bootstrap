@@ -1,7 +1,7 @@
 ---
 name: show-me
 description: "Use before code ('show the shape' / 'show-me'), or when reply-contract loads it for a status/your-turn visual. Owns the recipes: call tree, file/screen tree, stack, diff of those shapes, optional mermaid. One primary visual per reply."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # show-me — One shape, fenced text by default
@@ -100,7 +100,7 @@ Inspired by the idea behind HumanLayer / Dex Horthy's `show-me` (see the announc
 1. Two visuals in one reply (a tree and a diff, or a tree and mermaid)
 2. Numbered steps *and* a tree for the same sequence
 3. Mermaid or an HTML file on a narrow channel without being asked
-4. A `Bash(open ...html)`-style command to launch a generated visual
+4. Never a `Bash(open ...html)`-style command to launch a generated visual
 5. Reimplementing these recipes inside `reply-contract` instead of loading this file
 6. Confusing this skill with `diagram-design` (persisted spec diagrams), `scroll-craft` (prose craft), a Hermes-style humanizer (tone rewrite), or `grill-with-docs` (question rounds before code)
 7. A tree with no gloss in prose — new facts still need a plain-English line next to the visual (see `reply-contract`)
