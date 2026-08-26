@@ -1,7 +1,9 @@
 # Active Context: Multi-Agent Skills Hub
 
 ## Current Focus (This Session)
-**Task "Bootstrap leftover gates"** (2026-08-26, cloud agent, branch `cursor/bootstrap-leftover-gates-6517`). Follow-up to merged [PR #11](https://github.com/gman-robotics/agent-bootstrap/pull/11) (`main` @ `377cfd8`) — a pass-3 review found three should-fix leftovers, distinct from #11's own pass-2 "INDEX bind" blocker. New branch, new PR ([#12](https://github.com/gman-robotics/agent-bootstrap/pull/12)); #11 itself not reopened, not merged. See `memory-bank/progress.md` 2026-08-26 entries for the full breakdown.
+**Task "show-me-native-skill"** (2026-08-26, cloud agent, branch `cursor/show-me-native-skill-6d8c`). New, independent task — not a follow-up to PR #11/#12 (those stay closed, untouched). Added a new native `show-me` skill (visual recipes only: call tree, file/screen tree, stack, diff of those shapes, opt-in mermaid) and pointed `reply-contract`'s pairing line at the real `skills/show-me/SKILL.md` path instead of the old fictional, path-less mention. See `memory-bank/progress.md` 2026-08-26 "show-me-native-skill" entry for the full breakdown. Opened as one draft PR against `main`; not merged, not self-reviewed.
+
+## Previous Focus (superseded, merged) — "Bootstrap leftover gates" / PR #12
 
 ### Revision: leftover 1's frozen+len==20 pin was a same-length swap away from useless (2026-08-26)
 Adversary revised **leftover 1 only** (L2/L3 and #11's four blockers stayed closed, re-verified not reopened): `isinstance(frozenset)` + `len() == 20` cannot tell the real `GRANDFATHERED_SKILLS` apart from a same-length swap (one real name removed, one brand-new fake name added). **Reproduced live against the real files first** (temporarily, reverted, not committed): swapped `delegation-patterns` for a fake name in both `scripts/index_skills.py` and the matching `skills/INDEX.md` entry — all 26 prior tests passed, confirming the gap for real (frozenset+len==20 stayed true; `find_ungated_entries` returned `[]` since the swapped-in name is allowlisted-and-skipped and the swapped-out entry no longer exists in INDEX.md to check).
