@@ -12,7 +12,7 @@ Triggers on status after another agent finished, smoke / tap-through, or anythin
 ## Quick Start
 
 1. Read `references/source.md` before writing the reply.
-2. Pair with show-me: one tree, stack, or diff. No mermaid/HTML on Photon unless asked.
+2. Load `skills/show-me/SKILL.md` for the one visual (tree, stack, or diff); never reimplement its recipes here. No mermaid/HTML on Photon unless asked.
 3. Gloss only the jargon you used. Say leftover vs bug and who is waiting.
 4. Use the spec-gate card for a binary Approve/Reject on a held artifact; use the clarify card for a plain question, never both.
 

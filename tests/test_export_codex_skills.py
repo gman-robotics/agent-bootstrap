@@ -43,6 +43,28 @@ class ExportCodexSkillsTests(unittest.TestCase):
                 self.assertTrue((skill_dir / "SKILL.md").is_file(), skill_name)
                 self.assertTrue((skill_dir / "references" / "source.md").is_file(), skill_name)
 
+    def test_reply_contract_quick_start_points_at_the_real_show_me_path(self) -> None:
+        """NEW blocker from adversarial review of PR #13: the exporter's own
+        reply-contract SkillConfig.quick_start still said pathless 'Pair with show-me' after the
+        canonical skills/reply-contract/SKILL.md was fixed to load the real
+        skills/show-me/SKILL.md path -- so every Grok/Codex user loading
+        .grok/skills/reply-contract/SKILL.md (generated straight from this quick_start,
+        not from the canonical source) still saw the old fiction. Pin the fix at the
+        source of truth so a future edit can't silently reintroduce it without also
+        breaking this test.
+        """
+        quick_start_text = " ".join(SKILL_CONFIGS["reply-contract"].quick_start)
+        self.assertIn(
+            "skills/show-me/SKILL.md",
+            quick_start_text,
+            "reply-contract's exporter quick_start must name the real show-me path",
+        )
+        self.assertNotIn(
+            "Pair with show-me",
+            quick_start_text,
+            "old pathless 'Pair with show-me' phrasing must be gone from the exporter config",
+        )
+
     def test_exported_skill_contains_frontmatter_and_reference_pointer(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
