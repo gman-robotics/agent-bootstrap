@@ -39,6 +39,7 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `subagent-routing.md`         → independent subtasks, parallelizable work, model selection
 - `delegation-patterns.md`      → multi-agent delegation with worktree isolation
 - `black-box-agent-qa.md`       → before treating any agent/harness/verb/skill change as tested; required by close-out Step 9
+- `show-me.md`                  → "show the shape" / show-me before code; auto-loaded by reply-contract for a status/your-turn visual
 
 ## Key Principles
 

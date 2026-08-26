@@ -383,6 +383,24 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Final confirm uses reply-contract's spec-gate card, not chat prose; a single blocking fact-question uses its clarify card.",
         ),
     ),
+    "show-me": SkillConfig(
+        description=(
+            "Use before code ('show the shape' / 'show-me'), or when reply-contract "
+            "loads it for a status/your-turn visual. Owns the recipes: call tree, "
+            "file/screen tree, stack, diff of those shapes, optional mermaid. One "
+            "primary visual per reply."
+        ),
+        short_description="Recipes for the one status visual",
+        trigger_summary=(
+            "Triggers on 'show the shape' / 'show-me' before code, or is auto-loaded "
+            "by reply-contract for a status/your-turn reply that needs a visual."
+        ),
+        quick_start=(
+            "Read `references/source.md` for the recipe behind each visual; do not build it from memory.",
+            "Pick exactly one recipe (call tree, file/screen tree, stack, or diff of those shapes) per reply.",
+            "Default to fenced text; mermaid or HTML only if the user explicitly asked, and never open it with a shell/browser command.",
+        ),
+    ),
     "black-box-agent-qa": SkillConfig(
         description=(
             "Use before treating any agent, harness, verb, or skill change as verified: "
