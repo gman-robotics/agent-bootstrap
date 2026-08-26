@@ -1,13 +1,13 @@
 ---
 name: reply-contract
 description: "Use when status or your-turn. Write as if the user is new to the project."
-version: 1.3.0
+version: 1.4.0
 ---
 
 # reply-contract — Status and your-turn as if they just walked in
 
 **Purpose**  
-When more than one project is in flight, slash-jargon and heading walls both fail. Pair with **show-me** (trees / stacks / diffs). Do not reimplement those visuals here.
+When more than one project is in flight, slash-jargon and heading walls both fail. Load `skills/show-me/SKILL.md` for the one visual (trees / stacks / diffs). Do not reimplement those recipes here — this file only decides *whether* a visual belongs and *which* one, `show-me` owns *how* to build it.
 
 House style wins. Google / Apple / Red Hat only change voice and marks. See `references/style-sources.md`.
 
@@ -19,9 +19,9 @@ One-word acks, tool dumps, or an in-session workout remaining card (that skill h
 
 ---
 
-## Pick one visual (show-me)
+## Pick one visual — load show-me
 
-Smallest view that makes the next action obvious. One primary visual per reply.
+Smallest view that makes the next action obvious. One primary visual per reply. This table only picks which row; the recipe behind each one lives in `skills/show-me/SKILL.md` — load it before building the visual, do not build it from memory.
 
 | Need | Visual | Photon / iMessage |
 |------|--------|-------------------|
@@ -159,7 +159,7 @@ Write as if they just walked in from another project.
 1. Slash-lists as the whole instruction
 2. Six headings and no tree
 3. Mermaid/HTML on Photon without being asked
-4. Reimplementing show-me instead of loading it
+4. Reimplementing show-me's recipes instead of loading `skills/show-me/SKILL.md`
 5. Leading with SHAs / card ids
 6. Defining every noun — only what you used
 7. Numbered steps *and* a tree
@@ -172,7 +172,7 @@ Write as if they just walked in from another project.
 
 ## Verification
 
-- [ ] show-me loaded when the reply needed more than three sentences
+- [ ] `skills/show-me/SKILL.md` loaded when the reply needed more than three sentences
 - [ ] One primary visual; channel-legal
 - [ ] A new-to-the-thread reader could do the next action
 - [ ] Jargon in the reply is glossed or replaced

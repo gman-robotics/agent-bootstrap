@@ -62,7 +62,14 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### reply-contract
 **File**: `skills/reply-contract/SKILL.md`  
 **Trigger**: Status after another agent finished; "your turn"; smoke / tap-through; anything the human must do or decide.  
-**What it does**: Write as if they just switched projects. Pair with show-me (one tree/stack/diff). Gloss or replace jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked. Voice/marks from Google+Apple+Red Hat (`references/style-sources.md`). Defines the spec-gate card (held artifact, binary Approve/Reject, named Documents) and the clarify card (question + Submit, never a gate), plus the stable per-thread task Name shared with `grill-with-docs` and `close-out`.
+**What it does**: Write as if they just switched projects. Loads `skills/show-me/SKILL.md` for the one visual (tree/stack/diff) — never reimplements those recipes here. Gloss or replace jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked. Voice/marks from Google+Apple+Red Hat (`references/style-sources.md`). Defines the spec-gate card (held artifact, binary Approve/Reject, named Documents) and the clarify card (question + Submit, never a gate), plus the stable per-thread task Name shared with `grill-with-docs` and `close-out`.
+
+---
+
+### show-me
+**File**: `skills/show-me/SKILL.md`  
+**Trigger**: "Show the shape" / "show-me" before writing code; auto-loaded by `reply-contract` for a status/your-turn reply that needs more than a one-line answer.  
+**What it does**: Owns the visual recipes only — call tree, file/screen tree, stack, and a diff of those shapes, plus an opt-in mermaid recipe. One primary visual per reply; Photon/iMessage default is fenced `text` (mermaid or HTML only if the user asked); never a `Bash(open ...html)`-style command to launch a generated visual. Distinct from `diagram-design` (persisted spec diagrams), `scroll-craft` (prose craft), a Hermes-style humanizer (tone rewrite), and `grill-with-docs` (question rounds before code). Credits the idea behind HumanLayer/Dex Horthy's `show-me` (MIT-licensed concept) — independent rewrite, no copied plugin tree or HTML-open guidance.
 
 ---
 
@@ -181,4 +188,4 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 6. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
 7. If any later edit changes `SKILL.md`, re-run step 2 before the edit ships — `check_skill_live.py` (and therefore `tests/test_index_live_binding.py`) will fail on the stale `skill_sha256` until you do.
 
-*Last updated: 2026-08-26 | Hub version: 0.9.1*
+*Last updated: 2026-08-26 | Hub version: 0.9.2*

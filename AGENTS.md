@@ -296,7 +296,8 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/expert-pr-review/SKILL.md` | Any PR review request | 8-step review: gather context, resolve threads, build/test, security checklist, post with user approval |
 | `skills/triage-review-feedback/SKILL.md` | A PR WE authored received review feedback (human, AI reviewer, or scanner) | Inventory all claims → verify each against the code → FIX/DISMISS-with-evidence/JUDGMENT → tag every FIX NEW/REPEAT (REPEAT closes only with a mechanical check) → TDD fix batch → QA pass → reply + resolve threads + re-request review |
 | `skills/pr-shepherd/SKILL.md` | Start of day, after opening/un-drafting a PR, "what's blocked?" | Enumerate open PRs across manifest repos, classify blockers, front-load all reviewer asks in the first hour, fill the wait with reviewer-free work |
-| `skills/reply-contract/SKILL.md` | Status, "your turn", smoke / tap-through, anything the human must do | Write as if they just switched projects; pair with show-me; gloss jargon; leftover vs bug; who waits |
+| `skills/reply-contract/SKILL.md` | Status, "your turn", smoke / tap-through, anything the human must do | Write as if they just switched projects; loads `skills/show-me/SKILL.md` for the one visual; gloss jargon; leftover vs bug; who waits |
+| `skills/show-me/SKILL.md` | "Show the shape" / "show-me" before code; auto-loaded by `reply-contract` for a status/your-turn visual | Owns the recipes only: call tree, file/screen tree, stack, diff of those shapes, opt-in mermaid. One primary visual per reply; Photon default is fenced text, never a `Bash(open ...html)` |
 | `skills/codebase-simplification-audit/SKILL.md` | Whole-repo simplification audit (data/state/ownership) | Read-only inventory + bounded workers + audit-the-audit. No edits/tests/implement until the user accepts a rec |
 | `skills/grill-with-docs/SKILL.md` | Align on a plan/design before code; “grill this”; CONTEXT.md | Interview in rounds; glossary-only CONTEXT.md; ADRs only for hard trade-offs. No implement until they confirm |
 | `skills/end-of-day-review/SKILL.md` | End of working day, "wrap up", "plan tomorrow" | Evidence-based day review → capture learnings → memory-bank compaction → write tomorrow's plan (reviewer asks first) → optional mem0 sync |
@@ -392,4 +393,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-08-26 | Version: 0.9.1 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*
+*Last updated: 2026-08-26 | Version: 0.9.2 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*

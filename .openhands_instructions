@@ -27,6 +27,7 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 | `triage-review-feedback.md` | Review feedback on a PR WE authored (human, AI, or scanner); tags every FIX NEW/REPEAT |
 | `pr-shepherd.md` | Start of day, PR status, "what's blocked?", after opening/un-drafting a PR |
 | `reply-contract.md` | Status, "your turn", smoke / tap-through, anything the human must do |
+| `show-me.md` | "Show the shape" / show-me before code; auto-loaded by reply-contract for a status/your-turn visual |
 | `codebase-simplification-audit.md` | Whole-repo read-only audit of data/state/ownership; no edits until user accepts a rec |
 | `grill-with-docs.md` | Align on a plan/design before code; CONTEXT.md glossary; no implement until they confirm |
 | `end-of-day-review.md` | End of working day, "wrap up", "plan tomorrow" |

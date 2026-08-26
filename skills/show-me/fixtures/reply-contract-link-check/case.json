@@ -1,0 +1,12 @@
+{
+  "name": "reply-contract-link-check",
+  "description": "Mechanical check that skills/show-me/SKILL.md exists, is exported to .grok/skills/show-me/, that skills/reply-contract/SKILL.md + references/photon-show-me.md load the real skills/show-me/SKILL.md path instead of the old fictional pairing line, and that a real content scan of SKILL.md fails if it recommends opening HTML/a browser or treats mermaid/HTML as the default visual (proven non-vacuous against a synthetic old-case fixture).",
+  "input": {
+    "command": ["python3", "-m", "unittest", "tests.test_show_me_skill", "-v"],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stderr_contains": ["OK"]
+  }
+}

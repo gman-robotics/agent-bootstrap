@@ -1,8 +1,8 @@
 # show-me pairing (Photon / iMessage)
 
-Load `show-me` whenever `reply-contract` is loaded for a longer status or your-turn.
+Load `skills/show-me/SKILL.md` whenever `reply-contract` is loaded for a longer status or your-turn.
 
-Do not copy show-me recipes here. This file is only the **channel constraint** and the **picker**.
+Do not copy show-me's recipes here. This file is only the **channel constraint** and the **picker** — the how-to for each tree/stack/diff lives in `skills/show-me/SKILL.md`.
 
 ## Photon / iMessage
 
