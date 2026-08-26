@@ -1,3 +1,6 @@
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -93,6 +96,55 @@ class IndexLiveBindingTests(unittest.TestCase):
             set(),
             f"grandfathered in scripts/index_skills.py but no longer in INDEX.md: {missing}",
         )
+
+    def test_grandfathered_skills_is_frozen_at_the_original_twenty(self) -> None:
+        """Pass-3 should-fix: GRANDFATHERED_SKILLS must be a frozenset, not a plain
+        mutable set, so it cannot grow silently - a `.add()` call is a hard AttributeError,
+        not a quiet allowlist expansion. This test also pins the count to exactly the 20
+        names grandfathered when the gate was added (2026-08-26, PR #11): adding an
+        entry requires touching this test in the same diff, which makes the change a
+        visible, deliberate review point instead of a one-line addition nobody notices.
+        """
+        self.assertIsInstance(
+            GRANDFATHERED_SKILLS,
+            frozenset,
+            "GRANDFATHERED_SKILLS must be an immutable frozenset so the grandfather "
+            "list cannot grow silently",
+        )
+        self.assertEqual(
+            len(GRANDFATHERED_SKILLS),
+            20,
+            "GRANDFATHERED_SKILLS count drifted from the original 20 names grandfathered "
+            "in PR #11 - if this is a deliberate addition, update this test's expected "
+            "count in the same diff so the change is a visible review point, not silent "
+            "growth",
+        )
+
+    def test_bare_cli_invocation_works_from_repo_root_with_no_pythonpath(self) -> None:
+        """Pass-3 should-fix: `skills/INDEX.md` step 3 and the module's own docstring both
+        document `python3 scripts/index_skills.py` as the CLI usage, but the module used
+        to hard-fail with ModuleNotFoundError unless PYTHONPATH included the repo root
+        (the script's own directory, not the repo root, lands on sys.path[0]). Runs the
+        literal documented command as a real subprocess, with PYTHONPATH deliberately
+        unset, so a regression here is caught the same way a user would hit it.
+        """
+        env = dict(os.environ)
+        env.pop("PYTHONPATH", None)
+        result = subprocess.run(
+            [sys.executable, "scripts/index_skills.py"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            f"bare `python3 scripts/index_skills.py` failed with no PYTHONPATH:\n"
+            f"stdout: {result.stdout}\nstderr: {result.stderr}",
+        )
+        self.assertNotIn("ModuleNotFoundError", result.stderr)
 
 
 if __name__ == "__main__":

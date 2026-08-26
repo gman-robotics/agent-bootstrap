@@ -15,17 +15,27 @@ Usage (module):
     from scripts.index_skills import find_ungated_entries
     failures = find_ungated_entries(index_path, skills_dir)
 
-Usage (CLI):
+Usage (CLI), from the repo root, no PYTHONPATH needed:
     python3 scripts/index_skills.py
 """
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 
-from scripts.check_skill_live import check_skill_live
-
 REPO_ROOT = Path(__file__).resolve().parent.parent
+
+# `python3 scripts/index_skills.py` puts this file's own directory (scripts/) on
+# sys.path[0], not the repo root - so `import scripts.check_skill_live` fails with
+# ModuleNotFoundError unless the repo root is added first. Guard the insert so importing
+# this module normally (e.g. `from scripts.index_skills import ...`, where the repo root
+# is already on sys.path) doesn't create a duplicate entry.
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.check_skill_live import check_skill_live  # noqa: E402
+
 INDEX_ENTRY_PATTERN = re.compile(r"^### (.+)$")
 
 # Skills listed in skills/INDEX.md before the black-box-agent-qa live gate existed (added
