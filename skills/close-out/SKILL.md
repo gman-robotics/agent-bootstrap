@@ -1,7 +1,7 @@
 ---
 name: close-out
 description: "Two-phase task close-out. Phase 1: verify memory bank + shared memory (mem0, if configured) are accurate so a fresh agent can pick up without reconstruction (completed log, updated todo list, evidence-backed progress entry). Phase 2: scan the session for patterns, friction, and skill gaps and produce specific improvement proposals (new skill / skill update / AGENTS.md rule / feedback memory / docs entry). A new or edited skill only goes live once scripts/check_skill_live.py <name> exits 0 against a black-box-agent-qa run record captured by scripts/run_black_box_fixture.py — user approval to write it is not a ship, editing the file after capture invalidates the record, and tests/test_index_live_binding.py enforces the gate against skills/INDEX.md on every test run."
-version: 1.3.0
+version: 1.3.1
 ---
 
 # close-out — Task Close-Out & Continuous Improvement
@@ -162,7 +162,7 @@ A user's **Approve** on a Step 8 finding authorizes writing or editing the skill
    ```
    This is `skills/black-box-agent-qa/SKILL.md` end to end — it actually runs the fixture's command and writes `skills/<name>/black-box-run.json` with a real `verdict` and a `skill_sha256` of the file just written.
 3. Run the gate: `python3 scripts/check_skill_live.py <name>`. **The skill is live only when this exits `0`.** It exits non-zero (never live) when: no run record exists yet, the record's verdict is not `pass`, the record's `skill_sha256` is stale (`SKILL.md` changed since capture), or the record is JSON-invalid.
-4. Only after step 3 exits `0` may the skill be added to `skills/INDEX.md`, `AGENTS.md` §4, and the session-start trigger tables. `tests/test_index_live_binding.py::test_every_non_grandfathered_index_entry_is_live` runs this same check against every `skills/INDEX.md` listing on every test run — that is the actual bind, not just this step's instructions (`skills/INDEX.md §Adding a New Skill` gates the exporter config the same way).
+4. Only after step 3 exits `0` may the skill be added to `skills/INDEX.md`, `AGENTS.md` §4, and the session-start trigger tables. `tests/test_index_live_binding.py::test_every_non_grandfathered_index_entry_is_live` mechanically re-runs this same check against every `### <name>` entry in `skills/INDEX.md` on every test run — that is a real, running bind, not just this step's instructions (`skills/INDEX.md §Adding a New Skill` gates the exporter config the same way). **That bind covers `skills/INDEX.md` only.** It does not parse `AGENTS.md` §4 or the per-harness trigger tables (`.clinerules`, `.cursorrules`, `.kilocoderules`, `.openhands_instructions`, `.cursor/rules/agent-bootstrap.mdc`) — those surfaces use five different formats with no shared structure to parse, so listing a skill there ahead of the gate is caught by review discipline, not by the test suite.
 
 Reading the finished skill Markdown back to the user, or getting a second "looks good," is not step 2 or step 3 — nothing substitutes for actually running `run_black_box_fixture.py` and seeing `check_skill_live.py` exit `0`.
 
@@ -206,4 +206,4 @@ For each finding the user approves, before running the gate above:
 - **reply-contract** — if this thread used a spec-gate/clarify card, its stable task Name is the identifier to reuse in the completed-log entry (Step 1).
 - **black-box-agent-qa** — required gate before Step 9 treats a new or edited skill as live; run `scripts/run_black_box_fixture.py` against the Step 8 `case.json`, then confirm `scripts/check_skill_live.py <name>` exits `0`, and escalate (verdict `blocked`) rather than pass if the environment blocks the run.
 
-*Last updated: 2026-08-26*
+*Last updated: 2026-08-26 (pass-3 wording fix: Step 9.4's enforcement claim is now scoped to `skills/INDEX.md`, which is all `tests/test_index_live_binding.py` actually parses)*

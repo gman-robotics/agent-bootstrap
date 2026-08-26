@@ -392,4 +392,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-08-26 | Version: 0.9.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*
+*Last updated: 2026-08-26 | Version: 0.9.1 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*
