@@ -362,3 +362,26 @@ All rules followed: absolute paths, no unapproved commits, proactive but safe, m
 - `python3 -m unittest tests.test_export_codex_skills` from `/workspace`: 7/7 pass before and after the edit (AGENTS.md is not exporter input, so no change expected — confirmed).
 - `git diff --check`: clean.
 - Branch: `cursor/steal-swarm-forge-skill-updates-a543`. PR: [#9](https://github.com/gman-robotics/agent-bootstrap/pull/9) (existing draft, revised in place — not a new PR, not merged, not self-reviewed).
+
+---
+
+## 2026-08-26 — Task "Bootstrap three locks": NEW/REPEAT, black-box-agent-qa, skill-ship gate
+
+**Task**: Skills-only change canonizing three generic process locks that previously existed only on an external harness-specific overlay (and had already forked `close-out` from this hub's v1.0.0) so every harness that loads this repo gets them. Explicit hard constraints: no roster/specialist names, no standing model-pair table, no Prime Agent/IPython RLM install, no Dune bans/auto-merge, no unrelated skill rewrites, generic recipes only.
+
+**What Was Done**
+- [x] `skills/triage-review-feedback/SKILL.md` (`1.0.0` → `1.1.0`): Step 3 gained a "Tag every FIX: NEW vs REPEAT" subsection (class match, not location match); Step 4 requires the mechanical check named in Step 3 in the same fix commit before a REPEAT item counts as done; Step 7 requires recording the failure class on every NEW tag; Common Mistakes gained 3 rows (instance-fix-closes-REPEAT, soft-guidance-closes-REPEAT, skipping-the-NEW-note).
+- [x] New `skills/black-box-agent-qa/SKILL.md` (`1.0.0`): 5-step protocol (name the fixture → actually run it → compare, don't assume → environment blocks escalate, never pass → record the result) + Hard Limits (no auto-merge authorization, no silent harness/agent-state refine) + Common Mistakes + Verification Checklist.
+- [x] `skills/close-out/SKILL.md` (`1.0.0` → `1.1.0`): Step 8's "Present findings" line now requires a named I/O case on every New-skill/Skill-update proposal; Step 9 retitled "Approval to Write Is Not a Ship" — a new/edited skill only goes live after a `black-box-agent-qa` pass against that I/O case, plus a callout that a run-driven skill edit can institutionalize a shortcut and must route through Step 8 as a pattern proposal, never install live; Anti-Patterns table and Relationship to Other Skills gained matching rows/entry.
+- [x] `skills/INDEX.md`: new entry for `black-box-agent-qa`; updated one-liners for `triage-review-feedback` and `close-out`; footer bumped 0.6.0 → 0.7.0.
+- [x] `AGENTS.md` §4 "Other Key Skills": updated the `triage-review-feedback`/`close-out` rows, added the `black-box-agent-qa` row; footer bumped 0.6.0 → 0.7.0.
+- [x] `.cursor/rules/agent-bootstrap.mdc`, `.clinerules`, `.kilocoderules`, `.cursorrules`, `.openhands_instructions`: added the `black-box-agent-qa` trigger line to each session-start trigger table/list and updated the `triage-review-feedback` line, matching each file's existing format exactly.
+- [x] `scripts/export_codex_skills.py`: new `SkillConfig` for `black-box-agent-qa`; refreshed `quick_start` bullets for `triage-review-feedback` and `close-out`. `tests/test_export_codex_skills.py`: added `self.assertIn("black-box-agent-qa", SKILL_CONFIGS)`.
+- [x] Re-exported `.grok/skills/` via `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`; restored the two `grill-with-docs/references/{adr-format,context-format}.md` files the exporter's `--force` rmtree drops and does not regenerate — same pre-existing, unrelated exporter gap noted in the prior swarm-forge session, not fixed here (out of scope).
+- [x] Did **not**: add roster/specialist names, a standing model-pair table, install Prime Agent or an IPython RLM, implement Dune bans or auto-merge, rewrite any unrelated skill, or reference a Slack channel/personal repo/calendar.
+
+**Verification Evidence**
+- `python3 -m unittest tests.test_export_codex_skills` from `/workspace`: 8/8 pass (7 pre-existing + 1 new assertion), run both immediately after adding the `black-box-agent-qa` `SkillConfig` (baseline) and after the full edit + re-export (final).
+- `git diff --cached | grep -iE "reed|blair|\bkit\b|CoS\b|wren|grok bot|claude-sonnet-5|grok-4\.6|prime agent|ipython rlm|dune"` → no matches (forbidden-name check).
+- `git diff --cached --check` → only the two pre-existing two-trailing-space markdown line-break lines in the new `skills/INDEX.md` entry (same intentional convention used by every other INDEX.md entry, not a real issue).
+- Branch: `cursor/bootstrap-three-locks-dc11`. PR: opened as one draft PR against `main` — [#11](https://github.com/gman-robotics/agent-bootstrap/pull/11). Not merged, not self-reviewed (draft, per no-merge-without-explicit-instruction).

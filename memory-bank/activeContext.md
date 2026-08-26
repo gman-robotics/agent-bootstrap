@@ -1,6 +1,18 @@
 # Active Context: Multi-Agent Skills Hub
 
 ## Current Focus (This Session)
+**Task "Bootstrap three locks"** (2026-08-26, cloud agent, branch `cursor/bootstrap-three-locks-dc11`). Skills-only change canonizing three generic process locks that had only existed on an external harness-specific overlay (already forked `close-out` from this hub's v1.0.0) so every harness loading this repo gets them. Opened as one draft PR against `main`: [PR #11](https://github.com/gman-robotics/agent-bootstrap/pull/11).
+- `skills/triage-review-feedback/SKILL.md` (`1.0.0` → `1.1.0`): every FIX now also tagged **NEW** or **REPEAT** (Step 3). REPEAT = same failure class already called on this repo or product family, a class match not a location match; never closed by an instance fix or another comment/AGENTS.md/skill/style-guide line — closing requires a mechanical check (lint, compiler/type diagnostic, failing-then-green test, or CI rule) added in the Step 4 fix commit. NEW tags get their failure class recorded in Step 7 (`memory-bank/progress.md`) so the next sighting is REPEAT, not re-discovered as NEW.
+- New `skills/black-box-agent-qa/SKILL.md` (`1.0.0`): black-box verification for any agent persona, harness config/wiring, verb/command, or skill change — name a literal input fixture + checkable expected output, then actually run it end-to-end against the real system under test. Reading a PR/skill Markdown is not a pass; a mock-only suite is not sufficient proof on its own; an environment-blocked run escalates, it never passes. Hard limits: never authorizes auto-merge, never authorizes a silent refine of harness/agent state from a run's outcome.
+- `skills/close-out/SKILL.md` (`1.0.0` → `1.1.0`) Step 9: user Approve on a Step 8 finding authorizes writing/editing the skill file, not shipping it — a new/edited skill goes live only after a `black-box-agent-qa` pass against the I/O case now required on every Step 8 skill proposal. Names the failure class where a run-driven skill edit can institutionalize a shortcut — route it through Step 8 as a candidate pattern, never install it live straight from the run.
+- Registered `black-box-agent-qa` for discoverability: `skills/INDEX.md` new entry + updated one-liners for the two touched skills, `AGENTS.md` §4 "Other Key Skills" table, `.cursor/rules/agent-bootstrap.mdc` trigger table, `.clinerules`/`.kilocoderules`/`.cursorrules`/`.openhands_instructions` trigger lists — same dual-tree/trigger-table convention already used for every other skill.
+- `scripts/export_codex_skills.py`: new `SkillConfig` for `black-box-agent-qa`, refreshed quick-start bullets for `triage-review-feedback` and `close-out`; re-exported `.grok/skills/` via `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`; restored the two `grill-with-docs/references/{adr-format,context-format}.md` files the exporter's `--force` rmtree drops and does not regenerate (same pre-existing, unrelated exporter gap noted in the prior swarm-forge session).
+- `tests/test_export_codex_skills.py`: added an assertion that `black-box-agent-qa` is registered.
+- Hard constraints honored (verified by `git diff | grep`): no roster/specialist names, no standing model-pair table, no Prime Agent/IPython RLM install, no Dune-ban or auto-merge authorization, no unrelated skill rewrites, no Slack channel/personal repo/calendar specifics.
+- Verification: `python3 -m unittest tests.test_export_codex_skills` — 8/8 pass, run both before and after the `SkillConfig`/re-export changes.
+- Not merged, not self-reviewed (draft PR, per no-merge-without-explicit-instruction) — user's own reviewer flow owns the review.
+
+## Previous Focus (superseded)
 **GitHub issue #8 — "Rewrite swarm-forge steal set as bootstrap skills"** (2026-08-22, cloud agent, branch `cursor/steal-swarm-forge-skill-updates-a543`). Per the issue and the pasted Scout memo steal list, landed the "full useful steal set" as native in-house skill/doc edits — ideas only from `unclebob/swarm-forge` (no LICENSE on that repo; no files/scripts/prompts/dashboard HTML copied):
 - Spec-gate card + clarify card: new `## Gate cards` section in `skills/reply-contract/SKILL.md` (binary Approve/Reject on a held `Documents` list vs. a plain question+Submit — gate ≠ question). Wired into `skills/grill-with-docs/SKILL.md` Step 4.
 - Stable task Name: new `## Task name` section in `reply-contract`; referenced from `grill-with-docs` and `skills/close-out/SKILL.md` Step 1.
@@ -33,7 +45,7 @@ Blair pass 2 blocker: `AGENTS.md` §3's own Architect-role summary bullet (line 
 - Verification: `python3 -m unittest tests.test_export_codex_skills` — 7/7 pass; `git diff --check` clean.
 - Pushed to the same branch/PR (#9); still not merged, still not self-reviewed.
 
-## Previous Focus (superseded)
+## Earlier Focus (superseded)
 **Formatting and replay review complete** (2026-06-23). Reviewed the added skill/workflow updates in this checkout and fixed local formatting issues:
 - Replaced malformed `skills/agent-bootstrap/SKILL.md` placeholder text with valid skill frontmatter, quick-start steps, and replay guidance.
 - Added final trailing newlines to canonical skill Markdown files that were missing them.
