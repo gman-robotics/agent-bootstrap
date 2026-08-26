@@ -181,4 +181,4 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 6. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
 7. If any later edit changes `SKILL.md`, re-run step 2 before the edit ships — `check_skill_live.py` (and therefore `tests/test_index_live_binding.py`) will fail on the stale `skill_sha256` until you do.
 
-*Last updated: 2026-08-26 | Hub version: 0.9.0*
+*Last updated: 2026-08-26 | Hub version: 0.9.1*
