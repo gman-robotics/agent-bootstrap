@@ -1,0 +1,29 @@
+{
+  "captured_at": "2026-08-26T16:04:41.300349+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "reply-contract-link-check",
+  "description": "Mechanical check that skills/show-me/SKILL.md exists, is exported to .grok/skills/show-me/, and that skills/reply-contract/SKILL.md + references/photon-show-me.md load the real skills/show-me/SKILL.md path instead of the old fictional pairing line.",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stderr_contains": [
+      "OK"
+    ]
+  },
+  "fixture": "skills/show-me/fixtures/reply-contract-link-check",
+  "input": {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "tests.test_show_me_skill",
+      "-v"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "03fe6e5fa549f22ee5b2f867bc5fbda794db8f47d45a104802f5e4ddcf709878",
+  "stderr_tail": "test_photon_show_me_reference_points_at_the_real_skill_path (tests.test_show_me_skill.ShowMeSkillTests.test_photon_show_me_reference_points_at_the_real_skill_path) ... ok\ntest_reply_contract_loads_show_me_rather_than_reimplementing_it (tests.test_show_me_skill.ShowMeSkillTests.test_reply_contract_loads_show_me_rather_than_reimplementing_it) ... ok\ntest_reply_contract_pairing_line_points_at_the_real_show_me_path (tests.test_show_me_skill.ShowMeSkillTests.test_reply_contract_pairing_line_points_at_the_real_show_me_path) ... ok\ntest_show_me_frontmatter_declares_the_skill_name_and_version (tests.test_show_me_skill.ShowMeSkillTests.test_show_me_frontmatter_declares_the_skill_name_and_version) ... ok\ntest_show_me_is_exported_to_the_grok_dual_tree (tests.test_show_me_skill.ShowMeSkillTests.test_show_me_is_exported_to_the_grok_dual_tree) ... ok\ntest_show_me_owns_the_visual_recipes_not_reply_contract (tests.test_show_me_skill.ShowMeSkillTests.test_show_me_owns_the_visual_recipes_not_reply_contract)\nshow-me is a fold of recipes only \u2014 it is not a rewrite of reply-contract's ... ok\ntest_show_me_skill_file_exists (tests.test_show_me_skill.ShowMeSkillTests.test_show_me_skill_file_exists) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n",
+  "stdout_tail": "",
+  "verdict": "pass"
+}
