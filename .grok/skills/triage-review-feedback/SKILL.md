@@ -14,6 +14,7 @@ Triggers when our PR gets a review, inline comments, or scanner findings, or the
 1. Read `references/source.md` before acting.
 2. Inventory all claims first; verify each at the cited code location before classifying.
 3. Fix TDD-first, QA-pass before posting, reply to every thread, then re-request review.
+4. Tag every FIX NEW or REPEAT; REPEAT closes only with a mechanical check (lint/diagnostic/test/CI rule), never an instance fix or a comment.
 
 ## Compatibility Notes
 

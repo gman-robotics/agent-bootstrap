@@ -206,6 +206,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` before acting.",
             "Inventory all claims first; verify each at the cited code location before classifying.",
             "Fix TDD-first, QA-pass before posting, reply to every thread, then re-request review.",
+            "Tag every FIX NEW or REPEAT; REPEAT closes only with a mechanical check (lint/diagnostic/test/CI rule), never an instance fix or a comment.",
         ),
     ),
     "pr-shepherd": SkillConfig(
@@ -324,6 +325,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` for the full two-phase protocol.",
             "Phase 1: audit activeContext.md/progress.md and sync shared memory if configured.",
             "Phase 2: scan for friction/skill gaps and propose specific, filed improvements.",
+            "Step 8 proposals for a skill need a named I/O case; Step 9 requires a black-box-agent-qa pass before the skill is live — approval to write it is not a ship.",
         ),
     ),
     "reply-contract": SkillConfig(
@@ -379,6 +381,25 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Hard rule: no implement skills, feature branches, or PRs until the user confirms shared understanding.",
             "Ask the whole decision frontier each round; look up facts yourself; write glossary-only CONTEXT.md as terms resolve.",
             "Final confirm uses reply-contract's spec-gate card, not chat prose; a single blocking fact-question uses its clarify card.",
+        ),
+    ),
+    "black-box-agent-qa": SkillConfig(
+        description=(
+            "Use before treating any agent, harness, verb, or skill change as verified: "
+            "name an input fixture and expected output, then actually run it. Reading the "
+            "PR or skill Markdown is not a pass; mocking the system under test is not the "
+            "only proof; an environment-blocked run escalates, it never passes."
+        ),
+        short_description="Black-box run-it verification for agent/harness/skill changes",
+        trigger_summary=(
+            "Triggers before marking a change to an agent persona, harness wiring, a "
+            "verb/command, or a skill file as tested, passing, or ready to ship."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting; it is the authoritative workflow.",
+            "Name a literal input fixture and a specific, checkable expected output before running anything.",
+            "Actually run the real system under test; a diff read or a mock-only suite is not a pass.",
+            "Environment-blocked runs escalate, they do not pass; never authorize auto-merge or a silent harness/agent-state refine from the run.",
         ),
     ),
 }

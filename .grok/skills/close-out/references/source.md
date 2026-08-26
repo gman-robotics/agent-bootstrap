@@ -1,7 +1,7 @@
 ---
 name: close-out
-description: "Two-phase task close-out. Phase 1: verify memory bank + shared memory (mem0, if configured) are accurate so a fresh agent can pick up without reconstruction (completed log, updated todo list, evidence-backed progress entry). Phase 2: scan the session for patterns, friction, and skill gaps and produce specific improvement proposals (new skill / skill update / AGENTS.md rule / feedback memory / docs entry)."
-version: 1.0.0
+description: "Two-phase task close-out. Phase 1: verify memory bank + shared memory (mem0, if configured) are accurate so a fresh agent can pick up without reconstruction (completed log, updated todo list, evidence-backed progress entry). Phase 2: scan the session for patterns, friction, and skill gaps and produce specific improvement proposals (new skill / skill update / AGENTS.md rule / feedback memory / docs entry). A new or edited skill only goes live after it passes black-box-agent-qa — user approval to write it is not a ship."
+version: 1.1.0
 ---
 
 # close-out — Task Close-Out & Continuous Improvement
@@ -146,16 +146,20 @@ For each finding from Steps 5–7, classify and propose the fix:
 | **Shared-memory feedback** | A user preference or correction that should shape future behavior | Write it immediately with the shared-memory tool (e.g. `add_memory`), if configured. |
 | **docs/ entry** | A technical fact (credential pattern, API behavior, config trap) that belongs in the project's `docs/` layer | Identify the target doc file and propose the addition. |
 
-Present findings to the user as a numbered list: **Finding** → **Proposed fix** → **Effort** (one-liner / 5 min / 30 min).
+Present findings to the user as a numbered list: **Finding** → **Proposed fix** → **Effort** (one-liner / 5 min / 30 min). For a **New skill** or **Existing skill update** finding, the **Proposed fix** must also name one concrete I/O case — a literal input fixture and its expected output — that `black-box-agent-qa/SKILL.md` will run before that skill goes live. A skill proposal with no named case is not ready to present.
 
-### Step 9: Apply approved improvements
+### Step 9: Apply Approved Improvements — Approval to Write Is Not a Ship
+
+A user's **Approve** on a Step 8 finding authorizes writing or editing the skill file. It does **not** authorize treating that skill as live. A new or edited skill goes live only after it passes `skills/black-box-agent-qa/SKILL.md` against the I/O case named in Step 8 — write the file, then run the fixture, then flip it live. Reading the finished skill Markdown back to the user, or getting a second "looks good," is not that pass.
 
 For each finding the user approves:
-- **New skill**: Follow the process in `skills/INDEX.md §Adding a New Skill` — write the skill file, update INDEX.md, AGENTS.md, and the exporter config.
-- **Skill update**: Edit the skill file in-place. Bump the "Last updated" footer.
+- **New skill**: Follow the process in `skills/INDEX.md §Adding a New Skill` — write the skill file, update INDEX.md, AGENTS.md (and the session-start trigger tables), and the exporter config. Then run `black-box-agent-qa` against the Step 8 I/O case before treating the skill as available for use, not merely written.
+- **Skill update**: Edit the skill file in-place. Bump the version and the "Last updated" footer. Then run `black-box-agent-qa` against the Step 8 I/O case before treating the update as live — an edited skill with an unrun fixture is no more trustworthy than a brand-new one.
 - **AGENTS.md rule**: Add to the appropriate section. Keep it under 2 lines.
 - **Shared-memory feedback**: Add immediately, if configured.
 - **docs/ entry**: Follow `docs-protocol`.
+
+**Watch for the failure class this step can institutionalize**: a skill edited because *this one session's run* happened to go a certain way can quietly turn a one-off shortcut into a standing rule for every future run. Treat a run-driven skill edit as a candidate **pattern** to cite and route through Step 8 like any other finding — never as a live rule installed straight from the run's outcome just because it was convenient this time. If the edit really is only this session's convenience, say so and leave the skill alone.
 
 ---
 
@@ -169,6 +173,9 @@ For each finding the user approves:
 | Phase 2 producing only vague "could be better" observations | Improvements must be specific enough to act on: file, section, proposed text |
 | Proposing a new skill for a one-off workflow | Skills are for reusable patterns; one-offs belong in docs/ or a memory note |
 | Running Phase 2 without looking at the actual conversation | Generates hypothetical improvements; the real ones come from what actually happened |
+| Treating the user's Approve on a Step 8 finding as the skill going live | Approval authorizes writing it; `black-box-agent-qa` against the named I/O case authorizes calling it live |
+| Presenting a skill proposal in Step 8 with no named I/O case | Add the literal input fixture + expected output before presenting; an un-checkable proposal is not ready |
+| Editing a skill straight from one run's outcome without flagging it | Cite it as a pattern proposal through Step 8, not a silent live install of this session's shortcut |
 
 ---
 
@@ -179,5 +186,6 @@ For each finding the user approves:
 - **memory-bank-protocol** — defines the memory bank update protocol used in Steps 2–3.
 - **docs-protocol** — governs any `docs/` additions proposed in Phase 2.
 - **reply-contract** — if this thread used a spec-gate/clarify card, its stable task Name is the identifier to reuse in the completed-log entry (Step 1).
+- **black-box-agent-qa** — required gate before Step 9 treats a new or edited skill as live; run its named-fixture protocol against the Step 8 I/O case, and escalate rather than pass if the environment blocks the run.
 
-*Last updated: 2026-08-22*
+*Last updated: 2026-08-26*
