@@ -4,12 +4,18 @@
 `skills/close-out/SKILL.md` Step 9 and `skills/INDEX.md` "Adding a New Skill" both require
 a skill to pass `scripts/check_skill_live.py` before it is listed anywhere (INDEX.md,
 AGENTS.md, the session-start trigger tables). Until this module existed, nothing enforced
-that automatically: `check_skill_live.py` worked correctly when typed by hand, but no test,
-CI job, or hook ever ran it against the real listing — a skill could sit in INDEX.md
-indefinitely with no run record and nothing would catch it. This is the same failure class
-as blocker #4 in the prior revision (a mechanism defined in prose/scripts but never bound to
-anything that actually runs). `tests/test_index_live_binding.py` is the binding: it calls
-`find_ungated_entries()` against the real `skills/INDEX.md` on every test run.
+even the `skills/INDEX.md` half of that automatically: `check_skill_live.py` worked
+correctly when typed by hand, but no test, CI job, or hook ever ran it against the real
+listing — a skill could sit in INDEX.md indefinitely with no run record and nothing would
+catch it. This is the same failure class as blocker #4 in the prior revision (a mechanism
+defined in prose/scripts but never bound to anything that actually runs).
+`tests/test_index_live_binding.py` is that binding — but only for `skills/INDEX.md`'s
+`### <name>` entries: it calls `find_ungated_entries()` against the real `skills/INDEX.md`
+on every test run. It does not parse `AGENTS.md` §4 or the per-harness trigger-list files
+(`.clinerules`, `.cursorrules`, `.kilocoderules`, `.openhands_instructions`,
+`.cursor/rules/agent-bootstrap.mdc`) — those five files use three mutually different
+formats with no shared structure to parse, so keeping them in sync with the gate ahead of
+listing remains a review-discipline point, not something this module checks.
 
 Usage (module):
     from scripts.index_skills import find_ungated_entries
@@ -43,10 +49,16 @@ INDEX_ENTRY_PATTERN = re.compile(r"^### (.+)$")
 # exempted: each one still needs its own run record before it can be dropped from this set,
 # and dropping one without capturing a pass first will fail `find_ungated_entries` for it.
 #
-# Do not add a *new* skill's name here just to dodge a gate failure — that is itself a
-# REPEAT of the exact failure class this module exists to close (a listing with no run
-# record, nothing catching it). New skills gate at write time per
-# `skills/INDEX.md §Adding a New Skill` step 2; they never belong in this allowlist.
+# This set is CLOSED, not a route around a failing new skill. Do not add, remove, or swap
+# any name here to dodge a gate failure — that is itself a REPEAT of the exact failure
+# class this module exists to close (a listing with no run record, nothing catching it),
+# just hidden behind the allowlist instead of the live check. New skills gate at write
+# time per `skills/INDEX.md §Adding a New Skill` step 2; they never belong in this
+# allowlist. `tests/test_index_live_binding.py`'s
+# `test_grandfathered_skills_is_frozen_at_the_original_twenty` pins this set to the exact
+# 20 names below by equality (not just type + count) — any edit here, including a
+# same-length swap, fails that test until the pinned copy in the test file is updated
+# too, which is itself the visible review point.
 GRANDFATHERED_SKILLS: frozenset[str] = frozenset(
     {
         "agent-orchestration-roles",
