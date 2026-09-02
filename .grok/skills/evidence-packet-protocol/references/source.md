@@ -163,6 +163,24 @@ checks both halves of this rule (no raw-field dump, at least one real pointer pr
 
 ---
 
+## Leftovers (not in this PR)
+
+Named explicitly, matching `docs/projects/agent-bootstrap/hoh-schema-steal-plan.md` §14:
+no HoH runtime/scheduler/orchestrator is built here — every artifact in this skill is a
+markdown/JSON/validator-script triple, never a daemon or CI trigger. `Flesymeb/
+HarnessOfHarness` and a "Hardproof" plugin are not installed or cloned anywhere. The
+native-compiled-black-box gap is unresolved: `scripts/run_black_box_fixture.py`'s
+subprocess argv/exit-code/stdout contract covers a validator script well, but a
+compiled game/GUI artifact is not a clean subprocess in the same way — this skill's
+fixtures all target validator scripts, not compiled artifacts. An external "Eleanor"
+`reply-contract` `1.3.0` overlay is a separate, named lineage from this hub's own
+`reply-contract` `1.4.0` — not reconciled here. Any Grok Bot CoS overlay wiring that
+names Lane/Kit by role identity or a specific harness invocation stays local to that
+overlay, never in this hub (see `skills/preservation-gate/SKILL.md` "Placement
+decision" for the same hub-vs-overlay split applied to GB-2).
+
+---
+
 ## Verification Checklist
 
 - [ ] `E_t.json` has a non-empty, real (not placeholder) `head_sha` at the root
