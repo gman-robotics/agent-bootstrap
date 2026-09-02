@@ -1,0 +1,12 @@
+{
+  "iteration": 2,
+  "head_sha": "6666666666666666666666666666666666666f",
+  "qa_status": "partial",
+  "verified_records": [],
+  "gap_records": [],
+  "planner_handoff": {
+    "preservation_constraints": ["Preserve verified player movement."],
+    "update_targets": ["Implement a visible completion state."],
+    "validation_requirements": ["Replay objective completion through the result screen."]
+  }
+}

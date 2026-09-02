@@ -1,0 +1,25 @@
+{
+  "iteration": 2,
+  "head_sha": "1111111111111111111111111111111111111a",
+  "qa_status": "partial",
+  "verified_records": [
+    {
+      "claim_id": "player_control",
+      "claim": "Player input changes avatar motion.",
+      "execution_records": [
+        {
+          "type": "runtime_trace",
+          "path": "traces/core_loop.json",
+          "observation": "Avatar moved in response to input."
+        }
+      ],
+      "status": "blocked"
+    }
+  ],
+  "gap_records": [],
+  "planner_handoff": {
+    "preservation_constraints": ["Preserve verified player movement."],
+    "update_targets": ["Implement a visible completion state."],
+    "validation_requirements": ["Replay objective completion through the result screen."]
+  }
+}

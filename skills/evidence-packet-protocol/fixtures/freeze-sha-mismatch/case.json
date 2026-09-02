@@ -1,0 +1,18 @@
+{
+  "name": "freeze-sha-mismatch",
+  "description": "GB-4 freeze binding: the packet's head_sha (all-'a' 40-char hex) does not equal the candidate SHA Kit/Lane were told to hold (--expect-head-sha, all-'b' 40-char hex). Both SHAs are copy-paste-literal 40-char hex strings, not <placeholder> text, per Blair pass 2 should-fix.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_evidence_packet.py",
+      "--expect-head-sha",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "skills/evidence-packet-protocol/fixtures/freeze-sha-mismatch/E_t.sample.json"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 1,
+    "stdout_contains": ["head_sha mismatch"]
+  }
+}

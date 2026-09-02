@@ -1,0 +1,16 @@
+{
+  "name": "dt-missing-preservation-gate",
+  "description": "GB-2: a development-document markdown (Dt) with no '## Preservation Gate' heading is rejected — distinct from REPEAT, which lives in triage-review-feedback, not in the plan document.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_preservation_gate.py",
+      "skills/preservation-gate/fixtures/dt-missing-preservation-gate/Dt.sample.md"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 1,
+    "stdout_contains": ["Preservation Gate"]
+  }
+}

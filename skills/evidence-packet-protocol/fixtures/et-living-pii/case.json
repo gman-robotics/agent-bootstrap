@@ -1,0 +1,16 @@
+{
+  "name": "et-living-pii",
+  "description": "Forbidden living-PII check class: an observation naming 'Lisa' as if she were a real teammate is rejected. 'Lisa'/'Tanya' are named only as the forbidden fixture pair — never permitted content, and no real phone numbers are used anywhere in this repo.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_evidence_packet.py",
+      "skills/evidence-packet-protocol/fixtures/et-living-pii/E_t.sample.json"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 1,
+    "stdout_contains": ["living-pii"]
+  }
+}

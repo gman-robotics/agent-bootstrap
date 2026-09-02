@@ -1,0 +1,16 @@
+{
+  "name": "next-planner-reads-et",
+  "description": "H-1: the plan template instructs the next planner to read the same evidence/E_t.json on disk before planning, not a mem0/activeContext.md summary.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/check_planner_reads_et.py",
+      "skills/evidence-packet-protocol/fixtures/next-planner-reads-et/plan-template.sample.md"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": ["evidence/E_t.json"]
+  }
+}

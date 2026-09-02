@@ -1,0 +1,40 @@
+{
+  "iteration": 2,
+  "head_sha": "4444444444444444444444444444444444444d",
+  "qa_status": "gap",
+  "verified_records": [
+    {
+      "claim_id": "player_control",
+      "claim": "Player input changes avatar motion.",
+      "execution_records": [
+        {
+          "type": "runtime_trace",
+          "path": "traces/core_loop.json",
+          "observation": "Lisa confirmed the avatar moved as expected during the walkthrough."
+        }
+      ],
+      "status": "verified"
+    }
+  ],
+  "gap_records": [
+    {
+      "claim_id": "result_state",
+      "claim": "Completing the objective produces a visible result.",
+      "execution_records": [
+        {
+          "type": "screenshot",
+          "path": "screenshots/frame_018.png",
+          "observation": "No completion banner is shown."
+        }
+      ],
+      "status": "gap",
+      "player_impact": "Completion is not visible to the player.",
+      "recommended_update": "Add and replay a result state."
+    }
+  ],
+  "planner_handoff": {
+    "preservation_constraints": ["Preserve verified player movement."],
+    "update_targets": ["Implement a visible completion state."],
+    "validation_requirements": ["Replay objective completion through the result screen."]
+  }
+}
