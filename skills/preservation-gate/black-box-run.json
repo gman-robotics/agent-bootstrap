@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-09-02T21:28:31.119806+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "dt-missing-preservation-gate",
+  "description": "GB-2: a development-document markdown (Dt) with no '## Preservation Gate' heading is rejected \u2014 distinct from REPEAT, which lives in triage-review-feedback, not in the plan document.",
+  "exit_code": 1,
+  "expected": {
+    "exit_code": 1,
+    "stdout_contains": [
+      "Preservation Gate"
+    ]
+  },
+  "fixture": "skills/preservation-gate/fixtures/dt-missing-preservation-gate",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_preservation_gate.py",
+      "skills/preservation-gate/fixtures/dt-missing-preservation-gate/Dt.sample.md"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "d485091e02dc6721170dfb355394d516b277eb0a072053c95127382924b9c0a0",
+  "stderr_tail": "",
+  "stdout_tail": "missing required heading: ## Preservation Gate (see skills/preservation-gate/SKILL.md -- distinct from REPEAT)\n",
+  "verdict": "pass"
+}

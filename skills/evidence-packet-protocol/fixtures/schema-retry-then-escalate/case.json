@@ -1,0 +1,18 @@
+{
+  "name": "schema-retry-then-escalate",
+  "description": "GB-6: retry-once-then-escalate, never a silent T=70 reinvoke. Both invalid-1.json (qa_status 'blocked') and invalid-2.json (qa_status 'partial') fail schema validation, so the one allowed retry is exhausted and the validator escalates. task-instruction should-fix: this is exit code 1, not 2 — exit 2 is reserved for scripts/run_black_box_fixture.py's own 'blocked' (environment) verdict, and escalate must never be conflated with blocked.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_evidence_packet.py",
+      "--retry-then-escalate",
+      "skills/evidence-packet-protocol/fixtures/schema-retry-then-escalate/invalid-1.json",
+      "skills/evidence-packet-protocol/fixtures/schema-retry-then-escalate/invalid-2.json"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 1,
+    "stdout_contains": ["ESCALATE"]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "evidence-index-not-full-dump",
+  "description": "H-5: evidence/INDEX.md summarizes each iteration with a pointer to its packet file, never a full dump of the packet's own fields.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/check_evidence_index_is_progressive.py",
+      "skills/evidence-packet-protocol/fixtures/evidence-index-not-full-dump/INDEX.sample.md"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": ["progressive"]
+  }
+}

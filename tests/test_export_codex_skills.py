@@ -37,6 +37,8 @@ class ExportCodexSkillsTests(unittest.TestCase):
             self.assertIn("grill-with-docs", SKILL_CONFIGS)
             self.assertIn("black-box-agent-qa", SKILL_CONFIGS)
             self.assertIn("show-me", SKILL_CONFIGS)
+            self.assertIn("evidence-packet-protocol", SKILL_CONFIGS)
+            self.assertIn("preservation-gate", SKILL_CONFIGS)
             for skill_name in SKILL_CONFIGS:
                 skill_dir = output_dir / skill_name
                 self.assertTrue(skill_dir.is_dir(), skill_name)

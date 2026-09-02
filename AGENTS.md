@@ -315,6 +315,8 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/performance-profiling/SKILL.md` | "slow", "latency", "timeout", "optimize", or monitoring shows p95/p99 spikes | Measure baseline → profile (clinic.js, EXPLAIN ANALYZE, py-spy, CloudWatch) → fix one thing → measure again |
 | `skills/feature-flag-lifecycle/SKILL.md` | Creating, rolling out, or graduating a feature flag | Create (default-off, cleanup date) → staged rollout → graduate (remove dead code) |
 | `skills/black-box-agent-qa/SKILL.md` | Before treating any agent, harness, verb, or skill change as tested/passing/ready to ship | Runnable I/O contract: `fixtures/<case>/case.json` (schema `SCHEMA.md`) + `scripts/run_black_box_fixture.py` to actually run it + `scripts/check_skill_live.py` to gate on the captured record; reading a diff/skill Markdown or mocking the system under test is not a pass; environment-blocked runs escalate, never authorizes auto-merge or a silent harness/agent-state refine |
+| `skills/evidence-packet-protocol/SKILL.md` | After an implementer/QA-Tester turn needing checkable evidence; before a planner starts the next iteration and must read the prior evidence packet | Defines `E_t.json`: required `head_sha` freeze (GB-4), `qa_status`/record `status` restricted to `verified \| gap` only at both levels (GB-1/GB-6), non-empty typed `execution_records` (GB-1), gap-repair-and-new-capability structural rules (GB-3), forbidden living-PII check, `evidence/E_t.json`/`evidence/E_<n>.json` path convention (H-1) and progressive-disclosure index (H-5) |
+| `skills/preservation-gate/SKILL.md` | Writing or reviewing a `Dt` plan/development document for iteration 2 or later | The exact `## Preservation Gate` heading listing the previous iteration's verified claims to protect — distinct from REPEAT (positive/never-closes vs. negative/mechanically-closed) |
 
 See `/skills/` directory for full definitions. New skills should follow the style of the examples in this hub (clear steps, warnings, examples, code blocks).
 
@@ -393,4 +395,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-08-26 | Version: 0.9.3 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*
+*Last updated: 2026-09-02 | Version: 0.10.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*

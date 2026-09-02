@@ -1,0 +1,16 @@
+{
+  "name": "et-missing-execution-record",
+  "description": "GB-1: a 'verified' record with an empty execution_records array is rejected — empty is a gap, not a pass.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_evidence_packet.py",
+      "skills/evidence-packet-protocol/fixtures/et-missing-execution-record/E_t.sample.json"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 1,
+    "stdout_contains": ["execution_records"]
+  }
+}

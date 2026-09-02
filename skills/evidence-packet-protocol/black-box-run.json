@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-09-02T21:32:27.996559+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "et-schema-valid",
+  "description": "GB-1/GB-4: a fully schema-valid E_t.json (real 40-char head_sha, verified|gap statuses only, non-empty execution_records) validates cleanly.",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "valid"
+    ]
+  },
+  "fixture": "skills/evidence-packet-protocol/fixtures/et-schema-valid",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_evidence_packet.py",
+      "skills/evidence-packet-protocol/fixtures/et-schema-valid/E_t.sample.json"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "efbea8da0ce34f6e9632e7eba182e20b7de31d6d72dff8d99246d0bb1fde77fb",
+  "stderr_tail": "",
+  "stdout_tail": "valid: skills/evidence-packet-protocol/fixtures/et-schema-valid/E_t.sample.json\n",
+  "verdict": "pass"
+}

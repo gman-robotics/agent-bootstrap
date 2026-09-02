@@ -420,6 +420,41 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Environment-blocked runs escalate (verdict blocked), they do not pass; never authorize auto-merge or a silent harness/agent-state refine from the run.",
         ),
     ),
+    "evidence-packet-protocol": SkillConfig(
+        description=(
+            "Use when an implementer/QA-Tester role needs to hand a planner "
+            "claim-bound, checkable evidence of what actually works (and what still "
+            "has a gap) instead of a prose status update: the E_t.json evidence packet."
+        ),
+        short_description="Claim-bound evidence packets (E_t.json)",
+        trigger_summary=(
+            "Triggers after an implementer/QA-Tester turn needing checkable evidence, "
+            "or before a planner starts the next iteration and must read the prior packet."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting; it is the authoritative schema and rules.",
+            "head_sha is required (GB-4 freeze); qa_status and every record's status are verified|gap only, never partial/blocked/looks good.",
+            "execution_records must be non-empty and typed screenshot|runtime_trace|fixture; empty is a gap, not a pass (GB-1).",
+            "Schema failure gets one retry, then ESCALATE at exit 1 (never exit 2, which is the runner's own environment-blocked verdict) -- GB-6.",
+        ),
+    ),
+    "preservation-gate": SkillConfig(
+        description=(
+            "Use when writing a development-document markdown (Dt) from iteration 2 "
+            "onward: every such document needs an exact '## Preservation Gate' heading "
+            "listing the previous iteration's verified claims the Developer must not regress."
+        ),
+        short_description="The Preservation Gate plan-document field",
+        trigger_summary=(
+            "Triggers when writing or reviewing a Dt plan/development document for "
+            "iteration 2 or later of a warm-started, evidence-driven workflow."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting; it is the authoritative field definition.",
+            "Use the exact literal heading `## Preservation Gate` with at least one bullet from the prior iteration's verified claims.",
+            "Distinct from REPEAT: Preservation Gate is positive and never closes; REPEAT is negative and closes only via a mechanical check.",
+        ),
+    ),
 }
 
 

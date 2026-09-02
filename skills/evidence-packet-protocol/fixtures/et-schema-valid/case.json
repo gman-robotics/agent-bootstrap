@@ -1,0 +1,16 @@
+{
+  "name": "et-schema-valid",
+  "description": "GB-1/GB-4: a fully schema-valid E_t.json (real 40-char head_sha, verified|gap statuses only, non-empty execution_records) validates cleanly.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_evidence_packet.py",
+      "skills/evidence-packet-protocol/fixtures/et-schema-valid/E_t.sample.json"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": ["valid"]
+  }
+}

@@ -1,7 +1,7 @@
 ---
 name: multi-harness-coordination
 description: "This skill should be used when multiple agent harnesses (Claude Code, Codex, Cline, etc.) are collaborating on the same repository and need a shared role assignment and an adversarial plan/implement/review loop. Defines cross-harness role assignment and the coordination workspace conventions for handing work between harnesses."
-version: 1.0.0
+version: 1.1.0
 ---
 
 # multi-harness-coordination.md — Cross-Harness Role Assignment & Adversarial Implementation Workflow
@@ -74,6 +74,16 @@ When a handoff needs a quick-triage header before the prose (either in a mem0 en
 - `task` — the thread's stable task Name (see `reply-contract` "Task name"), unchanged for the thread's life.
 
 This stanza is purely descriptive markdown — a header on a plan or finding, not a message bus contract. Explicitly **not** adopted from swarm-forge: `merge_and_process` semantics, 10-char SHA identity, outbox file paths, helper `TASK:`/`NO_TASK` stdout conventions, or auto-generated envelope bodies. If your team needs those, build them as project-local tooling outside this hub.
+
+### Optional: Preservation Gate field
+
+A `Dt` (plan/development document) handed off between harnesses may carry a `##
+Preservation Gate` section from iteration 2 onward, listing the previous iteration's
+verified claims the Developer must not regress — see `skills/preservation-gate/SKILL.md`
+for the full field definition, its exact heading, and its explicit distinction from
+REPEAT (positive/never-closes vs. negative/mechanically-closed). This is a one-line
+pointer only, not a copy of the mechanism — the canonical definition lives in that
+skill, not here.
 
 ---
 
@@ -181,4 +191,4 @@ Some teams prefer the human to open the PR — note that in project docs and ski
 | `triage-review-feedback.md` | After PR is open and reviewers respond |
 | `memory-bank-protocol.md` | Durable state layer; mem0 optional on top |
 
-**Last updated**: 2026-08-22
+**Last updated**: 2026-09-02
