@@ -8,7 +8,7 @@ red-then-green against the real argv/exit/stdout — never with a comment.
 **Why two sample packets, not one**: an earlier draft of this fixture shipped a single
 packet with a bad packet-level `qa_status` and a bad record-level `status` together,
 which only proves the validator can report both mismatches when they happen to occur in
-the *same* direction. Blair pass 2 required the crossed case: `qa_status: "partial"`
+the *same* direction. the task instructions required the crossed case: `qa_status: "partial"`
 paired with a record `status: "blocked"` (`E_t.partial-blocked.json`), **and** the
 reverse, `qa_status: "blocked"` paired with a record `status: "partial"`
 (`E_t.blocked-partial.json"`) — two distinct sample packets, both invalid, run in the

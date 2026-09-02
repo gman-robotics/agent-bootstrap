@@ -2,7 +2,7 @@
 
 **REPEAT-closure class**: `attack-12-fixture-io` — argv/exit/stdout red-then-green.
 
-**Blair pass 2 should-fix**: the plan's original table used exit code `2` for this
+**task-instruction should-fix**: the plan's original table used exit code `2` for this
 fixture. `scripts/black-box-agent-qa/SCHEMA.md`'s exit-code convention already reserves
 `2` for the runner's own `"blocked"` verdict (an environment problem — a missing
 executable or a timeout), which is never a pass and never something the script under

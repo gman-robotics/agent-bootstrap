@@ -70,7 +70,7 @@ class AttackTwelveFixtureIoTests(unittest.TestCase):
                 )
 
     def test_fixture_argv_contains_no_angle_bracket_placeholders(self):
-        """Blair pass 2 should-fix: freeze-sha-mismatch (and every other fixture) must
+        """task-instruction should-fix: freeze-sha-mismatch (and every other fixture) must
         ship a copy-paste-literal argv, never a <placeholder> someone has to fill in."""
         for fixture_dir in _fixture_dirs():
             if fixture_dir.name not in REQUIRED_FIXTURE_NAMES:

@@ -2,7 +2,7 @@
 
 **REPEAT-closure class**: `attack-12-fixture-io` — argv/exit/stdout red-then-green.
 
-**Blair pass 2 should-fix**: an earlier draft of this fixture's `case.json` used a
+**task-instruction should-fix**: an earlier draft of this fixture's `case.json` used a
 `<candidate-sha>` placeholder in the argv, which is not something anyone could actually
 copy-paste and run. This fixture instead ships two real, distinct, copy-paste-literal
 40-character hex SHAs: the packet's own `head_sha` is `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`

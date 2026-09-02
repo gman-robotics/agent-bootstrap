@@ -120,7 +120,7 @@ class ValidatePacketSchemaTests(unittest.TestCase):
         self.assertIn("invalid record status: partial", violations)
 
     def test_crossed_enum_pair_reports_all_four_required_tokens_across_two_packets(self):
-        """Blair pass 2 should-fix: reject BOTH crossed pairs, not only one direction."""
+        """task-instruction should-fix: reject BOTH crossed pairs, not only one direction."""
         partial_blocked = _valid_packet(qa_status="partial")
         partial_blocked["verified_records"][0]["status"] = "blocked"
         blocked_partial = _valid_packet(qa_status="blocked")

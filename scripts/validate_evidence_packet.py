@@ -130,7 +130,7 @@ def validate_packet(data, expect_head_sha: str | None = None) -> list[str]:
     Mirrors the JSON schema in skills/evidence-packet-protocol/SCHEMA.md exactly --
     including the crossed-enum-pair case, where a bad packet-level qa_status and a bad
     record-level status can both be present in the same packet and must both be
-    reported (Blair pass 2 should-fix: reject BOTH crossed pairs, not only one).
+    reported (task-instruction should-fix: reject BOTH crossed pairs, not only one).
     """
     if not isinstance(data, dict):
         return ["packet root must be a JSON object"]

@@ -1,6 +1,6 @@
 {
   "name": "et-status-not-verified-or-gap",
-  "description": "Blair pass 2 should-fix: rejects BOTH crossed enum pairs in one run — E_t.partial-blocked.json (packet qa_status 'partial', one record status 'blocked') and E_t.blocked-partial.json (packet qa_status 'blocked', one record status 'partial') — proving the check covers both fields, not only the one it happens to test first.",
+  "description": "task-instruction should-fix: rejects BOTH crossed enum pairs in one run — E_t.partial-blocked.json (packet qa_status 'partial', one record status 'blocked') and E_t.blocked-partial.json (packet qa_status 'blocked', one record status 'partial') — proving the check covers both fields, not only the one it happens to test first.",
   "input": {
     "command": [
       "python3",
