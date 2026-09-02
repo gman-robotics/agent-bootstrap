@@ -178,6 +178,20 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### evidence-packet-protocol
+**File**: `skills/evidence-packet-protocol/SKILL.md`  
+**Trigger**: After an implementer/QA-Tester turn needing checkable evidence of what actually works; before a planner starts the next iteration and must read the prior evidence packet.  
+**What it does**: Defines `E_t.json` — a claim-bound evidence packet with a required `head_sha` freeze binding (GB-4), `qa_status`/record `status` restricted to `verified | gap` only at both levels (GB-1/GB-6, never partial/blocked/"looks good"), non-empty typed `execution_records` (`screenshot | runtime_trace | fixture`, GB-1), structural gap-repair-and-new-capability rules (GB-3), a forbidden living-PII check, and the `evidence/E_t.json` (current) vs. `evidence/E_<n>.json` (priors) path convention the next planner must read (H-1), never a full-dump `evidence/INDEX.md` (H-5). Real validators: `scripts/validate_evidence_packet.py`, `scripts/check_planner_reads_et.py`, `scripts/check_evidence_index_is_progressive.py` (schema: `SCHEMA.md`).
+
+---
+
+### preservation-gate
+**File**: `skills/preservation-gate/SKILL.md`  
+**Trigger**: Writing or reviewing a `Dt` (plan/development document) for iteration 2 or later of a warm-started, evidence-driven workflow.  
+**What it does**: Defines the exact `## Preservation Gate` heading — a required section listing the previous iteration's verified claims the Developer must not regress. Explicitly distinct from REPEAT (positive/never-closes vs. negative/mechanically-closed — see the skill's comparison table). Real validator: `scripts/validate_preservation_gate.py`. One-line pointer lives in `skills/multi-harness-coordination/SKILL.md`; `skills/reply-contract/SKILL.md` is not touched.
+
+---
+
 ## Adding a New Skill
 
 1. Create `skills/<name>/SKILL.md` following the style of existing skills: YAML frontmatter (`name`, `description`, `version`; quote the description or avoid inner `: ` — unquoted YAML breaks on colon+space), then purpose, trigger, when to use, numbered steps, stack-specific tips, last updated footer.
@@ -188,4 +202,4 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 6. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
 7. If any later edit changes `SKILL.md`, re-run step 2 before the edit ships — `check_skill_live.py` (and therefore `tests/test_index_live_binding.py`) will fail on the stale `skill_sha256` until you do.
 
-*Last updated: 2026-08-26 | Hub version: 0.9.3*
+*Last updated: 2026-09-02 | Hub version: 0.10.0*

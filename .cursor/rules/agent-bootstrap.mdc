@@ -44,6 +44,8 @@ When any skill is triggered, read the full skill file (`skills/<name>.md`) befor
 | `subagent-routing.md` | Independent subtasks, parallelizable work, model selection |
 | `delegation-patterns.md` | Multi-agent delegation with worktree isolation |
 | `black-box-agent-qa.md` | Before treating any agent, harness, verb, or skill change as tested/passing/ready to ship; required by `close-out` Step 9 before a skill goes live |
+| `evidence-packet-protocol.md` | After an implementer/QA-Tester turn needing checkable evidence; before a planner reads the prior `E_t.json` |
+| `preservation-gate.md` | Writing or reviewing a `Dt` plan/development document for iteration 2 or later |
 
 ## Global Rules (Summary)
 
