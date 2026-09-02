@@ -16,7 +16,8 @@ Go forward with the steal on **both** Grok Bot and Hermes. **Schema/process only
 
 ## 2. Sources (cited, not recomputed)
 
-- **Wiki**: main `0651e60`, page `[[harness-of-harness]]` = `entities/harness-of-harness.md` (landed via PR #99). Fetched via GitHub for this plan (`https://github.com/Flesymeb/HarnessOfHarness/wiki/harness-of-harness`, which resolves to the repo's README/overview content — the wiki page and the repo `README.md` carry the same HoH overview at the time of this fetch). Repository: [`Flesymeb/HarnessOfHarness`](https://github.com/Flesymeb/HarnessOfHarness) (MIT licensed, `has_wiki: true`, confirmed via `gh api /repos/Flesymeb/HarnessOfHarness`). **Not cloned** — read-only citation only, per this task's constraint.
+- **Wiki (source of truth for this citation)**: `ThomasGinter/tmg-wiki`, page `[[harness-of-harness]]` = `entities/harness-of-harness.md`, wiki main `0651e60` at the full commit `0651e608fded1c0676951ff16555b97e2671710d` (landed via wiki PR #99). This is the required wiki SoT — **not** the upstream product repository's own GitHub wiki. This run's tools do not have read access to `ThomasGinter/tmg-wiki` (private repository; `git ls-remote` and the GitHub API both return "not found" without owner credentials), so the wiki page's own prose is cited by identity (repo, path, commit) rather than quoted. The substantive facts this plan relies on — the Table 3 ablation numbers and the Listing 1 `E_t` structure, both below — are independently cross-checked directly against the primary published source (arXiv `2609.01481`, next bullet), not solely relayed through the wiki page, so this access gap does not weaken those citations.
+- **Product repository (do-not-clone leftover only, not a wiki SoT)**: [`Flesymeb/HarnessOfHarness`](https://github.com/Flesymeb/HarnessOfHarness) is the public upstream HoH repository (MIT licensed, `has_wiki: true`, confirmed via `gh api /repos/Flesymeb/HarnessOfHarness`). It is named here only as the repository this plan must not clone (§3, §12) — its own GitHub wiki/README is **not** used as the fetched wiki source of truth for this plan; that role belongs to `ThomasGinter/tmg-wiki` above.
 - **Paper**: arXiv `2609.01481`, *"Harness of Harness: Multi-Day Autonomous Software Development with Continual Improvement"* (Yan, Su, Zhang, Li, Zhang, Zhang, Chen, Bai, Hu). Fetched `https://arxiv.org/abs/2609.01481` for this plan.
   - **Locked ablation (Table 3, GameCraft-Bench, Codex + GPT-5.5 high, $T=3$)** — verified against the fetched paper text, not recomputed:
 
@@ -63,7 +64,7 @@ Go forward with the steal on **both** Grok Bot and Hermes. **Schema/process only
       }
     }
     ```
-    The paper's own execution-record types (Listing 1 + surrounding text) are `replay`, `runtime_trace`, `screenshot`. This house steal (§4 below) narrows to `screenshot | runtime_trace | fixture` — dropping `replay` as a fourth type name and folding it into `fixture` (a named, checkable input/expected-output pair per `skills/black-box-agent-qa/SCHEMA.md`, this hub's own existing "replay"-equivalent). Status is `verified | gap` only — the paper's own text is explicit that "outputs that violate the required schema trigger a retry," which is the source for GB-6 below.
+    The paper's own execution-record types (Listing 1 + surrounding text) are `replay`, `runtime_trace`, `screenshot`. This house steal (§4 below) narrows to `screenshot | runtime_trace | fixture` — dropping `replay` as a fourth type name and folding it into `fixture` (a named, checkable input/expected-output pair per `skills/black-box-agent-qa/SCHEMA.md`, this hub's own existing "replay"-equivalent). The paper's own Listing 1 example above shows `"qa_status": "partial"` at the packet root — **the house schema (§7) does not carry this value forward.** The steal lock narrows `qa_status` (packet root) and `status` (every record) to `verified | gap` only, at both levels, with no `partial` or `blocked` value permitted anywhere in `E_t` — the paper's own text is explicit that "outputs that violate the required schema trigger a retry," which is the source for GB-6 below.
   - The paper's three-role split (Project Planner — plans, never edits; Developer — implements, warm-starts from the existing artifact; QA Tester — read-only, evidence-only) is cited directly for H-2 and H-3 below.
 - **Scout eval scoreboard** (not contradicted here): already-have three-role split, planner-does-not-write, independent QA, spec-gate, REPEAT→mechanical, Lane screenshot critic, wrap-existing-harnesses, wiki/Linear/git, max-3-then-escalate, swarm-forge envelope. This plan steals **GB-1..6 and H-1..5 only** — nothing else from the scoreboard is touched.
 - **Hub contract**: `skills/black-box-agent-qa/SCHEMA.md` + `scripts/run_black_box_fixture.py` is the existing I/O contract this plan extends (§4, §5) rather than replaces. Reading a PR is not a pass; Kit does not pass by reading the PR — this is already this hub's own rule (`skills/black-box-agent-qa/SKILL.md` "Reading is not running"), reused, not reinvented, for evidence-packet claims.
@@ -99,7 +100,7 @@ Each row names where the mechanism lands. Nothing in this column is created by t
 | **GB-1** | Claim-bound evidence packet: typed `execution_records`, status `verified\|gap` only | `skills/evidence-packet-protocol/SKILL.md` (new) + `skills/evidence-packet-protocol/SCHEMA.md` (new) | Schema body in §6 |
 | **GB-2** | Preservation Gate field on the plan markdown, distinct from REPEAT | `skills/preservation-gate/SKILL.md` (new, canonical) + one-line pointer in `skills/multi-harness-coordination/SKILL.md` | Field spec in §7; **not** a `reply-contract` patch (see §7 "Placement decision") |
 | **GB-3** | Each increment repairs outstanding gaps AND delivers one observable new capability | `skills/evidence-packet-protocol/SKILL.md` — a rule inside the same skill as GB-1 (a `planner_handoff.update_targets` entry must name at least one gap repair *and* the plan's own new-capability line, checked structurally, not by prose promise) | No new file; a rule inside GB-1's skill |
-| **GB-4** | Frozen candidate identity: Kit/Lane evidence bound to one git SHA; no edit rights on the candidate | `skills/evidence-packet-protocol/SCHEMA.md` — add optional `head_sha` field at the packet root (§8) | "Hardproof" rhyme only — **Hardproof itself is not installed** (see §10 Leftovers) |
+| **GB-4** | Frozen candidate identity: Kit/Lane evidence bound to one git SHA; no edit rights on the candidate | `skills/evidence-packet-protocol/SCHEMA.md` — add a **required** `head_sha` field at the packet root (§8) | "Hardproof" rhyme only — **Hardproof itself is not installed** (see §10 Leftovers). `head_sha` is required, not optional — optional would make the freeze theater (§13 Risks) |
 | **GB-5** | Lane screenshots as `execution_records` rows inside `E_t`, not a separate chat CoS must remember | Already the GB-1 schema shape (`type: "screenshot"` rows) — no separate file. Lane still never implements (unchanged Preservation item) | Zero new surface — this is a consequence of GB-1, not a new mechanism |
 | **GB-6** | Schema-or-retry once on `Dt`/`Et`, then escalate to CoS — not a T=70 silent reinvoke | `skills/evidence-packet-protocol/SKILL.md` — "Retry-once, then escalate" rule, reusing the max-3 escalation *shape* from `multi-harness-coordination` (but capped at 1 retry, not 3, since this is a schema-validity retry, not a review round) | Fixture: `schema-retry-then-escalate` (§8) |
 | **H-1** | Same `E_t` on disk in the repo (`E_t.json`); next planner must read it | `evidence/E_t.json` — lives **next to the product branch** (Hermes/Eleanor or a Grok Bot product PR), **not** inside this hub. The hub only ships the schema/skill that defines the path convention | mem0/`activeContext.md` is explicitly **not** a substitute (paper's own Planner prompt template reads the prior evidence bundle directly, not a summarized memory note) |
@@ -128,8 +129,8 @@ Root object, one `E_t.json` per iteration, path convention: `evidence/E_t.json` 
 ```jsonc
 {
   "iteration": 2,                       // required, integer >= 1
-  "head_sha": "a1b2c3d...",             // required — freeze binding, see "Kit/Lane freeze" below (GB-4)
-  "qa_status": "partial",               // required, enum: "verified" | "partial" | "blocked"
+  "head_sha": "a1b2c3d...",             // REQUIRED (not optional) — freeze binding, see "Kit/Lane freeze" below (GB-4)
+  "qa_status": "gap",                   // required, enum: "verified" | "gap" — never "partial", "blocked", or "looks good"
   "verified_records": [                 // required, array (may be empty)
     {
       "claim_id": "player_control",     // required, string, stable slug
@@ -163,7 +164,7 @@ Root object, one `E_t.json` per iteration, path convention: `evidence/E_t.json` 
 ```
 
 - **Execution-record types**: exactly `screenshot | runtime_trace | fixture` (narrowed from the paper's `replay | runtime_trace | screenshot` — `fixture` replaces `replay` and is the record type used when the evidence is a named `skills/black-box-agent-qa`-style `case.json` run rather than a game replay file; this keeps one vocabulary instead of two "replay-like" types).
-- **Status**: `verified | gap` only, at both the packet's `qa_status` and every record's `status`. A validator (implement-track) rejects any other literal string, including `"looks good"` — this is the direct mechanical analog of the spec-gate's "the stamp is the literal word" rule (§4), applied to QA evidence instead of a human approval.
+- **Status**: `verified | gap` only, at **both** the packet's `qa_status` and every record's `status`. A validator (implement-track) rejects any other literal string at either level — including the paper's own `"partial"`, a `"blocked"` value, and `"looks good"` — this is the direct mechanical analog of the spec-gate's "the stamp is the literal word" rule (§4), applied to QA evidence instead of a human approval. The `et-status-not-verified-or-gap` fixture (§10) checks both levels in one run, not just one.
 - **Forbidden living PII — a named mechanical check class.** No claim, observation, or handoff string may contain a living person's real name (e.g., a bare first name such as "Lisa" or "Tanya" used as if referring to a real teammate) or a phone number that is not in the reserved fictitious range (`+1555XXXXXXX`, US NANP standard for fictional numbers). This is its own check class (see fixture `et-living-pii`, §9) — if a living-PII pattern already exists as a check somewhere in `arm`/the wiki tooling, treat a second sighting of the *same failure class* as REPEAT (`skills/triage-review-feedback/SKILL.md` Step 3), not as a new finding each time.
 - **`head_sha`**: see §8.
 
@@ -206,7 +207,7 @@ Runner: `scripts/run_black_box_fixture.py` (existing, unchanged) + one `case.jso
 | Fixture name | `input.command` (argv) | `expected.exit_code` | `expected.stdout_contains` |
 |---|---|---|---|
 | `et-schema-valid` | `["python3", "scripts/validate_evidence_packet.py", "skills/evidence-packet-protocol/fixtures/et-schema-valid/E_t.sample.json"]` | `0` | `["valid"]` |
-| `et-status-not-verified-or-gap` | `["python3", "scripts/validate_evidence_packet.py", "skills/evidence-packet-protocol/fixtures/et-status-not-verified-or-gap/E_t.sample.json"]` | `1` | `["invalid status"]` |
+| `et-status-not-verified-or-gap` | `["python3", "scripts/validate_evidence_packet.py", "skills/evidence-packet-protocol/fixtures/et-status-not-verified-or-gap/E_t.sample.json"]` | `1` | `["invalid qa_status: partial", "invalid record status: blocked"]` |
 | `et-missing-execution-record` | `["python3", "scripts/validate_evidence_packet.py", "skills/evidence-packet-protocol/fixtures/et-missing-execution-record/E_t.sample.json"]` | `1` | `["execution_records"]` |
 | `et-living-pii` | `["python3", "scripts/validate_evidence_packet.py", "skills/evidence-packet-protocol/fixtures/et-living-pii/E_t.sample.json"]` | `1` | `["living-pii"]` |
 | `dt-missing-preservation-gate` | `["python3", "scripts/validate_preservation_gate.py", "skills/preservation-gate/fixtures/dt-missing-preservation-gate/Dt.sample.md"]` | `1` | `["Preservation Gate"]` |
@@ -217,16 +218,20 @@ Runner: `scripts/run_black_box_fixture.py` (existing, unchanged) + one `case.jso
 
 Notes on exit-code convention: `0` = pass, `1` = fail (matches `SCHEMA.md`'s existing table). `schema-retry-then-escalate` uses `2`, reusing the existing `"blocked"` verdict code — an escalation is not a pass, and per `skills/black-box-agent-qa/SKILL.md` Step 4, a blocked/escalated run must never be scored as a pass; `2` keeps that invariant literal rather than inventing a fourth verdict.
 
+Note on `et-status-not-verified-or-gap`'s sample packet: it must carry **both** a bad packet-level `qa_status` (e.g. `"partial"`) and a bad record-level `status` (e.g. `"blocked"` on one record) at once, so a single validator run reports both mismatches named in `expected.stdout_contains` above — this is deliberate per §7's "both levels" rule, not a two-fixture split, so the fixture itself proves the check covers both fields rather than only the field it happens to test first.
+
 ## 11. Done-when (plan-track only — implement-track done-when is out of this PR)
 
-- [x] This document exists at `docs/projects/agent-bootstrap/hoh-schema-steal-plan.md` and cites wiki `0651e60` + paper `2609.01481` (§2), with the locked ablation numbers verified against the fetched paper text, not recomputed.
+- [x] This document exists at `docs/projects/agent-bootstrap/hoh-schema-steal-plan.md` and cites the wiki SoT as `ThomasGinter/tmg-wiki` `entities/harness-of-harness.md` @ `0651e608fded1c0676951ff16555b97e2671710d` (short `0651e60`, wiki PR #99) + paper `2609.01481` (§2), with the locked ablation numbers verified against the fetched paper text, not recomputed.
 - [x] Every GB-1..6 and H-1..5 item is mapped to a named implement-track target (§5, §6).
-- [x] All 9 named black-box fixtures have a literal `input.command` argv, `expected.exit_code`, and `expected.stdout_contains` (§10).
+- [x] All 9 named black-box fixtures have a literal `input.command` argv, `expected.exit_code`, and `expected.stdout_contains` (§10), including the `et-status-not-verified-or-gap` fixture checking both the packet-level `qa_status` and the record-level `status`.
+- [x] `head_sha` is required (not optional) on `E_t` (§6, §7, §9) — no optional-vs-required question remains open.
 - [x] Out-of-scope/skip items are named explicitly (§12), matching the task's own skip list.
 - [x] Leftovers are named (§13).
+- [x] REPEAT mechanical check for the wiki-citation class (`wiki-citation` / `hoh-plan-wiki-sot`) added under `tests/` — confirmed red on a fixture of the old bug, green on the real plan doc (§15).
 - [ ] Draft PR opened against `main` — done by this same change; not merged.
-- [x] No live schema/validator/skill file is shipped in this PR — every JSON/Markdown shown above is a fenced-block spec inside this document only; no `SCHEMA.md`, `SKILL.md`, `case.json`, or `scripts/*.py` file was created.
-- [ ] Blair grok-4.6 grills this plan; CoS records a literal **Blair APPROVE** before any implement-track work starts (spec-gate card, end of this document).
+- [x] No live schema/validator/skill file is shipped in this PR — every JSON/Markdown shown above is a fenced-block spec inside this document only; no `SCHEMA.md`, `SKILL.md`, `case.json`, or `scripts/*.py` file for the GB-1 product was created. The one test file added in this revision (§15) checks this plan document's own citation text — it is a documentation mechanical lock, not the evidence-packet-protocol product.
+- [ ] Blair grok-4.6 grills this plan; CoS records a literal **Blair APPROVE**, with no leftover open question beside it, before any implement-track work starts (spec-gate card, end of this document).
 
 ## 12. Out of scope / skip (explicit — matches the task's skip list)
 
@@ -237,7 +242,7 @@ Not touched, installed, opened, or started by this plan or its citation research
 - **Schema theater without freeze.** A validator that checks `E_t.json`'s JSON shape but is never actually wired to a real `head_sha` check would "look verified" (green fixture output) without proving the evidence is bound to the commit it claims to cover. Mitigation: `freeze-sha-mismatch` (§10) is a named, required fixture in the same implement-track PR as the schema validator — the two ship together, not the schema alone first.
 - **CoS overlay drift from hub.** If Grok Bot's local Lane/Kit wiring (kept out of the hub per §3) evolves independently of the hub's `evidence-packet-protocol` schema, the overlay and the hub can silently diverge (e.g., the overlay starts accepting a fourth `execution_records` type the hub schema rejects). Mitigation: name this drift risk explicitly in the new skill's "Common Mistakes" table (implement-track) and treat any overlay-vs-hub schema mismatch as a REPEAT-class finding once it happens twice.
 - **PII bus.** Evidence packets that flow into wiki pages, Linear tickets, or git history carry a wider blast radius than a single chat message — a living-PII slip in `E_t.json` persists in git log forever. Mitigation: `et-living-pii` (§10) is a required fixture, not an optional one, and the check class is named explicitly as mechanical (§7), not a style-guide reminder.
-- **Same-model temptation.** It is cheaper to run Planner/Developer/QA on one model, and nothing in the JSON schema itself prevents that — the separation is a process rule (H-2), not something the schema can enforce mechanically. Mitigation: name this explicitly as a Preservation item (§4) and as an out-of-scope item (§12); a future fixture idea (not named here, left as an open question) could check that three distinct role-invocation records in a packet's provenance are not byte-identical, but that is not proposed as done-when for this plan.
+- **Same-model temptation.** It is cheaper to run Planner/Developer/QA on one model, and nothing in the JSON schema itself prevents that — the separation is a process rule (H-2), not something the schema can enforce mechanically. Mitigation: name this explicitly as a Preservation item (§4) and as an out-of-scope item (§12); a possible future fixture (not named or proposed as done-when in this plan — a candidate idea only, resolved as "not now," not a pending decision) could check that three distinct role-invocation records in a packet's provenance are not byte-identical.
 - **Overbuild into a runtime.** The natural next step after "we have a schema and fixtures" is "let's build an orchestrator that runs the loop automatically" — which would cross directly into the "autonomous no-human development" line Tom's decision explicitly rules out (§1). Mitigation: every file named in §6 is a skill/schema/fixture (markdown + JSON + a validator script), never a scheduler, daemon, or CI trigger; this plan does not name or propose one.
 
 ## 14. Leftovers
@@ -247,6 +252,42 @@ Not touched, installed, opened, or started by this plan or its citation research
 - **HoH-lite unpublished.** The wiki/README (§2) states HoH-lite ("a lightweight implementation of HoH's core workflow") is "Coming soon" — nothing to read or vendor from it yet. Revisit when published; the "do not clone `Flesymeb/HarnessOfHarness`" constraint in this task is scoped to this task, not asserted here as a permanent policy for all future work.
 - **GMA-14 fog.** Referenced only as an out-of-scope item (§12) per the task's own instruction; not investigated, opened, or described further here.
 - **Eleanor reply-contract `1.3.0`.** This hub's `skills/reply-contract/SKILL.md` is at `1.4.0` and is **not touched** by this plan (§6 item 9, §8 placement decision). "Eleanor" reply-contract `1.3.0` is a separate, named lineage — flagged here explicitly so a future pass does not assume the hub's `1.4.0` supersedes or should overwrite it; that is an overlay-vs-hub reconciliation question for a different task, not resolved here.
+
+## 15. REPEAT mechanical check: `wiki-citation` / `hoh-plan-wiki-sot`
+
+Blair grok-4.6's REVISE on [PR #15](https://github.com/gman-robotics/agent-bootstrap/pull/15) at commit `d37a75e4` (2026-09-02) found this document's original §2 cited the upstream HoH product repository's own GitHub wiki page for the `harness-of-harness` entity as the fetched wiki source of truth, instead of the required internal wiki SoT: `ThomasGinter/tmg-wiki`, `entities/harness-of-harness.md`, commit `0651e608fded1c0676951ff16555b97e2671710d` (wiki PR #99). Per `skills/triage-review-feedback/SKILL.md` Step 3, this is tagged **NEW** at this first sighting — its failure class is "citing a public product repository's own wiki as if it were the internal tmg-wiki SoT" — and, per the same skill, an instance fix to §2's prose alone does not close it. A REPEAT item is only closed by a mechanical check added in the same fix commit.
+
+**The mechanical check**: `tests/test_hoh_plan_wiki_citation.py` (new file, this revision), run via:
+
+```bash
+python3 -m unittest tests.test_hoh_plan_wiki_citation -v
+```
+
+It defines `find_wiki_citation_violations(text)`, scoped to the `## 2. Sources` section only (extracted via `extract_wiki_sources_section`, not the whole document — see the module docstring: this lets *this* §15 describe the historical bug in prose without that description being mistaken for a live citation, which is exactly what tripped an earlier draft of this same check against its own §15 during this revision). It returns one message per problem and an empty list when the Sources section is clean, and asserts:
+
+1. **Red on a fixture of the old bug**: a synthetic reproduction of the original §2 text (Flesymeb wiki URL as the fetched wiki SoT, no `ThomasGinter/tmg-wiki` citation) trips the checker — proven in `test_old_fixture_reproduces_the_bug_and_is_caught` and `test_a_fixed_but_incomplete_citation_is_still_caught` (the latter guards against a shallow fix that deletes the bad URL without landing the real citation).
+2. **Green on the real, fixed plan document's Sources section**: the current §2 (rewritten in this revision, above) contains all three required literals (`ThomasGinter/tmg-wiki`, `entities/harness-of-harness.md`, `0651e608fded1c0676951ff16555b97e2671710d`) and does not contain the forbidden `Flesymeb/HarnessOfHarness/wiki` substring within that section — proven in `test_real_plan_document_cites_the_required_wiki_sot`.
+3. **The bare product repo may still be named** (e.g. as a do-not-clone leftover, §3/§12) without tripping the check — proven in `test_real_plan_document_may_still_name_the_bare_product_repo_as_a_leftover`. **This §15 may still discuss the old bug in prose** without tripping the check, because the check is scoped to §2 — proven in `test_real_plan_document_may_discuss_the_old_bug_outside_the_sources_section`.
+
+**Live proof against the real file, not just the synthetic fixture** (same convention this hub already uses for its own skill regression tests): the real `hoh-schema-steal-plan.md` was temporarily mutated in place to reintroduce the exact old §2 bug, the suite was re-run, reverted, and re-run again:
+
+```text
+$ python3 -m unittest tests.test_hoh_plan_wiki_citation -v      # real §2 mutated to the old bug
+test_real_plan_document_cites_the_required_wiki_sot ... FAIL
+test_real_plan_document_may_discuss_the_old_bug_outside_the_sources_section ... FAIL
+FAILED (failures=2)
+
+$ git diff --stat docs/projects/agent-bootstrap/hoh-schema-steal-plan.md   # after restoring the real fix
+(empty — byte-identical restore, confirmed via diff)
+
+$ python3 -m unittest tests.test_hoh_plan_wiki_citation -v      # real file restored to the fix
+Ran 5 tests in 0.001s
+OK
+```
+
+Full suite after landing this check: `python3 -m unittest discover -s tests` — **45/45 pass** (40 pre-existing + 5 new in `test_hoh_plan_wiki_citation.py`), no regressions.
+
+Any future sighting of this same failure class — on this entity page or any other — is **REPEAT**, not NEW, and closes by extending `find_wiki_citation_violations` (or adding a new literal/forbidden-substring pair to its constants), never by another comment or prose fix alone.
 
 ---
 
