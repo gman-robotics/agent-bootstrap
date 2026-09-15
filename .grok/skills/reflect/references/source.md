@@ -6,15 +6,27 @@ version: 1.0.0
 
 # reflect
 
-Spawn three parallel review subagents over the active transcript, surface learnings, and route each to a concrete edit on an existing skill. Use when the user says reflect.
+**Purpose**
+Mine the active transcript for durable learnings and route approved items to concrete skill edits.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+User says "reflect" after substantive work worth institutionalizing.
 
-**Quick start**
+**Do not use for**
+- Trivial or off-topic conversations
+- One-off preferences → `automate-me` mode skill instead
 
-- When to invoke
-- Process
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `docs-protocol` + `close-out` Step 8 | Hub skill authoring for substantive edits |
+| `pstack-principles` | encode-lessons-in-structure — prefer lint/script over prose when possible |
+| `reply-contract` | User approval before applying Accepted items |
+
+**Verification**
+- Three reviewers spawned in parallel; synthesizer output presented before edits
+- Touched skills pass environment validator when available
 
 ---
 
@@ -30,7 +42,7 @@ Invoke when the user says "reflect" or "reflect". Skip when the conversation is 
 
 ### 1. Locate the active transcript
 
-The parent finds its own transcript file before fanning out. The system prompt names the active workspace's `harness transcript storage for the active workspace` directory. Use that path. Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
+The parent finds its own transcript file before fanning out. The system prompt names the active workspace's `harness transcript storage for the active workspace` directory. Use that path. Do not glob across unrelated workspace transcript roots. That crosses workspace boundaries and reads private chats from unrelated projects.
 
 ```bash
 ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
@@ -69,9 +81,9 @@ Backlog items file to whatever devex / backlog tracker your team uses automatica
 For each approved Accepted item, follow the Routing field exactly:
 
 - Trivial existing-skill edit (a one-line bullet, a tightened sentence, a stale fact corrected): parent does directly.
-- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to Cursor's built-in `create-skill` skill and run its draft / test / iterate loop.
-- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `create-skill` and run its description-optimization loop.
-- `new skill via create-skill: <kebab-name>`: hand creation to `create-skill`. Do not invent the shape ad hoc.
+- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): follow hub skill authoring (`skills/docs-protocol/SKILL.md` + `skills/close-out/SKILL.md` Step 8).
+- `tune description: <skill path>`: revise frontmatter `description` per `docs-protocol` trigger guidance.
+- `new skill: <kebab-name>`: create under `skills/<kebab-name>/` per `docs-protocol`; do not invent the shape ad hoc.
 
 If your environment ships a SKILL.md validator, run it on every touched skill before declaring done. Skip this step if it doesn't.
 

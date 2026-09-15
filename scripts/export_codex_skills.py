@@ -467,6 +467,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         quick_start=(
             "Read `references/source.md` before acting.",
             "Ground with how (and why if ownership changes), then run arena with references/runner-prompt.md.",
+            "Phase C: reply-contract spec-gate (literal Approve/Reject) before fill-in; companions interrogate, pstack-principles.",
             "Implement against the synthesized sketch; scrap and re-arena on repeated pattern friction.",
         ),
     ),
@@ -542,7 +543,8 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         quick_start=(
             "Read `references/source.md` before acting.",
             "Frame falsifiable done predicate; design phases with verification harness first.",
-            "Run hypothesis loop per unit; log TSV audit trail; verify on real product.",
+            "Phase A gate: reply-contract spec-gate (Article 1 Approve/Reject); never-block does not bypass it.",
+            "Companions: show-me-your-work (audit trail), architect (one-way doors); run loop; verify on real product.",
         ),
     ),
     "how": SkillConfig(
@@ -571,6 +573,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         quick_start=(
             "Read `references/source.md` before acting.",
             "State intent; spawn parallel readonly reviewers with shared rubric.",
+            "Companion: expert-pr-review for open PRs with threads/CI/posting gates.",
             "Synthesize Act On / Consider / Noted / Dismissed; do not auto-apply fixes.",
         ),
     ),
@@ -630,6 +633,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         quick_start=(
             "Read `references/source.md` before acting.",
             "One row per decision point: ts, phase, decision, why, evidence, result.",
+            "Companion: show-me (shape visuals in status replies; this skill owns the TSV log).",
             "Prefer script-produced evidence; commit trail for ambitious PRs.",
         ),
     ),

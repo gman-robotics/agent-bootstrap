@@ -79,6 +79,23 @@ class PstackSkillsTests(unittest.TestCase):
         finally:
             skill_md.write_text(original, encoding="utf-8")
 
+    def test_figure_it_out_never_block_carve_out_cites_article_1(self) -> None:
+        text = (REPO_ROOT / "skills" / "figure-it-out" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("never-block-on-the-human", text)
+        self.assertIn("Article 1", text)
+        self.assertIn("literal **Approve**", text)
+        self.assertIn("does not operationalize past a gate", text)
+
+    def test_architect_phase_c_defaults_to_spec_gate(self) -> None:
+        text = (REPO_ROOT / "skills" / "architect" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("spec-gate card", text)
+        self.assertNotIn("No human checkpoint", text)
+        self.assertNotIn("Default: proceed directly to implementation", text)
+
     def test_validator_rejects_cursor_leftover_tokens(self) -> None:
         skill_md = REPO_ROOT / "skills" / "swarm" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")

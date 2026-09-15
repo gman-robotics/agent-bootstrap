@@ -6,22 +6,32 @@ version: 1.0.0
 
 # technical-writing
 
-Layered technical-writing standard: Diátaxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for /technical-writing or when writing or reviewing docs, RFCs, readmes, PR descriptions, or commit messages.
+**Purpose**
+Layered technical-writing standard: Diátaxis structure, Google developer style, STE instruction rules, Global English syntax.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+Writing or reviewing docs, RFCs, readmes, PR descriptions, or commit messages.
 
-**Quick start**
+**Do not use for**
+- Live teaching conversation → `teach`
+- Hub skill authoring → `docs-protocol` + `close-out` Step 8
 
-- Vary the rhythm
-- Pick the mode first (Diátaxis)
-- Write sentences to the reader (Google developer style)
-- Make statements load one at a time (STE rules)
-- Leave no sentence open to two readings (Global English)
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `docs-protocol` | Where docs live in this hub's two-layer model |
+| `unslop` | Cut AI tells from prose |
+
+**Verification**
+- Mode picked (tutorial, how-to, reference, explanation) before drafting
+- Sentences pass STE/Global English spot-check on critical instructions
 
 ---
 
-# Technical writing
+# technical-writing
+
+Layered technical-writing standard: Diátaxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for /technical-writing or when writing or reviewing docs, RFCs, readmes, PR descriptions, or commit messages.
 
 The goal is writing a tired engineer understands on the first read. Four layers get you there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply all four.
 

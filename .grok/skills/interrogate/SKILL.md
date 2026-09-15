@@ -13,7 +13,8 @@ Triggers on interrogate, adversarial review, stress test this code, or find blin
 
 1. Read `references/source.md` before acting.
 2. State intent; spawn parallel readonly reviewers with shared rubric.
-3. Synthesize Act On / Consider / Noted / Dismissed; do not auto-apply fixes.
+3. Companion: expert-pr-review for open PRs with threads/CI/posting gates.
+4. Synthesize Act On / Consider / Noted / Dismissed; do not auto-apply fixes.
 
 ## Compatibility Notes
 

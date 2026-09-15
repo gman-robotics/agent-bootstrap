@@ -6,19 +6,31 @@ version: 1.0.0
 
 # unslop
 
-Cut AI tells from any writing. Must always apply.
+**Purpose**
+Cut AI tells from any writing. Apply to agent-facing prose, logs, and user replies.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+Always apply when generating or editing prose; other skills cite it by name.
 
-**Quick start**
+**Do not use for**
+- Structural skill design → `docs-protocol`
+- Technical doc taxonomy → `technical-writing`
 
-- Process
-- Patterns to detect and fix
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `technical-writing` | Long-form doc standards |
+| `show-me-your-work` | Decision log row prose |
+
+**Verification**
+- Self-audit: no patterns from the detect-and-fix table remain
 
 ---
 
-# Unslop
+# unslop
+
+Cut AI tells from any writing. Must always apply.
 
 Edit text to remove AI patterns.
 

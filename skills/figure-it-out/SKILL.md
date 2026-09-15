@@ -22,8 +22,8 @@ Design an auditable playbook when no narrower skill fits: large migrations, ambi
 |---|---|
 | `show-me-your-work` | Canonical decision trail (Phase D) |
 | `architect` | One-way-door design decisions in Phase B |
-| `pstack-principles` | never-block-on-the-human for reversible steps (**does not** relax spec-gate Approve/Reject on multi-hour runs) |
-| `reply-contract` | Checkpoint before committing to a long run |
+| `pstack-principles` | never-block-on-the-human for reversible steps — see Phase A carve-out |
+| `reply-contract` | Spec-gate card before committing to a long run (`docs/shared/constitution.md` Article 1) |
 
 **Verification**
 - Done predicate stated as falsifiable before Phase C
@@ -50,7 +50,7 @@ Ground first, then commit. Don't start the run until you can state:
 - Scope, quantified: rough units and effort, plus the blockers grounding surfaced.
 - The rigor level, biased high. One-way doors and high blast radius get more. Reversible low-stakes steps get less. Rigor is gates and artifacts, not "try harder".
 
-Present the framing and tradeoffs before committing to a long run. Reversible work proceeds (the **pstack-principles** (never-block-on-the-human) principle), but a multi-hour run earns one checkpoint.
+Present the framing and tradeoffs before committing to a long run. Reversible investigation proceeds without permission pauses (`pstack-principles` never-block-on-the-human), but **never-block does not operationalize past a gate**: when this framing is the commit checkpoint, present it via `reply-contract`'s spec-gate card (`docs/shared/constitution.md` Article 1). `Documents:` names the playbook. Only a literal **Approve** or **Reject** counts — chat prose ("looks good", silence) does not stamp the gate. Execution of a multi-hour run starts only after Approve.
 
 ## Phase B: Design the workflow
 

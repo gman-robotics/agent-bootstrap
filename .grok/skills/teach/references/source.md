@@ -6,18 +6,33 @@ version: 1.0.0
 
 # teach
 
-Explain a body of work plainly so a person actually understands it. Runs the `how` and `why` skills and weaves what they find into one clear explanation. Use for 'teach me this', 'help me really understand X', 'explain this change or subsystem to me'.
+**Purpose**
+Explain a body of work plainly so a person understands it — runs `how` and `why` and weaves findings into one clear account.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"teach me this", "help me really understand X", or "explain this change or subsystem to me".
 
-**Quick start**
+**Do not use for**
+- Agent onboarding trace before a change → `how`
+- Writing docs for the repo → `technical-writing`
 
-- Read the full workflow below before acting.
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `how` | How it works (invoked, not re-done) |
+| `why` | Why it's shaped that way (invoked, confidence language preserved) |
+| `unslop` | Plain spoken prose density |
+
+**Verification**
+- Reply is the explanation itself, not a meta-report
+- `how` and/or `why` actually invoked for non-trivial scope
 
 ---
 
-# Teach
+# teach
+
+Explain a body of work plainly so a person actually understands it. Runs the `how` and `why` skills and weaves what they find into one clear explanation. Use for 'teach me this', 'help me really understand X', 'explain this change or subsystem to me'.
 
 **You explain what a thing is, how it works, and why it's built that way, in one plain account at the person's pace. The goal is that they understand it, not that you change anything.**
 

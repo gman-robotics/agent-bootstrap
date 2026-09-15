@@ -131,6 +131,16 @@ def validate_skill(name: str) -> list[str]:
             errors.append("architect must distinguish agents/software-architect.md plan role")
         if "Default: proceed directly to implementation" in text:
             errors.append("architect must not default-skip human checkpoint")
+        if "No human checkpoint" in text:
+            errors.append("architect must not say No human checkpoint")
+        if "spec-gate card" not in text:
+            errors.append("architect Phase C must default to reply-contract spec-gate card")
+
+    if name == "figure-it-out":
+        if "never-block-on-the-human" in text and "Article 1" not in text:
+            errors.append("figure-it-out must cite Article 1 wherever never-block appears")
+        if "never-block-on-the-human" in text and "literal **Approve**" not in text:
+            errors.append("figure-it-out must restate literal Approve/Reject carve-out with never-block")
 
     if name == "interrogate":
         if "expert-pr-review" not in text:

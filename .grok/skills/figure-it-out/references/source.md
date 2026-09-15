@@ -6,22 +6,35 @@ version: 1.0.0
 
 # figure-it-out
 
-Design an auditable playbook when no narrower one fits: a large migration, an ambitious multi-part change, or work a human reviews after stepping away. Scales rigor to the task, runs a hypothesis loop, and logs decisions via show-me-your-work. Use for /figure-it-out, 'figure it out', a large migration, or when no narrower playbook applies.
+**Purpose**
+Design an auditable playbook when no narrower skill fits: large migrations, ambitious multi-part changes, or work a human reviews after stepping away.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"figure it out", a large migration, or when no narrower playbook applies.
 
-**Quick start**
+**Do not use for**
+- Known workflow (architect, swarm, plan-code-review) → use that skill directly
+- Simple bug with clear diagnosis → `debug-investigation`
 
-- Phase A: Frame
-- Phase B: Design the workflow
-- Phase C: Run the loop
-- Phase D: Keep the audit trail
-- Phase E: Verify and hand back
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `show-me-your-work` | Canonical decision trail (Phase D) |
+| `architect` | One-way-door design decisions in Phase B |
+| `pstack-principles` | never-block-on-the-human for reversible steps — see Phase A carve-out |
+| `reply-contract` | Spec-gate card before committing to a long run (`docs/shared/constitution.md` Article 1) |
+
+**Verification**
+- Done predicate stated as falsifiable before Phase C
+- Decision log rows map to real actions with resolvable evidence
+- Handback includes verification result per phase
 
 ---
 
-# Figure it out
+# figure-it-out
+
+Design an auditable playbook when no narrower one fits: a large migration, an ambitious multi-part change, or work a human reviews after stepping away. Scales rigor to the task, runs a hypothesis loop, and logs decisions via show-me-your-work. Use for /figure-it-out, 'figure it out', a large migration, or when no narrower playbook applies.
 
 When the task matches no playbook, design one. The deliverable before any code is the workflow itself: a sequence of phases that scales rigor to the task, runs the scientific method, and leaves a decision trail a human can audit after stepping away. Bias toward more rigor. The cost of building the wrong thing dwarfs the cost of being careful.
 
@@ -37,7 +50,7 @@ Ground first, then commit. Don't start the run until you can state:
 - Scope, quantified: rough units and effort, plus the blockers grounding surfaced.
 - The rigor level, biased high. One-way doors and high blast radius get more. Reversible low-stakes steps get less. Rigor is gates and artifacts, not "try harder".
 
-Present the framing and tradeoffs before committing to a long run. Reversible work proceeds (the **pstack-principles** (never-block-on-the-human) principle), but a multi-hour run earns one checkpoint.
+Present the framing and tradeoffs before committing to a long run. Reversible investigation proceeds without permission pauses (`pstack-principles` never-block-on-the-human), but **never-block does not operationalize past a gate**: when this framing is the commit checkpoint, present it via `reply-contract`'s spec-gate card (`docs/shared/constitution.md` Article 1). `Documents:` names the playbook. Only a literal **Approve** or **Reject** counts — chat prose ("looks good", silence) does not stamp the gate. Execution of a multi-hour run starts only after Approve.
 
 ## Phase B: Design the workflow
 

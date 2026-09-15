@@ -412,4 +412,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-09-02 | Version: 0.10.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2*
+*Last updated: 2026-09-15 | Version: 0.11.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2 + pstack skill port (GMA-48)*

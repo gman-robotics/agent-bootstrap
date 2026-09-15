@@ -13,7 +13,8 @@ Triggers when figure-it-out or ambitious work needs a decision trail.
 
 1. Read `references/source.md` before acting.
 2. One row per decision point: ts, phase, decision, why, evidence, result.
-3. Prefer script-produced evidence; commit trail for ambitious PRs.
+3. Companion: show-me (shape visuals in status replies; this skill owns the TSV log).
+4. Prefer script-produced evidence; commit trail for ambitious PRs.
 
 ## Compatibility Notes
 

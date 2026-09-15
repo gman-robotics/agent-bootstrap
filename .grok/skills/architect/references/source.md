@@ -6,18 +6,34 @@ version: 1.0.0
 
 # architect
 
-Sketch types, signatures, and module structure before code, then stay in the loop while implementation fills in. Use for /architect, 'architect this', 'design this', or non-trivial work where jumping to code would lock in the wrong shape.
+**Purpose**
+Sketch types, signatures, and module structure before code, synthesize across model perspectives via arena, then implement against the chosen sketch.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"architect this", "design this", or non-trivial work where jumping to code would lock in the wrong shape.
 
-**Quick start**
+**Do not use for**
+- Hub plan-only work before code → `agents/software-architect.md` + `grill-with-docs` / `plan-code-review-workflow` (that role never writes code)
+- Mechanical edits whose shape is already settled → implement directly
+- PR review on an open pull request → `expert-pr-review`
 
-- Phase A: Ground the problem
-- Phase B: Sketch
-- Phase C: Agree (opt-in)
-- Phase D: Implement against the sketch
-- Phase E: Scrap when the architecture is wrong
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `how` | Ground every subsystem the design touches |
+| `why` | Capture existing rationale when ownership or layering changes |
+| `arena` | Produce and synthesize design candidates in Phase B |
+| `interrogate` | Adversarial pressure on the synthesized sketch before implementing |
+| `reply-contract` | Phase C spec-gate card (Approve/Reject) before fill-in |
+| `pstack-principles` | Decision lenses cited by name (exhaust-the-design-space, foundational-thinking, etc.) |
+
+**Verification**
+- Phase A produced a traced `how` model (not just file names)
+- Phase B ran arena with ≥2 structurally distinct candidates
+- Phase C presented `reply-contract` spec-gate card; only literal Approve/Reject stamped implementation
+- Phase D deviations surfaced, not absorbed silently
+- Rationale shaped per `references/rationale-template.md`
 
 ---
 
@@ -57,11 +73,13 @@ Compare viable candidates on interface depth. Prefer the design that hides more 
 
 Arena returns one synthesized design package. The synthesis decision populates the rationale's "Synthesis decision" section.
 
-## Phase C: Agree (opt-in)
+## Phase C: Agree
 
-Default: proceed directly to implementation with the synthesized design. No human checkpoint.
+Default: present the synthesized design via `reply-contract`'s spec-gate card (`skills/reply-contract/SKILL.md`; same contract as `grill-with-docs` Step 4 and `docs/shared/constitution.md` Article 1). `Documents:` names the rationale/sketch location. Only a literal **Approve** or **Reject** counts — chat prose ("looks good", silence) does not stamp the gate. Implementation fill-in starts only after Approve.
 
-Opt in to a checkpoint when the invoker explicitly asks: "architect with checkpoint," "stop and show me before implementing," or similar. Then surface the synthesized design and pause for sign-off.
+This is **not** the same role as `agents/software-architect.md` (hub plan role: collaborates on goals/scope/risks, never writes code). This `architect` skill is an implementer workflow: sketch types and signatures, then fill them in.
+
+`pstack-principles` (never-block-on-the-human) lets reversible investigation proceed without permission pauses, but **does not** override this spec-gate. `figure-it-out` cites the same carve-out for multi-hour run checkpoints.
 
 The synthesis can ship as its own commit either way, as the "scaffold first" mode of the **pstack-principles** (foundational-thinking) principle. Planned and scoped breakage during fill-in is fine, per the **pstack-principles** (outcome-oriented-execution) principle. For adversarial pressure on the design before implementing, run the **interrogate** skill on the synthesized sketch.
 

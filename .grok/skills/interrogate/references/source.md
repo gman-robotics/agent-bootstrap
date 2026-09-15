@@ -1,23 +1,38 @@
 ---
 name: interrogate
-description: "Use for \\"interrogate\\", \\"adversarial review\\", \\"multi-model review\\", \\"challenge this\\", \\"stress test this code\\", \\"find blind spots\\", or \\"tear this apart\\". Multiple LLM reviewers challenge changes from independent angles."
+description: >-
+  Use for "interrogate", "multi-model review", "challenge this", "stress test
+  this code", "find blind spots", or "tear this apart". Multiple LLM reviewers
+  challenge changes from independent angles. For open PRs use expert-pr-review.
 version: 1.0.0
 ---
 
 # interrogate
 
-Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles.
+**Purpose**
+Spawn one reviewer per configured model to adversarially challenge code changes from independent angles, then synthesize a lead verdict.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"interrogate", "multi-model review", "challenge this", "stress test this code", "find blind spots", or "tear this apart" on a changeset.
 
-**Quick start**
+**Do not use for**
+- Open PR with review threads, CI, and posting obligations → `expert-pr-review` (full 8-step pipeline)
+- Plan alignment before code → `grill-with-docs`
+- Design sketch before implementation → `architect` + `arena`
 
-- Step 1, Determine Scope
-- Step 2, State the Intent
-- Step 3, Spawn Reviewers
-- Step 4, Synthesize
-- Step 5, Lead Judgment
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `expert-pr-review` | When the target is a GitHub PR with threads, build/test, and posting gates |
+| `subagent-routing` | Reviewer model defaults |
+| `pstack-principles` | prove-it-works for verification claims in findings |
+
+**Verification**
+- Intent stated before spawn
+- All reviewers got the same filled template
+- Verdict uses Act On / Consider / Noted / Dismissed buckets with model attribution
+- No auto-applied fixes
 
 ---
 

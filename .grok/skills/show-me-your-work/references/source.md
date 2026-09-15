@@ -6,22 +6,35 @@ version: 1.0.0
 
 # show-me-your-work
 
-Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use for /show-me-your-work, autonomous or multi-phase runs, or work a human reviews after stepping away.
+**Purpose**
+Keep a reviewable TSV decision trail for long-running or unattended work: what, why, evidence, result per row.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+Autonomous or multi-phase runs, or work a human reviews after stepping away.
 
-**Quick start**
+**Do not use for**
+- One-shot status / your-turn reply → `reply-contract`
+- Shape-only visual for a status card → `show-me` (call tree, file tree, stack — not a decision log)
+- Explaining how something works → `how`
 
-- The format
-- Logging a row
-- Where it lives
-- Rules
-- Audit the log against the transcript
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `show-me` | Shape visuals in status replies; this skill owns the decision log format |
+| `unslop` | Plain-language log rows |
+| `figure-it-out` | Routes its audit trail here instead of inventing columns |
+
+**Verification**
+- Log is append-only with resolvable evidence pointers
+- End-of-run audit walked transcript vs rows (workspace-scoped path only)
+- Cross-model review produced Attention section when trail exists
 
 ---
 
-# Show me your work
+# show-me-your-work
+
+Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use for /show-me-your-work, autonomous or multi-phase runs, or work a human reviews after stepping away.
 
 Keep one canonical log.
 
@@ -70,7 +83,7 @@ Commit it only when the work is ambitious enough that a reviewer needs the trail
 
 ## Audit the log against the transcript
 
-At the end of the run, before handing back, check the log told the truth. Read this run's transcript under the active workspace's `harness transcript storage for the active workspace` directory (the system prompt names the path). Don't glob across `~/.cursor/projects/*/`. That reads unrelated private chats. Walk the log against what actually happened:
+At the end of the run, before handing back, check the log told the truth. Read this run's transcript under the active workspace's `harness transcript storage for the active workspace` directory (the system prompt names the path). Do not glob across unrelated workspace transcript roots. That reads unrelated private chats. Walk the log against what actually happened:
 
 - Every row maps to a real action. Cut invented or aspirational entries.
 - Each row's evidence resolves and shows what the row claims.

@@ -13,7 +13,8 @@ Triggers on figure it out, large migration, or ambitious multi-part change.
 
 1. Read `references/source.md` before acting.
 2. Frame falsifiable done predicate; design phases with verification harness first.
-3. Run hypothesis loop per unit; log TSV audit trail; verify on real product.
+3. Phase A gate: reply-contract spec-gate (Article 1 Approve/Reject); never-block does not bypass it.
+4. Companions: show-me-your-work (audit trail), architect (one-way doors); run loop; verify on real product.
 
 ## Compatibility Notes
 

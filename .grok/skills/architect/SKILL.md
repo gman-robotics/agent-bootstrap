@@ -13,7 +13,8 @@ Triggers on architect this, design this, or non-trivial work where jumping to co
 
 1. Read `references/source.md` before acting.
 2. Ground with how (and why if ownership changes), then run arena with references/runner-prompt.md.
-3. Implement against the synthesized sketch; scrap and re-arena on repeated pattern friction.
+3. Phase C: reply-contract spec-gate (literal Approve/Reject) before fill-in; companions interrogate, pstack-principles.
+4. Implement against the synthesized sketch; scrap and re-arena on repeated pattern friction.
 
 ## Compatibility Notes
 
