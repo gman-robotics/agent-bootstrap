@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-09-15T05:35:01.141665+00:00",
+  "captured_at": "2026-09-15T05:49:35.331839+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Mechanical structure/provenance check for skills/pstack-principles/SKILL.md (GMA-48 pstack port).",

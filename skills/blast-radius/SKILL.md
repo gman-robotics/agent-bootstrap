@@ -6,20 +6,34 @@ version: 1.0.0
 
 # blast-radius
 
-Find what a change could break somewhere else before it ships, beyond the diff, and prove the one fact it's safe because of by running real code instead of writing it up. Use for 'blast radius of X', 'what could this break', or reviewing a small diff you don't trust.
+**Purpose**
+Find what a change could break beyond the diff and prove the safety-critical facts by running real code.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"blast radius of X", "what could this break", or reviewing a small diff you don't trust.
 
-**Quick start**
+**Do not use for**
+- Explaining how code works → `how`
+- Explaining why code is shaped that way → `why`
+- Full PR review pipeline → `expert-pr-review`
 
-- Don't trust your own writeup
-- Steps
-- What to hand back
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `how` | Runtime behavior and call structure |
+| `why` | Design rationale behind the change |
+| `pstack-principles` | prove-it-works — facts proven by execution, not writeup |
+
+**Verification**
+- At least one safety-critical fact reached level 3+ on the certainty ladder
+- Handback names what was run, not just what was read
 
 ---
 
-# Blast radius
+# blast-radius
+
+Find what a change could break somewhere else before it ships, beyond the diff, and prove the one fact it's safe because of by running real code instead of writing it up. Use for 'blast radius of X', 'what could this break', or reviewing a small diff you don't trust.
 
 Find what a change breaks somewhere else, before it ships. Use for "blast radius of X", "what could this break", or reviewing a small diff you don't trust yet.
 

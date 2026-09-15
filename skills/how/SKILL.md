@@ -1,23 +1,36 @@
 ---
 name: how
-description: "Use for \\"how does X work\\", code walkthroughs before changing something, and placement / ownership / layering questions (\\"where should this live\\", \\"which package owns this\\", \\"is this the right layer\\"). Explains subsystem architecture, runtime flow, onboarding mental models. Use why for motivation."
+description: >-
+  Use for "how does X work", code walkthroughs before changing something, and
+  placement / ownership / layering questions. Explains subsystem architecture,
+  runtime flow, onboarding mental models. Use why for motivation.
 version: 1.0.0
 ---
 
 # how
 
-Use for \"how does X work\", code walkthroughs before changing something, and placement / ownership / layering questions (\"where should this live\", \"which package owns this\", \"is this the right layer\"). Explains subsystem architecture, runtime flow, onboarding mental models. Use why for motivation.
+**Purpose**
+Explore the codebase to answer "how does X work?" — architectural explanations at senior-engineer onboarding depth.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"how does X work", code walkthroughs before changing something, or placement/ownership/layering questions.
 
-**Quick start**
+**Do not use for**
+- Motivation, tradeoffs, or history → `why`
+- Teaching a human end-to-end → `teach` (runs `how` + `why` internally)
+- Design before code → `architect`
 
-- Step 1. Assess Complexity
-- Step 2a. Explore (complex questions only)
-- Step 2b. Direct Explain (simple questions)
-- Step 3. Synthesize (complex questions only)
-- Step 4. Present
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `why` | Companion for rationale when grounding a design |
+| `architect` | Consumes `how` output in Phase A |
+| `blast-radius` | Uses `how` for runtime/call context |
+
+**Verification**
+- Complexity assessed; parallel explore path used when warranted
+- Explanation is traced (entry points, data flow), not an annotated file listing
 
 ---
 

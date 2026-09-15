@@ -1,22 +1,36 @@
 ---
 name: automate-me
-description: "Use for \\"automate me\\", \\"create/update/refresh my -mode skill\\", \\"turn/capture my preferences or working style into a skill\\", or wanting agents to follow how the user works. Drafts or revises a personal -mode skill via create-skill + unslop, optionally pulling fresh evidence from recent transcripts."
+description: >-
+  Use for "automate me", "create/update/refresh my -mode skill", or capturing
+  preferences/working style into a skill. Drafts or revises a personal -mode
+  skill via hub skill authoring + unslop, optionally pulling evidence from
+  recent transcripts.
 version: 1.0.0
 ---
 
 # automate-me
 
-Use for \"automate me\", \"create/update/refresh my -mode skill\", \"turn/capture my preferences or working style into a skill\", or wanting agents to follow how the user works. Drafts or revises a personal -mode skill via create-skill + unslop, optionally pulling fresh evidence from recent transcripts.
+**Purpose**
+Turn the user's working conventions into a personal `-mode` skill agents will follow.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"automate me", "update my -mode skill", or capturing preferences/working style into a skill.
 
-**Quick start**
+**Do not use for**
+- Task-specific skill (not working conventions) → hub skill authoring (`docs-protocol` + `close-out`)
+- One narrow workflow (e.g. commit message style) → regular skill, not a mode skill
 
-- Flow
-- Guardrails
-- Evaluation
-- When not to use
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `unslop` | Prose discipline on the draft |
+| `docs-protocol` | Skill file placement and frontmatter |
+| `pstack-principles` | Shape reference only — do not copy its content into the user's mode skill |
+
+**Verification**
+- Patterns confirmed in 2+ transcript slices before codifying
+- User vibe-check before PR; mode skill uses on-demand invocation by default
 
 ---
 
@@ -24,13 +38,13 @@ Invoke when the user asks for this workflow by name or when the task matches the
 
 A guided flow for turning the user's working conventions into a skill agents will follow. The output is one `-mode` skill tailored to them (e.g. `jay-mode`, `priya-mode`).
 
-This skill orchestrates three others: an inline mining pass (see step 1), Cursor's built-in `create-skill` (authoring), and the **unslop** skill (prose discipline). It sequences them. It doesn't replace them.
+This skill orchestrates an inline mining pass (step 1), hub skill authoring (`skills/docs-protocol/SKILL.md` + `skills/close-out/SKILL.md` Step 8), and the **unslop** skill (prose discipline). It sequences them. It doesn't replace them.
 
 ## Flow
 
 ### 0. Check for an existing skill
 
-Look recursively for `.cursor/skills/**/*-mode/SKILL.md` and `~/.cursor/skills/*-mode/SKILL.md` matching the user's handle. Mode skills can live in a personal category directory (`.cursor/skills/<handle>/`), not only at the top level. If one exists, confirm intent with ``reply-contract` clarify card` (unless they already said "update my skill" or similar):
+Look recursively for `skills/**/*-mode/SKILL.md` in the project and any harness personal-skill overlay (e.g. `~/.grok/skills/<handle>-mode/SKILL.md` when using Grok) matching the user's handle. If one exists, confirm intent with `reply-contract` clarify card (unless they already said "update my skill" or similar):
 
 - Update the existing skill (default for repeat runs)
 - Start fresh (rare, ask why before doing it)
@@ -42,7 +56,7 @@ Update mode changes the rest of the flow:
 
 ### 1. Mine their history
 
-Locate the active workspace's transcripts before fanning out. The system prompt names the workspace's `harness transcript storage for the active workspace` directory. Use only that path. Don't glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
+Locate the active workspace's transcripts before fanning out. The system prompt names the workspace's `harness transcript storage for the active workspace` directory. Use only that path. Do not glob across unrelated workspace transcript roots. That crosses workspace boundaries and reads private chats from unrelated projects.
 
 Survey recent agent conversations within that scope for recurring patterns. Run multiple parallel subagents across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Each slice mining subagent reads transcripts from the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
 
@@ -57,7 +71,7 @@ Cross-check across slices before elevating a signal. Patterns seen in 2+ slices 
 
 ### 2. Ask the user directly
 
-Mining misses intent that hasn't come up yet. Use the ``reply-contract` clarify card` tool (structured multi-choice) rather than asking the user to type from scratch.
+Mining misses intent that hasn't come up yet. Use the `reply-contract` clarify card (structured multi-choice) rather than asking the user to type from scratch.
 
 Shape: one or two questions with 4-6 options each, `allow_multiple: true` for category questions. Start broad ("Which areas matter most?"), then follow up on selected areas with specific options. After the structured rounds, one free-form chat question catches anything the options missed.
 
@@ -80,17 +94,17 @@ The `pstack-principles` skill shows the shape. Read it for granularity. Don't co
 
 ### 4. Draft the skill
 
-Use Cursor's built-in `create-skill` skill to author the skill. Placement:
+Author the skill per hub conventions (`skills/docs-protocol/SKILL.md`). Placement:
 
-- Path: preserve an existing mode skill's category. For a new mode, use `.cursor/skills/<handle>/<handle>-mode/SKILL.md` when the repo has an established personal category for that handle. Otherwise default to ``skills/<handle>-mode/`SKILL.md` in the project (or `~/`skills/<handle>-mode/`` if the user prefers a personal skill).
+- Path: preserve an existing mode skill's location. For a new mode, use `skills/<handle>-mode/SKILL.md` in the project, or the harness personal overlay when the user prefers a global skill.
 - Handle: the user's first name or chosen identifier.
-- Frontmatter `description`: trigger on their name + `/<handle>-mode` + "work in their style", not on generic keywords like "write code" or "review PR".
-- Frontmatter formatting: follow `create-skill`'s YAML rules. Keep `description` as one YAML scalar. Quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
+- Frontmatter `description`: trigger on their name + handle + "work in their style", not on generic keywords like "write code" or "review PR".
+- Frontmatter formatting: valid YAML per `docs-protocol`; use `description: >-` when punctuation requires it.
 - Default mode skills to on-demand invocation only (not auto-loaded every turn). Opt in to always-on only when the user explicitly wants that.
 
 ### 5. Iterate on prose
 
-Apply the **unslop** skill and `create-skill`'s writing guidelines to every line.
+Apply the **unslop** skill and `technical-writing` sentence discipline to every line.
 
 Show the draft to the user and take feedback. Expect multiple iterations. Cut ruthlessly. A mode skill is not a manual.
 
@@ -109,13 +123,13 @@ Work in a worktree off main. Commit and open a PR. Don't push to main directly.
 
 ## Evaluation
 
-A `-mode` skill is subjective output. A `create-skill`-style test/iterate benchmark loop isn't useful here. Vibe-check with the user: does it read like them? Did it miss anything? Then ship.
+A `-mode` skill is subjective output. A benchmark test/iterate loop isn't useful here. Vibe-check with the user: does it read like them? Did it miss anything? Then ship.
 
 Run a description-optimization loop only if the skill's trigger accuracy turns out to be a problem in practice.
 
 ## When not to use
 
-- User wants a task-specific skill (not working conventions): `create-skill` alone, no mining required.
+- User wants a task-specific skill (not working conventions): hub skill authoring alone, no mining required.
 - User wants to capture one narrow workflow (e.g. "how I write commit messages"). That's a regular skill, not a mode skill.
 
 ## Provenance

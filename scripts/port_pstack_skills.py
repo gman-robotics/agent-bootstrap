@@ -7,12 +7,17 @@ import re
 import shutil
 from pathlib import Path
 
+import yaml
+
 UPSTREAM = Path("/tmp/pstack-upstream/pstack/skills")
 REPO_SKILLS = Path(__file__).resolve().parent.parent / "skills"
 
 PROVENANCE = """## Provenance
 
-Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`."""
+Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
+
+*Last updated: 2026-09-15 | Hub version: 0.11.0*
+"""
 
 SKILLS_TO_PORT = [
     "architect",
@@ -63,20 +68,30 @@ REPLACEMENTS: list[tuple[str, str]] = [
     (r"gpt-5\.6-sol-max", "Sonnet-tier model per `skills/subagent-routing/SKILL.md`"),
     (r"grok-4\.6-fast-xhigh", "Haiku-tier model per `skills/subagent-routing/SKILL.md`"),
     (r"claude-opus-5-thinking-xhigh", "Sonnet-tier model per `skills/subagent-routing/SKILL.md`"),
-    (r"`subagent_type`: `generalPurpose`", "`subagent_type`: per `skills/subagent-routing/SKILL.md`"),
+    (r"`subagent_type`: `generalPurpose`", "`subagent_type` per `skills/subagent-routing/SKILL.md`"),
     (r"using the Task tool", "using the harness subagent tool (`Task()` in Claude Code / Cursor)"),
-    (r"Launch all reviewers in a single message using the Task tool", "Launch all reviewers in a single message using parallel subagent spawns"),
+    (
+        r"Launch all reviewers in a single message using the Task tool",
+        "Launch all reviewers in a single message using parallel subagent spawns",
+    ),
     (r"`readonly`: `true`", "read-only subagent mode when the harness supports it"),
     (r"`readonly`: `false`", "writable subagent mode when MCP or spot-check access is required"),
     (r"`run_in_background`: `true`", "background subagent execution when the harness supports it"),
-    (r"`environment`: `\"cloud\"`", "cloud/isolated subagent environment when available"),
-    (r"`environment`: `\"local\"`", "local subagent environment when host access is required"),
+    (
+        r'Spawn all N workers in one message with `subagent_type: generalPurpose`, `environment: "cloud"`, `run_in_background: true`',
+        "Spawn all N workers in one message with parallel subagent spawns, background execution when the harness supports it",
+    ),
+    (r'`environment`: `"local"` only when the worker needs access to something on the user\'s computer', "local/host access only when the worker needs something on the user's machine"),
     (r"cloud_base_branch", "base branch override for cloud subagents"),
     (r"AskQuestion", "`reply-contract` clarify card"),
-    (r"the Cursor built-in `create-skill`", "hub skill authoring (`skills/docs-protocol/SKILL.md` + `skills/close-out/SKILL.md` Step 8)"),
+    (r"Cursor's built-in `create-skill`", "hub skill authoring (`skills/docs-protocol/SKILL.md` + `skills/close-out/SKILL.md` Step 8)"),
     (r"via `create-skill`", "via hub skill authoring"),
-    (r"\.cursor/skills/verify-<app>/", "`skills/verify-<app>/` or `.cursor/skills/verify-<app>/`"),
-    (r"\.cursor/skills/<handle>-mode/", "`skills/<handle>-mode/`"),
+    (r"follow `create-skill`", "follow `docs-protocol` frontmatter rules"),
+    (r"\.cursor/skills/verify-<app>/", "`skills/verify-<app>/`"),
+    (r"\.cursor/skills/<handle>", "`skills/<handle>`"),
+    (r"~/.cursor/skills/", "harness personal-skill overlay (e.g. `~/.grok/skills/`)"),
+    (r"Never glob `~/.cursor/projects/\*/`", "Do not glob across unrelated workspace transcript roots"),
+    (r"Don't glob across `~/.cursor/projects/\*/`", "Do not glob across unrelated workspace transcript roots"),
     (r"\*\*poteto-mode\*\* skill", "`pstack-principles` skill"),
     (r"poteto-mode", "pstack-principles"),
     (r"principle-([a-z0-9-]+)", r"`pstack-principles` (\1)"),
@@ -87,7 +102,11 @@ REPLACEMENTS: list[tuple[str, str]] = [
     (r"List the available MCPs from the Cursor environment", "Discover MCP namespaces via `GetDynamicTools`"),
     (r"inspect the `mcps/` directory Cursor exposes", "inspect available MCP namespaces"),
     (r"agent-transcripts/", "harness transcript storage for the active workspace"),
-    (r"Never glob `~/.cursor/projects/\*/`", "Scope transcript reads to the active workspace only"),
+    (
+        r"Default: proceed directly to implementation with the synthesized design\. No human checkpoint\.",
+        "Default: present the synthesized design via `reply-contract`'s spec-gate card before fill-in.",
+    ),
+    (r"## Phase C: Agree \(opt-in\)", "## Phase C: Agree"),
     (r"/architect", "architect"),
     (r"/arena", "arena"),
     (r"/swarm", "swarm"),
@@ -113,47 +132,36 @@ def parse_frontmatter(skill_md: str) -> tuple[str, str, str]:
     parts = skill_md.split("---", 2)
     fm = parts[1]
     body = parts[2].lstrip("\n")
-    name_m = re.search(r"^name:\s*(.+)$", fm, re.M)
-    desc_m = re.search(r'^description:\s*["\']?(.+?)["\']?\s*$', fm, re.M)
-    if not name_m or not desc_m:
+    data = yaml.safe_load(fm)
+    if not isinstance(data, dict):
+        raise ValueError("frontmatter must be a mapping")
+    name = data.get("name")
+    description = data.get("description")
+    if not name or not description:
         raise ValueError("missing name or description")
-    return name_m.group(1).strip(), desc_m.group(1).strip(), body
+    return str(name).strip(), str(description).strip(), body
+
+
+def format_frontmatter(name: str, description: str) -> str:
+    payload = {"name": name, "description": description, "version": "1.0.0"}
+    dumped = yaml.safe_dump(payload, sort_keys=False, allow_unicode=True).strip()
+    return f"---\n{dumped}\n---"
 
 
 def build_hub_skill(name: str, description: str, body: str) -> str:
     body = adapt_text(body).rstrip()
-    quick_lines = []
-    for line in body.splitlines():
-        if line.startswith("## ") and line not in ("## Start",):
-            quick_lines.append(f"- {line[3:]}")
-        if len(quick_lines) >= 5:
-            break
-    quick = "\n".join(quick_lines) if quick_lines else "- Read the full workflow below before acting."
-
-    return f"""---
-name: {name}
-description: "{description.replace('"', '\\"')}"
-version: 1.0.0
----
+    fm = format_frontmatter(name, description)
+    return f"""{fm}
 
 # {name}
 
 {description}
-
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
-
-**Quick start**
-
-{quick}
 
 ---
 
 {body}
 
 {PROVENANCE}
-
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
 """
 
 

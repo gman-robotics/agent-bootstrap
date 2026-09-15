@@ -6,18 +6,28 @@ version: 1.0.0
 
 # why
 
-Use for 'why does X work this way', 'why we picked Y', design rationale, regressions, postmortems, or data-backed thresholds. Discovers available MCPs and queries each evidence category (source control, issue tracker, long-form docs, real-time chat, infrastructure observability, error tracking, product analytics warehouse) in parallel, then returns a cited read on decisions and tradeoffs. Use how for runtime behavior.
+**Purpose**
+Investigate the motivation and intent behind code — what forces led to its shape, with cited evidence.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"why does X work this way", design rationale, regressions, postmortems, or data-backed thresholds.
 
-**Quick start**
+**Do not use for**
+- Runtime behavior and flow → `how`
+- Teaching a human → `teach`
 
-- Operating Posture
-- Step 1. Understand the Target and the Question
-- Step 2. Establish the Code Anchor
-- Step 3. Spawn Parallel Investigators (default posture)
-- Step 4. Synthesize
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `how` | Companion for runtime behavior |
+| `architect` | Consumes `why` when ownership/layering changes |
+| MCP namespaces | Evidence categories via `GetDynamicTools` when configured |
+
+**Verification**
+- Code anchor established before investigators spawn
+- Synthesis follows `references/epistemics.md` confidence language
+- Claims cite evidence category or mark inference explicitly
 
 ---
 
@@ -76,7 +86,7 @@ Capture this as seed context (file paths, symbols, commits, PR numbers, linked t
 
 ### Discovery
 
-Before spawning investigators, list the available MCPs from the Cursor environment. Use the available-tools map when present. Otherwise inspect available MCP namespaces for enabled MCP servers.
+Before spawning investigators, discover MCP namespaces via `GetDynamicTools` when the harness exposes them. Use the available-tools map when present. Otherwise inspect configured MCP namespaces for enabled servers.
 
 Map each available MCP to one evidence category:
 

@@ -58,6 +58,44 @@ class PstackSkillsTests(unittest.TestCase):
         self.assertIn("Reject", text)
         self.assertIn("does NOT override", text)
 
+    def test_validator_rejects_invalid_yaml_frontmatter(self) -> None:
+        skill_md = REPO_ROOT / "skills" / "how" / "SKILL.md"
+        original = skill_md.read_text(encoding="utf-8")
+        broken = original.replace(
+            "description: >-",
+            "description: [unclosed",
+            1,
+        )
+        skill_md.write_text(broken, encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "how"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("invalid YAML frontmatter", result.stderr)
+        finally:
+            skill_md.write_text(original, encoding="utf-8")
+
+    def test_validator_rejects_cursor_leftover_tokens(self) -> None:
+        skill_md = REPO_ROOT / "skills" / "swarm" / "SKILL.md"
+        original = skill_md.read_text(encoding="utf-8")
+        poisoned = original + "\n.cursor/skills/test\n"
+        skill_md.write_text(poisoned, encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "swarm"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn(".cursor/skills", result.stderr)
+        finally:
+            skill_md.write_text(original, encoding="utf-8")
+
 
 if __name__ == "__main__":
     unittest.main()

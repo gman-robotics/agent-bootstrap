@@ -6,23 +6,35 @@ version: 1.0.0
 
 # swarm
 
-Fan out N parallel workers, drain them, and return one report. Use for /swarm, 'swarm this', or parallel coverage, races, gauntlets, and exploration.
+**Purpose**
+Fan out N parallel workers, drain them, and return one aggregated report.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"swarm this", parallel coverage, races, gauntlets, or exploration tasks.
 
-**Quick start**
+**Do not use for**
+- Design synthesis with grafting → `arena`
+- Single diff adversarial review → `interrogate`
+- Long-run decision trail → `show-me-your-work`
 
-- Phase A: Frame
-- Phase B: Fan out
-- Phase C: Aggregate
-- Phase D: Report
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `subagent-routing` | Worker model defaults and parallel spawn policy |
+| `show-me-your-work` | Decision trail when the swarm run needs auditability |
+| `pstack-principles` | separate-before-serializing-shared-state |
+
+**Verification**
+- Done predicate stated before spawn
+- Every required slice has PASS/ISSUES/BLOCKED with evidence
+- Dropouts noted; aggregate report matches declared selection rule
 
 ---
 
 # Swarm
 
-Fan out N parallel cloud workers. They may cover separate slices, race the same brief, or mix both. The parent waits, aggregates, and returns one report.
+Fan out N parallel workers. They may cover separate slices, race the same brief, or mix both. The parent waits, aggregates, and returns one report.
 
 ## Start
 
@@ -43,7 +55,7 @@ Open a todolist with one entry per phase before launching anything.
 
 ## Phase B: Fan out
 
-Spawn all N workers in one message with `subagent_type: generalPurpose`, `environment: "cloud"`, `run_in_background: true`, and the configured model. Use `environment: "local"` only when the worker needs access to something on the user's computer.
+Spawn all N workers in one message with parallel subagent spawns (`subagent_type` per `skills/subagent-routing/SKILL.md`), background execution when the harness supports it, and the configured model. Prefer cloud/isolated subagent environments when available; use local/host access only when the worker needs something on the user's machine.
 
 When a worker must start from a non-default pushed branch, pass `base branch override for cloud subagents`.
 

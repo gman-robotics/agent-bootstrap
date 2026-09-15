@@ -6,18 +6,29 @@ version: 1.0.0
 
 # arena
 
-Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape.
+**Purpose**
+Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it, and verify the synthesized result.
 
-**Trigger**  
-Invoke when the user asks for this workflow by name or when the task matches the upstream pstack shortlist (see Provenance).
+**Trigger**
+"arena this", "throw it in the arena", or when one attempt at a non-trivial artifact would lock in the wrong shape.
 
-**Quick start**
+**Do not use for**
+- Hub planning before any code → `grill-with-docs` / `agents/software-architect.md`
+- PR review → `expert-pr-review` or `interrogate`
+- Parallel coverage/races over many slices → `swarm`
 
-- Phase A: Frame
-- Phase B: Fan out
-- Phase C: Cross-judge
-- Phase D: Pick a base
-- Phase E: Graft
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `architect` | Primary consumer for design-sketch tasks |
+| `subagent-routing` | Model tier defaults for runners and cross-judge |
+| `pstack-principles` | exhaust-the-design-space, prove-it-works |
+
+**Verification**
+- N runners launched in one message; every candidate read end-to-end
+- Cross-judge completed before pick
+- Grafted result verified (tests, lint, or explicit proof step named in the task)
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-09-15T05:35:00.547592+00:00",
+  "captured_at": "2026-09-15T05:49:34.614521+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Mechanical structure/provenance check for skills/blast-radius/SKILL.md (GMA-48 pstack port).",
@@ -20,7 +20,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "10735d9b67147885e94d067a7caf4536bf1fd94a76c373508be78eeb23d38807",
+  "skill_sha256": "6ad812ab0f53feb5378db47d229ed26de19641b3621502ea36a0c4182d2cf83e",
   "stderr_tail": "",
   "stdout_tail": "OK: blast-radius\n",
   "verdict": "pass"

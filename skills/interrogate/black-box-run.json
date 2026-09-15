@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-09-15T05:35:00.593037+00:00",
+  "captured_at": "2026-09-15T05:49:34.669769+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Mechanical structure/provenance check for skills/interrogate/SKILL.md (GMA-48 pstack port).",
@@ -20,7 +20,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "acbe42fefc9068187dc57287b016c52267a4d4a3f74c36b44bb902ed889bdb0f",
+  "skill_sha256": "acb2ce7642a624b34cde9fc5410137a85fdeef656cc0f6b68e080f45691b1c8d",
   "stderr_tail": "",
   "stdout_tail": "OK: interrogate\n",
   "verdict": "pass"
