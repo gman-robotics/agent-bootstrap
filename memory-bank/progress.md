@@ -1,5 +1,20 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-09-15 — GMA-48 leftover follow-up (after main merge `0b82024`)
+
+**Task**: Blair cloud pass-2 leftovers after GMA-48 pstack port merged to `main`. Branch `cursor/gma-48-leftover-followup-9951`, [PR #18](https://github.com/gman-robotics/agent-bootstrap/pull/18) at `11bb0b2`. Does not reopen #17.
+
+**What Was Done**
+- [x] `skills/show-me/SKILL.md` (`1.0.1` → `1.0.2`): **Do not use for** + **Companions** pointing at `show-me-your-work`
+- [x] `skills/expert-pr-review/SKILL.md`: **Do not use for** + **Companions** pointing at `interrogate`
+- [x] `scripts/validate_pstack_skill.py`: `validate_companion_reverse_pointers()` + reject `run_in_background: true` and `base branch override for cloud subagents`
+- [x] `skills/arena/SKILL.md` Phase B: removed required `run_in_background: true`
+- [x] `skills/swarm/SKILL.md` Phase B: removed cloud subagent base-branch override instruction
+- [x] Dual-homed `.grok/skills/architect/references/{runner-prompt,design-red-flags,rationale-template}.md` and `.grok/skills/why/references/epistemics.md`
+- [x] Recaptured `black-box-run.json` for `show-me`, `arena`, `swarm`
+
+**Verification**: `python3 -m unittest discover -s tests` — 110/110 pass.
+
 ## 2026-09-02 — Task "hoh-schema-steal" IMPLEMENT-TRACK: GB-1..6/H-1..5 shipped as live skills
 
 **Task**: Implement the approved plan (`docs/projects/agent-bootstrap/hoh-schema-steal-plan.md`, plan PR [#15](https://github.com/gman-robotics/agent-bootstrap/pull/15) squash-merged to `main` at `08831ab`). New branch `cursor/implement-hoh-schema-steal-4b7c`, new draft PR against `main`. Author claude-sonnet-5. Hold merge — Blair impl-reviews, then Kit black-box-tests.
