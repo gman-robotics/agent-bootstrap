@@ -43,6 +43,23 @@ When any skill is triggered (see trigger conditions below), read the full skill 
 - `black-box-agent-qa.md`            → before treating any agent/harness/verb/skill change as tested; required by close-out Step 9
 - `evidence-packet-protocol.md`       → after an implementer/QA-Tester turn needing checkable evidence; before a planner reads the prior E_t.json
 - `preservation-gate.md`              → writing or reviewing a Dt plan/development document for iteration 2 or later
+- `architect.md`                      → design-before-code; architect this
+- `arena.md`                          → arena this; parallel candidates
+- `automate-me.md`                    → build personal mode skill from preferences
+- `blast-radius.md`                   → what could this break
+- `create-verification-skill.md`      → bootstrap verify-<app> skill
+- `figure-it-out.md`                  → no narrower playbook; large migration
+- `how.md`                            → how does X work (runtime)
+- `interrogate.md`                    → adversarial multi-model review
+- `maintain-verification-skill.md`    → maintain verify-<app> skill
+- `pstack-principles.md`              → combined pstack principles reference
+- `reflect.md`                        → reflect on session for skill improvements
+- `show-me-your-work.md`              → TSV decision audit trail
+- `swarm.md`                          → swarm this; parallel workers
+- `teach.md`                          → teach me this
+- `technical-writing.md`              → docs, RFCs, PR prose
+- `unslop.md`                         → cut AI tells from prose
+- `why.md`                            → why is X shaped this way
 
 ## Key Principles
 

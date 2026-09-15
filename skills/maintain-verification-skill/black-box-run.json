@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-09-15T05:49:34.886514+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/maintain-verification-skill/SKILL.md (GMA-48 pstack port).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: maintain-verification-skill"
+    ]
+  },
+  "fixture": "skills/maintain-verification-skill/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "maintain-verification-skill"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "1ac344be6571cc03172d2abc05193a1f9b0eb751949086aaa069b64595c81572",
+  "stderr_tail": "",
+  "stdout_tail": "OK: maintain-verification-skill\n",
+  "verdict": "pass"
+}

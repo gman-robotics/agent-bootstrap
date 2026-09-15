@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-09-15T05:49:35.165283+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/unslop/SKILL.md (GMA-48 pstack port).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: unslop"
+    ]
+  },
+  "fixture": "skills/unslop/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "unslop"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "2f61a76495385270a635fd0b16ba88b89445419447cbd85d1fa3be43fd015de9",
+  "stderr_tail": "",
+  "stdout_tail": "OK: unslop\n",
+  "verdict": "pass"
+}

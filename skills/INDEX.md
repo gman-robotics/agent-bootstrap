@@ -192,6 +192,125 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### architect
+**File**: `skills/architect/SKILL.md`  
+**Trigger**: "Architect this", "design this", or non-trivial work where jumping to code would lock in the wrong shape.  
+**What it does**: Ground with `how`/`why`, run `arena` for ≥2 structurally distinct design candidates, synthesize, implement against sketch, scrap and re-arena on pattern friction. References: `references/runner-prompt.md`, `design-red-flags.md`, `rationale-template.md`. Ported from pstack (GMA-48).
+
+---
+
+### arena
+**File**: `skills/arena/SKILL.md`  
+**Trigger**: "Arena this", "throw it in the arena", or when one attempt at a non-trivial artifact would lock in the wrong shape.  
+**What it does**: Frame artifact + rubric, fan out N parallel candidates with isolated outputs, cross-judge, pick base, graft best ideas from losers, verify. Ported from pstack (GMA-48).
+
+---
+
+### automate-me
+**File**: `skills/automate-me/SKILL.md`  
+**Trigger**: "Automate me", build a personal mode skill from recurring session preferences.  
+**What it does**: Mine harness transcripts in parallel slices, cluster preferences, confirm via `reply-contract`, draft a mode skill via hub skill authoring. Ported from pstack (GMA-48).
+
+---
+
+### blast-radius
+**File**: `skills/blast-radius/SKILL.md`  
+**Trigger**: "Blast radius of X", "what could this break", or reviewing a small diff you do not trust.  
+**What it does**: Find the one safety fact, look where grep stops, prove with real code (certainty ladder), optionally run `arena` for wide changes; write through `unslop`. Companion to `how` and `why`. Ported from pstack (GMA-48).
+
+---
+
+### create-verification-skill
+**File**: `skills/create-verification-skill/SKILL.md`  
+**Trigger**: Creating a new `verify-<app>` skill for end-to-end product verification.  
+**What it does**: Interview repo surface/run/drive/observe/isolate; generate verify skill + feature map; prove once end-to-end. Ported from pstack (GMA-48).
+
+---
+
+### figure-it-out
+**File**: `skills/figure-it-out/SKILL.md`  
+**Trigger**: "Figure it out", large migration, ambitious multi-part change, or no narrower playbook fits.  
+**What it does**: Design an auditable workflow with scaled rigor, hypothesis loop, `show-me-your-work` TSV trail, and real-product verification. Ported from pstack (GMA-48).
+
+---
+
+### how
+**File**: `skills/how/SKILL.md`  
+**Trigger**: "How does X work", trace this flow, explain runtime behavior (not design rationale — use `why`).  
+**What it does**: Parallel readonly explorers or direct explain path; synthesize Overview, Key Concepts, How It Works, Where Things Live, Gotchas. Ported from pstack (GMA-48).
+
+---
+
+### interrogate
+**File**: `skills/interrogate/SKILL.md`  
+**Trigger**: "Interrogate", adversarial review, stress test this code, find blind spots.  
+**What it does**: Multi-model parallel reviewers with shared rubric; lead judgment buckets (Act On / Consider / Noted / Dismissed); **do not auto-apply**. Distinct from `expert-pr-review`. Ported from pstack (GMA-48).
+
+---
+
+### maintain-verification-skill
+**File**: `skills/maintain-verification-skill/SKILL.md`  
+**Trigger**: Hygiene, reconciliation, or live pass for an existing `verify-<app>` skill.  
+**What it does**: Index hygiene, readonly source wave per feature, reconcile recipes, coordinator live-pass, triage doc vs harness vs product gaps. Ported from pstack (GMA-48).
+
+---
+
+### pstack-principles
+**File**: `skills/pstack-principles/SKILL.md`  
+**Trigger**: Any workflow cites a pstack principle, or you need a decision lens before designing/implementing/verifying.  
+**What it does**: Combined reference for prove-it-works, encode-lessons-in-structure, test-behavior-not-implementation, separate-before-serializing-shared-state, sequence-verifiable-units, guard-the-context-window, subtract-before-you-add, laziness-protocol, and related rules. **Hard carve-out:** `never-block-on-the-human` does not override literal Approve/Reject spec-gate cards. Ported from pstack (GMA-48).
+
+---
+
+### reflect
+**File**: `skills/reflect/SKILL.md`  
+**Trigger**: Reflect on a harness session; propose skill improvements from transcript evidence.  
+**What it does**: Parallel Judgment/Tooling/Divergent reviewers, synthesize Accepted/Rejected/Backlog; **wait for user approval** before applying. Ported from pstack (GMA-48).
+
+---
+
+### show-me-your-work
+**File**: `skills/show-me-your-work/SKILL.md`  
+**Trigger**: Ambitious work needing an append-only decision audit trail (often via `figure-it-out`).  
+**What it does**: TSV log (`ts`, `phase`, `decision`, `why`, `evidence`, `result`); distinct from `show-me` (per-reply visual recipes). Ported from pstack (GMA-48).
+
+---
+
+### swarm
+**File**: `skills/swarm/SKILL.md`  
+**Trigger**: "Swarm this", parallel coverage, races, gauntlets, exploration.  
+**What it does**: Fan out N cloud workers (partition/race/mix), aggregate compact table, return one PASS/ISSUES/BLOCKED report. Ported from pstack (GMA-48).
+
+---
+
+### teach
+**File**: `skills/teach/SKILL.md`  
+**Trigger**: "Teach me this", help me understand X, explain this change or subsystem.  
+**What it does**: Run `how` + `why` in parallel; weave one plain explanation; write through `unslop`. Ported from pstack (GMA-48).
+
+---
+
+### technical-writing
+**File**: `skills/technical-writing/SKILL.md`  
+**Trigger**: Writing or reviewing docs, RFCs, readmes, PR descriptions, commit messages.  
+**What it does**: Diátaxis mode + Google dev style + STE + Global English + `unslop`. Ported from pstack (GMA-48).
+
+---
+
+### unslop
+**File**: `skills/unslop/SKILL.md`  
+**Trigger**: Cut AI tells from prose; referenced by teach, blast-radius, technical-writing, show-me-your-work.  
+**What it does**: Scan numbered pattern rules, rewrite preserving meaning, self-audit. Ported from pstack (GMA-48).
+
+---
+
+### why
+**File**: `skills/why/SKILL.md`  
+**Trigger**: "Why does X work this way", design rationale, regressions, postmortems (not runtime behavior — use `how`).  
+**What it does**: Code anchor via git/gh; parallel MCP category investigators; synthesizer with confidence tiers from `references/epistemics.md`. Ported from pstack (GMA-48).
+
+---
+
 ## Adding a New Skill
 
 1. Create `skills/<name>/SKILL.md` following the style of existing skills: YAML frontmatter (`name`, `description`, `version`; quote the description or avoid inner `: ` — unquoted YAML breaks on colon+space), then purpose, trigger, when to use, numbered steps, stack-specific tips, last updated footer.
@@ -202,4 +321,4 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 6. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
 7. If any later edit changes `SKILL.md`, re-run step 2 before the edit ships — `check_skill_live.py` (and therefore `tests/test_index_live_binding.py`) will fail on the stale `skill_sha256` until you do.
 
-*Last updated: 2026-09-02 | Hub version: 0.10.0*
+*Last updated: 2026-09-15 | Hub version: 0.11.0*

@@ -41,6 +41,23 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 | `black-box-agent-qa.md` | Before treating any agent/harness/verb/skill change as tested; required by close-out Step 9 |
 | `evidence-packet-protocol.md` | After an implementer/QA-Tester turn needing checkable evidence; before a planner reads the prior E_t.json |
 | `preservation-gate.md` | Writing or reviewing a Dt plan/development document for iteration 2 or later |
+| `architect.md` | Design-before-code; architect this |
+| `arena.md` | Arena this; parallel candidates |
+| `automate-me.md` | Build personal mode skill from preferences |
+| `blast-radius.md` | What could this break |
+| `create-verification-skill.md` | Bootstrap verify-<app> skill |
+| `figure-it-out.md` | No narrower playbook; large migration |
+| `how.md` | How does X work (runtime) |
+| `interrogate.md` | Adversarial multi-model review |
+| `maintain-verification-skill.md` | Maintain verify-<app> skill |
+| `pstack-principles.md` | Combined pstack principles |
+| `reflect.md` | Reflect on session for skill improvements |
+| `show-me-your-work.md` | TSV decision audit trail |
+| `swarm.md` | Swarm this; parallel workers |
+| `teach.md` | Teach me this |
+| `technical-writing.md` | Docs, RFCs, PR prose |
+| `unslop.md` | Cut AI tells from prose |
+| `why.md` | Why is X shaped this way |
 
 ## Key Files
 

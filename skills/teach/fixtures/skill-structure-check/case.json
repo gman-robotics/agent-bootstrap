@@ -1,0 +1,18 @@
+{
+  "name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/teach/SKILL.md (GMA-48 pstack port).",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "teach"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: teach"
+    ]
+  }
+}
