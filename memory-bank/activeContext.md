@@ -1,8 +1,8 @@
 # Active Context: Multi-Agent Skills Hub
 
 ## Current Focus (This Session)
-**GMA-48 leftover follow-up** (2026-09-15, cloud agent, branch `cursor/gma-48-leftover-followup-9951`, [PR #18](https://github.com/gman-robotics/agent-bootstrap/pull/18) draft against `main` after merge `0b82024` at tip `11bb0b2`). Blair pass-2 leftovers: bidirectional companion pointers (`show-me`↔`show-me-your-work`, `expert-pr-review`↔`interrogate`); stripped `run_in_background: true` from arena Phase B and cloud base-branch override from swarm Phase B; validator rejects both tokens via `validate_companion_reverse_pointers()`; dual-homed architect refs + why epistemics under `.grok/skills/`. Does not reopen #17.
+**GMA-48 leftover follow-up — Blair pass-2 revise** (2026-09-15, cloud agent, branch `cursor/gma-48-leftover-followup-9951`, [PR #18](https://github.com/gman-robotics/agent-bootstrap/pull/18) tip `627b757`). Closed Blair REQUEST_CHANGES theater on companion reverse-pointer validator: bounded `_do_not_use_section` / `_companions_section` parsing (stop at Verification, `---`, or next `##`); hyphen-safe `_mentions_skill` (no `show-me` substring hit inside `show-me-your-work`); require both Do-not-use AND Companions per pair; CLI runs companion checks for `show-me` / `expert-pr-review` outside `PSTACK_SKILL_NAMES`; poison tests both directions strip companion row or Do-not-use cite → fail.
 
-**Verification**: `python3 -m unittest discover -s tests` — 110/110 pass.
+**Verification**: `python3 -m unittest discover -s tests` — 117/117 pass at `627b757`.
 
-**Next**: Blair re-review; hold merge.
+**Next**: Blair pass 2; hold merge.

@@ -1,5 +1,15 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-09-15 — GMA-48 leftover follow-up Blair pass-2 revise (validator theater)
+
+**Task**: Blair REQUEST_CHANGES on [PR #18](https://github.com/gman-robotics/agent-bootstrap/pull/18) — companion reverse-pointer validator was theater (substring false positives, vacuous OR, CLI never ran checks for `show-me`/`expert-pr-review`). Branch `cursor/gma-48-leftover-followup-9951` at `627b757`.
+
+**What Was Done**
+- [x] `scripts/validate_pstack_skill.py`: bounded `_do_not_use_section` / `_companions_section`; `_mentions_skill` hyphen-safe slug match; require both Do-not-use AND Companions per pair; `validate_companion_reverse_pointers_for` wired into CLI for `COMPANION_SKILL_NAMES` including skills outside `PSTACK_SKILL_NAMES`
+- [x] `tests/test_pstack_skills.py`: CLI coverage for `show-me` and `expert-pr-review`; poison tests strip companion rows (both directions per pair) and Do-not-use citation → expect failure
+
+**Verification**: `python3 -m unittest discover -s tests` — 117/117 pass at `627b757`.
+
 ## 2026-09-15 — GMA-48 leftover follow-up (after main merge `0b82024`)
 
 **Task**: Blair cloud pass-2 leftovers after GMA-48 pstack port merged to `main`. Branch `cursor/gma-48-leftover-followup-9951`, [PR #18](https://github.com/gman-robotics/agent-bootstrap/pull/18) at `11bb0b2`. Does not reopen #17.
