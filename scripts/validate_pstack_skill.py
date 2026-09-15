@@ -61,6 +61,10 @@ COMPANION_PAIRS: tuple[tuple[str, str], ...] = (
     ("expert-pr-review", "interrogate"),
 )
 
+COMPANION_SKILL_NAMES = frozenset(
+    skill for pair in COMPANION_PAIRS for skill in pair
+)
+
 
 def _split_frontmatter(text: str) -> tuple[str, str]:
     if not text.startswith("---"):
@@ -161,15 +165,64 @@ def validate_skill(name: str) -> list[str]:
     return errors
 
 
-def _companion_sections(text: str) -> tuple[str, str]:
+def _do_not_use_section(text: str) -> str:
     if "**Do not use for**" not in text:
-        return "", ""
-    do_not_use = text.split("**Do not use for**", 1)[1]
-    if "## Companions" in do_not_use:
-        do_not_use, companions = do_not_use.split("## Companions", 1)
+        return ""
+    after = text.split("**Do not use for**", 1)[1]
+    if "## Companions" in after:
+        after = after.split("## Companions", 1)[0]
     else:
-        companions = ""
-    return do_not_use, companions
+        match = re.search(r"\n##\s", after)
+        if match:
+            after = after[: match.start()]
+    return after
+
+
+def _companions_section(text: str) -> str:
+    """Return only the Companions table — stop before Verification, ---, or next ##."""
+    if "## Companions" not in text:
+        return ""
+    after = text.split("## Companions", 1)[1]
+    end_at = len(after)
+    for pattern in (r"\n\*\*Verification\*\*", r"\n---\n", r"\n##\s"):
+        match = re.search(pattern, after)
+        if match:
+            end_at = min(end_at, match.start())
+    return after[:end_at]
+
+
+def _companion_sections(text: str) -> tuple[str, str]:
+    return _do_not_use_section(text), _companions_section(text)
+
+
+def _mentions_skill(section: str, skill_name: str) -> bool:
+    """Match a skill slug without hyphen-prefix false positives (show-me vs show-me-your-work)."""
+    if f"`{skill_name}`" in section:
+        return True
+    pattern = rf"(?<![\w-]){re.escape(skill_name)}(?![\w-])"
+    return bool(re.search(pattern, section))
+
+
+def _validate_companion_pair(left: str, right: str, left_text: str, right_text: str) -> list[str]:
+    errors: list[str] = []
+    left_dnu, left_comp = _companion_sections(left_text)
+    right_dnu, right_comp = _companion_sections(right_text)
+
+    if "## Companions" not in left_text:
+        errors.append(f"{left} missing ## Companions section")
+    elif not _mentions_skill(left_comp, right):
+        errors.append(f"{left} Companions must point at {right}")
+    if not _mentions_skill(left_dnu, right):
+        errors.append(f"{left} Do not use for must cite companion {right}")
+
+    if "## Companions" not in right_text:
+        errors.append(f"{right} missing ## Companions section")
+    elif not _mentions_skill(right_comp, left):
+        errors.append(f"{right} Companions must point at {left}")
+    if not _mentions_skill(right_dnu, left):
+        errors.append(f"{right} Do not use for must cite companion {left}")
+
+    return errors
 
 
 def validate_companion_reverse_pointers() -> list[str]:
@@ -187,20 +240,28 @@ def validate_companion_reverse_pointers() -> list[str]:
 
         left_text = left_md.read_text(encoding="utf-8")
         right_text = right_md.read_text(encoding="utf-8")
+        errors.extend(_validate_companion_pair(left, right, left_text, right_text))
 
-        left_dnu, left_comp = _companion_sections(left_text)
-        right_dnu, right_comp = _companion_sections(right_text)
+    return errors
 
-        if right not in left_dnu and right not in left_comp:
-            errors.append(f"{left} must cite companion {right} in Do not use for or Companions")
-        if "## Companions" not in left_text or right not in left_comp:
-            errors.append(f"{left} Companions must point at {right}")
 
-        if left not in right_dnu and left not in right_comp:
-            errors.append(f"{right} must cite companion {left} in Do not use for or Companions")
-        if "## Companions" not in right_text or left not in right_comp:
-            errors.append(f"{right} Companions must point at {left}")
-
+def validate_companion_reverse_pointers_for(skill_name: str) -> list[str]:
+    """Validate companion pairs involving skill_name (works outside PSTACK_SKILL_NAMES)."""
+    errors: list[str] = []
+    for left, right in COMPANION_PAIRS:
+        if skill_name not in (left, right):
+            continue
+        left_md = SKILLS_DIR / left / "SKILL.md"
+        right_md = SKILLS_DIR / right / "SKILL.md"
+        if not left_md.is_file():
+            errors.append(f"missing companion skill file: {left_md}")
+            continue
+        if not right_md.is_file():
+            errors.append(f"missing companion skill file: {right_md}")
+            continue
+        left_text = left_md.read_text(encoding="utf-8")
+        right_text = right_md.read_text(encoding="utf-8")
+        errors.extend(_validate_companion_pair(left, right, left_text, right_text))
     return errors
 
 
@@ -208,12 +269,19 @@ def main(argv: list[str]) -> int:
     if len(argv) != 2:
         print("usage: validate_pstack_skill.py <skill-name>", file=sys.stderr)
         return 2
-    errors = validate_skill(argv[1])
+    skill_name = argv[1]
+    errors: list[str] = []
+    if skill_name in PSTACK_SKILL_NAMES:
+        errors.extend(validate_skill(skill_name))
+    elif skill_name not in COMPANION_SKILL_NAMES:
+        errors.append(f"unknown pstack skill name: {skill_name}")
+    if skill_name in COMPANION_SKILL_NAMES:
+        errors.extend(validate_companion_reverse_pointers_for(skill_name))
     if errors:
         for err in errors:
             print(f"ERROR: {err}", file=sys.stderr)
         return 1
-    print(f"OK: {argv[1]}")
+    print(f"OK: {skill_name}")
     return 0
 
 

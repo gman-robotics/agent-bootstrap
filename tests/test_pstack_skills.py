@@ -171,6 +171,124 @@ class PstackSkillsTests(unittest.TestCase):
         errors = validate_companion_reverse_pointers()
         self.assertEqual(errors, [])
 
+    def test_companion_validator_cli_runs_for_show_me(self) -> None:
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), "show-me"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+
+    def test_companion_validator_cli_runs_for_expert_pr_review(self) -> None:
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), "expert-pr-review"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+
+    def test_companion_validator_rejects_stripped_show_me_companion_row(self) -> None:
+        skill_md = REPO_ROOT / "skills" / "show-me" / "SKILL.md"
+        original = skill_md.read_text(encoding="utf-8")
+        poisoned = original.replace(
+            "| `show-me-your-work` | Decision log for long-running work; this skill owns per-reply shape visuals only |\n",
+            "",
+        )
+        skill_md.write_text(poisoned, encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "show-me"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Companions must point at show-me-your-work", result.stderr)
+        finally:
+            skill_md.write_text(original, encoding="utf-8")
+
+    def test_companion_validator_rejects_stripped_show_me_your_work_companion_row(self) -> None:
+        skill_md = REPO_ROOT / "skills" / "show-me-your-work" / "SKILL.md"
+        original = skill_md.read_text(encoding="utf-8")
+        poisoned = original.replace(
+            "| `show-me` | Shape visuals in status replies; this skill owns the decision log format |\n",
+            "",
+        )
+        skill_md.write_text(poisoned, encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "show-me-your-work"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Companions must point at show-me", result.stderr)
+        finally:
+            skill_md.write_text(original, encoding="utf-8")
+
+    def test_companion_validator_rejects_stripped_expert_pr_review_companion_row(self) -> None:
+        skill_md = REPO_ROOT / "skills" / "expert-pr-review" / "SKILL.md"
+        original = skill_md.read_text(encoding="utf-8")
+        poisoned = original.replace(
+            "| `interrogate` | Multi-model stress-test on a diff or branch when there is no open PR workflow |\n",
+            "",
+        )
+        skill_md.write_text(poisoned, encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "expert-pr-review"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Companions must point at interrogate", result.stderr)
+        finally:
+            skill_md.write_text(original, encoding="utf-8")
+
+    def test_companion_validator_rejects_stripped_interrogate_companion_row(self) -> None:
+        skill_md = REPO_ROOT / "skills" / "interrogate" / "SKILL.md"
+        original = skill_md.read_text(encoding="utf-8")
+        poisoned = original.replace(
+            "| `expert-pr-review` | When the target is a GitHub PR with threads, build/test, and posting gates |\n",
+            "",
+        )
+        skill_md.write_text(poisoned, encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "interrogate"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Companions must point at expert-pr-review", result.stderr)
+        finally:
+            skill_md.write_text(original, encoding="utf-8")
+
+    def test_companion_validator_rejects_stripped_do_not_use_citation(self) -> None:
+        skill_md = REPO_ROOT / "skills" / "show-me" / "SKILL.md"
+        original = skill_md.read_text(encoding="utf-8")
+        poisoned = original.replace(
+            "- A reviewable TSV decision trail for long-running or unattended work — that is `show-me-your-work`.\n",
+            "",
+        )
+        skill_md.write_text(poisoned, encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "show-me"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Do not use for must cite companion show-me-your-work", result.stderr)
+        finally:
+            skill_md.write_text(original, encoding="utf-8")
+
     def test_grok_architect_reference_files_dual_homed(self) -> None:
         for name in ("runner-prompt.md", "design-red-flags.md", "rationale-template.md"):
             grok_ref = (
