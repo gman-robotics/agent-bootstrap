@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-09-15T05:49:34.504664+00:00",
+  "captured_at": "2026-09-15T06:02:05.424702+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Mechanical structure/provenance check for skills/arena/SKILL.md (GMA-48 pstack port).",
@@ -20,7 +20,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "c1b73a82bd266cf80a5a5d54b48679165808a705bf03bb32ed916a642a5c01f1",
+  "skill_sha256": "8b141751fbf642bd9458df3f384f6c1571718c04b1dbfe1656b58966e5f371e3",
   "stderr_tail": "",
   "stdout_tail": "OK: arena\n",
   "verdict": "pass"

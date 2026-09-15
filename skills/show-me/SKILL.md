@@ -1,7 +1,7 @@
 ---
 name: show-me
 description: "Use before code ('show the shape' / 'show-me'), or when reply-contract loads it for a status/your-turn visual. Owns the recipes: call tree, file/screen tree, stack, diff of those shapes, optional mermaid. One primary visual per reply."
-version: 1.0.1
+version: 1.0.2
 ---
 
 # show-me — One shape, fenced text by default
@@ -17,6 +17,14 @@ The recipe book for the single visual a reply needs. `reply-contract` decides *w
 - A saved, formal architecture or spec diagram meant to live in `docs/` — that is `diagram-design`, a different skill with a different output (a persisted artifact, not a disposable per-reply visual).
 - Long-form prose formatting or rewriting — that is `scroll-craft`.
 - Tone/humanizing rewrite passes — that is a Hermes-style humanizer. show-me never touches voice; voice and marks stay owned by `reply-contract`.
+- A reviewable TSV decision trail for long-running or unattended work — that is `show-me-your-work`.
+
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `show-me-your-work` | Decision log for long-running work; this skill owns per-reply shape visuals only |
+| `reply-contract` | Decides whether a status/your-turn reply needs a visual and loads this file for the recipe |
 
 ---
 

@@ -113,6 +113,87 @@ class PstackSkillsTests(unittest.TestCase):
         finally:
             skill_md.write_text(original, encoding="utf-8")
 
+    def test_validator_rejects_run_in_background_leftover(self) -> None:
+        skill_md = REPO_ROOT / "skills" / "arena" / "SKILL.md"
+        original = skill_md.read_text(encoding="utf-8")
+        poisoned = original + "\nrun_in_background: true\n"
+        skill_md.write_text(poisoned, encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "arena"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("run_in_background", result.stderr)
+        finally:
+            skill_md.write_text(original, encoding="utf-8")
+
+    def test_validator_rejects_cloud_base_branch_override_leftover(self) -> None:
+        skill_md = REPO_ROOT / "skills" / "swarm" / "SKILL.md"
+        original = skill_md.read_text(encoding="utf-8")
+        poisoned = original + "\nbase branch override for cloud subagents\n"
+        skill_md.write_text(poisoned, encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "swarm"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("cloud subagent base-branch override", result.stderr)
+        finally:
+            skill_md.write_text(original, encoding="utf-8")
+
+    def test_show_me_companion_points_at_show_me_your_work(self) -> None:
+        text = (REPO_ROOT / "skills" / "show-me" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("**Do not use for**", text)
+        self.assertIn("show-me-your-work", text)
+        self.assertIn("## Companions", text)
+        companions_section = text.split("## Companions", 1)[1].split("##", 1)[0]
+        self.assertIn("show-me-your-work", companions_section)
+
+    def test_expert_pr_review_companion_points_at_interrogate(self) -> None:
+        text = (REPO_ROOT / "skills" / "expert-pr-review" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("**Do not use for**", text)
+        self.assertIn("interrogate", text)
+        self.assertIn("## Companions", text)
+        companions_section = text.split("## Companions", 1)[1].split("##", 1)[0]
+        self.assertIn("interrogate", companions_section)
+
+    def test_companion_reverse_pointers_via_validator(self) -> None:
+        from scripts.validate_pstack_skill import validate_companion_reverse_pointers
+
+        errors = validate_companion_reverse_pointers()
+        self.assertEqual(errors, [])
+
+    def test_grok_architect_reference_files_dual_homed(self) -> None:
+        for name in ("runner-prompt.md", "design-red-flags.md", "rationale-template.md"):
+            grok_ref = (
+                REPO_ROOT / ".grok" / "skills" / "architect" / "references" / name
+            )
+            canonical = REPO_ROOT / "skills" / "architect" / "references" / name
+            self.assertTrue(grok_ref.is_file(), f"missing dual-homed {grok_ref}")
+            self.assertTrue(canonical.is_file())
+            self.assertEqual(
+                grok_ref.read_text(encoding="utf-8"),
+                canonical.read_text(encoding="utf-8"),
+            )
+
+    def test_grok_why_epistemics_dual_homed(self) -> None:
+        grok_ref = REPO_ROOT / ".grok" / "skills" / "why" / "references" / "epistemics.md"
+        canonical = REPO_ROOT / "skills" / "why" / "references" / "epistemics.md"
+        self.assertTrue(grok_ref.is_file())
+        self.assertTrue(canonical.is_file())
+        self.assertEqual(
+            grok_ref.read_text(encoding="utf-8"),
+            canonical.read_text(encoding="utf-8"),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

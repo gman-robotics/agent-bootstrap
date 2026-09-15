@@ -55,9 +55,7 @@ Open a todolist with one entry per phase before launching anything.
 
 ## Phase B: Fan out
 
-Spawn all N workers in one message with parallel subagent spawns (`subagent_type` per `skills/subagent-routing/SKILL.md`), background execution when the harness supports it, and the configured model. Prefer cloud/isolated subagent environments when available; use local/host access only when the worker needs something on the user's machine.
-
-When a worker must start from a non-default pushed branch, pass `base branch override for cloud subagents`.
+Spawn all N workers in one message with parallel subagent spawns (`subagent_type` per `skills/subagent-routing/SKILL.md`), background execution when the harness supports it, and the configured model. Prefer cloud/isolated subagent environments when available; use local/host access only when the worker needs something on the user's machine. When a worker must start from a non-default branch, pass the branch name in the worker brief per the harness's subagent isolation rules.
 
 Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence.
 

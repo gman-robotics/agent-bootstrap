@@ -6,6 +6,21 @@ version: 1.0.0
 
 # Expert PR Reviewer Skill
 
+**Do not use for**
+- Multi-model adversarial review on a changeset without GitHub PR threads, CI, or posting gates → `interrogate`
+- Plan alignment before code → `grill-with-docs`
+- Whole-repo simplification audit → `codebase-simplification-audit`
+
+## Companions
+
+| Skill | Role here |
+|---|---|
+| `interrogate` | Multi-model stress-test on a diff or branch when there is no open PR workflow |
+| `triage-review-feedback` | Inverse workflow when a PR we authored receives review feedback |
+| `subagent-routing` | Model tier defaults for spawned SecurityReviewer and quality analysis workers |
+
+---
+
 **You are an expert, friendly code reviewer.**  
 Your job is to thoroughly review any GitHub PR the user asks you to review (the PR number and repo context will be given). Use whatever tools you have (MCP GitHub tools, file readers, search tools, terminal/CLI execution). Always fall back to `gh` CLI commands when needed.
 

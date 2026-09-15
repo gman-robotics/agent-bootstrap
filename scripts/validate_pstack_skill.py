@@ -51,7 +51,15 @@ CURSOR_LEFTOVER_CHECKS: list[tuple[str, str]] = [
     (r'environment:\s*["\']cloud["\']', 'required environment: "cloud" spawn parameter'),
     (r"\bvia create-skill\b", "bare create-skill reference"),
     (r"follow [`']?create-skill[`']?", "create-skill authoring reference"),
+    (r"run_in_background:\s*true", "required run_in_background: true spawn parameter"),
+    (r"base branch override for cloud subagents", "cloud subagent base-branch override"),
 ]
+
+# Bidirectional companion pairs: each side must cite the other in Do not use for + Companions.
+COMPANION_PAIRS: tuple[tuple[str, str], ...] = (
+    ("show-me", "show-me-your-work"),
+    ("expert-pr-review", "interrogate"),
+)
 
 
 def _split_frontmatter(text: str) -> tuple[str, str]:
@@ -149,6 +157,49 @@ def validate_skill(name: str) -> list[str]:
     if name == "show-me-your-work":
         if "show-me" not in text:
             errors.append("show-me-your-work must companion with show-me")
+
+    return errors
+
+
+def _companion_sections(text: str) -> tuple[str, str]:
+    if "**Do not use for**" not in text:
+        return "", ""
+    do_not_use = text.split("**Do not use for**", 1)[1]
+    if "## Companions" in do_not_use:
+        do_not_use, companions = do_not_use.split("## Companions", 1)
+    else:
+        companions = ""
+    return do_not_use, companions
+
+
+def validate_companion_reverse_pointers() -> list[str]:
+    """Ensure hub skills with pstack companions cite each other both ways."""
+    errors: list[str] = []
+    for left, right in COMPANION_PAIRS:
+        left_md = SKILLS_DIR / left / "SKILL.md"
+        right_md = SKILLS_DIR / right / "SKILL.md"
+        if not left_md.is_file():
+            errors.append(f"missing companion skill file: {left_md}")
+            continue
+        if not right_md.is_file():
+            errors.append(f"missing companion skill file: {right_md}")
+            continue
+
+        left_text = left_md.read_text(encoding="utf-8")
+        right_text = right_md.read_text(encoding="utf-8")
+
+        left_dnu, left_comp = _companion_sections(left_text)
+        right_dnu, right_comp = _companion_sections(right_text)
+
+        if right not in left_dnu and right not in left_comp:
+            errors.append(f"{left} must cite companion {right} in Do not use for or Companions")
+        if "## Companions" not in left_text or right not in left_comp:
+            errors.append(f"{left} Companions must point at {right}")
+
+        if left not in right_dnu and left not in right_comp:
+            errors.append(f"{right} must cite companion {left} in Do not use for or Companions")
+        if "## Companions" not in right_text or left not in right_comp:
+            errors.append(f"{right} Companions must point at {left}")
 
     return errors
 
