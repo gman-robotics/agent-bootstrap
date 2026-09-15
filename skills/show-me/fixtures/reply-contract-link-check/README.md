@@ -46,7 +46,7 @@ Exit code `0`, stderr contains `OK` (the real `unittest` summary line).
 
 `tests/test_show_me_skill.py` asserts, against the real committed files:
 
-1. `skills/show-me/SKILL.md` exists, with `name: show-me` and `version: 1.0.1` in
+1. `skills/show-me/SKILL.md` exists, with `name: show-me` and `version: 1.0.2` in
    its frontmatter.
 2. `skills/reply-contract/SKILL.md` contains the literal string
    `skills/show-me/SKILL.md` and no longer contains the old fictional pairing

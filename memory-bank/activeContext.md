@@ -1,18 +1,8 @@
 # Active Context: Multi-Agent Skills Hub
 
 ## Current Focus (This Session)
-**GMA-48 — Port Cursor pstack shortlist into agent-bootstrap** (2026-09-15, cloud agent, branch `cursor/port-pstack-skills-dc70`). Fresh port from `main`; prior cancelled run not assumed.
+**GMA-48 leftover follow-up — Blair pass-2 revise** (2026-09-15, cloud agent, branch `cursor/gma-48-leftover-followup-9951`, [PR #18](https://github.com/gman-robotics/agent-bootstrap/pull/18) tip `627b757`). Closed Blair REQUEST_CHANGES theater on companion reverse-pointer validator: bounded `_do_not_use_section` / `_companions_section` parsing (stop at Verification, `---`, or next `##`); hyphen-safe `_mentions_skill` (no `show-me` substring hit inside `show-me-your-work`); require both Do-not-use AND Companions per pair; CLI runs companion checks for `show-me` / `expert-pr-review` outside `PSTACK_SKILL_NAMES`; poison tests both directions strip companion row or Do-not-use cite → fail.
 
-**What shipped (this branch, pre-merge)**:
-- 16 adapted workflow skills under `skills/`: architect, arena, swarm, blast-radius, interrogate, figure-it-out, show-me-your-work, create-verification-skill, maintain-verification-skill, how, why, teach, technical-writing, unslop, reflect, automate-me
-- Combined `skills/pstack-principles/` with high-leverage principles + **hard carve-out**: never-block-on-the-human does not override literal Approve/Reject spec-gate cards
-- MIT provenance in each skill's Provenance section (source: https://github.com/cursor/plugins/tree/main/pstack)
-- Cursor-only harness names stripped; multi-harness language via `skills/subagent-routing/SKILL.md`
-- `skills/INDEX.md` + `AGENTS.md` §4 + all five harness trigger files updated
-- `scripts/export_codex_skills.py` SkillConfig entries + `.grok/skills/` re-export
-- Live gate: `scripts/validate_pstack_skill.py` + per-skill fixtures + `tests/test_pstack_skills.py` (99/99 tests pass)
-- Skipped per task: poteto-mode, setup-pstack, poteto-agent, bro, make-bot-ui, recall, no-comments, comment-sicko, individual principle-* skills
+**Verification**: `python3 -m unittest discover -s tests` — 117/117 pass at `627b757`.
 
-**Verification**: `python3 -m unittest discover -s tests` — 99/99 pass. `python3 scripts/index_skills.py` — all non-grandfathered INDEX entries live-eligible.
-
-**Next**: Draft PR for Blair review; do not merge.
+**Next**: Blair pass 2; hold merge.

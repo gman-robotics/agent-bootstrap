@@ -179,7 +179,7 @@ class ShowMeSkillTests(unittest.TestCase):
     def test_show_me_frontmatter_declares_the_skill_name_and_version(self) -> None:
         text = SHOW_ME_SKILL_MD.read_text(encoding="utf-8")
         self.assertTrue(text.startswith("---\nname: show-me\n"))
-        self.assertIn("version: 1.0.1", text)
+        self.assertIn("version: 1.0.2", text)
 
     def test_reply_contract_pairing_line_points_at_the_real_show_me_path(self) -> None:
         text = REPLY_CONTRACT_SKILL_MD.read_text(encoding="utf-8")
