@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-09-15T05:35:01.096290+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/automate-me/SKILL.md (GMA-48 pstack port).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: automate-me"
+    ]
+  },
+  "fixture": "skills/automate-me/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "automate-me"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "05a9f1874ddde1f24313bafabca14d9110854a40fb7d92cb3a44570fb55b1956",
+  "stderr_tail": "",
+  "stdout_tail": "OK: automate-me\n",
+  "verdict": "pass"
+}

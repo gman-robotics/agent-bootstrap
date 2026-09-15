@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-09-15T05:35:00.409873+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/architect/SKILL.md (GMA-48 pstack port).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: architect"
+    ]
+  },
+  "fixture": "skills/architect/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "architect"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "a87e6ae88aee30f1e23c9cb61b21754231c7d94b8cb5b77454da1308d04592b7",
+  "stderr_tail": "",
+  "stdout_tail": "OK: architect\n",
+  "verdict": "pass"
+}

@@ -455,6 +455,254 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Distinct from REPEAT: Preservation Gate is positive and never closes; REPEAT is negative and closes only via a mechanical check.",
         ),
     ),
+    "architect": SkillConfig(
+        description=(
+            "Use to sketch types, signatures, and module structure before code, run arena "
+            "for competing designs, then implement against the chosen sketch and scrap when wrong."
+        ),
+        short_description="Design-before-code with arena synthesis",
+        trigger_summary=(
+            "Triggers on architect this, design this, or non-trivial work where jumping to code locks in the wrong shape."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Ground with how (and why if ownership changes), then run arena with references/runner-prompt.md.",
+            "Implement against the synthesized sketch; scrap and re-arena on repeated pattern friction.",
+        ),
+    ),
+    "arena": SkillConfig(
+        description=(
+            "Use to spawn N parallel candidates at the same task, pick a base, graft the "
+            "strongest parts of losers, and verify the synthesized artifact."
+        ),
+        short_description="Parallel candidates, pick and graft",
+        trigger_summary=(
+            "Triggers on arena this, throw it in the arena, or when one attempt would lock in the wrong shape."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Frame artifact + rubric + isolated output paths per candidate.",
+            "Fan out parallel subagents, cross-judge, pick base, graft best ideas, verify.",
+        ),
+    ),
+    "automate-me": SkillConfig(
+        description=(
+            "Use to mine harness transcripts for recurring user preferences and draft a "
+            "personal mode skill the user can adopt."
+        ),
+        short_description="Mine transcripts into a mode skill",
+        trigger_summary=(
+            "Triggers on automate me, build my mode skill, or capture recurring preferences from sessions."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Mine transcripts in parallel slices; cluster patterns; ask via reply-contract clarify card.",
+            "Draft via hub skill authoring; land in a worktree PR.",
+        ),
+    ),
+    "blast-radius": SkillConfig(
+        description=(
+            "Use to find what a change could break beyond the diff and prove the one safety "
+            "fact by running real code, not just writing it up."
+        ),
+        short_description="Cross-cutting breakage and proof",
+        trigger_summary=(
+            "Triggers on blast radius of X, what could this break, or reviewing a small diff you do not trust."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Find the one fact the change is safe because of; look where grep stops.",
+            "Prove it with a script at certainty step 4+; write through unslop.",
+        ),
+    ),
+    "create-verification-skill": SkillConfig(
+        description=(
+            "Use to interview a repo and generate a verify-<app> skill plus seeded feature map "
+            "for end-to-end product verification."
+        ),
+        short_description="Bootstrap a verify-<app> skill",
+        trigger_summary=(
+            "Triggers when creating a new verification skill for an app or surface."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Interview surface, run, drive, observe, isolate; generate verify skill + feature map.",
+            "Prove end-to-end once before handoff; point to maintain-verification-skill.",
+        ),
+    ),
+    "figure-it-out": SkillConfig(
+        description=(
+            "Use when no narrower playbook fits: design an auditable workflow with scaled "
+            "rigor, hypothesis loop, and show-me-your-work decision trail."
+        ),
+        short_description="Design the playbook when none fits",
+        trigger_summary=(
+            "Triggers on figure it out, large migration, or ambitious multi-part change."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Frame falsifiable done predicate; design phases with verification harness first.",
+            "Run hypothesis loop per unit; log TSV audit trail; verify on real product.",
+        ),
+    ),
+    "how": SkillConfig(
+        description=(
+            "Use to explain what code does and how it works via parallel explorers and a synthesizer."
+        ),
+        short_description="Runtime behavior explainer",
+        trigger_summary=(
+            "Triggers on how does X work, trace this flow, or explain this subsystem's behavior."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Assess complexity; spawn readonly explorers or direct explain path.",
+            "Synthesize Overview, Key Concepts, How It Works, Where Things Live, Gotchas.",
+        ),
+    ),
+    "interrogate": SkillConfig(
+        description=(
+            "Use for multi-model adversarial review: parallel reviewers, synthesized verdict, "
+            "no auto-apply."
+        ),
+        short_description="Multi-model adversarial review",
+        trigger_summary=(
+            "Triggers on interrogate, adversarial review, stress test this code, or find blind spots."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "State intent; spawn parallel readonly reviewers with shared rubric.",
+            "Synthesize Act On / Consider / Noted / Dismissed; do not auto-apply fixes.",
+        ),
+    ),
+    "maintain-verification-skill": SkillConfig(
+        description=(
+            "Use to reconcile and live-pass a verify-<app> skill against product drift."
+        ),
+        short_description="Maintain verify-<app> skills",
+        trigger_summary=(
+            "Triggers when a verification skill needs hygiene, reconciliation, or live pass."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Index hygiene; readonly source wave per feature; reconcile recipes.",
+            "Coordinator live-pass every feature; triage doc vs harness vs product gaps.",
+        ),
+    ),
+    "pstack-principles": SkillConfig(
+        description=(
+            "Use as the combined reference for high-leverage pstack principles: prove-it-works, "
+            "encode-lessons-in-structure, test-behavior-not-implementation, guard-the-context-window, "
+            "never-block-on-the-human (with gated-engineering carve-out), and related rules."
+        ),
+        short_description="Combined pstack principles reference",
+        trigger_summary=(
+            "Triggers when a workflow cites a pstack principle or you need a decision lens before designing or verifying."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "never-block does NOT override literal Approve/Reject spec-gate cards.",
+            "Cite principles by name; pair prove-it-works with real artifacts or scripts.",
+        ),
+    ),
+    "reflect": SkillConfig(
+        description=(
+            "Use to review a harness transcript with parallel reviewers and propose skill "
+            "improvements pending user approval."
+        ),
+        short_description="Transcript-driven skill reflection",
+        trigger_summary=(
+            "Triggers on reflect on this session or improve skills from transcript evidence."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Spawn Judgment, Tooling, Divergent reviewers; synthesize Accepted/Rejected/Backlog.",
+            "Wait for user approval before applying; route substantive items to skill authoring.",
+        ),
+    ),
+    "show-me-your-work": SkillConfig(
+        description=(
+            "Use to keep an append-only TSV decision log for auditable agent work."
+        ),
+        short_description="TSV decision audit trail",
+        trigger_summary=(
+            "Triggers when figure-it-out or ambitious work needs a decision trail."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "One row per decision point: ts, phase, decision, why, evidence, result.",
+            "Prefer script-produced evidence; commit trail for ambitious PRs.",
+        ),
+    ),
+    "swarm": SkillConfig(
+        description=(
+            "Use to fan out N parallel workers (partition, race, or mix) and return one consolidated report."
+        ),
+        short_description="Parallel worker swarm report",
+        trigger_summary=(
+            "Triggers on swarm this, parallel coverage, races, gauntlets, or exploration."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Frame done predicate and race rule; spawn cloud workers with isolated outputs.",
+            "Aggregate compact table; return PASS/ISSUES/BLOCKED evidence per worker.",
+        ),
+    ),
+    "teach": SkillConfig(
+        description=(
+            "Use to explain a subsystem plainly by running how and why and weaving one clear account."
+        ),
+        short_description="Plain teaching explanation",
+        trigger_summary=(
+            "Triggers on teach me this, help me understand X, or explain this change."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Run how and why in parallel; lead with what matters to the person.",
+            "Write through unslop; reply is the explanation, not a report about delivering it.",
+        ),
+    ),
+    "technical-writing": SkillConfig(
+        description=(
+            "Use for docs, RFCs, readmes, PR descriptions: Diátaxis mode, Google style, STE, Global English, unslop."
+        ),
+        short_description="Layered technical writing standard",
+        trigger_summary=(
+            "Triggers on technical-writing or when writing/reviewing docs and PR prose."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Pick one Diátaxis mode per document; apply Google/STE/Global English layers.",
+            "Apply unslop; use real symbols and commands from the codebase.",
+        ),
+    ),
+    "unslop": SkillConfig(
+        description=(
+            "Use to cut AI tells from any writing; apply to teach, blast-radius, technical-writing, and replies."
+        ),
+        short_description="Remove AI writing patterns",
+        trigger_summary=(
+            "Triggers on unslop or when prose sounds machine-generated."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Scan numbered pattern rules; rewrite preserving meaning.",
+            "Self-audit for remaining tells.",
+        ),
+    ),
+    "why": SkillConfig(
+        description=(
+            "Use to investigate why code is shaped a way: git anchor, parallel MCP investigators, cited synthesis."
+        ),
+        short_description="Design rationale investigator",
+        trigger_summary=(
+            "Triggers on why does X work this way, design rationale, or regressions/postmortems."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Establish code anchor; discover MCPs via GetDynamicTools; spawn category investigators.",
+            "Synthesize with confidence tiers; preserve why's confidence language.",
+        ),
+    ),
 }
 
 

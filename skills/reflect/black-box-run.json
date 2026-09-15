@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-09-15T05:35:01.050174+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/reflect/SKILL.md (GMA-48 pstack port).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: reflect"
+    ]
+  },
+  "fixture": "skills/reflect/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "reflect"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "15d9e3f499242e6cda422ba2287d15ae4a4c337c0086343af424de5e48390f4c",
+  "stderr_tail": "",
+  "stdout_tail": "OK: reflect\n",
+  "verdict": "pass"
+}

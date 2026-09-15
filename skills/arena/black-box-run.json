@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-09-15T05:35:00.455635+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/arena/SKILL.md (GMA-48 pstack port).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: arena"
+    ]
+  },
+  "fixture": "skills/arena/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "arena"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "ebee7f7ea14a71556188e7086346636722809f3619afe8ee3eb2eb542e9ca3da",
+  "stderr_tail": "",
+  "stdout_tail": "OK: arena\n",
+  "verdict": "pass"
+}

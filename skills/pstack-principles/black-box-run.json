@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-09-15T05:35:01.141665+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/pstack-principles/SKILL.md (GMA-48 pstack port).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: pstack-principles"
+    ]
+  },
+  "fixture": "skills/pstack-principles/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "pstack-principles"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "3d7b18a0c85b4b9be067adfdd37b2b5c4325e2f03a283837b2c91e732620c835",
+  "stderr_tail": "",
+  "stdout_tail": "OK: pstack-principles\n",
+  "verdict": "pass"
+}
