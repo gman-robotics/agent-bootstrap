@@ -1,0 +1,50 @@
+{"id":"tom-s1-01","label":"Yes","rationale":"Purchase receipt contains no request for human action.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-02","label":"Yes","rationale":"The staging blocker explicitly requests review today.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-03","label":"Yes","rationale":"This is a retail promotion with no reply needed.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-04","label":"Yes","rationale":"An unexpected password reset warrants owner verification.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-05","label":"Yes","rationale":"A casual lunch invitation is personal and noncritical.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-06","label":"Yes","rationale":"The overdue invoice needs payment or dispute action.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-07","label":"Yes","rationale":"Delivery confirmation is informational and requests no reply.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-08","label":"Yes","rationale":"A failed wire with a 24-hour deadline is urgent.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-09","label":"Yes","rationale":"An automated weekly digest can be reviewed later.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-10","label":"Yes","rationale":"DNS signing requires Tom's authority and should not be auto-sent.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-11","label":"Yes","rationale":"A free-phone lure requesting an SSN is likely phishing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-12","label":"Yes","rationale":"The accepted calendar move requires no further decision.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-13","label":"A","rationale":"Wren owns same-day ingestion into the main wiki.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-14","label":"B","rationale":"Reed is the implementation owner for engineering work.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-15","label":"C","rationale":"Blair owns adversarial engineering review before merge.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-16","label":"D","rationale":"Scout owns external API landscape research.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-17","label":"E","rationale":"Vendor spending and permanent product locks require Tom or CoS.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-18","label":"F","rationale":"The meme contains no actionable request.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-19","label":"A","rationale":"Kit owns black-box QA of shipped artifacts.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-20","label":"A","rationale":"Tess owns generic external-facing writing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-21","label":"A","rationale":"Kin owns private family-tree matching and synchronization.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-22","label":"A","rationale":"Cal owns X.com bookmarks and digest themes.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-23","label":"A","rationale":"Lane owns design critique without implementation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-24","label":"A","rationale":"Vera owns audits comparing claimed actions with operational records.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-25","label":"A","rationale":"The stated gate permits CoS to merge after Blair approves.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-26","label":"B","rationale":"A needs-tom product lock must wait for Tom's stamp.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-27","label":"B","rationale":"Approval can clear merging, but live infrastructure application remains blocked.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-28","label":"B","rationale":"Linear GMA is the ticket source of truth.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-29","label":"No","rationale":"Third-party email requires Tom to name the recipient and message.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-30","label":"Yes","rationale":"The rule expressly forbids publishing living family names publicly.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-31","label":"Yes","rationale":"The private book may retain unmasked living-person facts.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-32","label":"No","rationale":"Upcoming engineering work belongs in Linear, not new GitHub issues.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-33","label":"No","rationale":"Photon is locked, so vendor shopping requires Tom to reopen it.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-34","label":"No","rationale":"Tokens must use approved secret tooling, never chat paste.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-35","label":"No","rationale":"Guest phone numbers are PII and must be redacted publicly.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-36","label":"No","rationale":"The rule prohibits same-agent self-review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-37","label":"No","rationale":"Research must be ingested into the wiki the same day.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-38","label":"No","rationale":"Option softmax is not calibrated correctness probability.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-39","label":"No","rationale":"A beat-Jev claim requires a same-file Jev baseline.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-40","label":"No","rationale":"V1 training is restricted to the personal MBP, excluding silent Colab runs.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-41","label":"No","rationale":"The standing rule categorically forbids naming an agent Sam.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-42","label":"Yes","rationale":"The rule explicitly authorizes CoS merging after Blair's approval.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-43","label":"A","rationale":"A production 5xx spike with an on-call page requires immediate handling.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-44","label":"A","rationale":"This is STR operations information; access credentials must remain private.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-45","label":"A","rationale":"Scout owns research-only vendor comparisons.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-46","label":"B","rationale":"Automatic replies are outbound sends and require authorization.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-47","label":"A","rationale":"Blair owns the pre-implementation architecture sketch and review phase.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-48","label":"A","rationale":"A degraded storage array needs prioritized infrastructure diagnosis.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-49","label":"B","rationale":"API keys belong in secret management, never source control.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-50","label":"A","rationale":"Wren owns updating project numbers on the wiki.","model":"gpt-5.6-sol","labeler":"B"}
