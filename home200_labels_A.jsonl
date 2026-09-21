@@ -1,200 +1,200 @@
-{"id": "tom-s1-051", "label": "Yes", "rationale": "Payout deposit confirmation is transactional notice; no human action requested.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-052", "label": "Yes", "rationale": "Explicit approval request with Friday 6pm cutoff needs same-day human decision.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-053", "label": "Yes", "rationale": "Discount blast with expiring code is promo; archivable without reply.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-054", "label": "Yes", "rationale": "Unrecognized-device sign-in alert is security-sensitive; owner must verify.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-055", "label": "Yes", "rationale": "Casual hike invite is personal social, not work-critical.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-056", "label": "Yes", "rationale": "Dated invoice with amount needs bill-pay or dispute before due date.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-057", "label": "Yes", "rationale": "Delivery confirmation is pure logistics FYI; nothing to answer.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-058", "label": "Yes", "rationale": "Failed remittance with 48-hour fix window is urgent financial follow-up.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-059", "label": "Yes", "rationale": "Auto-generated nightly pass/fail is a bulk digest; skimmable later.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-060", "label": "Yes", "rationale": "Token rotation requires credentials Tom holds; agent must not auto-send.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-061", "label": "Yes", "rationale": "Storage-unlock lure requesting bank PIN is classic phishing.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-062", "label": "Yes", "rationale": "Clinic already confirmed the reschedule; calendar update only.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-063", "label": "Yes", "rationale": "High-severity dependency alert with patch needs engineering triage.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-064", "label": "Yes", "rationale": "Blocking RLS question on a merge needs prompt human engineering answer.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-065", "label": "Yes", "rationale": "Weekly page-update digest is informational and can wait.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-066", "label": "Yes", "rationale": "Host earnings statement PDF is a transactional finance document.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-067", "label": "Yes", "rationale": "Guest checkout note is STR ops; short reply or review note plausible.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-068", "label": "Yes", "rationale": "MFA reset confirmation request is security-sensitive; owner verifies.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-069", "label": "Yes", "rationale": "Auto-renew is on and renewal is 14 days out; informational only.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-070", "label": "Yes", "rationale": "Countersigning an MSA is a commercial commitment reserved for Tom.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-071", "label": "Yes", "rationale": "Subscription receipt with invoice attached is transactional, not actionable.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-072", "label": "Yes", "rationale": "Incident closed and latency restored; ops FYI with nothing pending.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-073", "label": "Yes", "rationale": "Attorney slot available only at 3pm today; same-day scheduling reply needed.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-074", "label": "Yes", "rationale": "Profile-views notice with premium upsell is marketing noise.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-075", "label": "Yes", "rationale": "Banking-detail change from lookalike freemail address is business email compromise.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-076", "label": "Yes", "rationale": "Parity check finished with zero errors; homelab FYI only.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-077", "label": "Yes", "rationale": "Approaching soft limit forces raise-or-pause, a budget decision.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-078", "label": "Yes", "rationale": "Requested review blocking an adversarial pass needs engineering action.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-079", "label": "Yes", "rationale": "Curated link roundup is skimmable or filed for later research.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-080", "label": "Yes", "rationale": "SSN upload via unfamiliar short link warrants out-of-band verification.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-081", "label": "Yes", "rationale": "Message explicitly states no action needed; infrastructure status FYI.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-082", "label": "Yes", "rationale": "Refund ticket explicitly needs host decision; STR ops action.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-083", "label": "Yes", "rationale": "Auto-saved standup recording notice requires no reply.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-084", "label": "Yes", "rationale": "Three failed logins from unknown IP plus unlock prompt is security-sensitive.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-085", "label": "Yes", "rationale": "Family reunion weekend poll is personal social, not engineering.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-086", "label": "Yes", "rationale": "Convert-or-lose-numbers deadline is a vendor and billing decision.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-087", "label": "Yes", "rationale": "Possible token in a pushed commit needs urgent secrets hygiene response.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-088", "label": "Yes", "rationale": "Itinerary confirmation with seat assigned is transactional travel FYI.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-089", "label": "Yes", "rationale": "Urgent gift-card request impersonating the CEO is textbook social engineering.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-090", "label": "Yes", "rationale": "Disk above ninety percent on a VM needs prompt ops diagnosis.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-091", "label": "Yes", "rationale": "Support receipt stating no action required is transactional.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-092", "label": "Yes", "rationale": "Blanket auto-CC on outbound is a send-rule policy change for Tom.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-093", "label": "Yes", "rationale": "Organizer canceled the meeting; calendar update with no decision.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-094", "label": "Yes", "rationale": "Second past-due reminder with looming late fee needs payment or dispute.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-095", "label": "Yes", "rationale": "New iCloud device sign-in with secure-account prompt is security verification.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-096", "label": "Yes", "rationale": "Unsolicited SEO cold pitch is junk marketing.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-097", "label": "Yes", "rationale": "Certificate expiring in 72 hours needs ops renewal before browsers warn.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-098", "label": "Yes", "rationale": "Library pickup window is a personal errand, not work-critical.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-099", "label": "No", "rationale": "Rule requires Tom to name recipient and message; unnamed Slack send violates it.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-100", "label": "Yes", "rationale": "Rule bars living family names from the public genealogy wiki.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-101", "label": "Yes", "rationale": "Private book is explicitly permitted to keep living facts unmasked.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-102", "label": "No", "rationale": "Linear is ticket source of truth; new per-repo GitHub issues are barred.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-103", "label": "No", "rationale": "Photon lock stands; shopping or demoing replacements needs Tom reopening it.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-104", "label": "No", "rationale": "Rule forbids asking Tom to paste tokens in chat; use op CLI.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-105", "label": "No", "rationale": "Lock codes must be redacted from the public STR wiki.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-106", "label": "No", "rationale": "Authoring and sole-reviewing the same PR is prohibited self-review.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-107", "label": "No", "rationale": "Findings must land on the wiki same day, not only ticket comments.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-108", "label": "No", "rationale": "Document states option probability is not calibrated confidence.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-109", "label": "No", "rationale": "Beat-Jev claims need a same-file Jev baseline on the same harness.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-110", "label": "No", "rationale": "Silent cloud training is out of policy; MBP-only metal for v1.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-111", "label": "No", "rationale": "Naming any agent Sam is categorically forbidden.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-112", "label": "Yes", "rationale": "Rule explicitly authorizes CoS merge on Blair APPROVE for ordinary PRs.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-113", "label": "No", "rationale": "needs-tom locks require Tom's stamp; Blair APPROVE does not substitute.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-114", "label": "No", "rationale": "Live apply stays blocked even after merge approval.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-115", "label": "No", "rationale": "Secrets never go to git; branch privacy is irrelevant.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-116", "label": "No", "rationale": "Guest PII must be redacted from public pages.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-117", "label": "Yes", "rationale": "Client PII must stay compartmented from the personal wiki.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-118", "label": "No", "rationale": "Array wipe is destructive and needs Tom's confirmation.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-119", "label": "No", "rationale": "Unrelated redesign mid-incident is exactly the barred drive-by refactor.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-120", "label": "No", "rationale": "Permanent vendor spend commitments need Tom, not CoS alone.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-121", "label": "No", "rationale": "Silent public writes altering living records are barred without Tom.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-122", "label": "No", "rationale": "Posts speaking as Tom require explicit Tom approval before publish.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-123", "label": "No", "rationale": "Design critique is advisory and cannot replace Blair's adversarial review.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-124", "label": "No", "rationale": "Audit claims require evidence links; unsupported 'done' is barred.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-125", "label": "No", "rationale": "Black-box QA must not rewrite product code mid-test.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-126", "label": "No", "rationale": "External writing must stay generic; living-family names are barred.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-127", "label": "No", "rationale": "Indefinite private gist violates same-day tmg-wiki main landing.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-128", "label": "No", "rationale": "Implementer and reviewer roles stay separate on the same change.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-129", "label": "No", "rationale": "needs-tom tickets cannot be silently closed without Tom.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-130", "label": "Yes", "rationale": "Drafting without sending is explicitly permitted.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-131", "label": "Yes", "rationale": "A redacted status banner without codes carries none of the barred content.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-132", "label": "Yes", "rationale": "Cherry-picking a best subset as the official score is barred.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-133", "label": "No", "rationale": "Disabling or muting monitoring to quiet pages is prohibited.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-134", "label": "Yes", "rationale": "Only destructive steps need Tom OK; read-only verification is fine.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-135", "label": "No", "rationale": "Screenshotting a client dashboard publicly is the forbidden cross-post.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-136", "label": "No", "rationale": "Production DNS changes are Tom-gated, not unilateral.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-137", "label": "Yes", "rationale": "Protocol requires artifact pointers; a bare 'tests passed' fails.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-138", "label": "No", "rationale": "Self-expanding its own send allowlist is exactly what is barred.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-139", "label": "No", "rationale": "Real guest phone numbers in staging violates data minimization.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-140", "label": "No", "rationale": "Ambiguity requires escalation to Tom, not guess-sending.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-141", "label": "Yes", "rationale": "Hard-coding a live production key in a shared notebook is barred.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-142", "label": "No", "rationale": "Wiki talk threads cannot substitute for Linear on eng tracking.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-143", "label": "No", "rationale": "Noise with no ask should be ignored, not routed to an implementer.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-144", "label": "No", "rationale": "Agents do not click security reset links on Tom's behalf.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-145", "label": "No", "rationale": "Final label publication is human-gated and needs Tom's stamp.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-146", "label": "Yes", "rationale": "GitHub issues are explicitly allowed for PR discussion.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-147", "label": "No", "rationale": "Living names are barred from public marketing pages too.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-148", "label": "No", "rationale": "Accidentally pasted secrets must be rotated, not left in place.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-149", "label": "No", "rationale": "Merge gate does not waive Kit smoke on a smoke-covered path.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-150", "label": "Yes", "rationale": "Citation link plus one-line takeaway on the wiki is the required form.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-151", "label": "No", "rationale": "Auto-forwarding to a third party without Tom naming it is barred.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-152", "label": "No", "rationale": "Phase 0 metal runs belong on the MBP; the box is prep only.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-153", "label": "Yes", "rationale": "Mirroring a raw guest thread onto the public wiki is barred.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-154", "label": "No", "rationale": "Answers must use letters offered in the prompt; invented owners are invalid.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-155", "label": "A", "rationale": "Same-day wiki ingest onto tmg-wiki main is Wren's wiki lane.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-156", "label": "B", "rationale": "Writing RLS policy code is implementation work for Reed.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-157", "label": "C", "rationale": "Pre-merge adversarial review of a diff is Blair's role.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-158", "label": "D", "rationale": "Open question about upstream library maturity is research.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-159", "label": "E", "rationale": "New recurring spend plus vendor lock change is Tom's decision.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-160", "label": "F", "rationale": "Reaction GIF carries no ask; ignore rather than spawn an agent.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-161", "label": "A", "rationale": "Authoring a summary wiki page is Wren's wiki work.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-162", "label": "B", "rationale": "Coding retries with idempotency keys is implementation.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-163", "label": "C", "rationale": "Challenging a migration plan is adversarial review.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-164", "label": "D", "rationale": "Explicitly research-only vendor comparison goes to Scout.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-165", "label": "E", "rationale": "Permanent spend-cap increase is a Tom-only budget commitment.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-166", "label": "F", "rationale": "Forwarded meme with no ask should be ignored.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-167", "label": "A", "rationale": "Same-day arXiv ingest into tmg-wiki is Wren's lane.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-168", "label": "B", "rationale": "Shipping the flag flip in code is implementation.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-169", "label": "C", "rationale": "Least-privilege review of a proposed policy is reviewer work.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-170", "label": "D", "rationale": "Landscaping available harnesses is a research survey.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-171", "label": "E", "rationale": "Signing an addendum and locking pricing is Tom-only.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-172", "label": "F", "rationale": "Cat photo with no task; ignore.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-173", "label": "A", "rationale": "Publishing a glossary page on the wiki is Wren's work.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-174", "label": "B", "rationale": "Implementing health-check endpoints is code.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-175", "label": "C", "rationale": "Pressure-testing a rollback story is adversarial review.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-176", "label": "D", "rationale": "Current-state availability question is research.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-177", "label": "E", "rationale": "Authorizing destroy-and-recreate of infrastructure is Tom's call.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-178", "label": "F", "rationale": "Sunset screenshot with no ask; ignore.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-179", "label": "A", "rationale": "Moving notes onto a durable wiki page is Wren's ingest job.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-180", "label": "B", "rationale": "Adding structured logging fields is implementation.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-181", "label": "C", "rationale": "Adversarial pass with authority to block is Blair's.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-182", "label": "D", "rationale": "Investigating registrar API rate limits is research.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-183", "label": "E", "rationale": "Year-long contract replacing a locked vendor is Tom-only.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-184", "label": "F", "rationale": "Meme with no actionable text; ignore.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-185", "label": "A", "rationale": "Documenting a process on a wiki page is Wren's work.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-186", "label": "B", "rationale": "Wiring a flag into API handlers is implementation.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-187", "label": "C", "rationale": "Reviewing an architecture sketch before coding is reviewer work.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-188", "label": "D", "rationale": "Verifying current API restrictions upstream is research.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-189", "label": "E", "rationale": "Approving live production secrets rotation is Tom-only.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-190", "label": "F", "rationale": "Emoji-only message has no ask; ignore.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-191", "label": "A", "rationale": "Capturing results into the wiki run log is Wren's lane.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-192", "label": "B", "rationale": "Implementing pagination is code work.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-193", "label": "C", "rationale": "Stress-reviewing automation for footguns is adversarial review.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-194", "label": "D", "rationale": "Memo-only NAS alternatives comparison is research.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-195", "label": "A", "rationale": "Black-box QA against a signed artifact is Kit's role.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-196", "label": "A", "rationale": "Drafting external prose is Tess's writing lane.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-197", "label": "A", "rationale": "Match-only private genealogy work belongs to Kin.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-198", "label": "A", "rationale": "Clustering X bookmarks for a digest is Cal's lane.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-199", "label": "A", "rationale": "Critique-only mockup feedback is Lane's design review.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-200", "label": "A", "rationale": "Tracing whether a claim landed is Vera's ops audit.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-201", "label": "A", "rationale": "Ordinary PR with Blair APPROVE is explicitly a CoS merge.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-202", "label": "B", "rationale": "needs-tom lock requires holding for Tom's stamp.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-203", "label": "B", "rationale": "Approval covers merge only; live apply stays blocked.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-204", "label": "B", "rationale": "Upcoming eng work belongs in a Linear GMA ticket.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-205", "label": "A", "rationale": "Running shipped smoke cases without code changes is Kit's QA.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-206", "label": "A", "rationale": "Polishing guest-facing prose is Tess's writing work.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-207", "label": "A", "rationale": "Match-only private-book census sync is Kin's lane.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-208", "label": "A", "rationale": "Pulling liked posts into theme bins is Cal's X work.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-209", "label": "A", "rationale": "Critique-only UX review of screenshots is Lane's.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-210", "label": "A", "rationale": "Auditing a claimed decision against evidence is Vera's.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-211", "label": "A", "rationale": "Non-locked PR after Blair APPROVE is a CoS merge.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-212", "label": "B", "rationale": "needs-tom purchase flag means hold for Tom's stamp.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-213", "label": "B", "rationale": "Merge may proceed but live production apply remains Tom-gated.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-214", "label": "B", "rationale": "Epic tracking belongs in a Linear GMA ticket.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-215", "label": "A", "rationale": "QA of a tagged artifact is Kit's black-box role.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-216", "label": "A", "rationale": "Rewriting external FAQ copy is Tess's writing.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-217", "label": "A", "rationale": "Reconciling a hint against the private book is Kin's.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-218", "label": "A", "rationale": "Clustering bookmark folders is Cal's X lane.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-219", "label": "A", "rationale": "No-code design review of illustrations is Lane's.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-220", "label": "A", "rationale": "Verifying claims against git SHAs is Vera's ops audit.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-221", "label": "A", "rationale": "Rule states CoS may merge an ordinary PR after Blair APPROVE.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-222", "label": "B", "rationale": "needs-tom vendor decision must hold for Tom's stamp.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-223", "label": "B", "rationale": "Review and merge are fine; live apply stays blocked without Tom.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-224", "label": "B", "rationale": "Eng spike belongs in a Linear GMA ticket.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-225", "label": "A", "rationale": "Black-box regression execution is Kit's QA role.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-226", "label": "A", "rationale": "Drafting a generic changelog blurb is Tess's writing.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-227", "label": "A", "rationale": "Match-only import into the private book is Kin's; public naming barred.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-228", "label": "A", "rationale": "Turning X likes into digest themes is Cal's lane.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-229", "label": "A", "rationale": "Critique-only typography feedback is Lane's design review.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-230", "label": "A", "rationale": "Cross-checking done claims against CI runs is Vera's audit.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-231", "label": "A", "rationale": "Nine percent error rate with pager fired is an immediate ops incident.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-232", "label": "A", "rationale": "Upcoming check-in is STR ops FYI; codes must stay off public wiki.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-233", "label": "A", "rationale": "Rising reallocated sectors is failing hardware needing homelab diagnosis.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-234", "label": "A", "rationale": "Credential-harvesting lookalike; verify through a known-good session instead.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-235", "label": "A", "rationale": "Past-due invoice with suspension risk goes to bill-pay or dispute.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-236", "label": "A", "rationale": "District FYI with no RSVP is personal calendar only.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-237", "label": "A", "rationale": "MSA signature is a Tom-lock; draft or escalate, never auto-sign.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-238", "label": "A", "rationale": "Auto changelog digest can be skimmed or archived later.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-239", "label": "A", "rationale": "Review mentioning a lock issue needs STR follow-up with PII withheld.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-240", "label": "A", "rationale": "Owner verifies password resets; agents do not click reset links.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-241", "label": "A", "rationale": "Certificate expiring in 48 hours needs ops renewal now.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-242", "label": "A", "rationale": "Prize lure requesting SSN is phishing; do not click.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-243", "label": "B", "rationale": "Auto-acks are sends; sending is gated, so draft or ask.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-244", "label": "B", "rationale": "Live credentials stay in 1Password; never committed to git.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-245", "label": "B", "rationale": "Living household names are barred from the public genealogy wiki.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-246", "label": "B", "rationale": "Same-agent self-review on a gated PR is forbidden.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-247", "label": "B", "rationale": "Research must land on tmg-wiki main the same day.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-248", "label": "B", "rationale": "Shopping replacements is barred while the Photon lock stands.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-249", "label": "B", "rationale": "Tokens never get pasted in chat; use op CLI or secret-request.", "model": "claude-opus-5", "labeler": "A"}
-{"id": "tom-s1-250", "label": "B", "rationale": "Beat-Jev claims need a same-file Jev baseline on the same harness.", "model": "claude-opus-5", "labeler": "A"}
+{"id":"tom-s1-051","label":"Yes","rationale":"Payout deposit confirmation is transactional notice; no human action requested.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-052","label":"Yes","rationale":"Explicit approval request with Friday 6pm cutoff needs same-day human decision.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-053","label":"Yes","rationale":"Discount blast with expiring code is promo; archivable without reply.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-054","label":"Yes","rationale":"Unrecognized-device sign-in alert is security-sensitive; owner must verify.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-055","label":"Yes","rationale":"Casual hike invite is personal social, not work-critical.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-056","label":"Yes","rationale":"Dated invoice with amount needs bill-pay or dispute before due date.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-057","label":"Yes","rationale":"Delivery confirmation is pure logistics FYI; nothing to answer.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-058","label":"Yes","rationale":"Failed remittance with 48-hour fix window is urgent financial follow-up.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-059","label":"Yes","rationale":"Auto-generated nightly pass/fail is a bulk digest; skimmable later.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-060","label":"Yes","rationale":"Token rotation requires credentials Tom holds; agent must not auto-send.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-061","label":"Yes","rationale":"Storage-unlock lure requesting bank PIN is classic phishing.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-062","label":"Yes","rationale":"Clinic already confirmed the reschedule; calendar update only.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-063","label":"Yes","rationale":"High-severity dependency alert with patch needs engineering triage.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-064","label":"Yes","rationale":"Blocking RLS question on a merge needs prompt human engineering answer.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-065","label":"Yes","rationale":"Weekly page-update digest is informational and can wait.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-066","label":"Yes","rationale":"Host earnings statement PDF is a transactional finance document.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-067","label":"Yes","rationale":"Guest checkout note is STR ops; short reply or review note plausible.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-068","label":"Yes","rationale":"MFA reset confirmation request is security-sensitive; owner verifies.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-069","label":"Yes","rationale":"Auto-renew is on and renewal is 14 days out; informational only.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-070","label":"Yes","rationale":"Countersigning an MSA is a commercial commitment reserved for Tom.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-071","label":"Yes","rationale":"Subscription receipt with invoice attached is transactional, not actionable.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-072","label":"Yes","rationale":"Incident closed and latency restored; ops FYI with nothing pending.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-073","label":"Yes","rationale":"Attorney slot available only at 3pm today; same-day scheduling reply needed.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-074","label":"Yes","rationale":"Profile-views notice with premium upsell is marketing noise.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-075","label":"Yes","rationale":"Banking-detail change from lookalike freemail address is business email compromise.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-076","label":"Yes","rationale":"Parity check finished with zero errors; homelab FYI only.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-077","label":"Yes","rationale":"Approaching soft limit forces raise-or-pause, a budget decision.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-078","label":"Yes","rationale":"Requested review blocking an adversarial pass needs engineering action.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-079","label":"Yes","rationale":"Curated link roundup is skimmable or filed for later research.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-080","label":"Yes","rationale":"SSN upload via unfamiliar short link warrants out-of-band verification.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-081","label":"Yes","rationale":"Message explicitly states no action needed; infrastructure status FYI.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-082","label":"Yes","rationale":"Refund ticket explicitly needs host decision; STR ops action.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-083","label":"Yes","rationale":"Auto-saved standup recording notice requires no reply.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-084","label":"Yes","rationale":"Three failed logins from unknown IP plus unlock prompt is security-sensitive.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-085","label":"Yes","rationale":"Family reunion weekend poll is personal social, not engineering.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-086","label":"Yes","rationale":"Convert-or-lose-numbers deadline is a vendor and billing decision.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-087","label":"Yes","rationale":"Possible token in a pushed commit needs urgent secrets hygiene response.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-088","label":"Yes","rationale":"Itinerary confirmation with seat assigned is transactional travel FYI.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-089","label":"Yes","rationale":"Urgent gift-card request impersonating the CEO is textbook social engineering.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-090","label":"Yes","rationale":"Disk above ninety percent on a VM needs prompt ops diagnosis.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-091","label":"Yes","rationale":"Support receipt stating no action required is transactional.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-092","label":"Yes","rationale":"Blanket auto-CC on outbound is a send-rule policy change for Tom.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-093","label":"Yes","rationale":"Organizer canceled the meeting; calendar update with no decision.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-094","label":"Yes","rationale":"Second past-due reminder with looming late fee needs payment or dispute.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-095","label":"Yes","rationale":"New iCloud device sign-in with secure-account prompt is security verification.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-096","label":"Yes","rationale":"Unsolicited SEO cold pitch is junk marketing.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-097","label":"Yes","rationale":"Certificate expiring in 72 hours needs ops renewal before browsers warn.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-098","label":"Yes","rationale":"Library pickup window is a personal errand, not work-critical.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-099","label":"No","rationale":"Rule requires Tom to name recipient and message; unnamed Slack send violates it.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-100","label":"Yes","rationale":"Rule bars living family names from the public genealogy wiki.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-101","label":"Yes","rationale":"Private book is explicitly permitted to keep living facts unmasked.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-102","label":"No","rationale":"Linear is ticket source of truth; new per-repo GitHub issues are barred.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-103","label":"No","rationale":"Photon lock stands; shopping or demoing replacements needs Tom reopening it.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-104","label":"No","rationale":"Rule forbids asking Tom to paste tokens in chat; use op CLI.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-105","label":"No","rationale":"Lock codes must be redacted from the public STR wiki.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-106","label":"No","rationale":"Authoring and sole-reviewing the same PR is prohibited self-review.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-107","label":"No","rationale":"Findings must land on the wiki same day, not only ticket comments.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-108","label":"No","rationale":"Document states option probability is not calibrated confidence.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-109","label":"No","rationale":"Beat-Jev claims need a same-file Jev baseline on the same harness.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-110","label":"No","rationale":"Silent cloud training is out of policy; MBP-only metal for v1.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-111","label":"No","rationale":"Naming any agent Sam is categorically forbidden.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-112","label":"Yes","rationale":"Rule explicitly authorizes CoS merge on Blair APPROVE for ordinary PRs.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-113","label":"No","rationale":"needs-tom locks require Tom's stamp; Blair APPROVE does not substitute.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-114","label":"No","rationale":"Live apply stays blocked even after merge approval.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-115","label":"No","rationale":"Secrets never go to git; branch privacy is irrelevant.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-116","label":"No","rationale":"Guest PII must be redacted from public pages.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-117","label":"Yes","rationale":"Client PII must stay compartmented from the personal wiki.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-118","label":"No","rationale":"Array wipe is destructive and needs Tom's confirmation.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-119","label":"No","rationale":"Unrelated redesign mid-incident is exactly the barred drive-by refactor.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-120","label":"No","rationale":"Permanent vendor spend commitments need Tom, not CoS alone.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-121","label":"No","rationale":"Silent public writes altering living records are barred without Tom.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-122","label":"No","rationale":"Posts speaking as Tom require explicit Tom approval before publish.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-123","label":"No","rationale":"Design critique is advisory and cannot replace Blair's adversarial review.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-124","label":"No","rationale":"Audit claims require evidence links; unsupported 'done' is barred.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-125","label":"No","rationale":"Black-box QA must not rewrite product code mid-test.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-126","label":"No","rationale":"External writing must stay generic; living-family names are barred.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-127","label":"No","rationale":"Indefinite private gist violates same-day tmg-wiki main landing.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-128","label":"No","rationale":"Implementer and reviewer roles stay separate on the same change.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-129","label":"No","rationale":"needs-tom tickets cannot be silently closed without Tom.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-130","label":"Yes","rationale":"Drafting without sending is explicitly permitted.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-131","label":"Yes","rationale":"A redacted status banner without codes carries none of the barred content.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-132","label":"Yes","rationale":"Cherry-picking a best subset as the official score is barred.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-133","label":"No","rationale":"Disabling or muting monitoring to quiet pages is prohibited.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-134","label":"Yes","rationale":"Only destructive steps need Tom OK; read-only verification is fine.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-135","label":"No","rationale":"Screenshotting a client dashboard publicly is the forbidden cross-post.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-136","label":"No","rationale":"Production DNS changes are Tom-gated, not unilateral.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-137","label":"Yes","rationale":"Protocol requires artifact pointers; a bare 'tests passed' fails.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-138","label":"No","rationale":"Self-expanding its own send allowlist is exactly what is barred.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-139","label":"No","rationale":"Real guest phone numbers in staging violates data minimization.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-140","label":"No","rationale":"Ambiguity requires escalation to Tom, not guess-sending.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-141","label":"Yes","rationale":"Hard-coding a live production key in a shared notebook is barred.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-142","label":"No","rationale":"Wiki talk threads cannot substitute for Linear on eng tracking.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-143","label":"No","rationale":"Noise with no ask should be ignored, not routed to an implementer.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-144","label":"No","rationale":"Agents do not click security reset links on Tom's behalf.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-145","label":"No","rationale":"Final label publication is human-gated and needs Tom's stamp.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-146","label":"Yes","rationale":"GitHub issues are explicitly allowed for PR discussion.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-147","label":"No","rationale":"Living names are barred from public marketing pages too.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-148","label":"No","rationale":"Accidentally pasted secrets must be rotated, not left in place.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-149","label":"No","rationale":"Merge gate does not waive Kit smoke on a smoke-covered path.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-150","label":"Yes","rationale":"Citation link plus one-line takeaway on the wiki is the required form.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-151","label":"No","rationale":"Auto-forwarding to a third party without Tom naming it is barred.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-152","label":"No","rationale":"Phase 0 metal runs belong on the MBP; the box is prep only.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-153","label":"Yes","rationale":"Mirroring a raw guest thread onto the public wiki is barred.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-154","label":"No","rationale":"Answers must use letters offered in the prompt; invented owners are invalid.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-155","label":"A","rationale":"Same-day wiki ingest onto tmg-wiki main is Wren's wiki lane.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-156","label":"B","rationale":"Writing RLS policy code is implementation work for Reed.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-157","label":"C","rationale":"Pre-merge adversarial review of a diff is Blair's role.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-158","label":"D","rationale":"Open question about upstream library maturity is research.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-159","label":"E","rationale":"New recurring spend plus vendor lock change is Tom's decision.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-160","label":"F","rationale":"Reaction GIF carries no ask; ignore rather than spawn an agent.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-161","label":"A","rationale":"Authoring a summary wiki page is Wren's wiki work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-162","label":"B","rationale":"Coding retries with idempotency keys is implementation.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-163","label":"C","rationale":"Challenging a migration plan is adversarial review.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-164","label":"D","rationale":"Explicitly research-only vendor comparison goes to Scout.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-165","label":"E","rationale":"Permanent spend-cap increase is a Tom-only budget commitment.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-166","label":"F","rationale":"Forwarded meme with no ask should be ignored.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-167","label":"A","rationale":"Same-day arXiv ingest into tmg-wiki is Wren's lane.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-168","label":"B","rationale":"Shipping the flag flip in code is implementation.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-169","label":"C","rationale":"Least-privilege review of a proposed policy is reviewer work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-170","label":"D","rationale":"Landscaping available harnesses is a research survey.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-171","label":"E","rationale":"Signing an addendum and locking pricing is Tom-only.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-172","label":"F","rationale":"Cat photo with no task; ignore.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-173","label":"A","rationale":"Publishing a glossary page on the wiki is Wren's work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-174","label":"B","rationale":"Implementing health-check endpoints is code.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-175","label":"C","rationale":"Pressure-testing a rollback story is adversarial review.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-176","label":"D","rationale":"Current-state availability question is research.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-177","label":"E","rationale":"Authorizing destroy-and-recreate of infrastructure is Tom's call.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-178","label":"F","rationale":"Sunset screenshot with no ask; ignore.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-179","label":"A","rationale":"Moving notes onto a durable wiki page is Wren's ingest job.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-180","label":"B","rationale":"Adding structured logging fields is implementation.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-181","label":"C","rationale":"Adversarial pass with authority to block is Blair's.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-182","label":"D","rationale":"Investigating registrar API rate limits is research.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-183","label":"E","rationale":"Year-long contract replacing a locked vendor is Tom-only.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-184","label":"F","rationale":"Meme with no actionable text; ignore.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-185","label":"A","rationale":"Documenting a process on a wiki page is Wren's work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-186","label":"B","rationale":"Wiring a flag into API handlers is implementation.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-187","label":"C","rationale":"Reviewing an architecture sketch before coding is reviewer work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-188","label":"D","rationale":"Verifying current API restrictions upstream is research.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-189","label":"E","rationale":"Approving live production secrets rotation is Tom-only.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-190","label":"F","rationale":"Emoji-only message has no ask; ignore.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-191","label":"A","rationale":"Capturing results into the wiki run log is Wren's lane.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-192","label":"B","rationale":"Implementing pagination is code work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-193","label":"C","rationale":"Stress-reviewing automation for footguns is adversarial review.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-194","label":"D","rationale":"Memo-only NAS alternatives comparison is research.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-195","label":"A","rationale":"Black-box QA against a signed artifact is Kit's role.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-196","label":"A","rationale":"Drafting external prose is Tess's writing lane.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-197","label":"A","rationale":"Match-only private genealogy work belongs to Kin.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-198","label":"A","rationale":"Clustering X bookmarks for a digest is Cal's lane.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-199","label":"A","rationale":"Critique-only mockup feedback is Lane's design review.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-200","label":"A","rationale":"Tracing whether a claim landed is Vera's ops audit.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-201","label":"A","rationale":"Ordinary PR with Blair APPROVE is explicitly a CoS merge.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-202","label":"B","rationale":"needs-tom lock requires holding for Tom's stamp.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-203","label":"B","rationale":"Approval covers merge only; live apply stays blocked.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-204","label":"B","rationale":"Upcoming eng work belongs in a Linear GMA ticket.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-205","label":"A","rationale":"Running shipped smoke cases without code changes is Kit's QA.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-206","label":"A","rationale":"Polishing guest-facing prose is Tess's writing work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-207","label":"A","rationale":"Match-only private-book census sync is Kin's lane.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-208","label":"A","rationale":"Pulling liked posts into theme bins is Cal's X work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-209","label":"A","rationale":"Critique-only UX review of screenshots is Lane's.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-210","label":"A","rationale":"Auditing a claimed decision against evidence is Vera's.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-211","label":"A","rationale":"Non-locked PR after Blair APPROVE is a CoS merge.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-212","label":"B","rationale":"needs-tom purchase flag means hold for Tom's stamp.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-213","label":"B","rationale":"Merge may proceed but live production apply remains Tom-gated.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-214","label":"B","rationale":"Epic tracking belongs in a Linear GMA ticket.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-215","label":"A","rationale":"QA of a tagged artifact is Kit's black-box role.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-216","label":"A","rationale":"Rewriting external FAQ copy is Tess's writing.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-217","label":"A","rationale":"Reconciling a hint against the private book is Kin's.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-218","label":"A","rationale":"Clustering bookmark folders is Cal's X lane.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-219","label":"A","rationale":"No-code design review of illustrations is Lane's.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-220","label":"A","rationale":"Verifying claims against git SHAs is Vera's ops audit.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-221","label":"A","rationale":"Rule states CoS may merge an ordinary PR after Blair APPROVE.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-222","label":"B","rationale":"needs-tom vendor decision must hold for Tom's stamp.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-223","label":"B","rationale":"Review and merge are fine; live apply stays blocked without Tom.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-224","label":"B","rationale":"Eng spike belongs in a Linear GMA ticket.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-225","label":"A","rationale":"Black-box regression execution is Kit's QA role.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-226","label":"A","rationale":"Drafting a generic changelog blurb is Tess's writing.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-227","label":"A","rationale":"Match-only import into the private book is Kin's; public naming barred.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-228","label":"A","rationale":"Turning X likes into digest themes is Cal's lane.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-229","label":"A","rationale":"Critique-only typography feedback is Lane's design review.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-230","label":"A","rationale":"Cross-checking done claims against CI runs is Vera's audit.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-231","label":"A","rationale":"Nine percent error rate with pager fired is an immediate ops incident.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-232","label":"A","rationale":"Upcoming check-in is STR ops FYI; codes must stay off public wiki.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-233","label":"A","rationale":"Rising reallocated sectors is failing hardware needing homelab diagnosis.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-234","label":"A","rationale":"Credential-harvesting lookalike; verify through a known-good session instead.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-235","label":"A","rationale":"Past-due invoice with suspension risk goes to bill-pay or dispute.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-236","label":"A","rationale":"District FYI with no RSVP is personal calendar only.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-237","label":"A","rationale":"MSA signature is a Tom-lock; draft or escalate, never auto-sign.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-238","label":"A","rationale":"Auto changelog digest can be skimmed or archived later.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-239","label":"A","rationale":"Review mentioning a lock issue needs STR follow-up with PII withheld.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-240","label":"A","rationale":"Owner verifies password resets; agents do not click reset links.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-241","label":"A","rationale":"Certificate expiring in 48 hours needs ops renewal now.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-242","label":"A","rationale":"Prize lure requesting SSN is phishing; do not click.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-243","label":"B","rationale":"Auto-acks are sends; sending is gated, so draft or ask.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-244","label":"B","rationale":"Live credentials stay in 1Password; never committed to git.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-245","label":"B","rationale":"Living household names are barred from the public genealogy wiki.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-246","label":"B","rationale":"Same-agent self-review on a gated PR is forbidden.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-247","label":"B","rationale":"Research must land on tmg-wiki main the same day.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-248","label":"B","rationale":"Shopping replacements is barred while the Photon lock stands.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-249","label":"B","rationale":"Tokens never get pasted in chat; use op CLI or secret-request.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-250","label":"B","rationale":"Beat-Jev claims need a same-file Jev baseline on the same harness.","model":"claude-opus-5","labeler":"A"}
