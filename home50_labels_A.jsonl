@@ -1,0 +1,50 @@
+{"id":"tom-s1-01","label":"Yes","rationale":"Receipt for a completed purchase; informational, no action asked.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-02","label":"Yes","rationale":"PR review blocking staging cutover today; explicit same-day engineering ask.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-03","label":"Yes","rationale":"Retail sale blast; no obligation, safe to archive.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-04","label":"Yes","rationale":"Unrequested reset could signal account takeover attempt; owner should verify.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-05","label":"Yes","rationale":"Neighbors, tacos, no work content; purely social.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-06","label":"Yes","rationale":"Past-due invoice demands payment or dispute promptly.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-07","label":"Yes","rationale":"Delivery confirmation is notification only; nothing to answer.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-08","label":"Yes","rationale":"Failed wire with 24h IBAN deadline; money at risk.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-09","label":"Yes","rationale":"Auto-generated changelog digest; low urgency, skimmable.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-10","label":"Yes","rationale":"DNS signing needs registrar credentials and Tom's authority; not agent-sendable.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-11","label":"Yes","rationale":"Free-prize lure requesting SSN via link is classic phishing.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-12","label":"Yes","rationale":"Move already accepted by counterparty; informational only.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-13","label":"A","rationale":"Wiki ingest onto tmg-wiki main is Wren's scope.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-14","label":"B","rationale":"Building a table with RLS is implementation work for Reed.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-15","label":"C","rationale":"Adversarial pre-merge review belongs to Blair.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-16","label":"D","rationale":"Open question about API existence is research; Scout.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-17","label":"E","rationale":"Recurring spend plus permanent vendor lock needs Tom's decision.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-18","label":"F","rationale":"No request present; nothing for any agent to own.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-19","label":"A","rationale":"Black-box smoke QA on artifacts is Kit's role.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-20","label":"A","rationale":"External-facing prose drafting goes to Tess.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-21","label":"A","rationale":"FamilySearch genealogy sync is Kin's domain.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-22","label":"A","rationale":"X bookmarks and digests are Cal's X.com scope.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-23","label":"A","rationale":"UI critique without implementation is Lane's design review.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-24","label":"A","rationale":"Claimed-vs-actual action tracing is Vera's ops audit.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-25","label":"A","rationale":"Blair's explicit CoS-may-merge phrase authorizes CoS merge.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-26","label":"B","rationale":"needs-tom product/model lock waits for Tom's stamp.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-27","label":"B","rationale":"Review gate does not authorize live secret apply/destroy.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-28","label":"B","rationale":"Linear is ticket source of truth for eng work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-29","label":"No","rationale":"Rule requires Tom to name recipient and message; speed is no exception.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-30","label":"Yes","rationale":"Living names barred from public genealogy-wiki, so publishing is forbidden.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-31","label":"Yes","rationale":"Private book may keep living facts unmasked.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-32","label":"No","rationale":"Rule forbids new per-repo issues for upcoming work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-33","label":"No","rationale":"Photon locked; vendor shopping needs Tom to reopen.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-34","label":"No","rationale":"Rule bans asking Tom to paste tokens; use op CLI.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-35","label":"No","rationale":"Guest PII must be redacted from the public STR wiki.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-36","label":"No","rationale":"Self-review is explicitly disallowed for gated work.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-37","label":"No","rationale":"Findings must be ingested to wiki, not left on issues.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-38","label":"No","rationale":"Softmax is not calibrated confidence; 0.92 is not 92% accuracy.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-39","label":"No","rationale":"No same-file Jev baseline on same harness, so no beat claim.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-40","label":"No","rationale":"Silent Colab/cloud training is out of policy for v1.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-41","label":"No","rationale":"Name Sam is categorically banned for agents.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-42","label":"Yes","rationale":"Stated phrase is the CoS merge authorization for ordinary eng PRs.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-43","label":"A","rationale":"Active 12% error rate with on-call page is immediate ops.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-44","label":"A","rationale":"STR arrival FYI; access codes stay out of public wiki.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-45","label":"A","rationale":"Registrar comparison, research only; Scout.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-46","label":"B","rationale":"Blanket auto-replies are unnamed sends; draft or ask instead.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-47","label":"A","rationale":"Pre-code architecture sketch is Blair's architect phase.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-48","label":"A","rationale":"Failed disk in degraded array is homelab infra priority.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-49","label":"B","rationale":"API keys belong in 1Password/op, never committed to git.","model":"claude-opus-5","labeler":"A"}
+{"id":"tom-s1-50","label":"A","rationale":"Stamping numbers onto a wiki project page is Wren's.","model":"claude-opus-5","labeler":"A"}
