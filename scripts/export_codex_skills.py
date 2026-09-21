@@ -577,6 +577,23 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Synthesize Act On / Consider / Noted / Dismissed; do not auto-apply fixes.",
         ),
     ),
+    "label-adjudication": SkillConfig(
+        description=(
+            "Use for two independent labeler models on JSONL, adjudicator on disagreements only, "
+            "and provenance-rich outputs for human stamp."
+        ),
+        short_description="Two-model JSONL label curation",
+        trigger_summary=(
+            "Triggers on adjudicate labels, label adjudication, two-model label, or curating "
+            "labeled JSONL with multi-model agreement."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Spawn labeler A and B with the same prompt template; no shared chain-of-thought.",
+            "Merge with scripts/adjudicate_labels.py; adjudicator rows required for every disagreeing id.",
+            "Emit adjudication.jsonl and final.jsonl; human stamp overrides; never skip conflicts.",
+        ),
+    ),
     "maintain-verification-skill": SkillConfig(
         description=(
             "Use to reconcile and live-pass a verify-<app> skill against product drift."

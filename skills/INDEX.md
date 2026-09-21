@@ -248,6 +248,13 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### label-adjudication
+**File**: `skills/label-adjudication/SKILL.md`  
+**Trigger**: "Adjudicate labels", "label adjudication", "two-model label", or curating labeled JSONL with multi-model agreement.  
+**What it does**: Two independent upper-frontier labelers on JSONL, accept exact-match agreements, run a third adjudicator only on disagreements, merge via `scripts/adjudicate_labels.py`, emit provenance-rich `adjudication.jsonl` / `final.jsonl` / `summary.md` for human stamp. **Not** PR review (`interrogate` / `expert-pr-review`) or design arenas (`arena`).
+
+---
+
 ### maintain-verification-skill
 **File**: `skills/maintain-verification-skill/SKILL.md`  
 **Trigger**: Hygiene, reconciliation, or live pass for an existing `verify-<app>` skill.  

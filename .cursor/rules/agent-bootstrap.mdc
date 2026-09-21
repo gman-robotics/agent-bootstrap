@@ -54,6 +54,7 @@ When any skill is triggered, read the full skill file (`skills/<name>.md`) befor
 | `figure-it-out.md` | No narrower playbook; large migration |
 | `how.md` | How does X work (runtime) |
 | `interrogate.md` | Adversarial multi-model review |
+| `label-adjudication.md` | Two-model JSONL label curation + adjudicator on disagreements |
 | `maintain-verification-skill.md` | Maintain verify-<app> skill |
 | `pstack-principles.md` | Combined pstack principles |
 | `reflect.md` | Reflect on session for skill improvements |

@@ -1,0 +1,25 @@
+{
+  "name": "merge-unresolved-disagreement",
+  "description": "Two labeler JSONLs disagree on item-2 with no adjudicator row; merge CLI must exit 1 and list the unresolved id on stderr.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/adjudicate_labels.py",
+      "--labels-a",
+      "skills/label-adjudication/fixtures/merge-unresolved-disagreement/labels_a.jsonl",
+      "--labels-b",
+      "skills/label-adjudication/fixtures/merge-unresolved-disagreement/labels_b.jsonl",
+      "--items",
+      "skills/label-adjudication/fixtures/merge-unresolved-disagreement/items.jsonl",
+      "--adjudication-out",
+      "skills/label-adjudication/fixtures/merge-unresolved-disagreement/out/adjudication.jsonl",
+      "--final-out",
+      "skills/label-adjudication/fixtures/merge-unresolved-disagreement/out/final.jsonl"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 1,
+    "stderr_contains": ["unresolved disagreement ids", "item-2"]
+  }
+}
