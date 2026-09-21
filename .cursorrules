@@ -50,6 +50,7 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `figure-it-out.md`            → no narrower playbook; large migration
 - `how.md`                      → how does X work (runtime)
 - `interrogate.md`              → adversarial multi-model review
+- `label-adjudication.md`       → two-model JSONL label curation + adjudicator on disagreements
 - `maintain-verification-skill.md` → maintain verify-<app> skill
 - `pstack-principles.md`        → combined pstack principles reference
 - `reflect.md`                  → reflect on session for skill improvements

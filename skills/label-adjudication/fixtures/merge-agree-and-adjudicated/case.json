@@ -1,0 +1,27 @@
+{
+  "name": "merge-agree-and-adjudicated",
+  "description": "Deterministic merge: one agree row and one disagree row resolved by a precomputed adjudicator JSONL; stdout must report agree= and adjudicated= counts.",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/adjudicate_labels.py",
+      "--labels-a",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/labels_a.jsonl",
+      "--labels-b",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/labels_b.jsonl",
+      "--items",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/items.jsonl",
+      "--adjudicator-jsonl",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/adjudicator.jsonl",
+      "--adjudication-out",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/out/adjudication.jsonl",
+      "--final-out",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/out/final.jsonl"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": ["agree=", "adjudicated="]
+  }
+}

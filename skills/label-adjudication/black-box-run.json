@@ -1,0 +1,39 @@
+{
+  "captured_at": "2026-09-21T14:27:11.672357+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "merge-agree-and-adjudicated",
+  "description": "Deterministic merge: one agree row and one disagree row resolved by a precomputed adjudicator JSONL; stdout must report agree= and adjudicated= counts.",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "agree=",
+      "adjudicated="
+    ]
+  },
+  "fixture": "skills/label-adjudication/fixtures/merge-agree-and-adjudicated",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/adjudicate_labels.py",
+      "--labels-a",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/labels_a.jsonl",
+      "--labels-b",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/labels_b.jsonl",
+      "--items",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/items.jsonl",
+      "--adjudicator-jsonl",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/adjudicator.jsonl",
+      "--adjudication-out",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/out/adjudication.jsonl",
+      "--final-out",
+      "skills/label-adjudication/fixtures/merge-agree-and-adjudicated/out/final.jsonl"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "0361812ee22df92f0107d3da7b265892bcc50166d2b6dee375cdc01517bbc9a2",
+  "stderr_tail": "",
+  "stdout_tail": "resolved 2 items: agree=1 adjudicated=1\n",
+  "verdict": "pass"
+}

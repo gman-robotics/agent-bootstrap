@@ -325,6 +325,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/figure-it-out/SKILL.md` | No narrower playbook fits; large migration | Design auditable workflow, hypothesis loop, TSV trail |
 | `skills/how/SKILL.md` | How does X work (runtime behavior) | Parallel explorers, synthesized behavior explanation |
 | `skills/interrogate/SKILL.md` | Adversarial multi-model review | Parallel reviewers, verdict buckets, no auto-apply |
+| `skills/label-adjudication/SKILL.md` | Adjudicate labels, two-model label, curate dataset JSONL | Two labelers + adjudicator on disagreements; `scripts/adjudicate_labels.py` merge; human stamp |
 | `skills/maintain-verification-skill/SKILL.md` | Maintain verify-<app> skill | Reconcile feature map, live-pass, triage drift |
 | `skills/pstack-principles/SKILL.md` | Cited pstack principle or decision lens | Combined principles; never-block carve-out for Approve/Reject gates |
 | `skills/reflect/SKILL.md` | Reflect on harness session | Transcript reviewers, skill proposals, approval gate |
