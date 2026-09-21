@@ -89,6 +89,36 @@ class AdjudicateLabelsMergeTests(unittest.TestCase):
         self.assertIn("x", proc.stderr + proc.stdout)
         self.assertIn("unresolved", (proc.stderr + proc.stdout).lower())
 
+    def test_adjudicator_empty_id_rejected(self):
+        out = tempfile.TemporaryDirectory()
+        labels_a = Path(out.name) / "a.jsonl"
+        labels_b = Path(out.name) / "b.jsonl"
+        adj = Path(out.name) / "adj.jsonl"
+        labels_a.write_text('{"id": "x", "label": "a"}\n', encoding="utf-8")
+        labels_b.write_text('{"id": "x", "label": "b"}\n', encoding="utf-8")
+        adj.write_text('{"id": "", "final_label": "pick-a"}\n', encoding="utf-8")
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--labels-a",
+                str(labels_a),
+                "--labels-b",
+                str(labels_b),
+                "--adjudicator-jsonl",
+                str(adj),
+                "--adjudication-out",
+                str(Path(out.name) / "adj_out.jsonl"),
+                "--final-out",
+                str(Path(out.name) / "final.jsonl"),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("non-empty string", proc.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

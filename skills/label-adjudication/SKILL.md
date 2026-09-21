@@ -52,6 +52,14 @@ Collect:
 | Model ids | Yes | Configurable per harness — **do not** assume a single vendor slug; record in provenance |
 | Output directory | Yes | Writable workspace for all artifacts |
 
+**Recommended defaults** (override per project or harness; record actual ids in provenance and `models` on merge):
+
+| Role | Default model | Notes |
+|---|---|---|
+| Labeler A | `claude-opus-5` (effort high) | Independent harness call |
+| Labeler B | `gpt-5.6-sol` (reasoning high) | Until `gpt-6-astra` is available in your harness |
+| Adjudicator (disagreements only) | `grok-4.6` | One call per unresolved disagreeing `id` |
+
 Document normalize rules (trim, lowercase, map synonyms) before any model runs.
 
 ## Step 2 — Independent labeling (A and B)
@@ -87,7 +95,7 @@ Rules:
 
 ## Step 4 — Adjudicator on disagreements only
 
-For each disagreeing id (from a dry-run list or a failed merge):
+For each disagreeing id (from stderr on a failed merge — the CLI lists unresolved ids and exits 1):
 
 1. Fill `references/adjudicator-prompt.md` with item context + both labels and rationales.
 2. Spawn the adjudicator model once per disagreeing item (or batched per harness limits).
@@ -101,7 +109,7 @@ For each disagreeing id (from a dry-run list or a failed merge):
 | `labels_a.jsonl` / `labels_b.jsonl` | Raw labeler outputs |
 | `adjudication.jsonl` | One row per id: `id`, `label_a`, `label_b`, `final_label`, `resolution` (`agree` \| `adjudicated`), `adjudicator_rationale` (null on agree), `models` |
 | `final.jsonl` | Source rows (when `--items` given) plus `label` and `label_status` (`agreed_pending_human` or `adjudicated_pending_human`) |
-| `summary.md` | Agree count, disagree count, per-label distribution, model ids used |
+| `summary.md` (optional) | Human-written curation note: agree/disagree counts, per-label distribution, model ids — stdout `agree=` / `adjudicated=` from Step 3 is authoritative for counts |
 
 ## Step 6 — Human stamp
 
@@ -119,7 +127,7 @@ A human reviewer may override any `final_label` in `final.jsonl`. Record overrid
 
 - [ ] Same labeler prompt template for A and B; no shared CoT
 - [ ] `scripts/adjudicate_labels.py` exit 0 with full adjudicator coverage
-- [ ] `summary.md` counts match stdout `agree=` / `adjudicated=` line
+- [ ] Stdout `agree=` / `adjudicated=` line recorded; optional `summary.md` matches when you write one
 - [ ] Human stamp step scheduled or completed for `*_pending_human` rows
 - [ ] Black-box fixture pass captured in `black-box-run.json` (`check_skill_live.py label-adjudication` → 0)
 

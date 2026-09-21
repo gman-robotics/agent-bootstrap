@@ -63,6 +63,8 @@ def _index_adjudicator(rows: list[dict[str, Any]], source: str) -> dict[str, dic
             if field not in row:
                 raise ValueError(f"{source}: row missing required field '{field}': {row!r}")
         row_id = row["id"]
+        if not isinstance(row_id, str) or not row_id:
+            raise ValueError(f"{source}: id must be a non-empty string: {row!r}")
         if row_id in index:
             raise ValueError(f"{source}: duplicate id {row_id!r}")
         index[row_id] = row

@@ -22,6 +22,6 @@
   },
   "expected": {
     "exit_code": 0,
-    "stdout_contains": ["agree=", "adjudicated="]
+    "stdout_contains": ["agree=1", "adjudicated=1", "resolved 2 items"]
   }
 }
