@@ -1,0 +1,200 @@
+{"id":"tom-s1-051","label":"Yes","rationale":"It reports a completed payout and requests no action.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-052","label":"Yes","rationale":"Approval is requested before an imminent deadline.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-053","label":"Yes","rationale":"This is a promotional sale with no reply needed.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-054","label":"Yes","rationale":"An unusual login warrants owner verification.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-055","label":"Yes","rationale":"The hike invitation is personal and noncritical.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-056","label":"Yes","rationale":"The invoice has a payment deadline requiring action.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-057","label":"Yes","rationale":"Delivery is complete and no response is requested.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-058","label":"Yes","rationale":"Failed remittance requires bank details within 48 hours.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-059","label":"Yes","rationale":"This automated CI digest can be reviewed later.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-060","label":"Yes","rationale":"Credential rotation requires owner-controlled secret handling.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-061","label":"Yes","rationale":"The bank PIN request strongly indicates phishing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-062","label":"Yes","rationale":"The clinic already confirmed the calendar change.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-063","label":"Yes","rationale":"High-severity dependency alerts require engineering triage.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-064","label":"Yes","rationale":"A blocking merge question needs a timely response.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-065","label":"Yes","rationale":"A weekly workspace digest is informational and nonurgent.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-066","label":"Yes","rationale":"The message provides a completed earnings statement.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-067","label":"Yes","rationale":"A guest checkout update merits operational review or acknowledgment.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-068","label":"Yes","rationale":"An MFA reset must be verified by the owner.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-069","label":"Yes","rationale":"Auto-renew is enabled, making this reminder informational.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-070","label":"Yes","rationale":"A binding signature decision belongs to the human owner.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-071","label":"Yes","rationale":"This is a routine receipt for an existing subscription.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-072","label":"Yes","rationale":"The incident is closed and service has recovered.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-073","label":"Yes","rationale":"The attorney offers only one same-day scheduling window.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-074","label":"Yes","rationale":"This is a LinkedIn premium marketing prompt.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-075","label":"Yes","rationale":"Changed wire instructions from a lookalike address indicate BEC.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-076","label":"Yes","rationale":"The parity check completed successfully with zero errors.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-077","label":"Yes","rationale":"Approaching the usage cap may require a budget choice.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-078","label":"Yes","rationale":"The pull request is explicitly waiting for review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-079","label":"Yes","rationale":"The research newsletter has no immediate action request.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-080","label":"Yes","rationale":"Sensitive tax data requested through an unfamiliar link needs verification.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-081","label":"Yes","rationale":"The DNS notice explicitly says no action is needed.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-082","label":"Yes","rationale":"A guest refund requires a host decision.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-083","label":"Yes","rationale":"The recording availability notice requests no response.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-084","label":"Yes","rationale":"Unknown VPN failures and lockout require owner attention.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-085","label":"Yes","rationale":"The reunion poll is a personal social matter.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-086","label":"Yes","rationale":"Service termination creates an upcoming billing decision.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-087","label":"Yes","rationale":"A detected token requires urgent containment and rotation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-088","label":"Yes","rationale":"The itinerary is confirmed and the seat is assigned.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-089","label":"Yes","rationale":"Urgent gift-card code requests are classic social engineering.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-090","label":"Yes","rationale":"Critically low disk space needs prompt diagnosis.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-091","label":"Yes","rationale":"The support payment receipt explicitly requires no action.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-092","label":"Yes","rationale":"Changing outbound communication policy requires Tom's decision.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-093","label":"Yes","rationale":"The organizer already canceled the event.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-094","label":"Yes","rationale":"The overdue balance requires payment or dispute before Friday.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-095","label":"Yes","rationale":"A new iCloud device requires owner verification.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-096","label":"Yes","rationale":"This unsolicited SEO pitch is junk marketing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-097","label":"Yes","rationale":"The expiring certificate requires action within 72 hours.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-098","label":"Yes","rationale":"Book pickup is a personal errand, not work-critical.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-099","label":"No","rationale":"The rule requires Tom to name the recipient and message.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-100","label":"Yes","rationale":"The rule expressly forbids public living-family names.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-101","label":"Yes","rationale":"Unmasked living facts are permitted in the private book.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-102","label":"No","rationale":"Linear, not new GitHub issues, is the ticket source.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-103","label":"No","rationale":"Photon remains locked unless Tom reopens the decision.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-104","label":"No","rationale":"Tokens must use approved secret tooling, never chat.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-105","label":"No","rationale":"Public STR content must redact lock codes.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-106","label":"No","rationale":"Required adversarial review cannot be self-review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-107","label":"No","rationale":"Research must also reach the wiki the same day.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-108","label":"No","rationale":"Softmax scores are explicitly not calibrated confidence.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-109","label":"No","rationale":"A same-harness Jev baseline is required for comparison.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-110","label":"No","rationale":"Version one permits training only on the personal MBP.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-111","label":"No","rationale":"The rule categorically prohibits naming an agent Sam.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-112","label":"Yes","rationale":"The rule explicitly authorizes CoS merge after approval.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-113","label":"No","rationale":"A needs-tom lock still requires Tom's stamp.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-114","label":"No","rationale":"Live production apply remains blocked after merge approval.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-115","label":"No","rationale":"Secrets may never be committed to git branches.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-116","label":"No","rationale":"Guest email is PII forbidden on public pages.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-117","label":"Yes","rationale":"A client invoice cannot enter the public personal wiki.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-118","label":"No","rationale":"An array wipe is destructive and needs confirmation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-119","label":"No","rationale":"Incident response forbids unrelated drive-by refactors.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-120","label":"No","rationale":"Agents cannot independently create binding vendor spend.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-121","label":"No","rationale":"Silent public writes of living records are prohibited.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-122","label":"No","rationale":"Posts speaking as Tom require explicit approval.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-123","label":"No","rationale":"Design approval does not replace required adversarial review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-124","label":"No","rationale":"Completion claims require linked evidence.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-125","label":"No","rationale":"Kit performs black-box QA without rewriting product code.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-126","label":"No","rationale":"External writing must exclude living-family names.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-127","label":"No","rationale":"Research notes must land on the wiki the same day.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-128","label":"No","rationale":"Implementer and adversarial reviewer roles must remain separate.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-129","label":"No","rationale":"Closing a needs-tom ticket requires Tom's decision.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-130","label":"Yes","rationale":"The rule permits drafts while gating actual sends.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-131","label":"Yes","rationale":"A redacted status banner contains none of the prohibited data.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-132","label":"Yes","rationale":"Official scores cannot cherry-pick a favorable subset.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-133","label":"No","rationale":"Agents may not permanently disable monitoring.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-134","label":"Yes","rationale":"Read-only verification is non-destructive and usually allowed.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-135","label":"No","rationale":"Client materials cannot be cross-posted publicly.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-136","label":"No","rationale":"Production DNS changes are explicitly Tom-gated.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-137","label":"Yes","rationale":"A pass claim without an artifact violates the protocol.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-138","label":"No","rationale":"An agent cannot broaden its own outbound permissions.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-139","label":"No","rationale":"Production guest data must remain minimized, not copied to staging.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-140","label":"No","rationale":"Ambiguity requires escalation rather than sending.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-141","label":"Yes","rationale":"Shared notebooks must not contain live production tokens.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-142","label":"No","rationale":"Linear remains required for engineering work tracking.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-143","label":"No","rationale":"Noise without an ask should be ignored.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-144","label":"No","rationale":"Only the owner should verify security reset emails.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-145","label":"No","rationale":"Final adjudication labels require Tom's stamp.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-146","label":"Yes","rationale":"GitHub remains allowed for pull-request discussion.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-147","label":"No","rationale":"Public marketing pages also prohibit living names.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-148","label":"No","rationale":"An exposed key must be rotated.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-149","label":"No","rationale":"Merge approval does not waive required smoke testing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-150","label":"Yes","rationale":"The proposed ingest includes both citation and summary.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-151","label":"No","rationale":"External forwarding requires Tom to name the send.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-152","label":"No","rationale":"Phase zero Metal smoke belongs on the personal MBP.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-153","label":"Yes","rationale":"Raw guest threads are forbidden on the public wiki.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-154","label":"No","rationale":"Choice answers must use an offered owner letter.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-155","label":"A","rationale":"Wren owns same-day wiki ingestion.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-156","label":"B","rationale":"Reed owns implementation work.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-157","label":"C","rationale":"Blair owns adversarial review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-158","label":"D","rationale":"Scout owns technical landscape research.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-159","label":"E","rationale":"Vendor lock and spending decisions require Tom.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-160","label":"F","rationale":"A reaction GIF without an ask needs no agent.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-161","label":"A","rationale":"Wren owns wiki documentation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-162","label":"B","rationale":"Reed owns queue worker implementation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-163","label":"C","rationale":"Blair owns adversarial plan review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-164","label":"D","rationale":"Scout owns research-only comparisons.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-165","label":"E","rationale":"A permanent spending increase requires Tom.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-166","label":"F","rationale":"A forwarded meme without an ask is ignorable.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-167","label":"A","rationale":"Wren owns same-day research ingestion to the wiki.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-168","label":"B","rationale":"Reed owns feature flag code changes.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-169","label":"C","rationale":"Blair owns least-privilege review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-170","label":"D","rationale":"Scout owns evaluation-harness research.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-171","label":"E","rationale":"Contract signature and pricing commitments require Tom.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-172","label":"F","rationale":"A social photo without a task needs no agent.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-173","label":"A","rationale":"Wren owns cleaned wiki publication.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-174","label":"B","rationale":"Reed owns endpoint implementation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-175","label":"C","rationale":"Blair owns adversarial rollback review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-176","label":"D","rationale":"Scout owns current tooling research.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-177","label":"E","rationale":"Destructive infrastructure authorization requires Tom.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-178","label":"F","rationale":"A sunset image without an ask needs no agent.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-179","label":"A","rationale":"Wren owns durable wiki ingestion.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-180","label":"B","rationale":"Reed owns structured logging implementation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-181","label":"C","rationale":"Blair owns adversarial secrets review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-182","label":"D","rationale":"Scout owns registrar capability research.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-183","label":"E","rationale":"A year-long vendor replacement requires Tom.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-184","label":"F","rationale":"A meme without actionable text needs no agent.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-185","label":"A","rationale":"Wren owns project wiki documentation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-186","label":"B","rationale":"Reed owns API feature flag wiring.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-187","label":"C","rationale":"Blair owns pre-implementation architecture review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-188","label":"D","rationale":"Scout owns current API-policy research.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-189","label":"E","rationale":"Live production secrets rotation requires Tom.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-190","label":"F","rationale":"An emoji-only message has no actionable request.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-191","label":"A","rationale":"Wren owns wiki run-log updates.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-192","label":"B","rationale":"Reed owns endpoint pagination implementation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-193","label":"C","rationale":"Blair owns adversarial automation review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-194","label":"D","rationale":"Scout owns research-only infrastructure alternatives.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-195","label":"A","rationale":"Kit owns black-box artifact QA.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-196","label":"A","rationale":"Tess owns neutral external writing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-197","label":"A","rationale":"Kin owns private genealogy matching.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-198","label":"A","rationale":"Cal owns X bookmark curation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-199","label":"A","rationale":"Lane owns design critique without implementation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-200","label":"A","rationale":"Vera owns evidence-based operations audits.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-201","label":"A","rationale":"CoS may merge an approved ordinary engineering PR.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-202","label":"B","rationale":"A needs-tom product lock requires Tom's stamp.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-203","label":"B","rationale":"Review may permit merge, but live apply remains blocked.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-204","label":"B","rationale":"Linear is the source of truth for upcoming engineering work.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-205","label":"A","rationale":"Kit owns smoke testing without product edits.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-206","label":"A","rationale":"Tess owns guest-facing prose.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-207","label":"A","rationale":"Kin owns match-only private genealogy sync.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-208","label":"A","rationale":"Cal owns curation of liked X posts.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-209","label":"A","rationale":"Lane owns screenshot-based UX critique.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-210","label":"A","rationale":"Vera owns evidence audits of operational decisions.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-211","label":"A","rationale":"CoS merges an approved non-locked engineering PR.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-212","label":"B","rationale":"A needs-tom purchase requires Tom's stamp.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-213","label":"B","rationale":"Merge approval does not authorize live production apply.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-214","label":"B","rationale":"Linear is the engineering epic source of truth.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-215","label":"A","rationale":"Kit owns QA of tagged artifacts.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-216","label":"A","rationale":"Tess owns plain-language external writing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-217","label":"A","rationale":"Kin owns private-book genealogy reconciliation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-218","label":"A","rationale":"Cal owns bookmark-folder curation.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-219","label":"A","rationale":"Lane owns no-code visual design review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-220","label":"A","rationale":"Vera owns evidence checks against git SHAs.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-221","label":"A","rationale":"CoS may merge after approval on an ordinary PR.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-222","label":"B","rationale":"The vendor decision is explicitly locked for Tom.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-223","label":"B","rationale":"Live destructive apply remains blocked without Tom.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-224","label":"B","rationale":"Engineering spikes belong in Linear GMA tickets.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-225","label":"A","rationale":"Kit owns black-box regression testing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-226","label":"A","rationale":"Tess owns generic public changelog writing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-227","label":"A","rationale":"Kin owns match-only private genealogy imports.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-228","label":"A","rationale":"Cal owns digest themes from X likes.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-229","label":"A","rationale":"Lane owns typography and spacing critique.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-230","label":"A","rationale":"Vera owns evidence audits against CI runs.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-231","label":"A","rationale":"A live production error spike requires immediate operations response.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-232","label":"A","rationale":"This is STR operations information containing sensitive access details.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-233","label":"A","rationale":"Rising reallocated sectors require prompt disk diagnosis.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-234","label":"A","rationale":"A lookalike security email should be verified through GitHub directly.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-235","label":"A","rationale":"A past-due AWS invoice needs payment or dispute review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-236","label":"A","rationale":"The school holiday is personal calendar information only.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-237","label":"A","rationale":"A binding contract signature is Tom-gated.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-238","label":"A","rationale":"An automated weekly digest can be reviewed later.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-239","label":"A","rationale":"A reported lock issue requires private STR follow-up.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-240","label":"A","rationale":"Password resets require owner verification, not agent clicks.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-241","label":"A","rationale":"The certificate needs engineering action before expiry.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-242","label":"A","rationale":"A prize requesting an SSN is phishing.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-243","label":"B","rationale":"Automatic replies are outbound sends and require authorization.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-244","label":"B","rationale":"Live credentials must remain in approved secret storage.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-245","label":"B","rationale":"Public wiki pages must exclude living household names.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-246","label":"B","rationale":"Gated work requires independent adversarial review.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-247","label":"B","rationale":"Research must reach the wiki main branch the same day.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-248","label":"B","rationale":"The Photon vendor lock remains binding until Tom reopens it.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-249","label":"B","rationale":"Service-account tokens must use secret tooling, never chat.","model":"gpt-5.6-sol","labeler":"B"}
+{"id":"tom-s1-250","label":"B","rationale":"A beat-Jev claim requires a same-harness Jev baseline.","model":"gpt-5.6-sol","labeler":"B"}
