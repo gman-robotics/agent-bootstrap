@@ -1,0 +1,50 @@
+{"id":"tom-s1-01","label":"Yes","rationale":"Receipt-only Adobe charge; no human action requested.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-02","label":"Yes","rationale":"Same-day PR review request blocks staging cutover.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-03","label":"Yes","rationale":"Retail mattress sale promo; archive without reply.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-04","label":"Yes","rationale":"GitHub password reset is security-sensitive; owner should verify.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-05","label":"Yes","rationale":"Neighbor taco lunch is personal social, not work-critical.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-06","label":"Yes","rationale":"Past-due invoice needs pay or dispute soon.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-07","label":"Yes","rationale":"Delivery confirmation is FYI logistics; no reply needed.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-08","label":"Yes","rationale":"Failed wire with 24h IBAN update is urgent finance.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-09","label":"Yes","rationale":"Auto-generated weekly changelog is a skim-later digest.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-10","label":"Yes","rationale":"DNS sign-off is a Tom credentials gate, not auto-send.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-11","label":"Yes","rationale":"Free iPhone plus SSN link is classic phishing.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-12","label":"Yes","rationale":"Already-accepted 1:1 move is informational only.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-13","label":"A","rationale":"Same-day wiki ingest belongs to Wren.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-14","label":"B","rationale":"OTel RLS table implementation belongs to Reed.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-15","label":"C","rationale":"Adversarial PR review before merge belongs to Blair.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-16","label":"D","rationale":"FamilySearch API existence question is Scout research.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-17","label":"E","rationale":"Spend approval and vendor lock are Tom-only.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-18","label":"F","rationale":"Meme with no ask needs no agent.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-19","label":"A","rationale":"Black-box smoke QA on artifacts belongs to Kit.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-20","label":"A","rationale":"External LinkedIn wording is Tess writing.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-21","label":"A","rationale":"FamilySearch match-only sync is Kin family-tree work.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-22","label":"A","rationale":"X bookmark sweep into digest is Cal.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-23","label":"A","rationale":"UI critique without implement is Lane design.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-24","label":"A","rationale":"Ops-trace of claims vs systems is Vera.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-25","label":"A","rationale":"Blair APPROVE — CoS may merge authorizes CoS merge.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-26","label":"B","rationale":"needs-tom product lock waits for Tom stamp.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-27","label":"B","rationale":"Live secrets apply stays blocked after CoS gate.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-28","label":"B","rationale":"Upcoming eng work should be a Linear GMA ticket.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-29","label":"No","rationale":"Unnamed vendor email is not allowed under send rule.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-30","label":"Yes","rationale":"Living child's public wiki name is forbidden by rule.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-31","label":"Yes","rationale":"Private book may store unmasked living birth dates.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-32","label":"No","rationale":"GitHub issues are not preferred; Linear is ticket SoT.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-33","label":"No","rationale":"Photon lock forbids shopping other SMS vendors.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-34","label":"No","rationale":"Asking Tom to paste tokens in chat is forbidden.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-35","label":"No","rationale":"Guest phone is PII; public STR wiki must redact it.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-36","label":"No","rationale":"Same-agent self-review is forbidden as sole adversarial.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-37","label":"No","rationale":"Research must wiki-ingest; issue-only findings violate rule.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-38","label":"No","rationale":"Softmax is not calibrated correctness probability.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-39","label":"No","rationale":"Nimble-only score lacks same-file Jev baseline.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-40","label":"No","rationale":"Silent Colab train is out of v1 MBP-only policy.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-41","label":"No","rationale":"Naming any agent Sam is forbidden.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-42","label":"Yes","rationale":"APPROVE — CoS may merge allows CoS merge without Tom.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-43","label":"A","rationale":"Live 5xx page is immediate ops handling.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-44","label":"A","rationale":"Guest arrival is STR FYI; keep codes off public wiki.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-45","label":"A","rationale":"Registrar comparison, research only, is Scout.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-46","label":"B","rationale":"Unsolicited auto-replies are sends; draft or ask.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-47","label":"A","rationale":"Pre-code architecture sketch is Blair architect phase.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-48","label":"A","rationale":"Degraded Unraid disk is priority homelab diagnosis.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-49","label":"B","rationale":"API keys must stay in 1Password, not git.","model":"grok-4.6","labeler":"A"}
+{"id":"tom-s1-50","label":"A","rationale":"Stamping numbers on wiki project page is Wren.","model":"grok-4.6","labeler":"A"}
