@@ -220,6 +220,13 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### security-audit
+**File**: `skills/security-audit/SKILL.md`  
+**Trigger** (allowlist only): The literal phrase "security audit"/"security-audit", "run the Cloudflare security audit", or an explicit full/comprehensive/end-to-end/pen-test request against a codebase. **Not** for generic "security review", "review this PR", "what could this break", or unscoped find-vulnerabilities requests — those route to `expert-pr-review` / `blast-radius`.  
+**What it does**: Opt-in vendor of Cloudflare's `security-audit-skill` (MIT, pinned `c1c8a8c1471069fb0e188eeaff69b8e8db6564a8`, GMA-56). Guidance-mode by default — loading it never auto-runs the six-phase audit, creates an output directory, or writes artifacts. Full audit mode requires an explicit ask **and** a capability check against the four named Universal execution-safety controls (no external network, allowlisted environment, scratch-only writes, explicit resource limits) before any target-controlled execution; missing any control keeps the result `needs_validation`, never a silent pass. Full attribution trail (LICENSE, house `NOTICE.md`, vendored upstream tree including its own `SKILL.md` as a companion reference, never the hub entry) lives under `references/cloudflare/`. Companions: `expert-pr-review`, `blast-radius` — neither is a substitute for the other.
+
+---
+
 ### create-verification-skill
 **File**: `skills/create-verification-skill/SKILL.md`  
 **Trigger**: Creating a new `verify-<app>` skill for end-to-end product verification.  
@@ -328,4 +335,4 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 6. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
 7. If any later edit changes `SKILL.md`, re-run step 2 before the edit ships — `check_skill_live.py` (and therefore `tests/test_index_live_binding.py`) will fail on the stale `skill_sha256` until you do.
 
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
+*Last updated: 2026-09-23 | Hub version: 0.12.0*

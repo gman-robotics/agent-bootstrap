@@ -46,6 +46,7 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `arena.md`                    → arena this; parallel candidates
 - `automate-me.md`              → build personal mode skill from preferences
 - `blast-radius.md`             → what could this break
+- `security-audit.md`           → literal "security audit"/"security-audit" or explicit full/pen-test ask (opt-in Cloudflare vendor, not "security review"/"review this PR")
 - `create-verification-skill.md`→ bootstrap verify-<app> skill
 - `figure-it-out.md`            → no narrower playbook; large migration
 - `how.md`                      → how does X work (runtime)

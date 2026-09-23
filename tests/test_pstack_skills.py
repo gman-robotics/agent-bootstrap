@@ -189,6 +189,47 @@ class PstackSkillsTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
 
+    def test_security_audit_companion_points_at_expert_pr_review(self) -> None:
+        """GMA-56: security-audit <-> expert-pr-review reverse companion pointer."""
+        text = (REPO_ROOT / "skills" / "security-audit" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("**Do not use for**", text)
+        self.assertIn("expert-pr-review", text)
+        self.assertIn("## Companions", text)
+        companions_section = text.split("## Companions", 1)[1].split("##", 1)[0]
+        self.assertIn("expert-pr-review", companions_section)
+
+    def test_security_audit_companion_points_at_blast_radius(self) -> None:
+        """GMA-56: security-audit <-> blast-radius reverse companion pointer."""
+        text = (REPO_ROOT / "skills" / "security-audit" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("**Do not use for**", text)
+        self.assertIn("blast-radius", text)
+        self.assertIn("## Companions", text)
+        companions_section = text.split("## Companions", 1)[1].split("##", 1)[0]
+        self.assertIn("blast-radius", companions_section)
+
+    def test_companion_validator_cli_runs_for_security_audit(self) -> None:
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), "security-audit"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+
+    def test_security_audit_vendor_structure_validator_cli_runs(self) -> None:
+        """GMA-56: the standalone security-audit vendor validator (not a pstack port)."""
+        result = subprocess.run(
+            [sys.executable, str(REPO_ROOT / "scripts" / "validate_security_audit_vendor.py"), "security-audit"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+
     def test_companion_validator_rejects_stripped_show_me_companion_row(self) -> None:
         skill_md = REPO_ROOT / "skills" / "show-me" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")

@@ -50,6 +50,7 @@ When any skill is triggered, read the full skill file (`skills/<name>.md`) befor
 | `arena.md` | Arena this; parallel candidates |
 | `automate-me.md` | Build personal mode skill from preferences |
 | `blast-radius.md` | What could this break |
+| `security-audit.md` | Literal "security audit"/"security-audit" or explicit full/pen-test ask (opt-in Cloudflare vendor; not "security review"/"review this PR") |
 | `create-verification-skill.md` | Bootstrap verify-<app> skill |
 | `figure-it-out.md` | No narrower playbook; large migration |
 | `how.md` | How does X work (runtime) |

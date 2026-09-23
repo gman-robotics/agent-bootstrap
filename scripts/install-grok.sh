@@ -102,20 +102,29 @@ python3 "${REPO_ROOT}/scripts/export_codex_skills.py" "${EXPORT_ARGS[@]}"
 echo "  ✓ Skills exported to ${SKILLS_DIR}"
 
 # export --force rmtree's each skill dir and only regenerates references/source.md.
-# Copy any other canonical reference files the exporter does not emit.
+# Copy any other canonical reference files the exporter does not emit. Walks recursively
+# (not a one-level glob) so a nested vendor subtree like
+# skills/security-audit/references/cloudflare/** round-trips too (GMA-56 Blocker 2) —
+# a plain `[[ -f "$ref" ]]` one-level loop silently skips directories entirely.
 echo "→ Restoring extra skill references ..."
 for skill_src in "${REPO_ROOT}/skills"/*/; do
   [[ -d "${skill_src}/references" ]] || continue
   skill_name="$(basename "${skill_src}")"
+  src_ref="${skill_src}/references"
   dest_ref="${SKILLS_DIR}/${skill_name}/references"
   mkdir -p "${dest_ref}"
-  for ref in "${skill_src}/references"/*; do
-    [[ -f "$ref" ]] || continue
+  while IFS= read -r -d '' ref; do
+    rel="${ref#"${src_ref}"/}"
     base="$(basename "$ref")"
+    # Excluded at any depth, not just the top level: a nested vendor tree could in
+    # principle carry its own "source.md"-named file that must not collide with the
+    # exporter-generated one at references/source.md.
     [[ "$base" == "source.md" ]] && continue
-    cp "$ref" "${dest_ref}/${base}"
-    echo "  ✓ Restored ${skill_name}/references/${base}"
-  done
+    dest_path="${dest_ref}/${rel}"
+    mkdir -p "$(dirname "${dest_path}")"
+    cp "$ref" "${dest_path}"
+    echo "  ✓ Restored ${skill_name}/references/${rel}"
+  done < <(find "${src_ref}" -type f -print0)
 done
 
 # --- Agents ---

@@ -51,5 +51,6 @@ For categories with no findings, state "No issues found" — do not omit categor
 **Related Skills**
 - expert-pr-review.md (orchestration context)
 - delegation-patterns.md (how you are spawned)
+- `skills/security-audit/SKILL.md` (opt-in) — this persona's own reviews stay a focused, guidance-mode diff checklist; the full Cloudflare-style six-phase audit is never launched implicitly by this persona and requires an explicit full-audit/pen-test request loading that skill directly
 
 **Last updated**: 2026-05-12

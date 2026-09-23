@@ -200,7 +200,7 @@ You can dynamically "become" any agent by loading its definition. The current ro
 - Never edit, write, or commit any file.
 - Do not make the approve/reject decision — that belongs to QAReviewer.
 
-**When to Activate**: Spawned as a parallel subagent by QAReviewer during Step 4 of `skills/expert-pr-review/SKILL.md` (Claude Code only). Can also be activated directly for standalone security audits.
+**When to Activate**: Spawned as a parallel subagent by QAReviewer during Step 4 of `skills/expert-pr-review/SKILL.md` (Claude Code only). Can also be activated directly for a focused, guidance-mode security review of a diff or question. A full Cloudflare-style audit (six phases, sandboxed execution, report artifacts) is never launched implicitly by this persona — load `skills/security-audit/SKILL.md` explicitly and only after an explicit full-audit/pen-test request (see that skill's guidance-vs-full-audit gate).
 
 **Additional Roles** (add as needed): devops-engineer.md, technical-writer.md, etc. Follow the same template format.
 
@@ -321,6 +321,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/arena/SKILL.md` | "Arena this", parallel candidates for one artifact | Frame + rubric, fan out N candidates, cross-judge, pick base, graft, verify |
 | `skills/automate-me/SKILL.md` | Build a personal mode skill from session preferences | Mine transcripts, cluster, confirm, draft mode skill |
 | `skills/blast-radius/SKILL.md` | "What could this break", untrusted small diff | One safety fact, prove with real code, write through unslop |
+| `skills/security-audit/SKILL.md` | Literal "security audit"/"security-audit", "run the Cloudflare security audit", or an explicit full/comprehensive/pen-test ask — **not** generic "security review"/"review this PR"/"what could this break" | Opt-in vendor of Cloudflare's `security-audit-skill` (MIT, GMA-56); guidance-mode by default, full audit only after explicit ask **and** a capability check against the four Universal execution-safety controls; never a substitute for `expert-pr-review` or `blast-radius` |
 | `skills/create-verification-skill/SKILL.md` | Bootstrap verify-<app> skill | Interview repo, generate skill + feature map, prove E2E |
 | `skills/figure-it-out/SKILL.md` | No narrower playbook fits; large migration | Design auditable workflow, hypothesis loop, TSV trail |
 | `skills/how/SKILL.md` | How does X work (runtime behavior) | Parallel explorers, synthesized behavior explanation |
@@ -413,4 +414,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-09-15 | Version: 0.11.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2 + pstack skill port (GMA-48)*
+*Last updated: 2026-09-23 | Version: 0.12.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2 + pstack skill port (GMA-48) + opt-in Cloudflare security-audit vendor (GMA-56)*

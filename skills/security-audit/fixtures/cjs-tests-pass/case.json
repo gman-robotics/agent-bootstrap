@@ -1,0 +1,20 @@
+{
+  "name": "cjs-tests-pass",
+  "description": "Real-execution proof that the vendored Cloudflare .cjs validators (validate-findings.test.cjs, validate-coverage-ledger.test.cjs) still run under node --test. check_skill_live.py only hashes SKILL.md, so this fixture is the separate check that actually re-proves the vendored .cjs files execute (GMA-56 Blocker 6).",
+  "input": {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "tests.test_security_audit_vendor_cjs",
+      "-v"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stderr_contains": [
+      "OK"
+    ]
+  }
+}
