@@ -59,6 +59,8 @@ CURSOR_LEFTOVER_CHECKS: list[tuple[str, str]] = [
 COMPANION_PAIRS: tuple[tuple[str, str], ...] = (
     ("show-me", "show-me-your-work"),
     ("expert-pr-review", "interrogate"),
+    ("security-audit", "expert-pr-review"),
+    ("security-audit", "blast-radius"),
 )
 
 COMPANION_SKILL_NAMES = frozenset(
