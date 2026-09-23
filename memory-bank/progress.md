@@ -1,5 +1,23 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-09-23 — GMA-56 revised plan: vendor Cloudflare security-audit (opt-in), Blair blockers 1–6
+
+**Task**: [GMA-56](https://linear.app/gman-personal-projects/issue/GMA-56/vendor-cloudflare-security-audit-skill-into-agent-bootstrap-opt-in) — plan-only, docs-only draft PR revising the vendor plan for Cloudflare's `security-audit-skill` (MIT, upstream tip pinned at `c1c8a8c1471069fb0e188eeaff69b8e8db6564a8`, verified live against the GitHub API as the actual `main` tip) to address all six of Blair's numbered blockers verbatim plus SHOULD_FIX items. Branch `cursor/gma-56-security-audit-vendor-plan-64b2`. No vendor code, no implement, no full audit of `agent-bootstrap`, GMA-54 untouched.
+
+**What Was Done**
+- [x] New `docs/projects/agent-bootstrap/gma-56-security-audit-vendor-plan.md` — investigated actual repo symbols before writing (no invented names):
+  - Confirmed `check_skill_live.py` hashes only `SKILL.md` (Blocker 6) by reading `skill_sha256()`.
+  - Found `COMPANION_PAIRS` already exists at `scripts/validate_pstack_skill.py` (2 pairs today) and its reverse-pointer validator already supports skill names outside `PSTACK_SKILL_NAMES` — Blocker 4 extends this tuple with two new pairs rather than inventing a registry.
+  - Found `GRANDFATHERED_SKILLS` at `scripts/index_skills.py`, pinned by exact-equality test in `tests/test_index_live_binding.py`; confirmed `blast-radius` is absent from it (live-gated, not grandfathered) — proved live via `check_skill_live.py blast-radius`, so Blocker 4's "editing blast-radius requires black-box-run.json recapture" claim is a verified mechanical fact, not an assertion.
+  - Live-tested `export_codex_skills.py`'s `collect_preserved_files()` (recursive, preserves nested files across `--force` re-export once present) vs. `install-grok.sh`'s "Restoring extra skill references" loop (one level deep, silently skips directories) against a synthetic nested-reference scratch skill — found a real gap: a nested `references/cloudflare/` vendor subtree would never reach `.grok/skills/security-audit/references/cloudflare/` today. Locked Blocker 2's decision as dual-home + a small `install-grok.sh` recursive-copy fix, not an exporter extension.
+  - Fetched upstream `SKILL.md`/`LICENSE`/tree at the pinned SHA via the GitHub API to name the exact four "Universal execution safety" controls verbatim for Blocker 5, and to confirm the file listing (13 domain packs + 2 `.cjs` validators + 2 `.test.cjs`) matches the task brief.
+  - Found the standalone-audit sentence duplicated in both `agents/security-reviewer.md` and `AGENTS.md` §3 (Blocker 3) — plan requires rewriting both.
+  - Confirmed the five rule files are exactly `.cursorrules`/`.clinerules`/`.kilocoderules`/`.openhands_instructions`/`.cursor/rules/agent-bootstrap.mdc` (`CLAUDE.md` is a pointer only, not a sixth).
+
+**Verification**: `python3 -m unittest discover -s tests` — 123/123 pass, unchanged (docs-only PR touches no test-covered file). No new tests added — none of this PR's claims are implement-track code.
+
+**Next**: Blair re-passes this revision against all six blockers by number; CoS records CLEAR/Approve on the spec-gate card before any implement-track PR is opened.
+
 ## 2026-09-15 — GMA-48 leftover follow-up Blair pass-2 revise (validator theater)
 
 **Task**: Blair REQUEST_CHANGES on [PR #18](https://github.com/gman-robotics/agent-bootstrap/pull/18) — companion reverse-pointer validator was theater (substring false positives, vacuous OR, CLI never ran checks for `show-me`/`expert-pr-review`). Branch `cursor/gma-48-leftover-followup-9951` at `627b757`.
