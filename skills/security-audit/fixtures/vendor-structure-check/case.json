@@ -1,0 +1,18 @@
+{
+  "name": "vendor-structure-check",
+  "description": "Mechanical structure/attribution/opt-in/companion check for skills/security-audit/SKILL.md (GMA-56 Cloudflare security-audit vendor).",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_security_audit_vendor.py",
+      "security-audit"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: security-audit"
+    ]
+  }
+}

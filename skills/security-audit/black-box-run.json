@@ -1,0 +1,29 @@
+{
+  "captured_at": "2026-09-23T11:21:54.996285+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "cjs-tests-pass",
+  "description": "Real-execution proof that the vendored Cloudflare .cjs validators (validate-findings.test.cjs, validate-coverage-ledger.test.cjs) still run under node --test. check_skill_live.py only hashes SKILL.md, so this fixture is the separate check that actually re-proves the vendored .cjs files execute (GMA-56 Blocker 6).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stderr_contains": [
+      "OK"
+    ]
+  },
+  "fixture": "skills/security-audit/fixtures/cjs-tests-pass",
+  "input": {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "tests.test_security_audit_vendor_cjs",
+      "-v"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "997c650b642a12f38a42f250eb33f5b6916c958066ac010bb16b872c1abe232e",
+  "stderr_tail": "test_node_available_and_meets_minimum_version (tests.test_security_audit_vendor_cjs.SecurityAuditVendorCjsTests.test_node_available_and_meets_minimum_version) ... ok\ntest_validate_coverage_ledger_cjs_tests_pass (tests.test_security_audit_vendor_cjs.SecurityAuditVendorCjsTests.test_validate_coverage_ledger_cjs_tests_pass) ... ok\ntest_validate_findings_cjs_tests_pass (tests.test_security_audit_vendor_cjs.SecurityAuditVendorCjsTests.test_validate_findings_cjs_tests_pass) ... ok\ntest_vendored_cjs_test_files_exist (tests.test_security_audit_vendor_cjs.SecurityAuditVendorCjsTests.test_vendored_cjs_test_files_exist) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 1.056s\n\nOK\n",
+  "stdout_tail": "",
+  "verdict": "pass"
+}
