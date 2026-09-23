@@ -516,6 +516,34 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Prove it with a script at certainty step 4+; write through unslop.",
         ),
     ),
+    "security-audit": SkillConfig(
+        description=(
+            "Use only for the literal request 'security audit', 'run the Cloudflare security "
+            "audit', or an explicit full/comprehensive/end-to-end/pen-test request against a "
+            "codebase. Do NOT use for generic 'security review', 'review this PR', 'what could "
+            "this break', or unscoped find-vulnerabilities requests -- those are "
+            "expert-pr-review / blast-radius. Opt-in only, never auto-invoked."
+        ),
+        short_description="Opt-in Cloudflare security-audit vendor (GMA-56)",
+        trigger_summary=(
+            "Triggers only on the literal allowlist: 'security audit'/'security-audit', 'run "
+            "the Cloudflare security audit', or an explicit full/comprehensive/pen-test ask. "
+            "Never auto-invoked by plan-code-review-workflow or expert-pr-review's "
+            "SecurityReviewer spawn."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting; it is the authoritative workflow.",
+            "Guidance mode is the default: loading this skill never auto-runs the six-phase "
+            "audit, creates an output directory, or writes artifacts on its own.",
+            "Full audit mode requires an explicit ask AND a capability check against the four "
+            "Universal execution-safety controls (no external network, allowlisted "
+            "environment, scratch-only writes, explicit resource limits) before any "
+            "target-controlled build/test/browser/fuzzer; missing any control keeps the "
+            "result needs_validation, never a silent pass.",
+            "Not a substitute for expert-pr-review (PR-scoped review) or blast-radius "
+            "(diff-scoped breakage proof), and neither of those is a substitute for this.",
+        ),
+    ),
     "create-verification-skill": SkillConfig(
         description=(
             "Use to interview a repo and generate a verify-<app> skill plus seeded feature map "
