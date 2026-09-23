@@ -10,6 +10,7 @@ version: 1.0.0
 - Multi-model adversarial review on a changeset without GitHub PR threads, CI, or posting gates → `interrogate`
 - Plan alignment before code → `grill-with-docs`
 - Whole-repo simplification audit → `codebase-simplification-audit`
+- An explicit full/comprehensive/end-to-end security audit or pen-test request → `security-audit` (opt-in; this skill's Step 4 `SecurityReviewer` spawn is a focused diff checklist, not that six-phase workflow)
 
 ## Companions
 
@@ -18,6 +19,7 @@ version: 1.0.0
 | `interrogate` | Multi-model stress-test on a diff or branch when there is no open PR workflow |
 | `triage-review-feedback` | Inverse workflow when a PR we authored receives review feedback |
 | `subagent-routing` | Model tier defaults for spawned SecurityReviewer and quality analysis workers |
+| `security-audit` | Explicit full-audit/pen-test mode only, on direct user request — never launched by this skill's Step 4 `SecurityReviewer` spawn |
 
 ---
 

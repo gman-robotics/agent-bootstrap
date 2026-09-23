@@ -16,6 +16,7 @@ Find what a change could break beyond the diff and prove the safety-critical fac
 - Explaining how code works → `how`
 - Explaining why code is shaped that way → `why`
 - Full PR review pipeline → `expert-pr-review`
+- An explicit full/comprehensive/end-to-end security audit or pen-test request → `security-audit` (opt-in; a diff's blast radius is not a six-phase audit)
 
 ## Companions
 
@@ -24,6 +25,7 @@ Find what a change could break beyond the diff and prove the safety-critical fac
 | `how` | Runtime behavior and call structure |
 | `why` | Design rationale behind the change |
 | `pstack-principles` | prove-it-works — facts proven by execution, not writeup |
+| `security-audit` | Explicit full-audit/pen-test mode only, on direct user request — a diff's blast radius is not a substitute for that six-phase workflow |
 
 **Verification**
 - At least one safety-critical fact reached level 3+ on the certainty ladder
