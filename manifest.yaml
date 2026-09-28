@@ -29,7 +29,7 @@
 #   local manifest.yaml, fill in absolute paths, and add manifest.yaml to .gitignore.
 
 version: 0.5.0
-last_updated: 2026-06-15
+last_updated: 2026-09-27
 
 projects:
   - name: agent-bootstrap
@@ -44,6 +44,19 @@ projects:
     notes: |
       This is the hub. All other projects inherit its AGENTS.md, skills, and agents.
       Use it as the base for any new project setup.
+
+  - name: systemone
+    path: ../systemone
+    git_url: https://github.com/gman-robotics/systemone.git
+    description: |
+      Decision sidecar. Scores Noul, Choice, and Score questions.
+      Default Hermes profile shadow log. No API keys in the repo.
+    primary_tech: Python
+    memory_bank_path: ../systemone/memory-bank
+    docs_path: docs/projects/systemone
+    notes: |
+      Private repo. Mac default engine is local E4B for Noul and hosted Jev for Choice and Score.
+      Question packs live in this repo, not in agent-bootstrap.
 
   # === ADD YOUR PROJECTS BELOW ===
   # Example for a sibling repo:
