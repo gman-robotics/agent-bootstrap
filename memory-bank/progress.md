@@ -1,5 +1,22 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-10-03 — GMA-86: three standing-rule skills
+
+**Task**: GMA-86 — add three skills that record the standing rules of Tom. The work is docs and skills only. Draft PR.
+
+**What Was Done**
+- [x] Added `skills/project-carry-through/SKILL.md`: carry agreed projects to completion. Ask Tom only for a new decision or a manual action.
+- [x] Added `skills/blocker-walkthrough/SKILL.md`: explain blockers one at a time, with the answer options at the end.
+- [x] Added `skills/asd-ste100-writing/SKILL.md`: write in ASD-STE100 Simplified Technical English.
+- [x] Each skill has `fixtures/skill-structure-check/case.json`. The gate ran before any listing: `scripts/run_black_box_fixture.py` captured a pass, and `scripts/check_skill_live.py <name>` exits `0`.
+- [x] Listed each skill in `skills/INDEX.md`, `AGENTS.md` §4, the five trigger files, and `SKILL_CONFIGS` in `scripts/export_codex_skills.py`. Re-exported `.grok/skills/`.
+- [x] Did not add any name to `GRANDFATHERED_SKILLS`.
+- [x] Round 1 revision (Blair REVISE at head `52ca2b34`): removed the commit trailer, restored the source rule sentences, added them to the fixture phrase lists, re-captured each `black-box-run.json`, and updated `memory-bank/activeContext.md`.
+
+**Verification**: `python3 scripts/index_skills.py` passes. `python3 -m unittest discover -s tests` shows no new failure compared with `main`.
+
+**Next**: Review the draft PR. Do not self-merge.
+
 ## 2026-09-23 — GMA-56 IMPLEMENT: vendor Cloudflare security-audit into agent-bootstrap (opt-in)
 
 **Task**: [GMA-56](https://linear.app/gman-personal-projects/issue/GMA-56/vendor-cloudflare-security-audit-skill-into-agent-bootstrap-opt-in) — implement-track draft PR, branch `cursor/gma-56-security-audit-vendor-fc11`. Implements `docs/projects/agent-bootstrap/gma-56-security-audit-vendor-plan.md` verbatim (Blair CLEAR, PR #24 tip `0be9af4c`; plan doc landed to `main` at `2f57dcb`).
