@@ -752,6 +752,51 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Synthesize with confidence tiers; preserve why's confidence language.",
         ),
     ),
+    "project-carry-through": SkillConfig(
+        description=(
+            "Use when a project or plan was agreed with Tom and you must decide whether to ask "
+            "him a question or keep working; carry agreed projects to completion."
+        ),
+        short_description="Carry agreed projects to completion",
+        trigger_summary=(
+            "Triggers when an agreed project reaches a point where you might ask Tom a question."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Ask Tom only for a new decision or a manual action. Choose safe, reversible options and log them.",
+            "Write blockers in the blocker list, keep working on everything else, and keep every safety gate.",
+        ),
+    ),
+    "blocker-walkthrough": SkillConfig(
+        description=(
+            "Use when Tom asks to be walked through the blockers or open decisions; explain each "
+            "blocking decision one at a time with context and answer options."
+        ),
+        short_description="One-at-a-time blocker walkthrough",
+        trigger_summary=(
+            "Triggers on walk me through the blockers, or the same request in other words."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "List and order the blockers, then explain blocker 1 fully. Put the answer options at the END of the message.",
+            "Wait for the answer, act on it, then go to the next blocker. Never ask two questions at once.",
+        ),
+    ),
+    "asd-ste100-writing": SkillConfig(
+        description=(
+            "Use for all replies, reports, tickets, and documents written for Tom or for project documents; "
+            "write in ASD-STE100 Simplified Technical English."
+        ),
+        short_description="ASD-STE100 writing rule",
+        trigger_summary=(
+            "Triggers on any reply, report, ticket, or document written for Tom or for project documents."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Use short active sentences: steps 20 words or fewer, other sentences 25 words or fewer.",
+            "Use one term per thing. Keep exact technical terms when no simple word is correct.",
+        ),
+    ),
 }
 
 
