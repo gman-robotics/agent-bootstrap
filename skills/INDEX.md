@@ -325,6 +325,27 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### project-carry-through
+**File**: `skills/project-carry-through/SKILL.md`  
+**Trigger**: A project or plan is agreed with Tom, and you must decide whether to ask him a question or keep working.  
+**What it does**: Carry agreed projects to completion without Tom. Ask only for a new decision or a manual action. Choose safe, reversible options and log them. Write blockers in the blocker list. Keep every safety gate.
+
+---
+
+### blocker-walkthrough
+**File**: `skills/blocker-walkthrough/SKILL.md`  
+**Trigger**: "Walk me through the blockers" (or the same request in other words); Tom asks about open decisions.  
+**What it does**: Collect and order the blocking decisions. Explain one blocker at a time (context, options, risk, no-answer outcome, recommendation, then the question with options at the END). Wait for the answer, act on it, then go to the next blocker.
+
+---
+
+### asd-ste100-writing
+**File**: `skills/asd-ste100-writing/SKILL.md`  
+**Trigger**: Any reply, report, ticket, or document written for Tom or for a project.  
+**What it does**: Write in ASD-STE100 Simplified Technical English: short active sentences (steps 20 words or fewer, others 25 or fewer), one term per thing, "must" for a rule, answer first. Keep exact technical terms when no simple word is correct.
+
+---
+
 ## Adding a New Skill
 
 1. Create `skills/<name>/SKILL.md` following the style of existing skills: YAML frontmatter (`name`, `description`, `version`; quote the description or avoid inner `: ` — unquoted YAML breaks on colon+space), then purpose, trigger, when to use, numbered steps, stack-specific tips, last updated footer.
