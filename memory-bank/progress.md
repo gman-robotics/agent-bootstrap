@@ -12,6 +12,7 @@
 - [x] Listed each skill in `skills/INDEX.md`, `AGENTS.md` §4, the five trigger files, and `SKILL_CONFIGS` in `scripts/export_codex_skills.py`. Re-exported `.grok/skills/`.
 - [x] Did not add any name to `GRANDFATHERED_SKILLS`.
 - [x] Round 1 revision (Blair REVISE at head `52ca2b34`): removed the commit trailer, restored the source rule sentences, added them to the fixture phrase lists, re-captured each `black-box-run.json`, and updated `memory-bank/activeContext.md`.
+- [x] Round 2 revision (Blair REVISE at head `a470f8a4`): changed `a project` to `project documents` in 11 catalog lines, re-exported `.grok/skills/`, split one long question in `project-carry-through`, and re-captured the run records.
 
 **Verification**: `python3 scripts/index_skills.py` passes. `python3 -m unittest discover -s tests` shows no new failure compared with `main`.
 

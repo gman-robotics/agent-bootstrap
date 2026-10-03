@@ -20,7 +20,7 @@ Use this when a project or plan was agreed with Tom, and you must decide whether
 2. Before you ask Tom, check each item:
    - Did Tom already decide this? Look in the plan, tickets, memory and chat.
    - Can you choose a safe, reversible option? If yes, choose it. Write the choice in the ticket.
-   - Is it a new decision? Is it a manual action only Tom can do (sign in, an access key, a payment, or approval of a decision that is on hold)? If yes, ask.
+   - Is it a new decision? Is it a manual action that only Tom can do? Manual actions include (sign in, an access key, a payment, or approval of a decision that is on hold). If yes, ask.
 3. Do not ask Tom:
    - for status,
    - for confirmation of agreed work,

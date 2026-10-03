@@ -67,7 +67,7 @@ When any skill is triggered, read the full skill file (`skills/<name>.md`) befor
 | `why.md` | Why is X shaped this way |
 | `project-carry-through.md` | A project or plan is agreed; ask-or-continue decision |
 | `blocker-walkthrough.md` | "Walk me through the blockers"; open decisions |
-| `asd-ste100-writing.md` | Any reply, report, ticket, or document for Tom or a project |
+| `asd-ste100-writing.md` | Any reply, report, ticket, or document for Tom or project documents |
 
 ## Global Rules (Summary)
 

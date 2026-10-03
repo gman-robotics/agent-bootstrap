@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-03T15:46:12.979750+00:00",
+  "captured_at": "2026-10-03T16:54:49.702957+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/project-carry-through/SKILL.md (GMA-86 standing rule skill).",
@@ -32,7 +32,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "16cde395f5edd7d75e5228db782218c4779af1a0008b33090ad58dc954ca9597",
+  "skill_sha256": "28f179b42754d2adfed1f9eee0aa41d20a651861003ba5d8376453fc862a53fe",
   "stderr_tail": "",
   "stdout_tail": "OK: project-carry-through\n",
   "verdict": "pass"

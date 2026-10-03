@@ -341,7 +341,7 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ### asd-ste100-writing
 **File**: `skills/asd-ste100-writing/SKILL.md`  
-**Trigger**: Any reply, report, ticket, or document written for Tom or for a project.  
+**Trigger**: Any reply, report, ticket, or document written for Tom or for project documents.  
 **What it does**: Write in ASD-STE100 Simplified Technical English: short active sentences (steps 20 words or fewer, others 25 or fewer), one term per thing, "must" for a rule, answer first. Keep exact technical terms when no simple word is correct.
 
 ---

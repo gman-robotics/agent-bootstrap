@@ -1,13 +1,13 @@
 ---
 name: asd-ste100-writing
-description: Use for all replies, reports, tickets, and documents written for Tom or for a project; write in ASD-STE100 Simplified Technical English.
+description: Use for all replies, reports, tickets, and documents written for Tom or for project documents; write in ASD-STE100 Simplified Technical English.
 metadata:
   short-description: ASD-STE100 writing rule
 ---
 
 # asd-ste100-writing
 
-Triggers on any reply, report, ticket, or document written for Tom or for a project.
+Triggers on any reply, report, ticket, or document written for Tom or for project documents.
 
 ## Quick Start
 

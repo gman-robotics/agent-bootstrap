@@ -784,12 +784,12 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
     ),
     "asd-ste100-writing": SkillConfig(
         description=(
-            "Use for all replies, reports, tickets, and documents written for Tom or for a project; "
+            "Use for all replies, reports, tickets, and documents written for Tom or for project documents; "
             "write in ASD-STE100 Simplified Technical English."
         ),
         short_description="ASD-STE100 writing rule",
         trigger_summary=(
-            "Triggers on any reply, report, ticket, or document written for Tom or for a project."
+            "Triggers on any reply, report, ticket, or document written for Tom or for project documents."
         ),
         quick_start=(
             "Read `references/source.md` before acting.",

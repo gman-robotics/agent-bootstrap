@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-03T15:46:13.073781+00:00",
+  "captured_at": "2026-10-03T16:54:49.792799+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/blocker-walkthrough/SKILL.md (GMA-86 standing rule skill).",
@@ -29,7 +29,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "8544218d1617b0ffb23a5f3489cde83db146cc584d9af90ca45b56cc85e96197",
+  "skill_sha256": "91551890d0d74c7d75ffcfd99d7ec6833c706283515516581d4424b95533d06d",
   "stderr_tail": "",
   "stdout_tail": "OK: blocker-walkthrough\n",
   "verdict": "pass"

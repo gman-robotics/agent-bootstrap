@@ -41,7 +41,7 @@ Use this when Tom asks: "walk me through the blockers" (or the same request in o
 | Skill | Role here |
 |---|---|
 | `project-carry-through` | Step 4 of that skill writes the blockers that this skill explains |
-| `asd-ste100-writing` | Writing rule for all text in the walkthrough |
+| `asd-ste100-writing` | Writing rule for all text that this skill writes |
 
 **Verification**
 - You explained one blocker and asked one question per message
