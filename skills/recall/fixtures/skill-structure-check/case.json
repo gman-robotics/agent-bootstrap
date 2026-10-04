@@ -1,0 +1,12 @@
+{
+  "name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/recall/SKILL.md (pstack 0.15.9 port).",
+  "input": {
+    "command": ["python3", "scripts/validate_pstack_skill.py", "recall"],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": ["OK: recall"]
+  }
+}

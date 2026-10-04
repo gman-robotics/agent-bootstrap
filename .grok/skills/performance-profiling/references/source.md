@@ -37,6 +37,11 @@ Before touching any tooling, answer these questions:
 
 ---
 
+
+## Number gate
+
+Every number this skill reports must pass `skills/benchmark-checklist/SKILL.md` before it is acted on. A one-run ballpark still answers the error and "did the work happen" questions and says it is one run. A choice between options is never a ballpark. The standing rule is `pstack-principles` (explain-the-number).
+
 ## Phase 2: Measure the Baseline
 
 Do not change any code during this phase. Only observe.

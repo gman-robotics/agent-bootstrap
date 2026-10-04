@@ -69,6 +69,12 @@ Design it twice. Require at least two structurally distinct candidates before sy
 
 Screen every candidate against [`references/design-red-flags.md`](references/design-red-flags.md) before synthesis. Reject or revise shallow modules, information leakage, temporal decomposition, and pass-through methods.
 
+Compare viable candidates on interface depth.
+
+## Agent-friendly shape
+
+Assume the next contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Prefer one supported way per task, one owner per piece of state, and a public surface small enough that the wrong import fails. Hide internals. Delete the old path an agent would copy. A design that needs a comment to stay correct is not done; pair with `correct` if that comment is already a repeated class.
+
 Compare viable candidates on interface depth. Prefer the design that hides more complexity behind a smaller, simpler public surface. A rich interface can keep call chains short by concentrating capability instead of scattering it across layers.
 
 Arena returns one synthesized design package. The synthesis decision populates the rationale's "Synthesis decision" section.
@@ -121,4 +127,4 @@ The caller's usage is written first and the type sketch derived from it. One fil
 
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
+*Last updated: 2026-10-03 | Hub version: 0.12.0*

@@ -195,7 +195,7 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### architect
 **File**: `skills/architect/SKILL.md`  
 **Trigger**: "Architect this", "design this", or non-trivial work where jumping to code would lock in the wrong shape.  
-**What it does**: Ground with `how`/`why`, run `arena` for ≥2 structurally distinct design candidates, synthesize, implement against sketch, scrap and re-arena on pattern friction. References: `references/runner-prompt.md`, `design-red-flags.md`, `rationale-template.md`. Ported from pstack (GMA-48).
+**What it does**: Ground with `how`/`why`, run `arena` for ≥2 structurally distinct design candidates, synthesize, implement against sketch, scrap and re-arena on pattern friction. References: `references/runner-prompt.md`, `design-red-flags.md`, `rationale-template.md`. Ported from pstack (GMA-48). 2026-10-03: agent-friendly shape (one owner, one supported way, wrong import fails).
 
 ---
 
@@ -322,6 +322,34 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 **File**: `skills/why/SKILL.md`  
 **Trigger**: "Why does X work this way", design rationale, regressions, postmortems (not runtime behavior — use `how`).  
 **What it does**: Code anchor via git/gh; parallel MCP category investigators; synthesizer with confidence tiers from `references/epistemics.md`. Ported from pstack (GMA-48).
+
+---
+
+### correct
+**File**: `skills/correct/SKILL.md`  
+**Trigger**: "/correct", or the second time agents are corrected for the same mistake class.  
+**What it does**: Mines commits, reverts, and review comments; fixes each class at architecture, then types, then a lint whose error names the fix, then a test; docs last. Rule table lives in `AGENTS.md` or `docs/shared/constitution.md`. Adapted from pstack 0.15.9 `/correct`.
+
+---
+
+### recall
+**File**: `skills/recall/SKILL.md`  
+**Trigger**: "/recall", "catch me up", "where did I leave off", before resuming a named topic.  
+**What it does**: Builds a tagged current-state brief from memory-bank, a `why` shared-record sweep, live `gh` checks, and optional local transcripts. Adapted from pstack `/recall`.
+
+---
+
+### benchmark-checklist
+**File**: `skills/benchmark-checklist/SKILL.md`  
+**Trigger**: "/benchmark-checklist", or any speedup, regression, or implementation-choice claim based on a measurement.  
+**What it does**: Vets the number (limiter, tuning, limits, errors, alternating runs, end-to-end share, proof the work ran) before `performance-profiling` acts on it. Adapted from pstack `/benchmark-checklist` and Brendan Gregg's checklist.
+
+---
+
+### no-comments
+**File**: `skills/no-comments/SKILL.md`  
+**Trigger**: "/no-comments" or a review pass that should strip comments which restate the code.  
+**What it does**: Accept or reject comment findings in the diff, encode real constraints in types/tests/lint, delete the rest. Adapted from pstack `/no-comments`.
 
 ---
 
