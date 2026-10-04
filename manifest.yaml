@@ -29,7 +29,7 @@
 #   local manifest.yaml, fill in absolute paths, and add manifest.yaml to .gitignore.
 
 version: 0.5.0
-last_updated: 2026-09-27
+last_updated: 2026-10-04
 
 projects:
   - name: agent-bootstrap
@@ -57,6 +57,22 @@ projects:
     notes: |
       Private repo. Mac default engine is local E4B for Noul and hosted Jev for Choice and Score.
       Question packs live in this repo, not in agent-bootstrap.
+
+  - name: synthform
+    path: ../synthform
+    git_url: https://github.com/gman-robotics/synthform.git
+    description: |
+      Synthetic scanned-form training samples. Fills a blank form from CSV or JSON
+      with varied handwriting-style text and writes image-only PDFs plus labels.
+      Not a signed original.
+    primary_tech: Python
+    memory_bank_path: ../synthform/memory-bank
+    docs_path: docs/projects/synthform
+    notes: |
+      Public repo. Do not use it to fill Form 1583 or any legal, tax, or identity
+      form for submission. No handwriting dataset is vendored. If ../synthform is
+      missing, clone git_url there. The Mac experiment sandbox exp-scanform is an
+      older local name for the same tree.
 
   # === ADD YOUR PROJECTS BELOW ===
   # Example for a sibling repo:
