@@ -120,3 +120,5 @@ Agent (Architect): "Understood. Loading context... [reads memory-bank + manifest
 This workflow guarantees high-quality, well-documented, reviewed output every time.
 
 **Last updated**: 2026-04-28 | Integrates global rules + expert-pr-review + memory-bank protocol.
+
+Principles: `sequence-verifiable-units`, `prove-it-works` (`skills/pstack-principles/SKILL.md`). Each phase ends with a check of the real artifact before the next phase starts.

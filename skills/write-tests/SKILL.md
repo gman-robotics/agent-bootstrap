@@ -154,3 +154,5 @@ class TestDocumentClassifier:
 ---
 
 Last updated: 2026-06-15
+
+Principles: `test-behavior-not-implementation`, `prove-it-works` (`skills/pstack-principles/SKILL.md`). Assert the observable result. A test that passes when every import returns nothing is not evidence.

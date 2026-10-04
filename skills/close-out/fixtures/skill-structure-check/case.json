@@ -1,0 +1,6 @@
+{
+  "name": "skill-structure-check",
+  "description": "close-out SKILL.md names prove-it-works.",
+  "input": {"command": ["python3", "-c", "from pathlib import Path; t=Path('skills/close-out/SKILL.md').read_text(); assert 'name: close-out' in t; assert 'prove-it-works' in t; print('OK: close-out')"], "cwd": "."},
+  "expected": {"exit_code": 0, "stdout_contains": ["OK: close-out"]}
+}

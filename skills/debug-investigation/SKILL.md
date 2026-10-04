@@ -155,3 +155,5 @@ pytest --pdb
 ---
 
 Last updated: 2026-04-30
+
+Principles: `attack-the-premise`, `fix-root-causes` (`skills/pstack-principles/SKILL.md`). Two failed fixes on one premise means census the premise, not add another guard.

@@ -35,6 +35,7 @@ Read `memory-bank/activeContext.md` and `memory-bank/progress.md` for the active
 
 For **activeContext.md** verify:
 - [ ] The task just completed is reflected accurately (state, evidence: SHA/PR/resource ID)
+- [ ] prove-it-works cited, and the check above is true
 - [ ] Any new open issues, PRs, or todos spawned by this task are listed
 - [ ] Load-bearing decisions made this session are in the "Load-Bearing Decisions" section
 - [ ] Open questions are current (remove resolved ones, add new ones)
@@ -207,3 +208,5 @@ For each finding the user approves, before running the gate above:
 - **black-box-agent-qa** — required gate before Step 9 treats a new or edited skill as live; run `scripts/run_black_box_fixture.py` against the Step 8 `case.json`, then confirm `scripts/check_skill_live.py <name>` exits `0`, and escalate (verdict `blocked`) rather than pass if the environment blocks the run.
 
 *Last updated: 2026-08-26 (pass-3 wording fix: Step 9.4's enforcement claim is now scoped to `skills/INDEX.md`, which is all `tests/test_index_live_binding.py` actually parses)*
+
+Principles: `prove-it-works` (`skills/pstack-principles/SKILL.md`). Cite the check that ran. A summary is not the artifact.

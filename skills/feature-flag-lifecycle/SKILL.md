@@ -201,3 +201,5 @@ During any review that touches the area, check this table for flags past their r
 ---
 
 Last updated: 2026-04-30
+
+Principles: `make-operations-idempotent` (`skills/pstack-principles/SKILL.md`). A flag flip and a rollback must converge if the step runs twice.

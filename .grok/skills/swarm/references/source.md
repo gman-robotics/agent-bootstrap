@@ -76,3 +76,5 @@ Return one consolidated in-chat report with the table, issue one-liners, gaps or
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
 *Last updated: 2026-09-15 | Hub version: 0.11.0*
+
+Principles: `guard-the-context-window` (`skills/pstack-principles/SKILL.md`). Fan-out agents hold logs. The parent records the verdict only.
