@@ -176,9 +176,12 @@ STE is required for every sentence in the reply, including gloss lines and card 
 14. An unapproved word where an STE word can carry the meaning
 15. A sentence over the STE cap (20 procedural / 25 descriptive) that is not a named token
 
+Principles: `experience-first` (`skills/pstack-principles/SKILL.md`). Choose the reader's next action over a shorter slogan. This does not relax ASD-STE100 or a literal Approve/Reject.
+
 ## Verification
 
 - [ ] `skills/show-me/SKILL.md` loaded when the reply needed more than three sentences
+- [ ] experience-first cited, and the check above is true
 - [ ] One primary visual; channel-legal
 - [ ] A new-to-the-thread reader could do the next action
 - [ ] Jargon in the reply is glossed or replaced

@@ -103,9 +103,12 @@ This skill's pass never authorizes:
 
 ---
 
+Principles: `test-behavior-not-implementation`, `prove-it-works` (`skills/pstack-principles/SKILL.md`). Run the named case against the real skill. Do not mock the system under test as the only check.
+
 ## Verification Checklist
 
 - [ ] `case.json` exists under `fixtures/<case-name>/` matching `SCHEMA.md` (literal `input.command`, literal `expected`)
+- [ ] test-behavior-not-implementation and prove-it-works cited, and the check above is true
 - [ ] `scripts/run_black_box_fixture.py` was actually invoked — not simulated, not described
 - [ ] `skills/<name>/black-box-run.json` exists with `"verdict": "pass"` and a `skill_sha256` matching the current `SKILL.md`
 - [ ] `python3 scripts/check_skill_live.py <name>` exits `0`

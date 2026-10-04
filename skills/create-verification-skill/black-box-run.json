@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-09-15T05:49:34.832671+00:00",
+  "captured_at": "2026-10-04T05:25:01.395654+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Mechanical structure/provenance check for skills/create-verification-skill/SKILL.md (GMA-48 pstack port).",
@@ -20,7 +20,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "737d4053333e009cfb6eb7c56a4cbe7176c676ab7481ff399a43febfb2102de2",
+  "skill_sha256": "6a87bf15e99ec3bf660617f2fdd5101710035485cf67a985663cafd30fae011a",
   "stderr_tail": "",
   "stdout_tail": "OK: create-verification-skill\n",
   "verdict": "pass"

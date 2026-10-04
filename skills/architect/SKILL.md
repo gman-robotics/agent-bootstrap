@@ -128,3 +128,5 @@ The caller's usage is written first and the type sketch derived from it. One fil
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
 *Last updated: 2026-10-03 | Hub version: 0.12.0*
+
+Principles: `boundary-discipline`, `type-system-discipline`, `model-the-domain`, `migrate-callers-then-delete-legacy-apis` (`skills/pstack-principles/SKILL.md`). Validate at the boundary, make illegal states unrepresentable, and delete the old path in the same change.

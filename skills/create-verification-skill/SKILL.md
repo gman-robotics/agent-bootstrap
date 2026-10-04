@@ -80,3 +80,5 @@ Point the user at `maintain-verification-skill` for keeping the map honest as th
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
 *Last updated: 2026-09-15 | Hub version: 0.11.0*
+
+Principles: `build-the-lever` (`skills/pstack-principles/SKILL.md`). The skill is the rerunnable check. Do not stop at a prose procedure.

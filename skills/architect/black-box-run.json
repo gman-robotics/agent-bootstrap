@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-04T03:08:39.978640+00:00",
+  "captured_at": "2026-10-04T05:25:00.892978+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Mechanical structure/provenance check for skills/architect/SKILL.md (GMA-48 pstack port).",
@@ -20,7 +20,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "e07081b29dcfc58a1f4e04efeac2919d23313bf12742b5098ea3f1e571d74c20",
+  "skill_sha256": "2e9b743d20fe2bcf23f108b40f89810c261ae52620d5ae34493f0fc4f38b76bc",
   "stderr_tail": "",
   "stdout_tail": "OK: architect\n",
   "verdict": "pass"

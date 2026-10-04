@@ -323,3 +323,5 @@ Could you address those? Happy to re-review once done.
 ### Docker MCP Gateway — GitHub MCP Server
 The `github-official` server is available in the Docker MCP catalog and provides the MCP tools used in Step 6.
 To activate it, configure the `github.personal_access_token` secret in the Docker MCP gateway settings.
+
+Principles: `minimize-reader-load` (`skills/pstack-principles/SKILL.md`). Name the load a reviewer must trace. Collapse a pass-through that adds no check.

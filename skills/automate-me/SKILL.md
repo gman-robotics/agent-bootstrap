@@ -137,3 +137,5 @@ Run a description-optimization loop only if the skill's trigger accuracy turns o
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
 *Last updated: 2026-09-15 | Hub version: 0.11.0*
+
+Principles: `build-the-lever` (`skills/pstack-principles/SKILL.md`). The saved skill must be runnable again without re-explaining the preference.

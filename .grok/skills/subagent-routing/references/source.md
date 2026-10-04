@@ -124,3 +124,7 @@ Agent(description: "Find error handler patterns", subagent_type: "Explore", mode
 Both run concurrently. Implement after both return.
 
 ---
+
+Last updated: 2026-06-15
+
+Principles: `guard-the-context-window` (`skills/pstack-principles/SKILL.md`). Subagents hold the bulk output. The parent gets a summary.
