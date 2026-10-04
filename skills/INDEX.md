@@ -62,7 +62,7 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### reply-contract
 **File**: `skills/reply-contract/SKILL.md`  
 **Trigger**: Status after another agent finished; "your turn"; smoke / tap-through; anything the human must do or decide.  
-**What it does**: Write as if they just switched projects. Loads `skills/show-me/SKILL.md` for the one visual (tree/stack/diff) — never reimplements those recipes here. Gloss or replace jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked. Voice/marks from Google+Apple+Red Hat (`references/style-sources.md`). Defines the spec-gate card (held artifact, binary Approve/Reject, named Documents) and the clarify card (question + Submit, never a gate), plus the stable per-thread task Name shared with `grill-with-docs` and `close-out`.
+**What it does**: Write as if they just switched projects. Loads `skills/show-me/SKILL.md` for the one visual (tree/stack/diff) — never reimplements those recipes here. Gloss or replace jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked. Voice is ASD-STE100 unless the fact cannot be said any other way (`references/style-sources.md`). Defines the spec-gate card (held artifact, binary Approve/Reject, named Documents) and the clarify card (question + Submit, never a gate), plus the stable per-thread task Name shared with `grill-with-docs` and `close-out`.
 
 ---
 
