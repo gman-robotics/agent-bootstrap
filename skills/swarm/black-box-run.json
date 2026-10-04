@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-04T05:25:01.148280+00:00",
+  "captured_at": "2026-10-04T05:34:01.571444+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Mechanical structure/provenance check for skills/swarm/SKILL.md (GMA-48 pstack port).",
@@ -20,7 +20,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "1e308f94162ccc848b5296331757b8316ee968ee213137eb22b007e3cc31208b",
+  "skill_sha256": "240691bf1854fb9fe4347af5570109548884221dc4007912001ab8f0816d00ab",
   "stderr_tail": "",
   "stdout_tail": "OK: swarm\n",
   "verdict": "pass"

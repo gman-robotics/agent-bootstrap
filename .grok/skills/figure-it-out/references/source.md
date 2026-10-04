@@ -1,7 +1,7 @@
 ---
 name: figure-it-out
 description: "Design an auditable playbook when no narrower one fits: a large migration, an ambitious multi-part change, or work a human reviews after stepping away. Scales rigor to the task, runs a hypothesis loop, and logs decisions via show-me-your-work. Use for /figure-it-out, 'figure it out', a large migration, or when no narrower playbook applies."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # figure-it-out
@@ -22,13 +22,14 @@ Design an auditable playbook when no narrower skill fits: large migrations, ambi
 |---|---|
 | `show-me-your-work` | Canonical decision trail (Phase D) |
 | `architect` | One-way-door design decisions in Phase B |
-| `pstack-principles` | never-block-on-the-human for reversible steps — see Phase A carve-out |
+| `pstack-principles` | never-block-on-the-human for reversible steps — see Phase A carve-out; attack-the-premise in Phase C |
 | `reply-contract` | Spec-gate card before committing to a long run (`docs/shared/constitution.md` Article 1) |
 
 **Verification**
 - Done predicate stated as falsifiable before Phase C
 - Decision log rows map to real actions with resolvable evidence
 - Handback includes verification result per phase
+- Two failed units on one premise produced a written premise and a scripted census, not a third patch (attack-the-premise)
 
 ---
 
@@ -71,6 +72,7 @@ Apply the **pstack-principles** (sequence-verifiable-units) principle, verifying
 - Verify by inspecting the artifact, never a self-report. When something passes too easily, suspect the observation method before the system.
 - Pair delegated work with a judge and audit the delegates' artifacts yourself before trusting them. If a worker games the gate, reset and harden the contract. If the gate itself is wrong, fix the gate in its own change rather than routing around it.
 - A verdict is VERIFIED, NOT VERIFIED, or INCONCLUSIVE. Inconclusive is not a pass. Don't hide a negative.
+- When two reverted units failed the same gate on one shared premise, stop iterating. Write the premise down, run a scripted census per actor, and remove the asymmetry instead of compensating for it (the **pstack-principles** (attack-the-premise) principle). Log the premise as a decision row.
 
 ## Phase D: Keep the audit trail
 
@@ -86,6 +88,4 @@ Check the whole against the Phase A predicate on the real product, not just the 
 
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
-
-Principles: `attack-the-premise` (`skills/pstack-principles/SKILL.md`). If two attempts share a premise and both fail, write the premise and test it.
+*Last updated: 2026-10-03 | Hub version: 0.12.0*

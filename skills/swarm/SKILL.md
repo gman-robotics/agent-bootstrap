@@ -1,7 +1,7 @@
 ---
 name: swarm
 description: "Fan out N parallel workers, drain them, and return one report. Use for /swarm, 'swarm this', or parallel coverage, races, gauntlets, and exploration."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # swarm
@@ -23,12 +23,13 @@ Fan out N parallel workers, drain them, and return one aggregated report.
 |---|---|
 | `subagent-routing` | Worker model defaults and parallel spawn policy |
 | `show-me-your-work` | Decision trail when the swarm run needs auditability |
-| `pstack-principles` | separate-before-serializing-shared-state |
+| `pstack-principles` | separate-before-serializing-shared-state; guard-the-context-window for bounded worker reports |
 
 **Verification**
 - Done predicate stated before spawn
 - Every required slice has PASS/ISSUES/BLOCKED with evidence
 - Dropouts noted; aggregate report matches declared selection rule
+- Every worker brief capped its report size and named an evidence path (guard-the-context-window)
 
 ---
 
@@ -57,7 +58,7 @@ Open a todolist with one entry per phase before launching anything.
 
 Spawn all N workers in one message with parallel subagent spawns (`subagent_type` per `skills/subagent-routing/SKILL.md`), background execution when the harness supports it, and the configured model. Prefer cloud/isolated subagent environments when available; use local/host access only when the worker needs something on the user's machine. When a worker must start from a non-default branch, pass the branch name in the worker brief per the harness's subagent isolation rules.
 
-Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence.
+Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence. Cap each report at a stated size and name an evidence path. Bulk output goes to the worker's own file, not into its reply, per the **pstack-principles** (guard-the-context-window) principle.
 
 If a worker drops out, proceed with N-1 and note it.
 
@@ -75,6 +76,4 @@ Return one consolidated in-chat report with the table, issue one-liners, gaps or
 
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
-
-Principles: `guard-the-context-window` (`skills/pstack-principles/SKILL.md`). Fan-out agents hold logs. The parent records the verdict only.
+*Last updated: 2026-10-03 | Hub version: 0.12.0*

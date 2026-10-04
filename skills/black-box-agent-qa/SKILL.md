@@ -1,7 +1,7 @@
 ---
 name: black-box-agent-qa
 description: "Use before treating any agent persona, harness (config/wiring/tool registration), verb/command, or skill change as verified. Define a named input fixture and its expected output, then actually run it end-to-end against the real system under test using scripts/run_black_box_fixture.py (see SCHEMA.md for the case.json contract; the contract is a generic subprocess argv/exit-code/stdout check, not unittest-specific). Reading the PR diff or the skill Markdown is not a pass. A test suite that only mocks the system under test is not sufficient proof on its own. An environment-blocked run escalates for a human decision; it never counts as a pass. Never authorizes auto-merge or a silent refine of harness/agent state from the run's outcome."
-version: 1.2.0
+version: 1.2.1
 ---
 
 # black-box-agent-qa — Black-Box Verification for Agent, Harness, Verb, and Skill Changes
@@ -41,6 +41,8 @@ Before running anything, write a `case.json` (schema in `SCHEMA.md`) with two co
 
 If a concrete `case.json` cannot be written, the change is not ready to test yet — make the claim checkable before running anything.
 
+Write `expected` as the literal output a user of the system observes (exit code, printed text), not an internal detail such as a mock call or a constant. Then ask what would make the fixture fail. If no wrong version of the change could fail it, the fixture proves nothing: rewrite it. This is the **pstack-principles** (test-behavior-not-implementation) principle.
+
 ---
 
 ## Step 2: Actually Run It
@@ -60,7 +62,7 @@ The runner captures the actual output (`stdout_tail`/`stderr_tail`/`exit_code`) 
 
 ## Step 3: Compare, Don't Assume
 
-`run_black_box_fixture.py` does this mechanically: it compares the real `exit_code`/`stdout`/`stderr` against `expected` and reports every mismatch by name in the run record's `mismatches` list. A run that produces *some* output is not a pass; the output has to match the named expectation — the runner enforces this, it is never eyeballed.
+`run_black_box_fixture.py` does this mechanically: it compares the real `exit_code`/`stdout`/`stderr` against `expected` and reports every mismatch by name in the run record's `mismatches` list. A run that produces *some* output is not a pass; the output has to match the named expectation — the runner enforces this, it is never eyeballed. When the system under test is an agent, compare against what it produced (files, exit code, tool-call log), never against its own account of what it did, per the **pstack-principles** (prove-it-works) principle.
 
 ---
 
@@ -103,18 +105,16 @@ This skill's pass never authorizes:
 
 ---
 
-Principles: `test-behavior-not-implementation`, `prove-it-works` (`skills/pstack-principles/SKILL.md`). Run the named case against the real skill. Do not mock the system under test as the only check.
-
 ## Verification Checklist
 
 - [ ] `case.json` exists under `fixtures/<case-name>/` matching `SCHEMA.md` (literal `input.command`, literal `expected`)
-- [ ] test-behavior-not-implementation and prove-it-works cited, and the check above is true
 - [ ] `scripts/run_black_box_fixture.py` was actually invoked — not simulated, not described
 - [ ] `skills/<name>/black-box-run.json` exists with `"verdict": "pass"` and a `skill_sha256` matching the current `SKILL.md`
 - [ ] `python3 scripts/check_skill_live.py <name>` exits `0`
 - [ ] Environment-blocked runs are recorded as `"verdict": "blocked"`, never as `"pass"`
+- [ ] `expected` is literal observable output that a wrong change would fail, and any agent's account of its work was checked against its artifacts (test-behavior-not-implementation, prove-it-works)
 - [ ] No auto-merge and no silent harness/agent-state refine resulted from this pass (verified: editing `SKILL.md` after capture invalidates the record via the sha mismatch)
 
 ---
 
-Last updated: 2026-08-26
+Last updated: 2026-10-03

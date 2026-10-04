@@ -1,7 +1,7 @@
 ---
 name: close-out
 description: "Two-phase task close-out. Phase 1: verify memory bank + shared memory (mem0, if configured) are accurate so a fresh agent can pick up without reconstruction (completed log, updated todo list, evidence-backed progress entry). Phase 2: scan the session for patterns, friction, and skill gaps and produce specific improvement proposals (new skill / skill update / AGENTS.md rule / feedback memory / docs entry). A new or edited skill only goes live once scripts/check_skill_live.py <name> exits 0 against a black-box-agent-qa run record captured by scripts/run_black_box_fixture.py — user approval to write it is not a ship, editing the file after capture invalidates the record, and tests/test_index_live_binding.py enforces the gate against skills/INDEX.md on every test run."
-version: 1.3.1
+version: 1.3.2
 ---
 
 # close-out — Task Close-Out & Continuous Improvement
@@ -35,7 +35,6 @@ Read `memory-bank/activeContext.md` and `memory-bank/progress.md` for the active
 
 For **activeContext.md** verify:
 - [ ] The task just completed is reflected accurately (state, evidence: SHA/PR/resource ID)
-- [ ] prove-it-works cited, and the check above is true
 - [ ] Any new open issues, PRs, or todos spawned by this task are listed
 - [ ] Load-bearing decisions made this session are in the "Load-Bearing Decisions" section
 - [ ] Open questions are current (remove resolved ones, add new ones)
@@ -45,6 +44,9 @@ For **progress.md** verify:
 - [ ] A dated entry exists for today's work with a deliverables table and key learnings
 - [ ] Evidence rule applied: every "done/merged/deployed" claim has a SHA, PR link, or log reference
 - [ ] Nothing was marked "done" that is actually still pending
+- [ ] Each cited SHA, PR, or resource ID was re-checked against the live system during this close-out (for example `git log`, `gh pr view`), not copied from earlier chat (prove-it-works)
+
+Check each piece of evidence against the real system now, and keep the command output visible. A copied claim from earlier in the thread is a self-report, not evidence. This is the **pstack-principles** (prove-it-works) principle.
 
 If any of the above are missing or stale, update them now before proceeding. Follow each project's own memory-bank commit policy (some projects commit `agent-bootstrap`'s memory bank but keep per-project memory banks uncommitted — check the project's own conventions before committing).
 
@@ -207,6 +209,4 @@ For each finding the user approves, before running the gate above:
 - **reply-contract** — if this thread used a spec-gate/clarify card, its stable task Name is the identifier to reuse in the completed-log entry (Step 1).
 - **black-box-agent-qa** — required gate before Step 9 treats a new or edited skill as live; run `scripts/run_black_box_fixture.py` against the Step 8 `case.json`, then confirm `scripts/check_skill_live.py <name>` exits `0`, and escalate (verdict `blocked`) rather than pass if the environment blocks the run.
 
-*Last updated: 2026-08-26 (pass-3 wording fix: Step 9.4's enforcement claim is now scoped to `skills/INDEX.md`, which is all `tests/test_index_live_binding.py` actually parses)*
-
-Principles: `prove-it-works` (`skills/pstack-principles/SKILL.md`). Cite the check that ran. A summary is not the artifact.
+*Last updated: 2026-10-03 (cite prove-it-works at the Step 2 evidence rule; earlier 2026-08-26 pass-3 wording fix: Step 9.4's enforcement claim is now scoped to `skills/INDEX.md`, which is all `tests/test_index_live_binding.py` actually parses)*
