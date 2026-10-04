@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-10-04T03:08:39.815442+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/benchmark-checklist/SKILL.md (pstack 0.15.9 port).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: benchmark-checklist"
+    ]
+  },
+  "fixture": "skills/benchmark-checklist/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "benchmark-checklist"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "5c60d095ed115d2c7f53d09364f46c4b33624e60ff4b91bb63a020f5d188e729",
+  "stderr_tail": "",
+  "stdout_tail": "OK: benchmark-checklist\n",
+  "verdict": "pass"
+}
