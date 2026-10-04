@@ -1,7 +1,7 @@
 ---
 name: reply-contract
 description: "Use when status or your-turn. Write as if the user is new to the project. Require ASD-STE100 unless the fact cannot be said any other way."
-version: 1.5.0
+version: 1.5.1
 ---
 
 # reply-contract — Status and your-turn as if they just walked in
@@ -37,6 +37,8 @@ Smallest view that makes the next action obvious. One primary visual per reply. 
 Photon/iMessage home: **bold + lists + fenced trees/diffs only.**
 
 The tree *is* the sequence. If you skip the tree, number the steps. Never both. One step → a single bullet, not `1.`
+
+Write for the reader. If an easy reply for you hides the next action, change the reply. This is the **pstack-principles** (experience-first) principle. A status dump, a SHA lead, and a slash-list are easy to write and hard to use. This rule does not change Voice. ASD-STE100 stays mandatory, and experience-first never allows longer or fancier wording. It does not change gate cards. Only a literal **Approve** or **Reject** stamps a spec-gate.
 
 ## Gate cards
 
@@ -176,12 +178,9 @@ STE is required for every sentence in the reply, including gloss lines and card 
 14. An unapproved word where an STE word can carry the meaning
 15. A sentence over the STE cap (20 procedural / 25 descriptive) that is not a named token
 
-Principles: `experience-first` (`skills/pstack-principles/SKILL.md`). Choose the reader's next action over a shorter slogan. This does not relax ASD-STE100 or a literal Approve/Reject.
-
 ## Verification
 
 - [ ] `skills/show-me/SKILL.md` loaded when the reply needed more than three sentences
-- [ ] experience-first cited, and the check above is true
 - [ ] One primary visual; channel-legal
 - [ ] A new-to-the-thread reader could do the next action
 - [ ] Jargon in the reply is glossed or replaced
@@ -192,3 +191,4 @@ Principles: `experience-first` (`skills/pstack-principles/SKILL.md`). Choose the
 - [ ] No leftover open question shown beside a spec-gate's Approve/Reject
 - [ ] Only a literal Approve/Reject counted as the stamp, never "ok" / "looks good" / silence
 - [ ] Each sentence is ASD-STE100, or the unapproved word is a fact that cannot be said any other way and is defined once in **Words**
+- [ ] Where an easy reply hid the next action, the reply favored the reader (experience-first), and it is still ASD-STE100 with no longer wording

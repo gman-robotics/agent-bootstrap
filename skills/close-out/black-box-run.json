@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-04T05:25:07.551818+00:00",
+  "captured_at": "2026-10-04T05:34:01.325587+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "close-out SKILL.md names prove-it-works.",
@@ -20,7 +20,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "54329cbb918907adcc6267866cbf33906fc61bb69e9481cb44ade7cbc19cc7a7",
+  "skill_sha256": "d708c819e82b75f0843873c140ae6255e10818fe371bc1db3613d5560e2712f0",
   "stderr_tail": "",
   "stdout_tail": "OK: close-out\n",
   "verdict": "pass"

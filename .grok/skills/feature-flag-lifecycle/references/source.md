@@ -1,7 +1,7 @@
 ---
 name: feature-flag-lifecycle
 description: "This skill should be used when creating a feature flag, enabling a flag for rollout, or cleaning up and graduating a flag. Also invoke during any PR review that introduces a conditional code path labeled as a flag. Covers the full lifecycle: Create (naming convention, default-off, mandatory cleanup date) -> Implement (flag at boundary layer, test both paths) -> Roll Out (staged rollout) -> Graduate (remove flag and dead code path, update tests)."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # feature-flag-lifecycle.md — Feature Flag Lifecycle Skill
@@ -127,6 +127,8 @@ describe("generateBundle with feature flag", () => {
 3. **Gradual** — Enable for 10%, 50%, 100% of tenants by flipping DB rows or config.
 4. **GA** — Set the flag default to `true` in config (or remove the flag — see Phase 4).
 
+Set each flip to an explicit target value (an upsert of `enabled = true` for one tenant), never a toggle. A flip that runs twice, or that stops halfway through a tenant list, must end in the same state when you run it again. This is the **pstack-principles** (make-operations-idempotent) principle.
+
 ### What to Watch During Rollout
 - Error rate on the flagged path (CloudWatch, application logs)
 - Latency compared to the control path
@@ -161,6 +163,8 @@ A flag that is never removed is technical debt. **Flags must be removed within t
 4. Remove the entry from `memory-bank/progress.md`.
 5. Run the full test suite. It must be green.
 6. Submit a PR. The PR description should reference the original flag introduction commit.
+
+Make the removal safe to rerun. If a run stops halfway, the grep from step 1 must show exactly what is left. Delete the DB row only after the code that stops reading the flag is deployed. A missing flag reads as off, and that silently reverts the feature. Per the **pstack-principles** (make-operations-idempotent) principle.
 
 ### The Cleanup Commit Message
 ```
@@ -200,6 +204,8 @@ During any review that touches the area, check this table for flags past their r
 
 ---
 
-Last updated: 2026-04-30
+## Verification
 
-Principles: `make-operations-idempotent` (`skills/pstack-principles/SKILL.md`). A flag flip and a rollback must converge if the step runs twice.
+- [ ] Rollout flips set an explicit value, and a graduation run that stopped halfway can be rerun to the same end state (make-operations-idempotent)
+
+---

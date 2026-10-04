@@ -1,7 +1,7 @@
 ---
 name: plan-code-review-workflow
 description: "This skill should be used for any non-trivial task touching more than one file or with user-facing impact. It is the default development workflow for all significant features, refactors, bugfixes, or changes. Runs a Plan -> Code -> Review -> Iterate -> Finalize cycle with dynamic role switching between Software Architect, Software Engineer, and QA Critical Reviewer. Enforces TDD, expert review via expert-pr-review, and user approval gates before committing or pushing."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # plan-code-review-workflow.md
@@ -35,6 +35,7 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 3. **Create Detailed Plan**
    - Use Mermaid flowchart if complex.
    - Break into small, testable steps.
+   - Order the steps so that each one ends with a check you can run. Name that check beside the step, per the **pstack-principles** (sequence-verifiable-units) principle.
    - Include: files to create/edit, tests to add/update, risks, rollback plan.
    - Estimate effort and potential side effects.
 4. **Document**
@@ -52,10 +53,11 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
    - Make changes using read_file → edit_file / write_file / bash (non-interactive).
    - Follow existing codebase conventions 100% (KISS, style, patterns).
    - Add or update tests for every new behavior.
+   - Run the named check for each step before you start the next step. Do not batch the checks at the end (sequence-verifiable-units).
    - Handle errors, edge cases, logging where appropriate.
 3. **Self-Review Immediately**
    - Re-read changed files.
-   - Run any local tests/linters if available.
+   - Run any local tests/linters if available. Read the real output (exit code, test count) and check the changed behavior on the real artifact, not on a re-read of the diff, per the **pstack-principles** (prove-it-works) principle.
    - Check against plan — did I miss anything?
 4. **Update State**
    - Append to `memory-bank/progress.md`: "Implemented [X] per plan. Self-reviewed. Ready for QA."
@@ -101,6 +103,10 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
    - Present summary: "Task complete. Changes: X files. Wiki updated: Y. Ready for commit/push?" 
    - **Only commit/push if user explicitly says yes** (global rule).
 
+## Verification
+
+- [ ] Each plan step names its own check, each check ran before the next step began, and the "Ready for QA" note cites real command output (sequence-verifiable-units, prove-it-works)
+
 ## Tone & Style Across All Phases
 - Friendly, direct, concise.
 - Start responses with role + thanks where appropriate.
@@ -119,6 +125,4 @@ Agent (Architect): "Understood. Loading context... [reads memory-bank + manifest
 
 This workflow guarantees high-quality, well-documented, reviewed output every time.
 
-**Last updated**: 2026-04-28 | Integrates global rules + expert-pr-review + memory-bank protocol.
-
-Principles: `sequence-verifiable-units`, `prove-it-works` (`skills/pstack-principles/SKILL.md`). Each phase ends with a check of the real artifact before the next phase starts.
+**Last updated**: 2026-10-03 | Integrates global rules + expert-pr-review + memory-bank protocol.

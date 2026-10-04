@@ -5,7 +5,7 @@ description: >-
   preferences/working style into a skill. Drafts or revises a personal -mode
   skill via hub skill authoring + unslop, optionally pulling evidence from
   recent transcripts.
-version: 1.0.0
+version: 1.0.1
 ---
 
 # automate-me
@@ -26,11 +26,12 @@ Turn the user's working conventions into a personal `-mode` skill agents will fo
 |---|---|
 | `unslop` | Prose discipline on the draft |
 | `docs-protocol` | Skill file placement and frontmatter |
-| `pstack-principles` | Shape reference only — do not copy its content into the user's mode skill |
+| `pstack-principles` | Shape reference only — do not copy its content into the user's mode skill; build-the-lever for the mining brief |
 
 **Verification**
 - Patterns confirmed in 2+ transcript slices before codifying
 - User vibe-check before PR; mode skill uses on-demand invocation by default
+- Mining brief is reusable: an Update run reruns it with only the date window changed (build-the-lever)
 
 ---
 
@@ -58,7 +59,7 @@ Update mode changes the rest of the flow:
 
 Locate the active workspace's transcripts before fanning out. The system prompt names the workspace's `harness transcript storage for the active workspace` directory. Use only that path. Do not glob across unrelated workspace transcript roots. That crosses workspace boundaries and reads private chats from unrelated projects.
 
-Survey recent agent conversations within that scope for recurring patterns. Run multiple parallel subagents across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Each slice mining subagent reads transcripts from the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
+Survey recent agent conversations within that scope for recurring patterns. Run multiple parallel subagents across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Each slice mining subagent reads transcripts from the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Write the slice brief once, with the date window as its only variable, so Update mode reruns the same brief on newer history. The brief is the lever, per the **pstack-principles** (build-the-lever) principle. Default signals worth hunting:
 
 - Response preferences (length, tone, format, "dumb it down" corrections)
 - Delegation habits (subagents, models, specialized workflows, parallelism)
@@ -136,6 +137,4 @@ Run a description-optimization loop only if the skill's trigger accuracy turns o
 
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
-
-Principles: `build-the-lever` (`skills/pstack-principles/SKILL.md`). The saved skill must be runnable again without re-explaining the preference.
+*Last updated: 2026-10-03 | Hub version: 0.12.0*

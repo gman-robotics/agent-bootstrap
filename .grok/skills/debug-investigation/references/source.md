@@ -1,7 +1,7 @@
 ---
 name: debug-investigation
 description: "This skill should be used when a user reports a bug, unexpected behavior, or asks to \"fix\" something without a clear diagnosis. Also use for flaky test investigation and production incident root-cause analysis. Runs a five-phase disciplined workflow: Reproduce -> Isolate -> Write failing test -> Fix -> Verify, with stack-specific debugging tips."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # debug-investigation.md — Systematic Debugging Skill
@@ -91,6 +91,8 @@ This test is your proof that you found the right place and your safety net that 
 2. Run the full test suite. Fix any regressions before continuing.
 3. Manually verify the original reproduction case is gone.
 
+If a second fix fails the same Phase 3 test, stop patching. Write down the premise that both fixes shared. Count every actor that touches the failing state with a script (each writer, each reader, each environment). Remove the asymmetry that the count shows, instead of compensating for it. Then return to Phase 2. This is the **pstack-principles** (attack-the-premise) principle.
+
 ---
 
 ## Phase 5: Verify & Close
@@ -154,6 +156,8 @@ pytest --pdb
 
 ---
 
-Last updated: 2026-04-30
+## Verification
 
-Principles: `attack-the-premise`, `fix-root-causes` (`skills/pstack-principles/SKILL.md`). Two failed fixes on one premise means census the premise, not add another guard.
+- [ ] Two failed fixes on one premise led to a written premise and a scripted census before any third fix (attack-the-premise)
+
+---
