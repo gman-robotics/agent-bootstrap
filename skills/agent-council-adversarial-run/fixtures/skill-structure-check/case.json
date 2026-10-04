@@ -1,0 +1,6 @@
+{
+  "name": "skill-structure-check",
+  "description": "SKILL.md exists and names the skill.",
+  "input": {"command": ["python3", "-c", "from pathlib import Path; p=Path('skills/agent-council-adversarial-run/SKILL.md'); t=p.read_text(); assert 'name: agent-council-adversarial-run' in t; print('OK: agent-council-adversarial-run')"], "cwd": "."},
+  "expected": {"exit_code": 0, "stdout_contains": ["OK: agent-council-adversarial-run"]}
+}

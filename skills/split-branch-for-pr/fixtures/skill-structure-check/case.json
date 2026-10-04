@@ -1,0 +1,6 @@
+{
+  "name": "skill-structure-check",
+  "description": "SKILL.md exists and names the skill.",
+  "input": {"command": ["python3", "-c", "from pathlib import Path; p=Path('skills/split-branch-for-pr/SKILL.md'); t=p.read_text(); assert 'name: split-branch-for-pr' in t; print('OK: split-branch-for-pr')"], "cwd": "."},
+  "expected": {"exit_code": 0, "stdout_contains": ["OK: split-branch-for-pr"]}
+}

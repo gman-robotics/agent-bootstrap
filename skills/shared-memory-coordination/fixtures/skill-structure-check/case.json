@@ -1,0 +1,6 @@
+{
+  "name": "skill-structure-check",
+  "description": "SKILL.md exists and names the skill.",
+  "input": {"command": ["python3", "-c", "from pathlib import Path; p=Path('skills/shared-memory-coordination/SKILL.md'); t=p.read_text(); assert 'name: shared-memory-coordination' in t; print('OK: shared-memory-coordination')"], "cwd": "."},
+  "expected": {"exit_code": 0, "stdout_contains": ["OK: shared-memory-coordination"]}
+}

@@ -353,6 +353,41 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### split-branch-for-pr
+**File**: `skills/split-branch-for-pr/SKILL.md`  
+**Trigger**: "split this work into its own branch/PR", "this branch has unrelated stuff mixed in".  
+**What it does**: Cherry-picks the relevant commits onto a fresh branch off the target, strips swept-in files in a follow-up commit, and force-pushes the old branch only after an explicit confirm. Pulled from EstateGuruRepo/agent-bootstrap with no product wording.
+
+---
+
+### wayfinder
+**File**: `skills/wayfinder/SKILL.md`  
+**Trigger**: "wayfinder", "chart the map", "work through the map".  
+**What it does**: Charts a decision map on the issue tracker and resolves one ticket per session. Adapted from mattpocock/skills (MIT). Pulled from EstateGuruRepo/agent-bootstrap.
+
+---
+
+### screen-record-feature
+**File**: `skills/screen-record-feature/SKILL.md`  
+**Trigger**: "Record a video of <feature>", "screen-record <flow>", "make a demo video".  
+**What it does**: Playwright demo overlay, frozen-tab cuts, full and short MP4. EstateGuru examples and the dev runbook were not copied.
+
+---
+
+### shared-memory-coordination
+**File**: `skills/shared-memory-coordination/SKILL.md`  
+**Trigger**: Session start, task state change, or end-of-day reconciliation across harnesses.  
+**What it does**: Mem0 day bus `coord-YYYYMMDD` plus optional ticket thread. User id and standup path come from the project memory-bank, not a hard-coded home path.
+
+---
+
+### agent-council-adversarial-run
+**File**: `skills/agent-council-adversarial-run/SKILL.md`  
+**Trigger**: "Run adversarial" when a council runner is installed, or recover an implement timeout.  
+**What it does**: One repo per payload, 1800s implement floor, keep the worktree on error, do not call an open PR shipped. Named-seat failover and home paths removed.
+
+---
+
 ## Adding a New Skill
 
 1. Create `skills/<name>/SKILL.md` following the style of existing skills: YAML frontmatter (`name`, `description`, `version`; quote the description or avoid inner `: ` — unquoted YAML breaks on colon+space), then purpose, trigger, when to use, numbered steps, stack-specific tips, last updated footer.
