@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-10-04T04:04:00.416570+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "SKILL.md exists and names the skill.",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: agent-council-adversarial-run"
+    ]
+  },
+  "fixture": "skills/agent-council-adversarial-run/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "from pathlib import Path; p=Path('skills/agent-council-adversarial-run/SKILL.md'); t=p.read_text(); assert 'name: agent-council-adversarial-run' in t; print('OK: agent-council-adversarial-run')"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "bd025458277d9a6287566bbd743fabeef3ffa0f5b47b461d34bcdba037bc6196",
+  "stderr_tail": "",
+  "stdout_tail": "OK: agent-council-adversarial-run\n",
+  "verdict": "pass"
+}

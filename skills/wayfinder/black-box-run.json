@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-10-04T04:04:09.208899+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "wayfinder SKILL.md and tracker references exist.",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: wayfinder"
+    ]
+  },
+  "fixture": "skills/wayfinder/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "from pathlib import Path; t=Path('skills/wayfinder/SKILL.md').read_text(); assert 'name: wayfinder' in t; assert Path('skills/wayfinder/references/github-tracker.md').is_file(); assert Path('skills/wayfinder/references/local-tracker.md').is_file(); print('OK: wayfinder')"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "b93fed61c5944a063da3e3099431974b97b0f48436e274204b3c6f072101f75c",
+  "stderr_tail": "",
+  "stdout_tail": "OK: wayfinder\n",
+  "verdict": "pass"
+}

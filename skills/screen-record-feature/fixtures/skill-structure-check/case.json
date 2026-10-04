@@ -1,0 +1,6 @@
+{
+  "name": "skill-structure-check",
+  "description": "SKILL.md exists and names the skill.",
+  "input": {"command": ["python3", "-c", "from pathlib import Path; p=Path('skills/screen-record-feature/SKILL.md'); t=p.read_text(); assert 'name: screen-record-feature' in t; print('OK: screen-record-feature')"], "cwd": "."},
+  "expected": {"exit_code": 0, "stdout_contains": ["OK: screen-record-feature"]}
+}

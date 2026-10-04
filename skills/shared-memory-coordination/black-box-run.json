@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-10-04T04:04:00.356879+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "SKILL.md exists and names the skill.",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: shared-memory-coordination"
+    ]
+  },
+  "fixture": "skills/shared-memory-coordination/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "from pathlib import Path; p=Path('skills/shared-memory-coordination/SKILL.md'); t=p.read_text(); assert 'name: shared-memory-coordination' in t; print('OK: shared-memory-coordination')"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "d5edbf354b9848701cab51b67dd817e1fff7042470a3b3e5e558ebcf5e9ce8dd",
+  "stderr_tail": "",
+  "stdout_tail": "OK: shared-memory-coordination\n",
+  "verdict": "pass"
+}

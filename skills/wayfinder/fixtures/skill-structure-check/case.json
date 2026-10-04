@@ -1,0 +1,9 @@
+{
+  "name": "skill-structure-check",
+  "description": "wayfinder SKILL.md and tracker references exist.",
+  "input": {
+    "command": ["python3", "-c", "from pathlib import Path; t=Path('skills/wayfinder/SKILL.md').read_text(); assert 'name: wayfinder' in t; assert Path('skills/wayfinder/references/github-tracker.md').is_file(); assert Path('skills/wayfinder/references/local-tracker.md').is_file(); print('OK: wayfinder')"],
+    "cwd": "."
+  },
+  "expected": {"exit_code": 0, "stdout_contains": ["OK: wayfinder"]}
+}

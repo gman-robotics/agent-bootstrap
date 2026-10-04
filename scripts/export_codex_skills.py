@@ -793,6 +793,36 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Consult architect once if the finding is a shape problem.",
         ),
     ),
+    "split-branch-for-pr": SkillConfig(
+        description="Split mixed commits onto a fresh branch and open a clean PR.",
+        short_description="Split a messy branch into a clean PR",
+        trigger_summary="Triggers on split this work into its own branch or PR.",
+        quick_start=("Read `references/source.md` before acting.", "Cherry-pick only the relevant commits.", "Strip swept-in files in a follow-up commit.", "Force-push the old branch only after an explicit confirm."),
+    ),
+    "wayfinder": SkillConfig(
+        description="Chart a decision map on the issue tracker and resolve one ticket per session.",
+        short_description="Decision map for work bigger than one session",
+        trigger_summary="Triggers on wayfinder, chart the map, or work through the map.",
+        quick_start=("Read `references/source.md` before acting.", "Name the destination before creating tickets.", "Resolve at most one ticket per session.", "Refer to tickets by name."),
+    ),
+    "screen-record-feature": SkillConfig(
+        description="Record a Playwright feature demo with a visible cursor and a full plus short MP4.",
+        short_description="Playwright feature demo video",
+        trigger_summary="Triggers on record a video of a feature or make a demo video.",
+        quick_start=("Read `references/source.md` before acting.", "Install demo mode before the flow.", "Cut frozen parent-tab stretches.", "Deliver full and short MP4s after a visual check."),
+    ),
+    "shared-memory-coordination": SkillConfig(
+        description="Share the active to-do list and completed-task log across harnesses on a Mem0 day bus.",
+        short_description="Cross-harness Mem0 task bus",
+        trigger_summary="Triggers on session start, task state change, or end-of-day reconciliation.",
+        quick_start=("Read `references/source.md` before acting.", "Use the project coordination user, not a hard-coded person.", "Publish the todo JSON and completed log on the day bus.", "Reconcile at end of day into the hub standup log."),
+    ),
+    "agent-council-adversarial-run": SkillConfig(
+        description="Run a council adversarial job with a 30 minute implement floor and worktree recovery.",
+        short_description="Council adversarial run and recovery",
+        trigger_summary="Triggers on run adversarial or recover an implement timeout.",
+        quick_start=("Read `references/source.md` before acting.", "One repo per payload.", "Keep the worktree on error.", "Do not call an open PR shipped."),
+    ),
     "why": SkillConfig(
         description=(
             "Use to investigate why code is shaped a way: git anchor, parallel MCP investigators, cited synthesis."

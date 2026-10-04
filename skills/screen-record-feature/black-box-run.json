@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-10-04T04:04:00.477566+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "SKILL.md exists and names the skill.",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: screen-record-feature"
+    ]
+  },
+  "fixture": "skills/screen-record-feature/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "from pathlib import Path; p=Path('skills/screen-record-feature/SKILL.md'); t=p.read_text(); assert 'name: screen-record-feature' in t; print('OK: screen-record-feature')"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "2906609d664a12eb0ce8c66c47aba551e8b1e7c4225851bf2071b8e622b938ec",
+  "stderr_tail": "",
+  "stdout_tail": "OK: screen-record-feature\n",
+  "verdict": "pass"
+}

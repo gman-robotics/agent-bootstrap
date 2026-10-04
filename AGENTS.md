@@ -318,6 +318,11 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/evidence-packet-protocol/SKILL.md` | After an implementer/QA-Tester turn needing checkable evidence; before a planner starts the next iteration and must read the prior evidence packet | Defines `E_t.json`: required `head_sha` freeze (GB-4), `qa_status`/record `status` restricted to `verified \| gap` only at both levels (GB-1/GB-6), non-empty typed `execution_records` (GB-1), gap-repair-and-new-capability structural rules (GB-3), forbidden living-PII check, `evidence/E_t.json`/`evidence/E_<n>.json` path convention (H-1) and progressive-disclosure index (H-5) |
 | `skills/preservation-gate/SKILL.md` | Writing or reviewing a `Dt` plan/development document for iteration 2 or later | The exact `## Preservation Gate` heading listing the previous iteration's verified claims to protect — distinct from REPEAT (positive/never-closes vs. negative/mechanically-closed) |
 | `skills/architect/SKILL.md` | "Architect this", design-before-code, non-trivial shape decisions | Ground with how/why, arena for competing designs, implement against sketch, scrap on pattern friction |
+| `skills/split-branch-for-pr/SKILL.md` | Split mixed work into a clean PR | Cherry-pick onto a fresh branch; strip swept-in files; force-push only after confirm |
+| `skills/wayfinder/SKILL.md` | Chart a decision map too big for one session | One ticket per session on the issue tracker |
+| `skills/screen-record-feature/SKILL.md` | Record a feature demo video | Playwright overlay, cut frozen tabs, full and short MP4 |
+| `skills/shared-memory-coordination/SKILL.md` | Share the to-do list across harnesses | Mem0 day bus; no hard-coded user or home path |
+| `skills/agent-council-adversarial-run/SKILL.md` | Run a council adversarial job | 1800s timeout floor; keep worktree on error; open PR is not shipped |
 | `skills/correct/SKILL.md` | "/correct", second time the same agent mistake appears | Fix the class at architecture, types, lint, then test; docs last; rule table in AGENTS.md or constitution |
 | `skills/recall/SKILL.md` | "/recall", catch me up, where did I leave off | Tagged current-state brief from memory-bank, why sweep, and live gh |
 | `skills/benchmark-checklist/SKILL.md` | A speedup or regression claim | Vet limiter, tuning, errors, repeats, and end-to-end share before acting |
