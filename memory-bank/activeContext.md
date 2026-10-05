@@ -1,3 +1,6 @@
+## Current Focus
+**Compound-loop borrow** (2026-10-05, branch `borrow-compound-loop`): Independent rewrites of EveryInc/compound-engineering-plugin (MIT) as `compound`, `compound-refresh`, `ideate`, `strategy`, and `lfg`. Hooks in plan, grill, LEARN, expert-pr-review, arena, and pstack-principles. No plugin tree vendored. Live-gated before INDEX listing.
+
 # Active Context: Multi-Agent Skills Hub
 
 ## Current Focus (This Session)

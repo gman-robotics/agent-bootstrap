@@ -348,6 +348,11 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/project-carry-through/SKILL.md` | A project or plan is agreed; ask-or-continue decision | Carry agreed projects to completion; ask Tom only for a new decision or manual action |
 | `skills/blocker-walkthrough/SKILL.md` | "Walk me through the blockers"; open decisions | Explain blocking decisions one at a time with answer options last |
 | `skills/asd-ste100-writing/SKILL.md` | Any reply, report, ticket, or document for Tom or project documents | Write in ASD-STE100 Simplified Technical English |
+| `skills/compound/SKILL.md` | Capture a non-obvious verified lesson | One note in `docs/solutions/`; skip routine fixes |
+| `skills/compound-refresh/SKILL.md` | Refresh the solutions corpus | Keep / Update / Consolidate / Replace / Delete; no autofix delete |
+| `skills/ideate/SKILL.md` | Direction not chosen | Six frames, tagged basis, adversarial cut, ranked artifact |
+| `skills/strategy/SKILL.md` | Create or update STRATEGY.md | Product anchor; does not replace the memory bank |
+| `skills/lfg/SKILL.md` | Run the loop hands-off | Compose existing skills through PR and CI; do not merge unless granted |
 
 See `/skills/` directory for full definitions. New skills should follow the style of the examples in this hub (clear steps, warnings, examples, code blocks).
 

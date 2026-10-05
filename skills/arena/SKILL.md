@@ -1,6 +1,6 @@
 ---
 name: arena
-description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
+description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape. Also run when a costly implementation choice stays open during planning (`lfg` and `plan-code-review-workflow` may call this skill)."
 version: 1.0.0
 ---
 
@@ -13,6 +13,8 @@ Spawn N parallel candidates at the same task, pick a base, graft the strongest p
 "arena this", "throw it in the arena", or when one attempt at a non-trivial artifact would lock in the wrong shape.
 
 **Do not use for**
+- A direction that is not chosen yet → `ideate`
+
 - Hub planning before any code → `grill-with-docs` / `agents/software-architect.md`
 - PR review → `expert-pr-review` or `interrogate`
 - Parallel coverage/races over many slices → `swarm`

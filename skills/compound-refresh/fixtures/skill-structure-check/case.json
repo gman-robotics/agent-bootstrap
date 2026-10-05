@@ -1,0 +1,25 @@
+{
+  "name": "skill-structure-check",
+  "description": "Structure and rule-text check for skills/compound-refresh/SKILL.md (compound-loop borrow).",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name must be \" + name\nassert re.search(r'^description: \".+\"$', fm, re.M), \"description must be one quoted line\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version missing\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \", \"## Provenance\"):\n    assert marker in text, \"missing \" + marker\nassert \"EveryInc/compound-engineering-plugin\" in text, \"missing provenance\"\nassert not re.search(r\"[\\w.+-]+@[\\w-]+\\.[\\w.]+|\\+\\d[\\d ().-]{8,}\\d|\\(?\\d{3}\\)?[ .-]\\d{3}[ .-]\\d{4}\", text), \"email or phone found\"\nfor p in phrases:\n    assert p in text, \"rule text missing: \" + p\nprint(\"OK: \" + name)\n",
+      "compound-refresh",
+      "Keep",
+      "Update",
+      "Consolidate",
+      "Replace",
+      "Delete",
+      "Autofix must not Delete"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: compound-refresh"
+    ]
+  }
+}

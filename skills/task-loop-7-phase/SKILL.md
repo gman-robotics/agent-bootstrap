@@ -168,6 +168,7 @@ Turn the task into durable process memory.
    `TaskLoopState.next_action`.
 5. Update the memory bank or docs only when the learning changes durable project
    state, a workflow, or a technical reference.
+5b. Call `compound` for the repo-local note. Honor its skip rule. mem0 `task_learning` stays; the file is what a cold harness reads.
 6. Set `TaskLoopState.phase` to `COMPLETE`, or propose the next loop iteration
    with its starting phase and success criteria.
 
