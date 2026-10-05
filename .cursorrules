@@ -65,6 +65,12 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `blocker-walkthrough.md`      → "Walk me through the blockers"; open decisions
 - `asd-ste100-writing.md`       → Any reply, report, ticket, or document for Tom or project documents
 
+- `compound.md`    → Capture a non-obvious verified lesson into docs/solutions
+- `compound-refresh.md`    → Refresh docs/solutions; no autofix delete
+- `ideate.md`    → Direction not chosen; six frames and an adversarial cut
+- `strategy.md`    → Create or update STRATEGY.md
+- `lfg.md`    → Run the loop hands-off; do not merge unless granted
+
 ## Key Principles
 
 - Always use absolute paths for file operations.

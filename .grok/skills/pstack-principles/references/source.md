@@ -19,6 +19,10 @@ Replacing a full workflow skill. This is the principle catalog, not the procedur
 
 ## Hard carve-out — gated engineering gates win
 
+## Cite the rule
+
+When planning or review uses a principle from this file, name the heading. Example: `pstack-principles: sequence-verifiable-units`. A review finding that cannot name the rule is an opinion, not an enforcement of this file.
+
 **`never-block-on-the-human` does NOT override hub gated engineering.**
 
 Proceed on reversible work without permission pauses — but when `reply-contract`, `grill-with-docs`, `plan-code-review-workflow`, or `docs/shared/constitution.md` Article 1 require a **spec-gate card**, only a literal **Approve** or **Reject** counts. "Looks good", silence, and chat-prose agreement do not stamp the gate. Irreversible actions still need explicit confirmation.

@@ -64,6 +64,8 @@ Wait for the subagent to return the Findings Report, then execute the Parent Ste
 
 ## Findings Schema
 
+Each finding needs a confidence tier (`high` | `medium` | `low`) and a citation. Cite the plan section, or a named principle in `skills/pstack-principles/SKILL.md`, or `CODING_STANDARDS.md` when the repo has one. A finding with no citation is not a finding. Local apply stays explicit: do not edit the PR branch from a report-only review.
+
 The `qa-critical-reviewer` subagent returns this structure after completing Steps 1–4. The parent uses it to present findings and post the review.
 
 ```json

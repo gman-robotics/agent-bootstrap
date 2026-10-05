@@ -882,6 +882,71 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Use one term per thing. Keep exact technical terms when no simple word is correct.",
         ),
     ),
+    "compound": SkillConfig(
+        description=(
+            "Use after verified work when the reasoning is non-obvious. Write one learning "
+            "to docs/solutions so the next plan can read it. Skip routine fixes."
+        ),
+        short_description="Capture one durable learning",
+        trigger_summary="Triggers after verified work when the lesson is not already in code or tests.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Skip routine fixes. Write one note under docs/solutions, or say Documentation skipped.",
+            "End with Documentation complete or Documentation skipped.",
+        ),
+    ),
+    "compound-refresh": SkillConfig(
+        description=(
+            "Maintain docs/solutions. Classify each note Keep, Update, Consolidate, Replace, "
+            "or Delete. Delete only with evidence. Autofix must not delete."
+        ),
+        short_description="Refresh the solutions corpus",
+        trigger_summary="Triggers when docs/solutions needs a Keep/Update/Consolidate/Replace/Delete pass.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Classify each note. Autofix may update drift. Autofix must not delete.",
+            "Write an Applied vs Recommended report.",
+        ),
+    ),
+    "ideate": SkillConfig(
+        description=(
+            "Use when the direction is not chosen. Generate candidates across six frames, "
+            "tag the basis, cut losers, and write a ranked artifact."
+        ),
+        short_description="Ideate before the grill",
+        trigger_summary="Triggers when the problem is known and the approach is not.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Cover the six frames, tag a basis, and record why losers die.",
+            "Hand the top survivor to grill-with-docs. Do not implement.",
+        ),
+    ),
+    "strategy": SkillConfig(
+        description=(
+            "Create or update STRATEGY.md: purpose, positioning, users, boundaries, "
+            "3 to 5 metrics, and 2 to 4 tracks."
+        ),
+        short_description="Write the product anchor",
+        trigger_summary="Triggers when planning has no STRATEGY.md anchor.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Interview with pushback against slogans. Update STRATEGY.md in place.",
+            "Do not replace the memory bank.",
+        ),
+    ),
+    "lfg": SkillConfig(
+        description=(
+            "Run the agreed loop hands-off: route, implement, simplify the diff, review, "
+            "compound, push a PR, watch CI. Do not merge unless granted."
+        ),
+        short_description="Compose the loop through a PR",
+        trigger_summary="Triggers when a plan or bug should become a PR without a merge.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Call existing skills. Stop if review invalidates a settled decision.",
+            "Push the PR and watch CI. Do not merge unless granted.",
+        ),
+    ),
 }
 
 

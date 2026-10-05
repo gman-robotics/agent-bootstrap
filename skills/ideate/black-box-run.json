@@ -1,0 +1,32 @@
+{
+  "captured_at": "2026-10-05T19:03:11.886877+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Structure and rule-text check for skills/ideate/SKILL.md (compound-loop borrow).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: ideate"
+    ]
+  },
+  "fixture": "skills/ideate/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name must be \" + name\nassert re.search(r'^description: \".+\"$', fm, re.M), \"description must be one quoted line\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version missing\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \", \"## Provenance\"):\n    assert marker in text, \"missing \" + marker\nassert \"EveryInc/compound-engineering-plugin\" in text, \"missing provenance\"\nassert not re.search(r\"[\\w.+-]+@[\\w-]+\\.[\\w.]+|\\+\\d[\\d ().-]{8,}\\d|\\(?\\d{3}\\)?[ .-]\\d{3}[ .-]\\d{4}\", text), \"email or phone found\"\nfor p in phrases:\n    assert p in text, \"rule text missing: \" + p\nprint(\"OK: \" + name)\n",
+      "ideate",
+      "Adversarial cut",
+      "docs/ideation/",
+      "grill-with-docs",
+      "STRATEGY.md"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "e13a1bddf894ad1e6a67edaa6a4006d57eaabf432264b8cb52aba50206474888",
+  "stderr_tail": "",
+  "stdout_tail": "OK: ideate\n",
+  "verdict": "pass"
+}

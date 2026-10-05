@@ -409,6 +409,42 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+
+### compound
+**File**: `skills/compound/SKILL.md`  
+**Trigger**: "Compound this", "capture the learning", end of `lfg`, or Phase LEARN when the lesson is non-obvious.  
+**What it does**: Writes one verified, non-obvious learning to `docs/solutions/` so the next plan can read it. Skips routine fixes. Adapted from EveryInc/compound-engineering-plugin (MIT) — independent rewrite.
+
+---
+
+### compound-refresh
+**File**: `skills/compound-refresh/SKILL.md`  
+**Trigger**: "Refresh solutions", "compound-refresh".  
+**What it does**: Classifies `docs/solutions/` notes Keep / Update / Consolidate / Replace / Delete. Autofix must not delete. Adapted from EveryInc/compound-engineering-plugin (MIT) — independent rewrite.
+
+---
+
+### ideate
+**File**: `skills/ideate/SKILL.md`  
+**Trigger**: "Ideate", "what is worth exploring", direction not chosen.  
+**What it does**: Six frames, tagged basis, adversarial cut, ranked `docs/ideation/` artifact. Hands off to `grill-with-docs`. Adapted from EveryInc/compound-engineering-plugin (MIT) — independent rewrite.
+
+---
+
+### strategy
+**File**: `skills/strategy/SKILL.md`  
+**Trigger**: "Write the strategy", "update STRATEGY.md".  
+**What it does**: Writes purpose, positioning, users, boundaries, 3–5 metrics, and 2–4 tracks to `STRATEGY.md`. Does not replace the memory bank. Adapted from EveryInc/compound-engineering-plugin (MIT) — independent rewrite.
+
+---
+
+### lfg
+**File**: `skills/lfg/SKILL.md`  
+**Trigger**: "lfg", "run the loop", "ship this hands-off".  
+**What it does**: Composes existing skills: route, implement, simplify the fresh diff, review against the plan, `compound`, push a PR, watch CI. Does not merge unless granted. Adapted from EveryInc/compound-engineering-plugin (MIT) — independent rewrite.
+
+---
+
 ## Adding a New Skill
 
 1. Create `skills/<name>/SKILL.md` following the style of existing skills: YAML frontmatter (`name`, `description`, `version`; quote the description or avoid inner `: ` — unquoted YAML breaks on colon+space), then purpose, trigger, when to use, numbered steps, stack-specific tips, last updated footer.
