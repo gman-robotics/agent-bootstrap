@@ -1,0 +1,13 @@
+{
+  "name": "demo-mode-e2e",
+  "description": "End-to-end: installs @playwright/test in a throwaway project, runs the skill's real scripts/demoMode.smoke.spec.ts in Chromium with video on (asserts off-screen scroll-to-target, label-ring for hidden inputs, a click hold of at least 3 s), pixel-checks the highlight ring in a mid-click screenshot, then builds an MP4 from two time ranges of the recording with the skill's real scripts/assemble-segments.sh and checks its duration and contact sheet.",
+  "input": {
+    "command": ["python3", "skills/screen-record-feature/fixtures/demo-mode-e2e/run_demo_mode_e2e.py"],
+    "cwd": ".",
+    "timeout_seconds": 1500
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": ["OK: screen-record-feature demo-mode-e2e"]
+  }
+}

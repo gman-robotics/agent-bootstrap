@@ -1,7 +1,7 @@
 ---
 name: write-tests
 description: "This skill should be used when starting any new feature, bug fix, or refactor (invoke before writing production code), when a PR review flags missing or insufficient tests, or when adding coverage to untested legacy code. Implements the Red/Green/Refactor TDD playbook with framework commands for common JS/TS and Python test runners, mocking guidance, a characterization test pattern for legacy code, and a common TDD mistakes table."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # write-tests.md — Test Writing Skill
@@ -47,6 +47,8 @@ Operational playbook for applying the team TDD standard during a session. Use th
    ```
 4. Confirm it **fails with an assertion error** — not an import error or syntax error. An import error means your test file is broken, not that TDD is working.
 
+5. Check what the test asserts. It must call the code the way a user calls it and assert the literal expected output. If the test would still pass with every import stubbed to return `undefined`, rewrite or delete it, per the **pstack-principles** (test-behavior-not-implementation) principle.
+
 **Do not write any production code until the test is red and failing for the right reason.**
 
 ---
@@ -54,7 +56,7 @@ Operational playbook for applying the team TDD standard during a session. Use th
 ## Step 3: Make It Pass (Green)
 
 1. Write the minimum production code to make the failing test pass.
-2. Run the single test to confirm it goes green.
+2. Run the single test to confirm it goes green. Read the real runner output (test count and exit code), not your own summary of it. A run that selected zero tests is not green. This is the **pstack-principles** (prove-it-works) principle.
 3. Run the full suite to confirm nothing regressed.
 4. If the suite goes red, fix the regression before moving on — do not leave a broken suite.
 
@@ -153,4 +155,10 @@ class TestDocumentClassifier:
 
 ---
 
-Last updated: 2026-06-15
+## Verification
+
+- [ ] Each new test asserts a literal expected output and would fail if its behavior were removed (test-behavior-not-implementation); green was read from real runner output (prove-it-works)
+
+---
+
+Last updated: 2026-10-03

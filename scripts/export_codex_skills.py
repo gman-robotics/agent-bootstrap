@@ -738,6 +738,91 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Self-audit for remaining tells.",
         ),
     ),
+    "correct": SkillConfig(
+        description=(
+            "Find repeated agent mistake classes and make each one impossible "
+            "at architecture, types, lint, then tests, with docs last."
+        ),
+        short_description="Structural fix for repeated agent mistakes",
+        trigger_summary="Triggers on /correct or the second correction of the same mistake class.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Group evidence into classes that happened twice.",
+            "Fix at the highest level that works and prove the check fails on a past mistake.",
+            "Update the rule table in AGENTS.md or docs/shared/constitution.md.",
+        ),
+    ),
+    "recall": SkillConfig(
+        description=(
+            "Rebuild a tight current-state brief before starting or resuming named work."
+        ),
+        short_description="Current-state brief before resume",
+        trigger_summary="Triggers on /recall, catch me up, or where did I leave off.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Lock scope, then sweep memory-bank and why.",
+            "Verify named PRs and branches with git and gh.",
+            "Reply with capsule, tagged threads, problems, and one next move.",
+        ),
+    ),
+    "benchmark-checklist": SkillConfig(
+        description=(
+            "Vet a performance number for limiter, tuning, errors, repeats, and "
+            "end-to-end relevance before reporting or acting on it."
+        ),
+        short_description="Refuse an unexplained performance number",
+        trigger_summary="Triggers on /benchmark-checklist or any speedup or regression claim.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Write the claim sentence before the reported runs.",
+            "Answer the seven questions from a run, not from the code.",
+            "Lead with faster, slower, no measurable difference, or inconclusive.",
+        ),
+    ),
+    "no-comments": SkillConfig(
+        description=(
+            "Strip comments that restate the code and encode real constraints "
+            "in types, tests, or lint."
+        ),
+        short_description="Strip restating comments",
+        trigger_summary="Triggers on /no-comments before review.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Limit scope to the caller files or the diff.",
+            "Encode real do-not constraints; delete the rest.",
+            "Consult architect once if the finding is a shape problem.",
+        ),
+    ),
+    "split-branch-for-pr": SkillConfig(
+        description="Split mixed commits onto a fresh branch and open a clean PR.",
+        short_description="Split a messy branch into a clean PR",
+        trigger_summary="Triggers on split this work into its own branch or PR.",
+        quick_start=("Read `references/source.md` before acting.", "Cherry-pick only the relevant commits.", "Strip swept-in files in a follow-up commit.", "Force-push the old branch only after an explicit confirm."),
+    ),
+    "wayfinder": SkillConfig(
+        description="Chart a decision map on the issue tracker and resolve one ticket per session.",
+        short_description="Decision map for work bigger than one session",
+        trigger_summary="Triggers on wayfinder, chart the map, or work through the map.",
+        quick_start=("Read `references/source.md` before acting.", "Name the destination before creating tickets.", "Resolve at most one ticket per session.", "Refer to tickets by name."),
+    ),
+    "screen-record-feature": SkillConfig(
+        description="Record a Playwright feature demo with a visible cursor and a full plus short MP4.",
+        short_description="Playwright feature demo video",
+        trigger_summary="Triggers on record a video of a feature or make a demo video.",
+        quick_start=("Read `references/source.md` before acting.", "Install demo mode before the flow.", "Cut frozen parent-tab stretches.", "Deliver full and short MP4s after a visual check."),
+    ),
+    "shared-memory-coordination": SkillConfig(
+        description="Share the active to-do list and completed-task log across harnesses on a Mem0 day bus.",
+        short_description="Cross-harness Mem0 task bus",
+        trigger_summary="Triggers on session start, task state change, or end-of-day reconciliation.",
+        quick_start=("Read `references/source.md` before acting.", "Use the project coordination user, not a hard-coded person.", "Publish the todo JSON and completed log on the day bus.", "Reconcile at end of day into the hub standup log."),
+    ),
+    "agent-council-adversarial-run": SkillConfig(
+        description="Run a council adversarial job with a 30 minute implement floor and worktree recovery.",
+        short_description="Council adversarial run and recovery",
+        trigger_summary="Triggers on run adversarial or recover an implement timeout.",
+        quick_start=("Read `references/source.md` before acting.", "One repo per payload.", "Keep the worktree on error.", "Do not call an open PR shipped."),
+    ),
     "why": SkillConfig(
         description=(
             "Use to investigate why code is shaped a way: git anchor, parallel MCP investigators, cited synthesis."

@@ -1,7 +1,7 @@
 ---
 name: subagent-routing
 description: "This skill should be used before any task with independent subtasks, parallelizable work, or when selecting a model for a spawned agent. Mandates subagent delegation for parallelizable, isolatable, or repetitive work. Defines a model selection table, a task decomposition checklist, parallel spawn pattern examples, and common mistakes to avoid."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # subagent-routing.md — Subagent Use & Model Selection
@@ -81,6 +81,8 @@ Agent(
 )
 ```
 
+Every spawn prompt states the return shape and a size cap (for example a table, or at most 10 lines with `path:line` pointers). Bulk reads, logs, and search output stay in the subagent. The main thread receives the summary only. This is the **pstack-principles** (guard-the-context-window) principle.
+
 For parallelizable tasks, emit **all independent Agent calls in a single response** — they run concurrently.
 
 For tasks that need the result before proceeding, run sequentially (wait for result, then proceed).
@@ -117,10 +119,16 @@ Synthesize subagent results in the main context. Do not re-delegate synthesis �
 
 **Parallel spawn**:
 ```
-Agent(description: "Read upload route", model: "haiku", prompt: "Read src/routes/upload.ts and return full contents")
-Agent(description: "Find error handler patterns", subagent_type: "Explore", model: "haiku", prompt: "Find all error handler patterns in src/routes/")
+Agent(description: "Read upload route", model: "haiku", prompt: "Read src/routes/upload.ts and return the exported handler names and their error paths, at most 10 lines")
+Agent(description: "Find error handler patterns", subagent_type: "Explore", model: "haiku", prompt: "Find all error handler patterns in src/routes/ and return one path:line pointer per pattern")
 ```
 
 Both run concurrently. Implement after both return.
+
+---
+
+## Verification
+
+- [ ] Every spawn prompt names a return shape and size cap, and no raw file or log dump came back to the main thread (guard-the-context-window)
 
 ---

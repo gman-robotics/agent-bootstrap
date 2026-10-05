@@ -1,7 +1,7 @@
 ---
 name: reply-contract
-description: "Use when status or your-turn. Write as if the user is new to the project."
-version: 1.4.0
+description: "Use when status or your-turn. Write as if the user is new to the project. Require ASD-STE100 unless the fact cannot be said any other way."
+version: 1.5.1
 ---
 
 # reply-contract — Status and your-turn as if they just walked in
@@ -9,7 +9,7 @@ version: 1.4.0
 **Purpose**  
 When more than one project is in flight, slash-jargon and heading walls both fail. Load `skills/show-me/SKILL.md` for the one visual (trees / stacks / diffs). Do not reimplement those recipes here — this file only decides *whether* a visual belongs and *which* one, `show-me` owns *how* to build it.
 
-House style wins. Google / Apple / Red Hat only change voice and marks. See `references/style-sources.md`.
+House slots win. Voice is ASD-STE100 unless the fact cannot be said any other way. Google / Apple / Red Hat fill gaps STE does not cover. See `references/style-sources.md`.
 
 **Trigger**  
 Status after another agent finished; “your turn”; smoke / tap-through; anything the human must do or decide; a longer explanation of a system they did not just build.
@@ -37,6 +37,8 @@ Smallest view that makes the next action obvious. One primary visual per reply. 
 Photon/iMessage home: **bold + lists + fenced trees/diffs only.**
 
 The tree *is* the sequence. If you skip the tree, number the steps. Never both. One step → a single bullet, not `1.`
+
+Write for the reader. If an easy reply for you hides the next action, change the reply. This is the **pstack-principles** (experience-first) principle. A status dump, a SHA lead, and a slash-list are easy to write and hard to use. This rule does not change Voice. ASD-STE100 stays mandatory, and experience-first never allows longer or fancier wording. It does not change gate cards. Only a literal **Approve** or **Reject** stamps a spec-gate.
 
 ## Gate cards
 
@@ -99,17 +101,21 @@ Skip 3–6 if there is no human action.
 
 ## Voice
 
-Write as if they just walked in from another project.
+Write as if they just walked in from another project. Write in ASD-STE100 (Simplified Technical English).
 
-- Second person, active voice. Conditions before the tap.
-- Imperative, one action per line. A tree plus four gloss lines beats a six-heading essay.
-- Prefer a tree of screens/buttons over milestone codes as the lead.
+STE is required for every sentence in the reply, including gloss lines and card text. Break it only when the information cannot be expressed any other way. That exception is narrow: a code token, file path, SHA, flag, product name, or a technical name with no approved STE word that keeps the meaning. On that exception, use the unapproved word once, define it in **Words**, then reuse the same word. Do not use a synonym. Do not use the exception for tone, emphasis, or a shorter slogan.
+
+- Approved STE wording when an approved word exists. Do not paste the STE dictionary into the reply. The licensed word list is the check.
+- One instruction per sentence. Imperative for a step. Active voice. Conditions before the tap.
+- Procedural sentence: 20 words maximum. Descriptive sentence: 25 words maximum.
+- Noun cluster: 3 nouns maximum.
+- No slang, idiom, phrasal pile-up, or unapproved synonym.
 - No “great” / “perfect” / restating a bot notification.
 - No please / simply / easy / quickly / let’s / basically / “as expected” / “please note” / `!`
 - No pre-announce. No promised ship date for a leftover.
-- Sentence cap ~26 words. Serial commas. Spell out “and”.
-- No idioms. Describe what happens (`a message appears`), not a sense (`you see`).
+- Spell out “and”. Describe the event (`a message appears`), not a sense (`you see`).
 - Don’t use position or color as the only cue.
+- A tree plus four gloss lines beats a six-heading essay. Prefer a tree of screens/buttons over milestone codes as the lead.
 
 ## Marks
 
@@ -169,6 +175,8 @@ Write as if they just walked in from another project.
 11. Renaming the task mid-thread without saying so
 12. Treating "ok" / "looks good" / silence as an Approve stamp
 13. Showing a spec-gate with a leftover open question still listed beside it
+14. An unapproved word where an STE word can carry the meaning
+15. A sentence over the STE cap (20 procedural / 25 descriptive) that is not a named token
 
 ## Verification
 
@@ -182,3 +190,5 @@ Write as if they just walked in from another project.
 - [ ] Task name (if any card used) is stable across this thread, and matches the envelope `task:` value when both are in play
 - [ ] No leftover open question shown beside a spec-gate's Approve/Reject
 - [ ] Only a literal Approve/Reject counted as the stamp, never "ok" / "looks good" / silence
+- [ ] Each sentence is ASD-STE100, or the unapproved word is a fact that cannot be said any other way and is defined once in **Words**
+- [ ] Where an easy reply hid the next action, the reply favored the reader (experience-first), and it is still ASD-STE100 with no longer wording

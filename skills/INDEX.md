@@ -62,7 +62,7 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### reply-contract
 **File**: `skills/reply-contract/SKILL.md`  
 **Trigger**: Status after another agent finished; "your turn"; smoke / tap-through; anything the human must do or decide.  
-**What it does**: Write as if they just switched projects. Loads `skills/show-me/SKILL.md` for the one visual (tree/stack/diff) — never reimplements those recipes here. Gloss or replace jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked. Voice/marks from Google+Apple+Red Hat (`references/style-sources.md`). Defines the spec-gate card (held artifact, binary Approve/Reject, named Documents) and the clarify card (question + Submit, never a gate), plus the stable per-thread task Name shared with `grill-with-docs` and `close-out`.
+**What it does**: Write as if they just switched projects. Loads `skills/show-me/SKILL.md` for the one visual (tree/stack/diff) — never reimplements those recipes here. Gloss or replace jargon. Leftover vs bug. Who is waiting. Photon: no mermaid/HTML unless asked. Voice is ASD-STE100 unless the fact cannot be said any other way (`references/style-sources.md`). Defines the spec-gate card (held artifact, binary Approve/Reject, named Documents) and the clarify card (question + Submit, never a gate), plus the stable per-thread task Name shared with `grill-with-docs` and `close-out`.
 
 ---
 
@@ -195,7 +195,7 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### architect
 **File**: `skills/architect/SKILL.md`  
 **Trigger**: "Architect this", "design this", or non-trivial work where jumping to code would lock in the wrong shape.  
-**What it does**: Ground with `how`/`why`, run `arena` for ≥2 structurally distinct design candidates, synthesize, implement against sketch, scrap and re-arena on pattern friction. References: `references/runner-prompt.md`, `design-red-flags.md`, `rationale-template.md`. Ported from pstack (GMA-48).
+**What it does**: Ground with `how`/`why`, run `arena` for ≥2 structurally distinct design candidates, synthesize, implement against sketch, scrap and re-arena on pattern friction. References: `references/runner-prompt.md`, `design-red-flags.md`, `rationale-template.md`. Ported from pstack (GMA-48). 2026-10-03: agent-friendly shape (one owner, one supported way, wrong import fails).
 
 ---
 
@@ -322,6 +322,69 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 **File**: `skills/why/SKILL.md`  
 **Trigger**: "Why does X work this way", design rationale, regressions, postmortems (not runtime behavior — use `how`).  
 **What it does**: Code anchor via git/gh; parallel MCP category investigators; synthesizer with confidence tiers from `references/epistemics.md`. Ported from pstack (GMA-48).
+
+---
+
+### correct
+**File**: `skills/correct/SKILL.md`  
+**Trigger**: "/correct", or the second time agents are corrected for the same mistake class.  
+**What it does**: Mines commits, reverts, and review comments; fixes each class at architecture, then types, then a lint whose error names the fix, then a test; docs last. Rule table lives in `AGENTS.md` or `docs/shared/constitution.md`. Adapted from pstack 0.15.9 `/correct`.
+
+---
+
+### recall
+**File**: `skills/recall/SKILL.md`  
+**Trigger**: "/recall", "catch me up", "where did I leave off", before resuming a named topic.  
+**What it does**: Builds a tagged current-state brief from memory-bank, a `why` shared-record sweep, live `gh` checks, and optional local transcripts. Adapted from pstack `/recall`.
+
+---
+
+### benchmark-checklist
+**File**: `skills/benchmark-checklist/SKILL.md`  
+**Trigger**: "/benchmark-checklist", or any speedup, regression, or implementation-choice claim based on a measurement.  
+**What it does**: Vets the number (limiter, tuning, limits, errors, alternating runs, end-to-end share, proof the work ran) before `performance-profiling` acts on it. Adapted from pstack `/benchmark-checklist` and Brendan Gregg's checklist.
+
+---
+
+### no-comments
+**File**: `skills/no-comments/SKILL.md`  
+**Trigger**: "/no-comments" or a review pass that should strip comments which restate the code.  
+**What it does**: Accept or reject comment findings in the diff, encode real constraints in types/tests/lint, delete the rest. Adapted from pstack `/no-comments`.
+
+---
+
+### split-branch-for-pr
+**File**: `skills/split-branch-for-pr/SKILL.md`  
+**Trigger**: "split this work into its own branch/PR", "this branch has unrelated stuff mixed in".  
+**What it does**: Cherry-picks the relevant commits onto a fresh branch off the target, strips swept-in files in a follow-up commit, and force-pushes the old branch only after an explicit confirm. Pulled from EstateGuruRepo/agent-bootstrap with no product wording.
+
+---
+
+### wayfinder
+**File**: `skills/wayfinder/SKILL.md`  
+**Trigger**: "wayfinder", "chart the map", "work through the map".  
+**What it does**: Charts a decision map on the issue tracker and resolves one ticket per session. Adapted from mattpocock/skills (MIT). Pulled from EstateGuruRepo/agent-bootstrap.
+
+---
+
+### screen-record-feature
+**File**: `skills/screen-record-feature/SKILL.md`  
+**Trigger**: "Record a video of <feature>", "screen-record <flow>", "make a demo video".  
+**What it does**: Playwright demo overlay, frozen-tab cuts, full and short MP4. EstateGuru examples and the dev runbook were not copied.
+
+---
+
+### shared-memory-coordination
+**File**: `skills/shared-memory-coordination/SKILL.md`  
+**Trigger**: Session start, task state change, or end-of-day reconciliation across harnesses.  
+**What it does**: Mem0 day bus `coord-YYYYMMDD` plus optional ticket thread. User id and standup path come from the project memory-bank, not a hard-coded home path.
+
+---
+
+### agent-council-adversarial-run
+**File**: `skills/agent-council-adversarial-run/SKILL.md`  
+**Trigger**: "Run adversarial" when a council runner is installed, or recover an implement timeout.  
+**What it does**: One repo per payload, 1800s implement floor, keep the worktree on error, do not call an open PR shipped. Named-seat failover and home paths removed.
 
 ---
 

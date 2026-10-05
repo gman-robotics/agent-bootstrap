@@ -1,7 +1,7 @@
 ---
 name: expert-pr-review
 description: "This skill should be used when the user asks to review a GitHub PR (\"review PR #N\", \"look at this PR\", \"check this diff\", \"review this before I merge\"). Runs an 8-step expert review workflow: parallel context gathering, prior thread resolution, checkout and build/test, parallel security and quality analysis, findings summary with user-approval gate, inline-comment review posting via MCP or gh CLI, optional merge, and cleanup. Enforces review-only discipline (no code edits) and requires explicit user confirmation before posting APPROVE or REQUEST_CHANGES."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # Expert PR Reviewer Skill
@@ -20,6 +20,7 @@ version: 1.0.0
 | `triage-review-feedback` | Inverse workflow when a PR we authored receives review feedback |
 | `subagent-routing` | Model tier defaults for spawned SecurityReviewer and quality analysis workers |
 | `security-audit` | Explicit full-audit/pen-test mode only, on direct user request — never launched by this skill's Step 4 `SecurityReviewer` spawn |
+| `pstack-principles` | minimize-reader-load for the Step 4 quality pass |
 
 ---
 
@@ -176,9 +177,11 @@ Task(
 Task(
   model="sonnet",
   description="Code quality analysis: PR #<N>",
-  prompt="You are a code quality reviewer. Diff:\n\n<full diff here>\n\nAnalyze: correctness, style/consistency with surrounding code, readability, test coverage, edge cases, breaking changes, semver impact, docs updates needed. Return findings grouped by severity (critical/major/minor/nit) with file:line citations. If no issues found in a category, say so."
+  prompt="You are a code quality reviewer. Diff:\n\n<full diff here>\n\nAnalyze: correctness, style/consistency with surrounding code, readability (layers a reader must trace, pass-through wrappers, hidden shared mutable state), test coverage, edge cases, breaking changes, semver impact, docs updates needed. Return findings grouped by severity (critical/major/minor/nit) with file:line citations. If no issues found in a category, say so."
 )
 ```
+
+> **Reader load:** The quality task must report what the diff adds that raises reader load: new layers to trace, pass-through wrappers, and hidden shared mutable state. Judge only what the PR adds. This is the **pstack-principles** (minimize-reader-load) principle.
 
 > **Dependency audit:** Only flag `npm audit` / `pip audit` findings if the PR modified `package.json` or lock files. Pre-existing vulnerabilities are out of scope — note that clearly rather than listing them as PR concerns.
 
@@ -301,6 +304,12 @@ Overall direction looks solid, but I have a couple concerns (see inline comments
 
 Could you address those? Happy to re-review once done.
 ```
+
+---
+
+## Verification
+
+- [ ] The quality findings state a reader-load result for each new layer, wrapper, or shared mutable state in the diff, or state that the diff adds none (minimize-reader-load)
 
 ---
 

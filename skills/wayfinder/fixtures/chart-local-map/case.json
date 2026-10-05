@@ -1,0 +1,13 @@
+{
+  "name": "chart-local-map",
+  "description": "End-to-end: a headless Claude session runs the real skills/wayfinder/SKILL.md in Chart-the-map mode against the local-markdown tracker in a throwaway repo; a mechanical checker validates the map and tickets it wrote.",
+  "input": {
+    "command": ["python3", "skills/wayfinder/fixtures/chart-local-map/run_chart.py"],
+    "cwd": ".",
+    "timeout_seconds": 900
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": ["OK: wayfinder chart-local-map"]
+  }
+}

@@ -4,7 +4,7 @@ description: >-
   Generate a project-local verification skill that drives your app the way a
   user does. Use when a project has no scripted way to prove UI/CLI/service
   behavior.
-version: 1.0.0
+version: 1.0.1
 ---
 
 # create-verification-skill
@@ -25,12 +25,13 @@ Generate a project-local verification skill that drives the app the way a user d
 |---|---|
 | `maintain-verification-skill` | Periodic upkeep loop offered after generation |
 | `black-box-agent-qa` | Live-gate pattern when the generated skill ships in this hub |
-| `pstack-principles` | prove-it-works — generated skill must be executed once before handover |
+| `pstack-principles` | prove-it-works — generated skill must be executed once before handover; build-the-lever — repeated launch, doctor, and drive steps ship as rerunnable helpers |
 
 **Verification**
 - Repo interviewed (surface, run, drive, observe, isolate)
 - Generated skill launched, doctored, drove one feature, captured evidence, cleaned up
 - Feature map seeded under `skills/verify-<app>/features/`
+- Any launch, doctor, or drive step of more than one command ships as an executable helper (build-the-lever)
 
 ---
 
@@ -61,7 +62,7 @@ Write `skills/verify-<app>/SKILL.md` with YAML frontmatter (`name: verify-<app>`
 - **Drive:** the harness recipe with real selectors/commands from this repo, not examples. Prefer stable handles (ARIA labels, data attributes, prompt strings, route paths) over coordinates and tab order.
 - **Evidence:** what to capture for a proof and where it goes. State the proof standards: exercise the real user path, not internal setters or test-only endpoints; capture the action and the resulting state, not just the final screen; verify side effects (files written, rows inserted, messages sent) alongside what's visible; mocks only where a production boundary already isolates the external system. When the safe path is a dry-run or test mode, verify what it actually skips by observing (files, network, git refs) rather than trusting its name: some dry-runs still touch the network or open a browser.
 - **Cleanup:** how to tear down instances the run created. Never kill by process name; kill what you started. Cleanup removes instances and scratch state, never the evidence: proof artifacts survive the teardown, in a location the skill names.
-- **Helpers:** any script the skill ships is executable and its invocation is shown in the skill body. A helper the reader has to reverse-engineer is not a helper.
+- **Helpers:** any script the skill ships is executable and its invocation is shown in the skill body. A helper the reader has to reverse-engineer is not a helper. A step the next agent would otherwise retype (launch, doctor, a drive of more than one command) ships as a helper script, per the **pstack-principles** (build-the-lever) principle. Prose alone is not a lever.
 
 ## 3. Seed the feature map
 
@@ -79,4 +80,4 @@ Point the user at `maintain-verification-skill` for keeping the map honest as th
 
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
+*Last updated: 2026-10-03 | Hub version: 0.12.0*

@@ -1,7 +1,7 @@
 ---
 name: architect
 description: "Sketch types, signatures, and module structure before code, then stay in the loop while implementation fills in. Use for /architect, 'architect this', 'design this', or non-trivial work where jumping to code would lock in the wrong shape."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # architect
@@ -26,13 +26,14 @@ Sketch types, signatures, and module structure before code, synthesize across mo
 | `arena` | Produce and synthesize design candidates in Phase B |
 | `interrogate` | Adversarial pressure on the synthesized sketch before implementing |
 | `reply-contract` | Phase C spec-gate card (Approve/Reject) before fill-in |
-| `pstack-principles` | Decision lenses cited by name (exhaust-the-design-space, foundational-thinking, etc.) |
+| `pstack-principles` | Decision lenses cited by name (exhaust-the-design-space, foundational-thinking, boundary-discipline, model-the-domain, type-system-discipline, migrate-callers-then-delete-legacy-apis, etc.) |
 
 **Verification**
 - Phase A produced a traced `how` model (not just file names)
 - Phase B ran arena with ≥2 structurally distinct candidates
 - Phase C presented `reply-contract` spec-gate card; only literal Approve/Reject stamped implementation
 - Phase D deviations surfaced, not absorbed silently
+- Lifecycles modeled as a state machine, union, or registry; input validated at the boundary with pure logic inside; sketch types not widened; replaced API and its callers migrated and the old path deleted in the same wave (model-the-domain, boundary-discipline, type-system-discipline, migrate-callers-then-delete-legacy-apis)
 - Rationale shaped per `references/rationale-template.md`
 
 ---
@@ -69,6 +70,14 @@ Design it twice. Require at least two structurally distinct candidates before sy
 
 Screen every candidate against [`references/design-red-flags.md`](references/design-red-flags.md) before synthesis. Reject or revise shallow modules, information leakage, temporal decomposition, and pass-through methods.
 
+Also reject a candidate that models one lifecycle with scattered booleans or phase-named modules. Ask for a state machine, a discriminated union, or a registry in its place, per the **pstack-principles** (model-the-domain) principle.
+
+Compare viable candidates on interface depth.
+
+## Agent-friendly shape
+
+Assume the next contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Prefer one supported way per task, one owner per piece of state, and a public surface small enough that the wrong import fails. Hide internals. Delete the old path an agent would copy. A design that needs a comment to stay correct is not done; pair with `correct` if that comment is already a repeated class.
+
 Compare viable candidates on interface depth. Prefer the design that hides more complexity behind a smaller, simpler public surface. A rich interface can keep call chains short by concentrating capability instead of scattering it across layers.
 
 Arena returns one synthesized design package. The synthesis decision populates the rationale's "Synthesis decision" section.
@@ -88,6 +97,12 @@ If the human pushes back on the shape (in a checkpoint or after the fact), treat
 ## Phase D: Implement against the sketch
 
 Replace `not implemented` bodies with code, pseudocode with logic. The synthesized sketch is the contract.
+
+Validate input at the system boundary (CLI, config, network) and keep business logic inside it in pure functions, per the **pstack-principles** (boundary-discipline) principle. The runner prompt applies this to sketches. Phase D applies it to the code.
+
+Keep the sketch's types intact while you fill in. Do not widen a type with `any`, a cast, or an always-set optional field to make a body compile. Match exhaustively on unions, per the **pstack-principles** (type-system-discipline) principle. A needed escape hatch is a deviation to surface.
+
+When the sketch replaces an existing API, migrate every caller and delete the old path in the same wave. Do not leave a permanent dual API, per the **pstack-principles** (migrate-callers-then-delete-legacy-apis) principle.
 
 Deviations from the sketch are signal worth surfacing, not friction to absorb silently. If a function needs a parameter the sketch didn't anticipate, ask whether the sketch was wrong, the requirement was missed, or the implementation is overreaching.
 
@@ -121,4 +136,4 @@ The caller's usage is written first and the type sketch derived from it. One fil
 
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
+*Last updated: 2026-10-03 | Hub version: 0.12.0*

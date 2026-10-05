@@ -1,6 +1,6 @@
 ---
 name: pstack-principles
-description: "High-leverage engineering principles ported from pstack: prove-it-works, encode-lessons-in-structure, test-behavior-not-implementation, separate-before-serializing-shared-state, sequence-verifiable-units, guard-the-context-window, subtract-before-you-add, laziness-protocol, and related rules. Reference by principle name from workflow skills."
+description: "High-leverage engineering principles ported from pstack: prove-it-works, encode-lessons-in-structure, test-behavior-not-implementation, separate-before-serializing-shared-state, sequence-verifiable-units, guard-the-context-window, subtract-before-you-add, laziness-protocol, explain-the-number, and related rules. Reference by principle name from workflow skills."
 version: 1.0.0
 ---
 
@@ -52,6 +52,7 @@ Proceed on reversible work without permission pauses — but when `reply-contrac
 | experience-first | User/colleague delight over implementation convenience |
 | attack-the-premise | 2+ failed fixes sharing a premise → census, question premise |
 | never-block-on-the-human | Proceed on reversible work; confirm irreversible only (**see carve-out above**) |
+| explain-the-number | Name the limiter before you report or act on a measurement |
 
 ---
 
@@ -87,6 +88,10 @@ When integrating a new requirement, ask "if this were day-one, what would we bui
 
 ### model-the-domain
 Prefer state machines, discriminated unions, registries over scattered booleans and phase-named modules.
+
+
+### explain-the-number
+Do not report or act on a measured number until you can name its limiter and rule out errors, untuned sides, and work that never ran. A result that saves more time than the changed piece took is not a speedup. Operational checklist: `benchmark-checklist`.
 
 ### experience-first
 When convenience conflicts with user/colleague delight, choose delight. Ship fewer polished features over more rough ones.
@@ -167,4 +172,4 @@ Call code the way users do; assert literal expected output. If the test passes w
 
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) principle skills (MIT). Combined into one hub reference per GMA-48; individual `principle-*` marketplace skills are not ported separately.
 
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
+*Last updated: 2026-10-03 | Hub version: 0.12.0*

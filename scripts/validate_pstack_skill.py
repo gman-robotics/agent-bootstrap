@@ -31,6 +31,10 @@ PSTACK_SKILL_NAMES = frozenset(
         "reflect",
         "automate-me",
         "pstack-principles",
+        "correct",
+        "recall",
+        "benchmark-checklist",
+        "no-comments",
     }
 )
 
