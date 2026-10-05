@@ -1,0 +1,39 @@
+{
+  "captured_at": "2026-10-03T16:54:49.702957+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Structure and rule-text check for skills/project-carry-through/SKILL.md (GMA-86 standing rule skill).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: project-carry-through"
+    ]
+  },
+  "fixture": "skills/project-carry-through/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name must be \" + name\nassert re.search(r'^description: \".+\"$', fm, re.M), \"description must be one quoted line\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version missing\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, \"missing \" + marker\nassert not re.search(r\"[\\w.+-]+@[\\w-]+\\.[\\w.]+|\\+\\d[\\d ().-]{8,}\\d|\\(?\\d{3}\\)?[ .-]\\d{3}[ .-]\\d{4}\", text), \"email or phone found\"\nfor p in phrases:\n    assert p in text, \"rule text missing: \" + p\nif name == \"asd-ste100-writing\":\n    body = text.split(\"\\n---\\n\", 1)[1]\n    for line in body.splitlines():\n        if line.startswith((\"#\", \"|\")) or not line.strip():\n            continue\n        for s in re.split(r\"(?<=[.?!])\\s+\", re.sub(r\"^(\\d+\\.|-)\\s+\", \"\", line.strip())):\n            assert len(re.findall(r\"[A-Za-z0-9'-]+\", s)) <= 25, \"sentence over 25 words: \" + s\nprint(\"OK: \" + name)",
+      "project-carry-through",
+      "NEW decision",
+      "MANUAL action",
+      "Never skip a safety rule",
+      "blocker-walkthrough",
+      "asd-ste100-writing",
+      "Use this when a project or plan was agreed with Tom, and you must decide whether to ask him a question or keep working.",
+      "(sign in, an access key, a payment, or approval of a decision that is on hold)",
+      "Do not ask Tom:",
+      "for confirmation of agreed work",
+      "for a go on a step that the plan already approved",
+      "When a step is blocked by Tom, write the blocker in the blocker list"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "28f179b42754d2adfed1f9eee0aa41d20a651861003ba5d8376453fc862a53fe",
+  "stderr_tail": "",
+  "stdout_tail": "OK: project-carry-through\n",
+  "verdict": "pass"
+}

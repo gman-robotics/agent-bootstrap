@@ -345,6 +345,9 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/technical-writing/SKILL.md` | Docs, RFCs, PR descriptions | Diátaxis + Google/STE/Global English + unslop |
 | `skills/unslop/SKILL.md` | Cut AI tells from prose | Pattern scan, rewrite, self-audit |
 | `skills/why/SKILL.md` | Why is X shaped this way (rationale) | Git anchor, MCP investigators, confidence-tier synthesis |
+| `skills/project-carry-through/SKILL.md` | A project or plan is agreed; ask-or-continue decision | Carry agreed projects to completion; ask Tom only for a new decision or manual action |
+| `skills/blocker-walkthrough/SKILL.md` | "Walk me through the blockers"; open decisions | Explain blocking decisions one at a time with answer options last |
+| `skills/asd-ste100-writing/SKILL.md` | Any reply, report, ticket, or document for Tom or project documents | Write in ASD-STE100 Simplified Technical English |
 
 See `/skills/` directory for full definitions. New skills should follow the style of the examples in this hub (clear steps, warnings, examples, code blocks).
 

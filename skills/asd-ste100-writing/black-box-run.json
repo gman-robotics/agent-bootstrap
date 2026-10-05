@@ -1,0 +1,35 @@
+{
+  "captured_at": "2026-10-03T15:46:13.169498+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Structure, rule-text and sentence-length check for skills/asd-ste100-writing/SKILL.md (GMA-86 standing rule skill).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: asd-ste100-writing"
+    ]
+  },
+  "fixture": "skills/asd-ste100-writing/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name must be \" + name\nassert re.search(r'^description: \".+\"$', fm, re.M), \"description must be one quoted line\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version missing\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, \"missing \" + marker\nassert not re.search(r\"[\\w.+-]+@[\\w-]+\\.[\\w.]+|\\+\\d[\\d ().-]{8,}\\d|\\(?\\d{3}\\)?[ .-]\\d{3}[ .-]\\d{4}\", text), \"email or phone found\"\nfor p in phrases:\n    assert p in text, \"rule text missing: \" + p\nif name == \"asd-ste100-writing\":\n    body = text.split(\"\\n---\\n\", 1)[1]\n    for line in body.splitlines():\n        if line.startswith((\"#\", \"|\")) or not line.strip():\n            continue\n        for s in re.split(r\"(?<=[.?!])\\s+\", re.sub(r\"^(\\d+\\.|-)\\s+\", \"\", line.strip())):\n            assert len(re.findall(r\"[A-Za-z0-9'-]+\", s)) <= 25, \"sentence over 25 words: \" + s\nprint(\"OK: \" + name)",
+      "asd-ste100-writing",
+      "Procedure steps: 20 words or fewer",
+      "Other sentences: 25 words or fewer",
+      "Use the active voice",
+      "Use \"must\" for a rule",
+      "Give the answer or the action first",
+      "Exception: use the exact technical term when no simple word is correct",
+      "for Tom or for project documents"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "0ba995b707b6834a47236de64de3683c8512d15e54dbaab9d628f6f7ffcf1826",
+  "stderr_tail": "",
+  "stdout_tail": "OK: asd-ste100-writing\n",
+  "verdict": "pass"
+}

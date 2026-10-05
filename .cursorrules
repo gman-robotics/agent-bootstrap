@@ -61,6 +61,9 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `technical-writing.md`        → docs, RFCs, PR prose
 - `unslop.md`                   → cut AI tells from prose
 - `why.md`                      → why is X shaped this way
+- `project-carry-through.md`    → A project or plan is agreed; ask-or-continue decision
+- `blocker-walkthrough.md`      → "Walk me through the blockers"; open decisions
+- `asd-ste100-writing.md`       → Any reply, report, ticket, or document for Tom or project documents
 
 ## Key Principles
 
