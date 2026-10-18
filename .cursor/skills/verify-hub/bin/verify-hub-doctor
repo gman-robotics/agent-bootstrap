@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [[ -z "${REPO_ROOT}" || ! -f "${REPO_ROOT}/AGENTS.md" ]]; then
+  echo "verify-hub doctor: FAIL — run from agent-bootstrap checkout (AGENTS.md missing)"
+  exit 1
+fi
+cd "${REPO_ROOT}"
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "verify-hub doctor: FAIL — python3 not on PATH"
+  exit 1
+fi
+
+PY_MINOR="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+if ! python3 -c 'import sys; exit(0 if sys.version_info >= (3, 12) else 1)'; then
+  echo "verify-hub doctor: FAIL — need Python 3.12+, got ${PY_MINOR}"
+  exit 1
+fi
+
+if ! python3 -c "import yaml" 2>/dev/null; then
+  echo "verify-hub doctor: FAIL — PyYAML missing (pip install -r requirements-dev.txt)"
+  exit 1
+fi
+
+for path in AGENTS.md skills/INDEX.md scripts/index_skills.py scripts/check_skill_live.py; do
+  if [[ ! -e "${path}" ]]; then
+    echo "verify-hub doctor: FAIL — missing ${path}"
+    exit 1
+  fi
+done
+
+if [[ ! -x ".cursor/skills/verify-hub/bin/verify-hub-ci" ]]; then
+  echo "verify-hub doctor: FAIL — verify-hub helpers not executable"
+  exit 1
+fi
+
+echo "verify-hub doctor: OK (repo=${REPO_ROOT}, python=${PY_MINOR})"
