@@ -1,4 +1,6 @@
 ## Current Focus
+**verify-hub daily upkeep** (2026-10-18, branch `tginter_ca/verify-hub-skill-157c`, PR #35): Seeded `.cursor/skills/verify-hub/` (feature map + bin helpers) and added `verify-hub` job to `.github/workflows/test.yml`. Head `c9d1478` at open; GitHub Actions `unittest-and-live-gate` + `verify-hub` green on PR head.
+
 **Compound-loop borrow** (2026-10-05, branch `borrow-compound-loop`): Independent rewrites of EveryInc/compound-engineering-plugin (MIT) as `compound`, `compound-refresh`, `ideate`, `strategy`, and `lfg`. Hooks in plan, grill, LEARN, expert-pr-review, arena, and pstack-principles. No plugin tree vendored. Live-gated before INDEX listing.
 
 # Active Context: Multi-Agent Skills Hub
