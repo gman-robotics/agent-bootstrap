@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "${REPO_ROOT}"
+
+VERIFY_HUB_RUN_ID="${VERIFY_HUB_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)-$$}"
+VERIFY_HUB_ARTIFACTS_DIR="${VERIFY_HUB_ARTIFACTS_DIR:-/opt/cursor/artifacts/verify-hub/${VERIFY_HUB_RUN_ID}}"
+mkdir -p "${VERIFY_HUB_ARTIFACTS_DIR}"
+
+TRANSCRIPT="${VERIFY_HUB_ARTIFACTS_DIR}/index-live-gate.transcript"
+set +e
+python3 scripts/index_skills.py >"${TRANSCRIPT}" 2>&1
+EXIT=$?
+set -e
+
+if [[ "${EXIT}" -ne 0 ]]; then
+  echo "verify-hub drive index-live-gate: FAIL exit=${EXIT}"
+  cat "${TRANSCRIPT}"
+  exit "${EXIT}"
+fi
+
+if ! grep -q "Every non-grandfathered INDEX.md entry is live-eligible." "${TRANSCRIPT}"; then
+  echo "verify-hub drive index-live-gate: FAIL — expected success line missing"
+  cat "${TRANSCRIPT}"
+  exit 1
+fi
+
+echo "verify-hub drive index-live-gate: OK (transcript=${TRANSCRIPT})"

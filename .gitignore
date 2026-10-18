@@ -16,6 +16,10 @@
 .cursor/*
 !.cursor/rules/
 !.cursor/rules/**
+!.cursor/skills/
+.cursor/skills/*
+!.cursor/skills/verify-*/
+!.cursor/skills/verify-/**
 
 # Local overrides / secrets
 *.local

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "${REPO_ROOT}"
+
+VERIFY_HUB_RUN_ID="${VERIFY_HUB_RUN_ID:-ci-$(date -u +%Y%m%dT%H%M%SZ)-$$}"
+export VERIFY_HUB_RUN_ID
+export VERIFY_HUB_ARTIFACTS_DIR="${VERIFY_HUB_ARTIFACTS_DIR:-/opt/cursor/artifacts/verify-hub/${VERIFY_HUB_RUN_ID}}"
+mkdir -p "${VERIFY_HUB_ARTIFACTS_DIR}"
+
+BIN=".cursor/skills/verify-hub/bin"
+"${BIN}/verify-hub-doctor"
+"${BIN}/verify-hub-drive-index-live-gate"
+"${BIN}/verify-hub-drive-check-skill-live" create-verification-skill
+
+echo "verify-hub-ci: OK (artifacts=${VERIFY_HUB_ARTIFACTS_DIR})"
