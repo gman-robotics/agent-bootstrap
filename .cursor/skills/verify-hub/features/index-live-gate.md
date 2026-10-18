@@ -25,5 +25,5 @@ Preconditions:
 ## Gotchas
 
 - Grandfathered skills in `scripts/index_skills.py` are intentionally allowed without run records; do not treat them as failures.
-- Editing `SKILL.md` without recapturing `black-box-run.json` makes `check_skill_live` fail even when INDEX scan passes — fix the skill record, not INDEX prose.
-- Run from repo root; `python3 scripts/index_skills.py` with wrong cwd may import the wrong tree.
+- `find_ungated_entries()` calls `check_skill_live` for every non-grandfathered INDEX entry, so a stale `black-box-run.json` after a `SKILL.md` edit fails this gate too (not only `check_skill_live.py` in isolation).
+- `REPO_ROOT` in `scripts/index_skills.py` is derived from `__file__`, so cwd does not change which repo tree the gate scans.

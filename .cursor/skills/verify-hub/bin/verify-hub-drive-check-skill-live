@@ -7,6 +7,11 @@ if [[ $# -ne 1 ]]; then
 fi
 SKILL_NAME="$1"
 
+if ! [[ "${SKILL_NAME}" =~ ^[a-z0-9][a-z0-9-]*$ ]]; then
+  echo "verify-hub drive check-skill-live: FAIL — invalid skill name: ${SKILL_NAME}" >&2
+  exit 2
+fi
+
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "${REPO_ROOT}"
 

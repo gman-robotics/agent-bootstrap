@@ -31,9 +31,11 @@ for path in AGENTS.md skills/INDEX.md scripts/index_skills.py scripts/check_skil
   fi
 done
 
-if [[ ! -x ".cursor/skills/verify-hub/bin/verify-hub-ci" ]]; then
-  echo "verify-hub doctor: FAIL — verify-hub helpers not executable"
-  exit 1
-fi
+for helper in .cursor/skills/verify-hub/bin/*; do
+  if [[ ! -x "${helper}" ]]; then
+    echo "verify-hub doctor: FAIL — not executable: ${helper}"
+    exit 1
+  fi
+done
 
 echo "verify-hub doctor: OK (repo=${REPO_ROOT}, python=${PY_MINOR})"
