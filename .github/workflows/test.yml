@@ -65,6 +65,9 @@ jobs:
   box-tools-container:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
     # Pinned Debian bookworm-slim (digest from Docker Hub library/debian:bookworm-slim, linux/amd64).
     container:
       image: debian:bookworm-slim@sha256:a4672c0cb26fbdde88e38fa2dfb6c681942306680e41e4378b28770b6e79ee91
