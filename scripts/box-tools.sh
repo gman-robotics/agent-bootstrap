@@ -85,15 +85,11 @@ verify_sha256_file() {
 }
 
 safe_tar_extract() {
-  local archive="$1" dest="$2" entry
-  while IFS= read -r entry; do
-    case "${entry}" in
-      /* | */.. | */../* | .. | ../*)
-        echo "refusing to extract archive with unsafe paths: ${archive}" >&2
-        exit 1
-        ;;
-    esac
-  done < <(tar -tzf "${archive}")
+  local archive="$1" dest="$2"
+  if tar -tzf "${archive}" | grep -qE '^/|(^|/)\.\.(/|$)'; then
+    echo "refusing to extract archive with unsafe paths: ${archive}" >&2
+    exit 1
+  fi
   tar -xzf "${archive}" -C "${dest}"
 }
 
@@ -227,7 +223,9 @@ install_trafilatura() {
     echo "python3 is required to install trafilatura" >&2
     exit 1
   fi
-  python3 -m pip install --user "trafilatura==${TRAFILATURA_VERSION}"
+  # PEP 668 (Debian/Ubuntu): --user alone can still be blocked; --break-system-packages
+  # with --user keeps installs under ~/.local only.
+  python3 -m pip install --user --break-system-packages "trafilatura==${TRAFILATURA_VERSION}"
   echo "installed trafilatura ${TRAFILATURA_VERSION} (pip --user)"
 }
 
