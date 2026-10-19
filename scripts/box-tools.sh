@@ -85,11 +85,15 @@ verify_sha256_file() {
 }
 
 safe_tar_extract() {
-  local archive="$1" dest="$2"
-  if tar -tzf "${archive}" | grep -qE '^/|(^|/)\.\.(/|$)'; then
-    echo "refusing to extract archive with unsafe paths: ${archive}" >&2
-    exit 1
-  fi
+  local archive="$1" dest="$2" entry
+  while IFS= read -r entry; do
+    case "${entry}" in
+      /* | */.. | */../* | .. | ../*)
+        echo "refusing to extract archive with unsafe paths: ${archive}" >&2
+        exit 1
+        ;;
+    esac
+  done < <(tar -tzf "${archive}")
   tar -xzf "${archive}" -C "${dest}"
 }
 
