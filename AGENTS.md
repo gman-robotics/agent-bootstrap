@@ -70,6 +70,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
 - Start fresh only if no prior context provided.
 
 ### Environment & Tool Access
+- **Lean-context CLI helpers**: `scripts/box-tools.sh` installs user-space `rg`, `jq`, and optional `trafilatura`/`rtk` into `~/.local/bin` (no sudo); run `bash scripts/box-tools.sh --check` to see what is present before large extractions (see `skills/lean-context/SKILL.md`).
 - You have full permission to create, edit, and (when absolutely necessary) delete files/directories, and execute terminal commands **via your harness tools**.
 - **Always request explicit user confirmation** before any deletions or destructive changes.
 - Choose the best tool for each step.
