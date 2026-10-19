@@ -260,6 +260,14 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 **Trigger**: "Adjudicate labels", "label adjudication", "two-model label", or curating labeled JSONL with multi-model agreement.  
 **What it does**: Two independent upper-frontier labelers on JSONL, accept exact-match agreements, run a third adjudicator only on disagreements, merge via `scripts/adjudicate_labels.py`, emit provenance-rich `adjudication.jsonl` / `final.jsonl` / `summary.md` for human stamp. **Not** PR review (`interrogate` / `expert-pr-review`) or design arenas (`arena`).
 
+
+### lean-context
+**File**: `skills/lean-context/SKILL.md`  
+**Trigger**: Large logs, docs, HTML/PDF, or JSON blobs where full dumps would crowd the transcript.  
+**What it does**: Use `rg`, `jq`, `markitdown`, and `trafilatura` (via `scripts/box-tools.sh`) to extract only needed text; prefer targeted reads and file-backed summaries over pasting whole artifacts.
+
+---
+
 ---
 
 ### maintain-verification-skill
