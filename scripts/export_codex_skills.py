@@ -622,6 +622,22 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Emit adjudication.jsonl and final.jsonl; human stamp overrides; never skip conflicts.",
         ),
     ),
+    "lean-context": SkillConfig(
+        description=(
+            "Keep agent context small: extract only needed text with rg, jq, markitdown, "
+            "and trafilatura; prefer targeted reads over full dumps."
+        ),
+        short_description="Lean context extraction",
+        trigger_summary=(
+            "Triggers on large logs, docs, HTML/PDF, or JSON blobs where full dumps would crowd "
+            "the transcript."
+        ),
+        quick_start=(
+            "Read `references/source.md` before extracting.",
+            "Run `bash scripts/box-tools.sh --check` to see which CLI helpers are present.",
+            "Use rg/jq/markitdown/trafilatura for slices; write long extracts to files, not chat.",
+        ),
+    ),
     "maintain-verification-skill": SkillConfig(
         description=(
             "Use to reconcile and live-pass a verify-<app> skill against product drift."
