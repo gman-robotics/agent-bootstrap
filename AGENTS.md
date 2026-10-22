@@ -70,6 +70,7 @@ This repo is used by the whole **team of developers** to share reusable skills f
 - Start fresh only if no prior context provided.
 
 ### Environment & Tool Access
+- **Lean-context CLI helpers**: `bash scripts/box-tools.sh --check` reports pstack per CLI plus `rg`, `jq`, `markitdown` (required) and `trafilatura`/`rtk` (optional) on any machine. On a **Linux box or CI**, `bash scripts/box-tools.sh --install` puts pinned, checksum-verified tools under `~/.local` (no sudo, no rc edits); on **macOS** it installs nothing and prints a `brew` hint (see `skills/lean-context/SKILL.md`).
 - You have full permission to create, edit, and (when absolutely necessary) delete files/directories, and execute terminal commands **via your harness tools**.
 - **Always request explicit user confirmation** before any deletions or destructive changes.
 - Choose the best tool for each step.
@@ -336,6 +337,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/how/SKILL.md` | How does X work (runtime behavior) | Parallel explorers, synthesized behavior explanation |
 | `skills/interrogate/SKILL.md` | Adversarial multi-model review | Parallel reviewers, verdict buckets, no auto-apply |
 | `skills/label-adjudication/SKILL.md` | Adjudicate labels, two-model label, curate dataset JSONL | Two labelers + adjudicator on disagreements; `scripts/adjudicate_labels.py` merge; human stamp |
+| `skills/lean-context/SKILL.md` | Large logs, docs, HTML/PDF, or JSON blobs that would crowd the transcript | Targeted extraction with rg/jq/markitdown/trafilatura; `scripts/box-tools.sh --check` shows what is present |
 | `skills/maintain-verification-skill/SKILL.md` | Maintain verify-<app> skill | Reconcile feature map, live-pass, triage drift |
 | `skills/pstack-principles/SKILL.md` | Cited pstack principle or decision lens | Combined principles; never-block carve-out for Approve/Reject gates |
 | `skills/reflect/SKILL.md` | Reflect on harness session | Transcript reviewers, skill proposals, approval gate |
