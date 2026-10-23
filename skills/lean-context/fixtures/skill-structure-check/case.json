@@ -1,0 +1,26 @@
+{
+  "name": "skill-structure-check",
+  "description": "Structure and key-phrase check for skills/lean-context/SKILL.md (GMA-351).",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nassert re.search(r'^description: \".+\"$', fm, re.M), \"description\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, \"missing \" + marker\nfor p in phrases:\n    assert p in text, \"missing phrase: \" + p\nprint(\"OK: \" + name)",
+      "lean-context",
+      "scripts/box-tools.sh --check",
+      "rg",
+      "jq",
+      "markitdown",
+      "trafilatura",
+      "targeted reads",
+      "summarize"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: lean-context"
+    ]
+  }
+}

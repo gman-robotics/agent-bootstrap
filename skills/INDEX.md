@@ -262,6 +262,13 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### lean-context
+**File**: `skills/lean-context/SKILL.md`  
+**Trigger**: Large logs, docs, HTML/PDF, or JSON blobs where full dumps would crowd the transcript.  
+**What it does**: Use `rg`, `jq`, `markitdown`, and `trafilatura` (via `scripts/box-tools.sh`) to extract only needed text; prefer targeted reads and file-backed summaries over pasting whole artifacts.
+
+---
+
 ### maintain-verification-skill
 **File**: `skills/maintain-verification-skill/SKILL.md`  
 **Trigger**: Hygiene, reconciliation, or live pass for an existing `verify-<app>` skill.  
