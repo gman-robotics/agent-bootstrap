@@ -43,6 +43,8 @@ After confirm: stop this skill. Load `plan-code-review-workflow` + `write-tests`
 | `memory-bank-protocol` | Session state stays in the bank. `CONTEXT.md` is **domain language**, not progress |
 | `reply-contract` | Present the “frontier empty — confirm?” close via its spec-gate card (and a clarify card for a single blocking fact-question) |
 | `subagent-routing` | Look up **facts** yourself (or via a cheap worker). Never ask the user what you can read |
+| `compound` | Read overlapping `docs/solutions/` notes before round 1. Do not ask a question the note already answers |
+| `strategy` | Read `STRATEGY.md` when the active project has one |
 
 ---
 

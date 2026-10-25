@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-05T19:03:12.104185+00:00",
+  "captured_at": "2026-10-25T22:24:46.335840+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/lfg/SKILL.md (compound-loop borrow).",
@@ -26,7 +26,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "5e6447f2a77955705e8e88da1a191499b76e4297d006e8c06b849547a9f01646",
+  "skill_sha256": "f577648fed71b8dabc9a7b810047f6da496d68c85ca081783568e45f52a04a03",
   "stderr_tail": "",
   "stdout_tail": "OK: lfg\n",
   "verdict": "pass"

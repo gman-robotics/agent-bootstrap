@@ -29,6 +29,8 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
    - Read all 6 memory-bank/*.md files for the active project (from manifest.yaml).
    - Read relevant memory-bank/ entries.
    - Read AGENTS.md sections on global rules and agents.
+   - Read `STRATEGY.md` when the active project has one.
+   - Read overlapping notes in `docs/solutions/` (`compound`). Do not re-plan a lesson already captured.
 2. **Understand the Request**
    - Clarify goals, success criteria, edge cases, constraints with user.
    - Identify affected files, dependencies, breaking changes.
@@ -64,6 +66,21 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
    - Note any deviations or learnings.
 
 **Exit Criteria**: All planned changes complete + self-review passed. Hand off to QA.
+
+### Phase 2.5: SIMPLIFY THE DIFF
+1. Refine only the fresh diff for reuse and clarity. Behavior stays the same.
+2. Do not start `codebase-simplification-audit`. That skill is a whole-repo read-only audit.
+3. Re-run the named checks. A simplify pass that fails a check is not done.
+
+**Exit Criteria**: Diff is simpler and the same checks still pass. Then hand off to QA.
+
+### Phase 2.75: ub-mode gates (before QA APPROVE)
+1. Load `skills/ub-mode/SKILL.md` and run **Phase 2 — Make it Right** (judgment + gate block) on the change scope.
+2. Use `skills/ub-mode/references/gates-by-language.md` when crapper, dryer, or mutator are available for the project's language.
+3. Record gate commands, exit codes, and `.metrics/` paths (or skip reasons) in `progress.md` or the PR body.
+4. QA must not recommend **APPROVE** until gates pass or are explicitly skipped with reason.
+
+**Exit Criteria**: ub-mode phase 2 complete. Then hand off to QA.
 
 ### Phase 3: REVIEW (QA Critical Reviewer Role)
 1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review/SKILL.md` if this results in a PR.

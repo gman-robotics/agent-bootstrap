@@ -963,6 +963,20 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Push the PR and watch CI. Do not merge unless granted.",
         ),
     ),
+    "ub-mode": SkillConfig(
+        description=(
+            "Use when writing or changing code under the reduced Make it Work, Make it Right, "
+            "and Practice loop. Run crapper, dryer, and mutator before APPROVE when those tools "
+            "exist for the project language."
+        ),
+        short_description="Reduced principles and quality gates",
+        trigger_summary="Triggers on /ub-mode or before APPROVE in plan-code-review, expert-pr-review, or lfg.",
+        quick_start=(
+            "Read `references/source.md` and `references/gates-by-language.md` before acting.",
+            "Phase 1: write-tests and pstack-principles by name. Phase 2: gate block. Phase 3: log and commits.",
+            "Do not APPROVE while a gate failed; record skip reasons when tools are missing.",
+        ),
+    ),
 }
 
 
