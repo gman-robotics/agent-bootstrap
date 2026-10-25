@@ -64,6 +64,8 @@ Wait for the subagent to return the Findings Report, then execute the Parent Ste
 
 ## Findings Schema
 
+Each finding needs a confidence tier (`high` | `medium` | `low`) and a citation. Cite the plan section, or a named principle in `skills/pstack-principles/SKILL.md`, or `CODING_STANDARDS.md` when the repo has one. A finding with no citation is not a finding. Local apply stays explicit: do not edit the PR branch from a report-only review.
+
 The `qa-critical-reviewer` subagent returns this structure after completing Steps 1–4. The parent uses it to present findings and post the review.
 
 ```json
@@ -161,6 +163,18 @@ Poll build until done:
 ```bash
 while pgrep -f "<build-process-name>" > /dev/null 2>&1; do sleep 5; done && tail -20 /tmp/build.log
 ```
+
+### Step 3.5: ub-mode quality gates (before APPROVE recommendation)
+
+When tests passed (or were skipped with reason) and the changed code is in a language supported by [unclebob/crapper](https://github.com/unclebob/crapper) (Clojure, Java, Go, TypeScript/JS, Rust, Python):
+
+1. Load `skills/ub-mode/SKILL.md` phase 2 and `skills/ub-mode/references/gates-by-language.md`.
+2. After checkout, run the gate block on the PR scope (prefer `--changed`): crapper `--threshold 10`, dryer `--threshold 0.8`, mutator.
+3. **crapper**: worst function CRAP ≤ 10 (`--threshold 10` fails only when worst &gt; 10). **dryer**: read `.metrics/dry.edn` after the run; any `:candidates` entry with `:score` ≥ 0.8 blocks APPROVE (dryer exits `0` even when pairs meet the threshold). **mutator**: exit `0`.
+4. Put command, exit code, snapshot paths, and dry.edn pass/fail in `build`/`tests` summary fields or `quality_findings` when a gate fails.
+5. **Do not** set `recommendation` to **APPROVE** if a gate failed. Skip only when the tool is missing or the language is unsupported — state that in the summary.
+
+Docs-only or hub-Markdown PRs: skip gates; say "ub-mode gates N/A".
 
 ### Step 4: Parallel Analysis
 

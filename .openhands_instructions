@@ -59,6 +59,7 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 | `teach.md` | Teach me this |
 | `technical-writing.md` | Docs, RFCs, PR prose |
 | `unslop.md` | Cut AI tells from prose |
+| `ub-mode.md` | Reduced principles; crapper/dryer/mutator before APPROVE |
 | `why.md` | Why is X shaped this way |
 | `project-carry-through.md` | A project or plan is agreed; ask-or-continue decision |
 | `blocker-walkthrough.md` | "Walk me through the blockers"; open decisions |

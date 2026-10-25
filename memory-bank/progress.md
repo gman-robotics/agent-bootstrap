@@ -1,5 +1,17 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-10-25 — ub-mode quality-gate practice
+
+**Task**: Add thin `ub-mode` skill from unclebob/ub-mode; wire crapper/dryer/mutator gates before APPROVE; live-gate and INDEX listing.
+
+**What Was Done**
+- [x] `skills/ub-mode/SKILL.md`, `NOTICE.md`, `references/gates-by-language.md`, `fixtures/skill-structure-check/case.json`, `black-box-run.json`
+- [x] `docs/shared/ub-mode-practice.md`
+- [x] Phase 2.75 / Step 3.5 hooks in `plan-code-review-workflow`, `expert-pr-review`, `lfg` (+ lfg black-box recapture)
+- [x] INDEX, AGENTS.md, five harness trigger lists, `export_codex_skills.py`, `.grok/skills/ub-mode/`
+
+**Verification**: `python3 -m unittest discover -s tests` — 157/157 pass; `check_skill_live.py ub-mode` → 0; `index_skills.py` → live-eligible.
+
 ## 2026-10-03 — GMA-86: three standing-rule skills
 
 **Task**: GMA-86 — add three skills that record the standing rules of Tom. The work is docs and skills only. Draft PR.

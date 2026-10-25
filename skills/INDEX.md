@@ -318,6 +318,13 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### ub-mode
+**File**: `skills/ub-mode/SKILL.md`  
+**Trigger**: `/ub-mode`, "ub mode", or before APPROVE in `plan-code-review-workflow`, `expert-pr-review`, or `lfg` when changing supported application code.  
+**What it does**: Make it Work → Make it Right → Practice loop citing **pstack-principles** by name; runs crapper (worst CRAP ≤ 10, `.metrics/crap.edn`), dryer (read `.metrics/dry.edn`; any candidate ≥ 0.8 blocks APPROVE), and mutator when installed for Clojure, Java, Go, TypeScript, Rust, or Python. Adapted from [unclebob/ub-mode](https://github.com/unclebob/ub-mode). See `docs/shared/ub-mode-practice.md`.
+
+---
+
 ### unslop
 **File**: `skills/unslop/SKILL.md`  
 **Trigger**: Cut AI tells from prose; referenced by teach, blast-radius, technical-writing, show-me-your-work.  
@@ -462,4 +469,4 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 6. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
 7. If any later edit changes `SKILL.md`, re-run step 2 before the edit ships — `check_skill_live.py` (and therefore `tests/test_index_live_binding.py`) will fail on the stale `skill_sha256` until you do.
 
-*Last updated: 2026-09-23 | Hub version: 0.12.0*
+*Last updated: 2026-10-25 | Hub version: 0.13.0*

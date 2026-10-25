@@ -1,0 +1,36 @@
+{
+  "name": "skill-structure-check",
+  "description": "Structure and rule-text check for skills/ub-mode/SKILL.md.",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name must be \" + name\nassert re.search(r'^description: \".+\"$', fm, re.M), \"description must be one quoted line\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version missing\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, \"missing \" + marker\nassert not re.search(r\"[\\w.+-]+@[\\w-]+\\.[\\w.]+|\\+\\d[\\d ().-]{8,}\\d|\\(?\\d{3}\\)?[ .-]\\d{3}[ .-]\\d{4}\", text), \"email or phone found\"\nfor p in phrases:\n    assert p in text, \"rule text missing: \" + p\nprint(\"OK: \" + name)",
+      "ub-mode",
+      "Make it Work",
+      "Make it Right",
+      "laziness-protocol",
+      "foundational-thinking",
+      "subtract-before-you-add",
+      "fix-root-causes",
+      "test-behavior-not-implementation",
+      "worst function **CRAP ≤ 10**",
+      "read `.metrics/dry.edn`: **no** `:candidates` entry with `:score` **≥ 0.8** (dryer exits `0` even when pairs meet the threshold)",
+      "exit `0`; cover the uncovered, kill the survivors, delete dead code",
+      "Keep a log of every action and the reason",
+      "keep the main thread small; bulk work elsewhere with a summary",
+      "Find what is safe to remove; uncommitted work waits for a human decision",
+      "Commit often in small ordered commits; each states **why**, **what**, and **how proved**",
+      "references/gates-by-language.md",
+      "pstack-principles",
+      "Do not APPROVE"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: ub-mode"
+    ]
+  }
+}
