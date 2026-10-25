@@ -127,6 +127,7 @@ Source: Kohl, The Global English Style Guide (SAS Press). Guideline text fetched
 
 - Apply the **unslop** skill to every doc this skill touches. That skill owns the slop-pattern catalog: AI vocabulary, filler, hedging, formatting tells.
 - PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them. A PR body is a briefing that a reviewer can read in under a minute. Do not paste swarm logs, SHA lists, or metric tables. Link them.
+- Hub PRs open with these header lines (values per PR): `Tier:`, `Models:`, `sketch link:`, and **`Gates:`** (`crapper/dryer/mutator advisory results or skip reason`, or `N/A (hub Markdown)`). See `docs/shared/ub-mode-practice.md`.
 - Product UI strings are not documentation. Use your product's copy guidelines for those.
 - Indent code snippets with tabs. Write real paths and real symbols. Make every count or tree claim true at the commit that lands it, and include the command that regenerates it.
 

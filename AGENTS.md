@@ -346,7 +346,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/teach/SKILL.md` | "Teach me this", explain subsystem | how + why woven into plain explanation via unslop |
 | `skills/technical-writing/SKILL.md` | Docs, RFCs, PR descriptions | Diátaxis + Google/STE/Global English + unslop |
 | `skills/unslop/SKILL.md` | Cut AI tells from prose | Pattern scan, rewrite, self-audit |
-| `skills/ub-mode/SKILL.md` | `/ub-mode`, ub mode, APPROVE gates on supported code | Make it Work / Right / Practice; crapper, dryer, mutator when installed |
+| `skills/ub-mode/SKILL.md` | `/ub-mode`, ub mode, advisory gate report on supported code | Make it Work / Right / Practice; advisory crapper, dryer, mutator until blocking mode approved |
 | `skills/why/SKILL.md` | Why is X shaped this way (rationale) | Git anchor, MCP investigators, confidence-tier synthesis |
 | `skills/project-carry-through/SKILL.md` | A project or plan is agreed; ask-or-continue decision | Carry agreed projects to completion; ask Tom only for a new decision or manual action |
 | `skills/blocker-walkthrough/SKILL.md` | "Walk me through the blockers"; open decisions | Explain blocking decisions one at a time with answer options last |
@@ -434,4 +434,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-09-23 | Version: 0.12.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2 + pstack skill port (GMA-48) + opt-in Cloudflare security-audit vendor (GMA-56)*
+*Last updated: 2026-10-25 | Version: 0.13.1 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2 + pstack skill port (GMA-48) + opt-in Cloudflare security-audit vendor (GMA-56)*

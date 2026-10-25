@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-25T22:36:33.493472+00:00",
+  "captured_at": "2026-10-25T22:55:46.876588+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/lfg/SKILL.md (compound-loop borrow).",
@@ -22,12 +22,13 @@
       "invalidates a settled decision",
       "compound",
       "pr-shepherd",
-      "read `.metrics/dry.edn` and block review sign-off when any `:candidates` `:score` is \u2265 0.8 (dryer exit `0` is not a pass)"
+      "report advisory results on the PR **`Gates:`** line",
+      "Gate findings do not block review sign-off and do not count as review rounds until Tom approves blocking mode"
     ],
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "e851e894230d78aacb86c5c047df932ab01db8abb645382bffbfe6664aea71d8",
+  "skill_sha256": "4292f4dfe5aa049196894b8bf28b5eb0b8faf9b9d725b6618d1e8bbdaeb1808c",
   "stderr_tail": "",
   "stdout_tail": "OK: lfg\n",
   "verdict": "pass"

@@ -1,7 +1,7 @@
 ---
 name: ub-mode
-description: "Use when writing or changing code under the reduced Make it Work, Make it Right, and Practice loop (/ub-mode). Runs deterministic quality gates (crapper, dryer, mutator) before APPROVE when those tools exist for the project's language. Cite pstack-principles by name only; definitions live in skills/pstack-principles/SKILL.md."
-version: 1.0.1
+description: "Use when writing or changing code under the reduced Make it Work, Make it Right, and Practice loop (/ub-mode). Reports advisory quality-gate results (crapper, dryer, mutator) when those tools exist; gates do not block APPROVE until Tom approves blocking mode. Cite pstack-principles by name only; definitions live in skills/pstack-principles/SKILL.md."
+version: 1.0.2
 ---
 
 # ub-mode — Make it Work, Make it Right, Practice
@@ -24,13 +24,13 @@ Enforce a thin, repeatable engineering loop when implementing or reviewing code.
 | --- | --- |
 | `pstack-principles` | Named principles only — never copy definitions here |
 | `write-tests` | Red/Green/Refactor during Make it Work |
-| `plan-code-review-workflow` | Invokes this skill before QA APPROVE |
-| `expert-pr-review` | Invokes gate block after build/test, before recommendation |
-| `lfg` | Invokes gate block after simplify, before review sign-off |
+| `plan-code-review-workflow` | Advisory gate report in Phase 2.75 |
+| `expert-pr-review` | Advisory gate report in Step 3.5 |
+| `lfg` | Advisory gate report in step 3.5 |
 
 **Verification**
 - Phase 1 checks cite real test output (prove-it-works).
-- Phase 2 gate block cites tool exit codes and `.metrics/` paths when tools exist.
+- Phase 2 gate block cites measured results (CRAP, dry.edn candidates, mutator exits) when tools exist; findings are advisory only.
 - Practice log lists action + reason for each gate run or skip.
 
 ---
@@ -43,7 +43,7 @@ Every change walks:
 2. **Make it Right** — root cause, units, behavior tests, then gates.
 3. **Practice** — log, context, worktrees, commits.
 
-Do not APPROVE a PR or end the CODE phase until phase 2 gates pass or are explicitly skipped with a recorded reason (missing tool, unsupported language).
+**Advisory mode (hub default):** Run phase 2 gates when practical and **report** results in the PR body (`Gates:` line) or review handback. Gate findings **do not** block APPROVE and **do not** count as review rounds. Blocking mode starts only after Tom explicitly approves switching ub-mode to blocking gates.
 
 ---
 
@@ -83,27 +83,27 @@ Apply these **pstack-principles** by name while implementing:
 
 Refactor only after behavior is pinned: structure changes, proof unchanged (**prove-it-works**).
 
-### Quality gates (when tools exist)
+### Quality gates (advisory report when tools exist)
 
 Language matrix and commands: `references/gates-by-language.md`. Supported languages: Clojure, Java, Go, TypeScript, Rust, Python (crapper also covers JavaScript variants; dryer TypeScript files only — see reference). If the repo uses another language, state that no unclebob gate applies; do not invent a scanner.
 
-| Gate | Tool | Hub pass rule | Evidence |
+| Gate | Tool | Measured result (report honestly) | Evidence |
 | --- | --- | --- | --- |
-| CRAP | crapper | worst function **CRAP ≤ 10**; `--threshold 10` exits non-zero only when worst **&gt; 10** | `.metrics/crap.edn` |
-| Duplication | dryer | after exit `0`, read `.metrics/dry.edn`: **no** `:candidates` entry with `:score` **≥ 0.8** (dryer exits `0` even when pairs meet the threshold) | `.metrics/dry.edn` |
-| Mutation | mutator | exit `0`; cover the uncovered, kill the survivors, delete dead code | `.metrics/mutate/*.edn` |
+| CRAP | crapper | worst function **CRAP ≤ 10** is clean; `--threshold 10` exits non-zero only when worst **&gt; 10** | `.metrics/crap.edn` |
+| Duplication | dryer | read `.metrics/dry.edn`: list any `:candidates` with `:score` **≥ 0.8** (dryer exits `0` even when pairs meet the threshold) | `.metrics/dry.edn` |
+| Mutation | mutator | exit `0` clean; exit `3` means **survivors**; cover the uncovered, kill the survivors, delete dead code | `.metrics/mutate/*.edn` |
 
-**Gate block (run in order after tests pass)**
+**Gate block (run in order after tests pass; report only — advisory until blocking mode is approved)**
 
-1. `crapper --changed --threshold 10` (or full tree when the diff is wide). Confirm worst CRAP ≤ 10 in `.metrics/crap.edn` or from stdout.
-2. `dryer --changed --threshold 0.8`. Parse `.metrics/dry.edn`; any candidate with `:score` ≥ 0.8 blocks APPROVE.
-3. `mutator --changed` (install crapper beside mutator per upstream README).
+1. `crapper --changed --threshold 10` (or full tree when the diff is wide). Report worst CRAP from `.metrics/crap.edn` or stdout.
+2. **dryer (GMA-411):** `rm -f .metrics/dry.edn` then `dryer --changed --threshold 0.8` (default **min 4 lines** / **20 nodes** per upstream). If `--changed` selects nothing, dryer exits `0` and may leave no new file — treat **missing** `.metrics/dry.edn` after the run as **no selection / skipped**, never as a pass from an old file. Otherwise parse candidates ≥ 0.8.
+3. `mutator --changed` (install crapper beside mutator per upstream README). Note exit `3` = survivors.
 
-On failure: fix or split code; re-run from step 1. On missing tool: log skip reason; do not claim APPROVE on gate-backed quality.
+Record results on the PR **`Gates:`** line (see `docs/shared/ub-mode-practice.md`). Fix issues when you choose; gate debt does not block APPROVE in advisory mode.
 
-Optional visualization: [uml-viewer](https://github.com/unclebob/uml-viewer) reads the same `.metrics/` files; not required for pass/fail.
+Optional visualization: [uml-viewer](https://github.com/unclebob/uml-viewer) reads the same `.metrics/` files.
 
-**Exit**: Judgment principles satisfied **and** gates green or explicitly skipped with reason.
+**Exit**: Judgment principles satisfied; gate results reported or skip reason recorded.
 
 ---
 
@@ -122,9 +122,9 @@ Push only when the parent workflow allows (hub global rules).
 
 ## Wiring in other skills
 
-- **`plan-code-review-workflow`**: After phase 2.5 (simplify the diff), run this skill's gate block before QA may recommend APPROVE.
-- **`expert-pr-review`**: After Step 3 build/test pass, run the gate block before Step 5 recommendation.
-- **`lfg`**: After step 3 (simplify), run the gate block before step 4 review sign-off.
+- **`plan-code-review-workflow`**: After phase 2.5, run this skill's advisory gate block (Phase 2.75).
+- **`expert-pr-review`**: After Step 3 build/test pass, run advisory gates (Step 3.5).
+- **`lfg`**: After step 3 (simplify), run advisory gates (step 3.5).
 
 ---
 
@@ -132,4 +132,4 @@ Push only when the parent workflow allows (hub global rules).
 
 Adapted from [unclebob/ub-mode](https://github.com/unclebob/ub-mode). Gate tools are external repositories (see `NOTICE.md`). Hub doc: `docs/shared/ub-mode-practice.md`.
 
-*Last updated: 2026-10-25 | Hub version: 0.13.0*
+*Last updated: 2026-10-25 | Hub version: 0.13.1*

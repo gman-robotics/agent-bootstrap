@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-04T04:04:00.297124+00:00",
+  "captured_at": "2026-10-25T22:55:53.656650+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "SKILL.md exists and names the skill.",
@@ -20,7 +20,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "b65c0e902d940a98dd057f85c7cc706ddf4512dfe3d10ae465d8bcc88b6358a3",
+  "skill_sha256": "d7e94ee38335cbe28d5de2983392e8f2f80d55d04debc6ca9ccead565e908028",
   "stderr_tail": "",
   "stdout_tail": "OK: split-branch-for-pr\n",
   "verdict": "pass"

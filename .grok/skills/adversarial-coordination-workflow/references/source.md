@@ -82,7 +82,7 @@ This skill establishes a standardized division of labor and coordination workspa
 ### Step E: Pull Request Submission (Planner harness)
 - **Action:** Once both agents approve, the Orchestrator runs the planner harness to create and submit the GitHub PR.
 - **Rules:**
-  - The planner harness drafts the PR title and description based on the final implemented state.
+  - The planner harness drafts the PR title and description based on the final implemented state. For hub PRs, include `Tier:`, `Models:`, `sketch link:`, and **`Gates:`** (`docs/shared/ub-mode-practice.md`).
   - The planner harness pushes the branch and creates the PR via the `gh pr create` CLI.
 
 ---

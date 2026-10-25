@@ -12,7 +12,8 @@
       "invalidates a settled decision",
       "compound",
       "pr-shepherd",
-      "read `.metrics/dry.edn` and block review sign-off when any `:candidates` `:score` is ≥ 0.8 (dryer exit `0` is not a pass)"
+      "report advisory results on the PR **`Gates:`** line",
+      "Gate findings do not block review sign-off and do not count as review rounds until Tom approves blocking mode"
     ],
     "cwd": "."
   },

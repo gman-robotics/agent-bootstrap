@@ -71,7 +71,7 @@ Pulls a specific piece of work off a messy branch (mixed with unrelated commits,
    git push -u origin <new-branch>
    gh pr create --title "..." --body "..."
    ```
-   Write the PR body to name what was pulled out, and call out any cleanup commits (step 6) so reviewers understand why the diff includes small unrelated-looking reverts.
+   Write the PR body to name what was pulled out, and call out any cleanup commits (step 6) so reviewers understand why the diff includes small unrelated-looking reverts. Include the hub header lines when this repo is agent-bootstrap: `Tier:`, `Models:`, `sketch link:`, **`Gates:`** (see `docs/shared/ub-mode-practice.md`).
 
 9. **Optionally reset the original messy branch to remove the now-duplicated commits**
    Only if the user explicitly confirms — this rewrites already-pushed remote history:
