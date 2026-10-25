@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-25T22:24:38.145166+00:00",
+  "captured_at": "2026-10-25T22:36:33.444514+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/ub-mode/SKILL.md.",
@@ -24,9 +24,13 @@
       "subtract-before-you-add",
       "fix-root-causes",
       "test-behavior-not-implementation",
-      ".metrics/crap.edn",
-      "--threshold 10",
-      "--threshold 0.8",
+      "worst function **CRAP \u2264 10**",
+      "read `.metrics/dry.edn`: **no** `:candidates` entry with `:score` **\u2265 0.8** (dryer exits `0` even when pairs meet the threshold)",
+      "exit `0`; cover the uncovered, kill the survivors, delete dead code",
+      "Keep a log of every action and the reason",
+      "keep the main thread small; bulk work elsewhere with a summary",
+      "Find what is safe to remove; uncommitted work waits for a human decision",
+      "Commit often in small ordered commits; each states **why**, **what**, and **how proved**",
       "references/gates-by-language.md",
       "pstack-principles",
       "Do not APPROVE"
@@ -34,7 +38,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "2f1f5f0df3ff7a16c2fe9212d6175a5a84ad0830069ac373a566beefbed0d7d4",
+  "skill_sha256": "8cac327fcb9c052bccfa68df93e5d440192a86b6ba9e2248769841c2c84f9189",
   "stderr_tail": "",
   "stdout_tail": "OK: ub-mode\n",
   "verdict": "pass"

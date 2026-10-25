@@ -356,7 +356,6 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/ideate/SKILL.md` | Direction not chosen | Six frames, tagged basis, adversarial cut, ranked artifact |
 | `skills/strategy/SKILL.md` | Create or update STRATEGY.md | Product anchor; does not replace the memory bank |
 | `skills/lfg/SKILL.md` | Run the loop hands-off | Compose existing skills through PR and CI; do not merge unless granted |
-| `skills/ub-mode/SKILL.md` | `/ub-mode`, ub mode, or APPROVE gates in plan/review/lfg on supported code | Make it Work / Right / Practice; crapper, dryer, mutator when installed |
 
 See `/skills/` directory for full definitions. New skills should follow the style of the examples in this hub (clear steps, warnings, examples, code blocks).
 

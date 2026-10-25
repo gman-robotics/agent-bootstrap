@@ -321,7 +321,7 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### ub-mode
 **File**: `skills/ub-mode/SKILL.md`  
 **Trigger**: `/ub-mode`, "ub mode", or before APPROVE in `plan-code-review-workflow`, `expert-pr-review`, or `lfg` when changing supported application code.  
-**What it does**: Make it Work → Make it Right → Practice loop citing **pstack-principles** by name; runs crapper (CRAP &lt; 10, `.metrics/crap.edn`), dryer (similarity ≥ 0.8), and mutator when installed for Clojure, Java, Go, TypeScript, Rust, or Python. Adapted from [unclebob/ub-mode](https://github.com/unclebob/ub-mode). See `docs/shared/ub-mode-practice.md`.
+**What it does**: Make it Work → Make it Right → Practice loop citing **pstack-principles** by name; runs crapper (worst CRAP ≤ 10, `.metrics/crap.edn`), dryer (read `.metrics/dry.edn`; any candidate ≥ 0.8 blocks APPROVE), and mutator when installed for Clojure, Java, Go, TypeScript, Rust, or Python. Adapted from [unclebob/ub-mode](https://github.com/unclebob/ub-mode). See `docs/shared/ub-mode-practice.md`.
 
 ---
 

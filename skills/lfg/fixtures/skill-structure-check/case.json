@@ -11,7 +11,8 @@
       "Simplify the fresh diff",
       "invalidates a settled decision",
       "compound",
-      "pr-shepherd"
+      "pr-shepherd",
+      "read `.metrics/dry.edn` and block review sign-off when any `:candidates` `:score` is ≥ 0.8 (dryer exit `0` is not a pass)"
     ],
     "cwd": "."
   },

@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-25T22:24:46.335840+00:00",
+  "captured_at": "2026-10-25T22:36:33.493472+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/lfg/SKILL.md (compound-loop borrow).",
@@ -21,12 +21,13 @@
       "Simplify the fresh diff",
       "invalidates a settled decision",
       "compound",
-      "pr-shepherd"
+      "pr-shepherd",
+      "read `.metrics/dry.edn` and block review sign-off when any `:candidates` `:score` is \u2265 0.8 (dryer exit `0` is not a pass)"
     ],
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "f577648fed71b8dabc9a7b810047f6da496d68c85ca081783568e45f52a04a03",
+  "skill_sha256": "e851e894230d78aacb86c5c047df932ab01db8abb645382bffbfe6664aea71d8",
   "stderr_tail": "",
   "stdout_tail": "OK: lfg\n",
   "verdict": "pass"

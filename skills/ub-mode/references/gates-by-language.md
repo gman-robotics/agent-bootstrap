@@ -8,9 +8,13 @@ All six languages below are supported by the unclebob tools when the project has
 
 | Gate | Tool | Pass when | Snapshot |
 | --- | --- | --- | --- |
-| CRAP | `crapper` | worst function CRAP **&lt; 10** | `.metrics/crap.edn` |
-| Duplication | `dryer` | no pair at similarity **≥ 0.8** worth fixing | `.metrics/dry.edn` |
+| CRAP | `crapper` | worst function **CRAP ≤ 10** (`--threshold 10` fails only when worst **&gt; 10**) | `.metrics/crap.edn` |
+| Duplication | `dryer` | read `.metrics/dry.edn` after a successful run: **no** `:candidates` entry with `:score` **≥ 0.8** (dryer exits `0` even when pairs meet the threshold) | `.metrics/dry.edn` |
 | Mutation | `mutator` | exit `0` (no surviving mutants) | `.metrics/mutate/*.edn` |
+
+### Reading `.metrics/dry.edn`
+
+Dryer writes EDN shaped like `{:candidates [{:score 0.89 :language "clojure" :left {...} :right {...}} ...]}`. Treat any candidate with `:score` ≥ 0.8 as a duplication gate failure, regardless of dryer exit code.
 
 ## Commands (any supported language in the tree)
 
@@ -33,7 +37,7 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Gate | Notes |
 | --- | --- |
 | crapper | Cloverage LCOV via `clj -M:cov --lcov` when `deps.edn` or `bb.edn` defines `:cov` |
-| dryer | Structural fingerprints on `defn` forms (dry4clj lineage) |
+| dryer | Top-level forms except `ns` (dry4clj lineage) |
 | mutator | clj-mutate lineage; per-ns `.edn` under `.metrics/mutate/` |
 
 ### Java
@@ -41,7 +45,7 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Gate | Notes |
 | --- | --- |
 | crapper | JaCoCo `INSTRUCTION` from Maven `pom.xml` modules |
-| dryer | Methods and constructors (anonymous inner classes omitted, same as crapper) |
+| dryer | Methods with a body only; **constructors excluded**; no methods inside anonymous or local classes |
 | mutator | mutate4java lineage |
 
 ### Go
@@ -49,15 +53,15 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Gate | Notes |
 | --- | --- |
 | crapper | `go test ./... -coverprofile=...` |
-| dryer | Package-level functions and methods |
+| dryer | Functions and methods with a body; function literals stay inside the enclosing function |
 | mutator | mutate4go lineage |
 
-### TypeScript (and `.js` / `.jsx` / `.tsx` / `.mjs` / `.cjs`)
+### TypeScript (dryer: `.ts`, `.tsx`, `.mts`, `.cts` only)
 
 | Gate | Notes |
 | --- | --- |
-| crapper | LCOV; Vitest projects may auto-install `@vitest/coverage-v8` |
-| dryer | Same function units as crapper (including Express route callbacks as named entries) |
+| crapper | Also analyzes `.js`, `.jsx`, `.mjs`, `.cjs`; LCOV; Vitest may auto-install `@vitest/coverage-v8` |
+| dryer | **TypeScript files only** (`.ts`, `.tsx`, `.mts`, `.cts`); compares functions, methods, and top-level arrow functions; callbacks nested inside another function stay in the parent; **no** separate Express route callback entries |
 | mutator | Java-style mutation rules in TS syntax |
 
 ### Rust
@@ -65,7 +69,7 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Gate | Notes |
 | --- | --- |
 | crapper | `cargo llvm-cov` or `cargo tarpaulin` LCOV |
-| dryer | Functions and methods (`mod tests` skipped) |
+| dryer | Functions and methods with a body; skips `mod tests` and closures |
 | mutator | LCOV from llvm-cov/tarpaulin |
 
 ### Python
@@ -73,8 +77,8 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Gate | Notes |
 | --- | --- |
 | crapper | `coverage.py` + pytest or unittest |
-| dryer | Functions and methods; nested defs stay inside the parent |
-| mutator | Same units as crapper |
+| dryer | Functions and methods; nested functions stay inside the enclosing function |
+| mutator | Functions and methods; nested defs stay inside the parent |
 
 ## When a gate cannot run
 
@@ -83,8 +87,8 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Tool not installed | Record "gate skipped: &lt;tool&gt; not on PATH" in the PR or review handback |
 | Project language not in the six | State plainly; do not fake a gate |
 | Baseline tests fail | Fix tests first; mutator exit `2` means baseline failure |
-| Survivor or CRAP over threshold | REQUEST_CHANGES; fix or split until green |
+| CRAP &gt; 10, dry candidate ≥ 0.8, or mutator survivor | REQUEST_CHANGES; fix or split until green |
 
 ## uml-viewer (optional)
 
-[uml-viewer](https://github.com/unclebob/uml-viewer) reads `.metrics/crap.edn` and `.metrics/mutate/*.edn` for coverage, CRAP, and mutation paint. Use it when a human wants a picture; the APPROVE gate only needs the tool exit codes and snapshot paths in the evidence line.
+[uml-viewer](https://github.com/unclebob/uml-viewer) reads `.metrics/crap.edn` and `.metrics/mutate/*.edn` for coverage, CRAP, and mutation paint. Use it when a human wants a picture. APPROVE evidence still needs crapper/mutator exit codes (where applicable), **plus** a `.metrics/dry.edn` read for duplication.

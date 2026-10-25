@@ -1,7 +1,7 @@
 ---
 name: ub-mode
 description: "Use when writing or changing code under the reduced Make it Work, Make it Right, and Practice loop (/ub-mode). Runs deterministic quality gates (crapper, dryer, mutator) before APPROVE when those tools exist for the project's language. Cite pstack-principles by name only; definitions live in skills/pstack-principles/SKILL.md."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # ub-mode — Make it Work, Make it Right, Practice
@@ -85,18 +85,18 @@ Refactor only after behavior is pinned: structure changes, proof unchanged (**pr
 
 ### Quality gates (when tools exist)
 
-Language matrix and commands: `references/gates-by-language.md`. Supported languages: Clojure, Java, Go, TypeScript (incl. JS variants), Rust, Python. If the repo uses another language, state that no unclebob gate applies; do not invent a scanner.
+Language matrix and commands: `references/gates-by-language.md`. Supported languages: Clojure, Java, Go, TypeScript, Rust, Python (crapper also covers JavaScript variants; dryer TypeScript files only — see reference). If the repo uses another language, state that no unclebob gate applies; do not invent a scanner.
 
-| Gate | Tool | Hub threshold | Evidence |
+| Gate | Tool | Hub pass rule | Evidence |
 | --- | --- | --- | --- |
-| CRAP | crapper | worst score **&lt; 10** (`--threshold 10`) | `.metrics/crap.edn` |
-| Duplication | dryer | flag pairs **≥ 0.8** (`--threshold 0.8`) | `.metrics/dry.edn` |
-| Mutation | mutator | exit `0`; cover uncovered, kill survivors, delete dead code | `.metrics/mutate/*.edn` |
+| CRAP | crapper | worst function **CRAP ≤ 10**; `--threshold 10` exits non-zero only when worst **&gt; 10** | `.metrics/crap.edn` |
+| Duplication | dryer | after exit `0`, read `.metrics/dry.edn`: **no** `:candidates` entry with `:score` **≥ 0.8** (dryer exits `0` even when pairs meet the threshold) | `.metrics/dry.edn` |
+| Mutation | mutator | exit `0`; cover the uncovered, kill the survivors, delete dead code | `.metrics/mutate/*.edn` |
 
 **Gate block (run in order after tests pass)**
 
-1. `crapper --changed --threshold 10` (or full tree when the diff is wide).
-2. `dryer --changed --threshold 0.8`.
+1. `crapper --changed --threshold 10` (or full tree when the diff is wide). Confirm worst CRAP ≤ 10 in `.metrics/crap.edn` or from stdout.
+2. `dryer --changed --threshold 0.8`. Parse `.metrics/dry.edn`; any candidate with `:score` ≥ 0.8 blocks APPROVE.
 3. `mutator --changed` (install crapper beside mutator per upstream README).
 
 On failure: fix or split code; re-run from step 1. On missing tool: log skip reason; do not claim APPROVE on gate-backed quality.
@@ -111,10 +111,10 @@ Optional visualization: [uml-viewer](https://github.com/unclebob/uml-viewer) rea
 
 | Practice | Rule |
 | --- | --- |
-| Log | Every action + reason; attach to PR or review handback |
-| Context | **guard-the-context-window** — bulk work in subagents; main thread keeps summary |
-| Worktrees | Remove safe cruft; uncommitted work needs a human decision |
-| Commits | Small, ordered; message states **why**, **what**, **how proved** |
+| Log | Keep a log of every action and the reason; attach to PR or review handback |
+| Context | **guard-the-context-window** — keep the main thread small; bulk work elsewhere with a summary |
+| Worktrees | Find what is safe to remove; uncommitted work waits for a human decision |
+| Commits | Commit often in small ordered commits; each states **why**, **what**, and **how proved** |
 
 Push only when the parent workflow allows (hub global rules).
 

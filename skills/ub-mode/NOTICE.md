@@ -1,6 +1,6 @@
 # ub-mode — provenance
 
-Adapted from [unclebob/ub-mode](https://github.com/unclebob/ub-mode) (see upstream repository for license terms).
+Adapted from [unclebob/ub-mode](https://github.com/unclebob/ub-mode). That upstream repository does not ship a `LICENSE` file; do not claim a license term for it here.
 
 This hub copy is an independent rewrite for the agent-bootstrap multi-harness catalog. Quality-gate tools are external:
 

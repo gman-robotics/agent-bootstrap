@@ -77,8 +77,8 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 ### Phase 2.75: ub-mode gates (before QA APPROVE)
 1. Load `skills/ub-mode/SKILL.md` and run **Phase 2 — Make it Right** (judgment + gate block) on the change scope.
 2. Use `skills/ub-mode/references/gates-by-language.md` when crapper, dryer, or mutator are available for the project's language.
-3. Record gate commands, exit codes, and `.metrics/` paths (or skip reasons) in `progress.md` or the PR body.
-4. QA must not recommend **APPROVE** until gates pass or are explicitly skipped with reason.
+3. Record gate commands, exit codes, and `.metrics/` paths (or skip reasons) in `progress.md` or the PR body. For **dryer**, read `.metrics/dry.edn`: any `:candidates` entry with `:score` ≥ 0.8 blocks APPROVE (dryer exit `0` is not enough).
+4. QA must not recommend **APPROVE** until gates pass or are explicitly skipped with reason (crapper worst CRAP ≤ 10; dry.edn clear at ≥ 0.8; mutator exit `0`).
 
 **Exit Criteria**: ub-mode phase 2 complete. Then hand off to QA.
 

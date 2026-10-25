@@ -28,7 +28,9 @@ Definitions of principle names live only in `skills/pstack-principles/SKILL.md`.
 A complete gate handback includes:
 
 1. Test command and exit code.
-2. Each gate command, exit code, and path to `.metrics/crap.edn`, `.metrics/dry.edn`, or `.metrics/mutate/`.
-3. Skip reasons when a tool is not installed.
+2. **crapper**: worst CRAP ≤ 10 (`.metrics/crap.edn` or stdout).
+3. **dryer**: command plus parsed `.metrics/dry.edn` — list any `:candidates` with `:score` ≥ 0.8 as fail (exit `0` does not pass duplication).
+4. **mutator**: exit code and `.metrics/mutate/`.
+5. Skip reasons when a tool is not installed.
 
 Do not APPROVE without that line or an explicit "gates not applicable" reason (language or environment).
