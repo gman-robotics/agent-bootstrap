@@ -22,6 +22,8 @@ write_outcome() {
     if [[ -n "${DRYER_RC:-}" ]]; then printf 'dryer_exit=%s\n' "${DRYER_RC}"; fi
     if [[ -n "${DRYER_HIGH:-}" ]]; then printf 'dryer_candidates_ge_threshold=%s\n' "${DRYER_HIGH}"; fi
     if [[ -n "${MUTATOR_RC:-}" ]]; then printf 'mutator_exit=%s\n' "${MUTATOR_RC}"; fi
+    if [[ -n "${MUTATOR_SKIPPED:-}" ]]; then printf 'mutator_skipped=%s\n' "${MUTATOR_SKIPPED}"; fi
+    if [[ -n "${TOOL_ERROR:-}" ]]; then printf 'tool_error=%s\n' "${TOOL_ERROR}"; fi
   } >"${OUTCOME_FILE}"
 }
 
@@ -44,6 +46,10 @@ append_step_summary() {
     echo ""
     if [[ "${OUTCOME:-}" == "skipped_tools_missing" ]]; then
       echo "> **Neutral skip (not a gate pass):** \`skipped_tools_missing\` — crapper, dryer, and mutator were not on PATH. Install tools in CI is a follow-up ticket."
+      echo ""
+    fi
+    if [[ "${OUTCOME:-}" == "tool_error" ]]; then
+      echo "> **Advisory tool error (not clean, not a quality finding):** \`tool_error\` — crapper/dryer/mutator failed to run correctly. Review exit codes and metrics files; hand back to implementer."
       echo ""
     fi
     echo "| Field | Value |"
@@ -147,11 +153,25 @@ gate_bin() {
   return 1
 }
 
+SKIP_MUTATOR="${UB_GATES_SKIP_MUTATOR:-0}"
+if [[ "${SKIP_MUTATOR}" != "1" && -n "${CURSOR_AGENT:-}" && -z "${GITHUB_ACTIONS:-}" ]]; then
+  SKIP_MUTATOR=1
+  log "ub-gates: skipping mutator (cloud agent harness; run on laptop or CI)"
+fi
+
 CRAPPER="$(gate_bin crapper || true)"
 DRYER="$(gate_bin dryer || true)"
-MUTATOR="$(gate_bin mutator || true)"
+MUTATOR=""
+if [[ "${SKIP_MUTATOR}" != "1" ]]; then
+  MUTATOR="$(gate_bin mutator || true)"
+fi
 
-if [[ -z "${CRAPPER}" || -z "${DRYER}" || -z "${MUTATOR}" ]]; then
+need_mutator=1
+if [[ "${SKIP_MUTATOR}" == "1" ]]; then
+  need_mutator=0
+fi
+
+if [[ -z "${CRAPPER}" || -z "${DRYER}" || ( "${need_mutator}" -eq 1 && -z "${MUTATOR}" ) ]]; then
   OUTCOME="skipped_tools_missing"
   GATE_MISS=1
   GATES_RAN=0
@@ -177,26 +197,56 @@ if [[ -f .metrics/dry.edn ]]; then
 else
   DRYER_HIGH=0
 fi
-"${MUTATOR}" "${SCOPE_FILES[@]}"
-MUTATOR_RC=$?
+MUTATOR_SKIPPED=0
+if [[ "${SKIP_MUTATOR}" == "1" ]]; then
+  MUTATOR_SKIPPED=1
+  MUTATOR_RC=""
+else
+  "${MUTATOR}" "${SCOPE_FILES[@]}"
+  MUTATOR_RC=$?
+fi
 set -e
 
-log "ub-gates: crapper exit ${CRAPPER_RC}; dryer exit ${DRYER_RC}; dryer candidates >= ${DRYER_THRESHOLD}: ${DRYER_HIGH}; mutator exit ${MUTATOR_RC}"
+if [[ -n "${MUTATOR_RC}" ]]; then
+  log "ub-gates: crapper exit ${CRAPPER_RC}; dryer exit ${DRYER_RC}; dryer candidates >= ${DRYER_THRESHOLD}: ${DRYER_HIGH}; mutator exit ${MUTATOR_RC}"
+else
+  log "ub-gates: crapper exit ${CRAPPER_RC}; dryer exit ${DRYER_RC}; dryer candidates >= ${DRYER_THRESHOLD}: ${DRYER_HIGH}; mutator skipped"
+fi
+
+TOOL_ERROR=0
+if [[ "${DRYER_RC}" -eq 1 || "${DRYER_RC}" -eq 2 ]]; then TOOL_ERROR=1; fi
+if [[ "${DRYER_RC}" -eq 0 && ! -f .metrics/dry.edn ]]; then TOOL_ERROR=1; fi
+if [[ -n "${MUTATOR_RC}" && "${MUTATOR_RC}" -eq 2 ]]; then TOOL_ERROR=1; fi
 
 FINDING=0
-if [[ "${CRAPPER_RC}" -ne 0 ]]; then FINDING=1; fi
-if [[ "${DRYER_HIGH}" -gt 0 ]]; then FINDING=1; fi
-if [[ "${MUTATOR_RC}" -eq 3 ]]; then FINDING=1; fi
+if [[ "${TOOL_ERROR}" -eq 0 ]]; then
+  if [[ "${CRAPPER_RC}" -ne 0 ]]; then FINDING=1; fi
+  if [[ "${DRYER_HIGH}" -gt 0 ]]; then FINDING=1; fi
+  if [[ -n "${MUTATOR_RC}" && "${MUTATOR_RC}" -eq 3 ]]; then FINDING=1; fi
+fi
 
-if [[ "${FINDING}" -eq 1 ]]; then
+GATES_RAN=1
+if [[ "${TOOL_ERROR}" -eq 1 ]]; then
+  OUTCOME="tool_error"
+  GATE_MISS=1
+  emit_warning "tool_error — dryer/mutator tool failure or missing .metrics/dry.edn after dryer; not ran_clean. Advisory: job may still succeed."
+elif [[ "${FINDING}" -eq 1 ]]; then
   OUTCOME="ran_with_findings"
 else
   OUTCOME="ran_clean"
 fi
-GATES_RAN=1
 
 write_outcome "${OUTCOME}"
 append_step_summary
+
+if [[ "${TOOL_ERROR}" -eq 1 ]]; then
+  if [[ "${ADVISORY}" != "1" ]]; then
+    log "ub-gates: blocking mode — failing job on tool_error"
+    exit 1
+  fi
+  log "ub-gates: advisory mode — tool_error reported; job succeeds"
+  exit 0
+fi
 
 if [[ "${FINDING}" -eq 1 && "${ADVISORY}" != "1" ]]; then
   log "ub-gates: blocking mode — failing job on gate findings"

@@ -556,6 +556,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         quick_start=(
             "Read `references/source.md` before acting.",
             "Interview surface, run, drive, observe, isolate; generate verify skill + feature map.",
+            "Ship verify-<app>-ci with coverage + advisory ub gates (references/verify-ci-ub-gates.sh).",
             "Prove end-to-end once before handoff; point to maintain-verification-skill.",
         ),
     ),
@@ -661,7 +662,8 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         ),
         quick_start=(
             "Read `references/source.md` before acting.",
-            "Index hygiene; readonly source wave per feature; reconcile recipes.",
+            "Index hygiene; ub-mode verify-ci hygiene (merge-base scope, advisory outcomes).",
+            "Readonly source wave per feature; reconcile recipes.",
             "Coordinator live-pass every feature; triage doc vs harness vs product gaps.",
         ),
     ),
@@ -996,10 +998,12 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "block APPROVE until blocking mode is approved."
         ),
         short_description="Reduced principles and advisory gates",
-        trigger_summary="Triggers on /ub-mode or advisory gate report in plan-code-review, expert-pr-review, or lfg.",
+        trigger_summary=(
+            "Triggers on /ub-mode or CI ub-gates confirmation in plan-code-review, expert-pr-review, or lfg."
+        ),
         quick_start=(
             "Read `references/source.md` and `references/gates-by-language.md` before acting.",
-            "Phase 1: write-tests and pstack-principles by name. Phase 2: advisory gate report. Phase 3: log and commits.",
+            "Implementer: pre-PR crapper/dryer/mutator on merge-base scope. Reviewer: read CI ub-gates outcome only.",
             "Put results on the PR Gates line; gate findings do not block APPROVE in advisory mode.",
         ),
     ),

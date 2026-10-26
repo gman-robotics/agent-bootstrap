@@ -14,4 +14,18 @@ BIN=".cursor/skills/verify-hub/bin"
 "${BIN}/verify-hub-drive-index-live-gate"
 "${BIN}/verify-hub-drive-check-skill-live" create-verification-skill
 
+# Coverage-backed unit tests (feeds crapper/mutator when unclebob tools are on PATH).
+if python3 -m coverage --help >/dev/null 2>&1; then
+  python3 -m coverage run -m unittest discover -s tests
+  python3 -m coverage report -m >"${VERIFY_HUB_ARTIFACTS_DIR}/coverage-report.txt" 2>&1 || true
+else
+  python3 -m unittest discover -s tests
+fi
+
+# Advisory ub gates (report-only; merge-base scope via hub script).
+bash scripts/run_ub_gates_report.sh
+if [[ -f .metrics/ub-gates-outcome.txt ]]; then
+  cp .metrics/ub-gates-outcome.txt "${VERIFY_HUB_ARTIFACTS_DIR}/ub-gates-outcome.txt"
+fi
+
 echo "verify-hub-ci: OK (artifacts=${VERIFY_HUB_ARTIFACTS_DIR})"

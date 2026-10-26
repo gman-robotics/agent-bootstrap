@@ -6,7 +6,7 @@ Use **`/ub-mode`** or load `skills/ub-mode/SKILL.md` when you want the reduced l
 
 **Advisory (hub default — GMA-410 rollout):** Run gates in the implementer pre-PR dev flow and in CI on every `push` and `pull_request`; report honest measured results on the PR **`Gates:`** line. Gate **findings** **do not** block QA **APPROVE** and **do not** count as review rounds until Tom explicitly approves **blocking mode**. Roll out on **systemone** and **packet** first; measure review rounds per PR before and after. No blocking mode until Tom OKs.
 
-**Gate miss (advisory):** When **`ub-gates`** is **red/missing** for infrastructure errors, the reviewer hands the PR back to the implementer (**not** a review round). **`outcome=skipped_tools_missing`** is a **neutral skip**: job exits **0** (not red), emits a **`::warning`** and step-summary note, sets **`gates_ran=0`** — **not** a gate pass. Reviewer reads the job summary/outcome file; gates did **not** run. **Follow-up:** install crapper, dryer, and mutator in CI (separate ticket). A **green** `ub-gates` with **`skipped_no_scope`** is OK for docs-only PRs. **`ran_with_findings`** means tools ran; findings are advisory until blocking mode.
+**Gate miss (advisory):** When **`ub-gates`** is **red/missing** for infrastructure errors, the reviewer hands the PR back to the implementer (**not** a review round). **`outcome=skipped_tools_missing`** is a **neutral skip**: job exits **0** (not red), emits a **`::warning`** and step-summary note, sets **`gates_ran=0`** — **not** a gate pass. Reviewer reads the job summary/outcome file; gates did **not** run. **Follow-up:** install crapper, dryer, and mutator in CI (separate ticket). A **green** `ub-gates` with **`skipped_no_scope`** is OK for docs-only PRs. **`ran_with_findings`** means tools ran; findings are advisory until blocking mode. **`outcome=tool_error`** means tools ran but **failed** (dryer exit `1`/`2`, missing `.metrics/dry.edn` after dryer exit `0`, mutator exit `2`) — **not** `ran_clean`; advisory job may still be green with a warning.
 
 ## When to use
 
@@ -49,7 +49,9 @@ Before ub-gates can run in CI or locally:
 | **Explicit scope paths** | Upstream `--changed` uses **`git status`** (uncommitted adds/edits), not the PR diff. For committed branches and CI, pass the merge-base file list (see below). Do not claim “git diff selection” for `--changed`. |
 | **crapper, dryer, mutator on PATH** | Or project-root `./crapper` wrappers; **mutator** expects **crapper** beside it per upstream README |
 
-Hub CI: workflow job **`ub-gates`** runs `bash scripts/run_ub_gates_ci.sh` on every **`push`** and **`pull_request`**. The script writes `.metrics/ub-gates-outcome.txt` and a GitHub step summary (plus **`::warning`** when tools are missing). **`skipped_tools_missing`** exits **0** with **`gates_ran=0`** (visible warn, not a pass). Installing unclebob tools on the runner is a **follow-up ticket** — not in this hub PR. Advisory mode still allows **`ran_with_findings`** to exit 0.
+Hub CI: workflow job **`ub-gates`** runs `bash scripts/run_ub_gates_ci.sh` on every **`push`** and **`pull_request`** with **`fetch-depth: 0`** so merge-base scope resolves. The script writes `.metrics/ub-gates-outcome.txt` and a GitHub step summary (plus **`::warning`** when tools are missing). **`skipped_tools_missing`** exits **0** with **`gates_ran=0`** (visible warn, not a pass). Installing unclebob tools on the runner is a **follow-up ticket** — not in this hub PR. Advisory mode still allows **`ran_with_findings`** to exit 0.
+
+The **`verify-hub`** job uses default checkout (**depth 1**) and runs `verify-hub-ci` (doctor, drives, optional local `run_ub_gates_report.sh`). **Reviewers confirm ub-mode gates from the `ub-gates` job at head SHA**, not from `verify-hub` (shallow checkout may skip or skew merge-base scope).
 
 ## Scope file list (committed diff)
 
@@ -86,8 +88,9 @@ In `expert-pr-review` Step 3.5 and `plan-code-review-workflow` Phase 3:
 
 1. At the PR **head SHA**, read CI check **`ub-gates`** and the job log / step summary / `.metrics/ub-gates-outcome.txt` (`outcome=...`). **Do not** re-run crapper, dryer, or mutator locally.
 2. **`ran_clean`** or **`ran_with_findings`**: tools executed; advisory findings do not block APPROVE.
-3. **`skipped_no_scope`**: OK when the PR has no gate-relevant sources.
-4. **`skipped_tools_missing`** (`gates_ran=0`): gates did **not** run — not a pass; note or handback; **not** a review round. Red/missing check for other failures: gate miss.
+3. **`tool_error`**: tool failure or missing dryer snapshot — not clean, not a quality finding; handback; **not** a review round.
+4. **`skipped_no_scope`**: OK when the PR has no gate-relevant sources.
+5. **`skipped_tools_missing`** (`gates_ran=0`): gates did **not** run — not a pass; note or handback; **not** a review round. Red/missing check for other failures: gate miss.
 
 ## How tools pair with principles
 

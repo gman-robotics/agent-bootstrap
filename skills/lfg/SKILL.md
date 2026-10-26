@@ -22,7 +22,7 @@ Compose skills that already exist. Do not reimplement them. The pipeline stops o
 2. Implement on an isolated branch with `write-tests`. Do not call an open PR shipped.
 3. Simplify the fresh diff before review. Behavior stays. This is not `codebase-simplification-audit`.
 3.4. Pre-PR dev flow: `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (`rm -f .metrics/dry.edn` first) per `docs/shared/ub-mode-practice.md`; **fix** what they flag before the PR.
-3.5. `mutator` on merge-base **scope** — **laptop or CI only**; never in a cloud agent. Push so CI **`ub-gates`** runs the same scope; report results on the PR **`Gates:`** line in step 8. `skipped_tools_missing` (`gates_ran=0`) is not a gate pass; red/missing for other failures → implementer; not a review round. Advisory until Tom approves blocking mode.
+3.5. `mutator` on merge-base **scope** — **laptop or CI only**; never in a cloud agent. Push so CI **`ub-gates`** runs the same scope; report results on the PR **`Gates:`** line in step 8. `skipped_tools_missing` (`gates_ran=0`) is not a gate pass; **`tool_error`** is not `ran_clean` (hand back); red/missing for other failures → implementer; not a review round. Advisory until Tom approves blocking mode.
 3.6. If the target project has `standards-<repo>/SKILL.md`, align the PR description with it (`Tier:`, `Models:`, `Linear:`, `Summary:`, `Gates:`) before review (`docs/shared/repo-standards-practice.md`).
 4. Review against the plan with `expert-pr-review` (reviewer confirms **`ub-gates`** at head SHA only — no local gate re-run). A finding that invalidates a settled decision stops the pipeline.
 5. Apply fixes. Put unapplied findings in the PR body.

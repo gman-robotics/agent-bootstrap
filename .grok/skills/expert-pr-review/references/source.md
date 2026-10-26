@@ -170,10 +170,11 @@ When tests passed (or were skipped with reason):
 
 1. At the PR **head SHA**, read the **`ub-gates`** job **step summary** and/or `.metrics/ub-gates-outcome.txt` (`outcome=`, `gates_ran=`). **Do not** run crapper, dryer, or mutator in the reviewer harness.
 2. **`gates_ran=1`** with **`outcome=ran_clean` or `outcome=ran_with_findings`:** Tools ran on the merge-base scope. Advisory findings do not block **APPROVE**; cite the PR **`Gates:`** line.
-3. **`outcome=skipped_no_scope`:** OK when the PR has no gate-relevant source files (e.g. hub Markdown).
-4. **`outcome=skipped_tools_missing`** (`gates_ran=0`): CI job may be **green** with a **`::warning`** — this is **not** “gates ran”. Note in the review; hand back to the implementer for local gates or wait for the CI tool-install follow-up; **not** a review round.
-5. **Red/missing `ub-gates` check** (non-tool infrastructure failure): gate miss → implementer; **not** a review round.
-6. A **green** check alone does **not** prove gates ran; always read `gates_ran=` and `outcome=`.
+3. **`outcome=tool_error`** (`gate_miss=1`, often with **`::warning`**): Tools started but **dryer/mutator failed** (e.g. dryer exit `1`/`2`, missing `.metrics/dry.edn` after dryer exit `0`, mutator exit `2`). This is **not** `ran_clean` and **not** a quality finding — hand back to the implementer; **not** a review round.
+4. **`outcome=skipped_no_scope`:** OK when the PR has no gate-relevant source files (e.g. hub Markdown).
+5. **`outcome=skipped_tools_missing`** (`gates_ran=0`): CI job may be **green** with a **`::warning`** — this is **not** “gates ran”. Note in the review; hand back to the implementer for local gates or wait for the CI tool-install follow-up; **not** a review round.
+6. **Red/missing `ub-gates` check** (non-tool infrastructure failure): gate miss → implementer; **not** a review round.
+7. A **green** check alone does **not** prove gates ran; always read `gates_ran=` and `outcome=`.
 
 Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`; expect **`skipped_no_scope`** when CI ran.
 

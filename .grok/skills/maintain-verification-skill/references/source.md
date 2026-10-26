@@ -3,7 +3,7 @@ name: maintain-verification-skill
 description: >-
   Periodic pass that keeps a project's verification skill and feature map
   honest. Use for "audit the verify skill".
-version: 1.0.0
+version: 1.1.0
 ---
 
 # maintain-verification-skill
@@ -56,6 +56,8 @@ Only edit the verification skill's own directory (its SKILL.md, features/, and a
 
 1. **Index hygiene.** Read the feature map README and glob its sibling files. Fix missing, extra, duplicate, or dead entries. Lightweight; no generated inventory.
 
+1b. **ub-mode verify-ci hygiene (GMA-410).** Read `bin/verify-*-ci` (and any `verify-ub-gates` helper). Confirm: coverage step exists for the stack; merge-base scope file list (not `--changed` for PR scope); `crapper --threshold 10` and `dryer --threshold 0.8` with `rm -f .metrics/dry.edn` first; mutator skipped on cloud agents but documented for laptop/CI; outcome file uses hub names (`ran_clean`, `ran_with_findings`, `skipped_no_scope`, `skipped_tools_missing`, `tool_error`); verify-ci stays report-only (advisory, does not fail on gate debt). Drift → fix under edit scope or `changed` outcome.
+
 2. **Source wave.** One read-only subagent per feature file, launched concurrently. Each explains "how does this user-facing feature work?" from source, flags likely doc drift with citations, and returns one concise live-verification recipe. Children never drive the app and never edit files. Return shape: feature summary / source entry points / likely drift or none / one recipe.
 
 3. **Reconcile.** Every feature file has a returned summary. Merge overlapping recipes into as few app states as practical. Spot-check cited drift; don't re-prove clean claims. Sweep recent churn for user-facing surfaces missing from the map — require a concrete source path before calling one missing.
@@ -72,4 +74,4 @@ Keep concise run notes (features covered, unreachable prerequisites, confirmed d
 
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
-*Last updated: 2026-09-15 | Hub version: 0.11.0*
+*Last updated: 2026-10-26 | Hub version: 0.14.0*
