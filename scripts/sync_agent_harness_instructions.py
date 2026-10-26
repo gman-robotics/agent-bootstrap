@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
 MARKER_BEGIN = "<!-- agent-bootstrap-hub:BEGIN harness-workflow -->"
 MARKER_END = "<!-- agent-bootstrap-hub:END harness-workflow -->"
+
+REPO_ID_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 HUB_PR_TEMPLATE = REPO_ROOT / "docs/shared/hub-pull-request-template.md"
@@ -34,8 +37,56 @@ Run `bash /path/to/agent-bootstrap/scripts/install-grok.sh` from a sibling agent
 """
 
 
+class MarkerError(ValueError):
+    """Delimited harness-workflow markers are missing or malformed."""
+
+
+def validate_markers(text: str) -> None:
+    """Raise MarkerError when marker pairs are malformed."""
+    begin_count = text.count(MARKER_BEGIN)
+    end_count = text.count(MARKER_END)
+    if begin_count == 0 and end_count == 0:
+        return
+    if begin_count > 1:
+        raise MarkerError(f"expected at most one {MARKER_BEGIN}, found {begin_count}")
+    if end_count > 1:
+        raise MarkerError(f"expected at most one {MARKER_END}, found {end_count}")
+    if end_count > 0 and begin_count == 0:
+        raise MarkerError(f"{MARKER_END} without {MARKER_BEGIN}")
+    if begin_count > 0 and end_count == 0:
+        raise MarkerError(f"{MARKER_BEGIN} without {MARKER_END}")
+    if text.index(MARKER_END) < text.index(MARKER_BEGIN):
+        raise MarkerError(f"{MARKER_END} appears before {MARKER_BEGIN}")
+
+
 def block_present(text: str) -> bool:
+    try:
+        validate_markers(text)
+    except MarkerError:
+        return False
     return MARKER_BEGIN in text and MARKER_END in text
+
+
+def validate_repo_id(repo_id: str) -> str:
+    if not repo_id or not REPO_ID_RE.fullmatch(repo_id):
+        raise ValueError(
+            "repo-id must be a lowercase slug (a-z, 0-9, hyphens; no slashes or dots)"
+        )
+    return repo_id
+
+
+def resolve_repo_root(repo_root: Path) -> Path:
+    resolved = repo_root.resolve()
+    if not resolved.is_dir():
+        raise ValueError(f"repo-root is not a directory: {resolved}")
+    return resolved
+
+
+def _path_inside_repo(repo_root: Path, path: Path) -> None:
+    try:
+        path.resolve().relative_to(repo_root.resolve())
+    except ValueError:
+        raise ValueError(f"path escapes repo-root: {path}") from None
 
 
 def build_block(repo_id: str) -> str:
@@ -56,6 +107,7 @@ Maintained by `scripts/sync_agent_harness_instructions.py` (`create-verification
 
 
 def upsert_marked_block(text: str, block: str) -> tuple[str, bool]:
+    validate_markers(text)
     if block_present(text):
         start = text.index(MARKER_BEGIN)
         end = text.index(MARKER_END) + len(MARKER_END)
@@ -67,19 +119,35 @@ def upsert_marked_block(text: str, block: str) -> tuple[str, bool]:
     return text + "\n\n" + stripped_block, True
 
 
-def _cursor_rule_path(repo_root: Path, repo_id: str) -> Path:
-    return repo_root / ".cursor/rules" / f"{repo_id}-harness.mdc"
+def _split_mdc_frontmatter(text: str) -> tuple[str | None, str]:
+    if not text.startswith("---"):
+        return None, text
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        return None, text
+    front = f"---{parts[1]}---"
+    body = parts[2]
+    if body.startswith("\n"):
+        body = body[1:]
+    return front, body
 
 
-def _cursor_rule_body(repo_id: str, block: str) -> str:
+def _default_mdc_frontmatter(repo_id: str) -> str:
     return f"""---
 description: Load standards-{repo_id}, verify/ub checks before PR, and PR templates
 globs: []
 alwaysApply: true
----
+---"""
 
-{block.strip()}
-"""
+
+def cursor_rule_rel(repo_id: str) -> str:
+    return f".cursor/rules/{repo_id}-harness.mdc"
+
+
+def cursor_rule_path(repo_root: Path, repo_id: str) -> Path:
+    path = repo_root / cursor_rule_rel(repo_id)
+    _path_inside_repo(repo_root, path)
+    return path
 
 
 def sync_file(path: Path, initial: str | None, block: str) -> bool:
@@ -99,34 +167,70 @@ def sync_file(path: Path, initial: str | None, block: str) -> bool:
     return True
 
 
-def sync_repo(repo_root: Path, repo_id: str) -> bool:
+def sync_mdc_file(path: Path, repo_id: str, block: str) -> bool:
+    if path.exists():
+        text = path.read_text(encoding="utf-8")
+        front, body = _split_mdc_frontmatter(text)
+        new_body, changed = upsert_marked_block(body, block)
+        if not changed:
+            return False
+        if front is None:
+            new_text = new_body
+        else:
+            new_text = front + "\n\n" + new_body
+            if not new_text.endswith("\n"):
+                new_text += "\n"
+        path.write_text(new_text, encoding="utf-8")
+        return True
+    front = _default_mdc_frontmatter(repo_id)
+    body = block.strip() + "\n"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(front + "\n\n" + body, encoding="utf-8")
+    return True
+
+
+def _all_target_rels(repo_id: str) -> tuple[str, ...]:
+    return (*TARGET_REL_PATHS, cursor_rule_rel(repo_id))
+
+
+def sync_targets(
+    repo_root: Path, repo_id: str, only: set[str] | None = None
+) -> bool:
     block = build_block(repo_id)
     changed = False
+    targets = set(_all_target_rels(repo_id))
+    if only is not None:
+        unknown = only - targets
+        if unknown:
+            raise ValueError(f"unknown harness path(s): {', '.join(sorted(unknown))}")
+        targets = only
 
-    agents = repo_root / "AGENTS.md"
-    if not agents.exists():
-        initial = f"# AGENTS.md\n\nProject agent instructions for `{repo_id}`.\n\n"
-    else:
-        initial = None
-    changed |= sync_file(agents, initial, block)
+    if "AGENTS.md" in targets:
+        agents = repo_root / "AGENTS.md"
+        initial = (
+            f"# AGENTS.md\n\nProject agent instructions for `{repo_id}`.\n\n"
+            if not agents.exists()
+            else None
+        )
+        changed |= sync_file(agents, initial, block)
 
-    changed |= sync_file(repo_root / "CLAUDE.md", DEFAULT_CLAUDE, block)
+    if "CLAUDE.md" in targets:
+        changed |= sync_file(repo_root / "CLAUDE.md", DEFAULT_CLAUDE, block)
 
-    changed |= sync_file(repo_root / ".grok/README.md", DEFAULT_GROK_README, block)
+    if ".grok/README.md" in targets:
+        changed |= sync_file(
+            repo_root / ".grok/README.md", DEFAULT_GROK_README, block
+        )
 
-    rule_path = _cursor_rule_path(repo_root, repo_id)
-    rule_body = _cursor_rule_body(repo_id, block)
-    if rule_path.exists():
-        existing = rule_path.read_text(encoding="utf-8")
-        if existing != rule_body:
-            rule_path.write_text(rule_body, encoding="utf-8")
-            changed = True
-    else:
-        rule_path.parent.mkdir(parents=True, exist_ok=True)
-        rule_path.write_text(rule_body, encoding="utf-8")
-        changed = True
+    mdc_rel = cursor_rule_rel(repo_id)
+    if mdc_rel in targets:
+        changed |= sync_mdc_file(cursor_rule_path(repo_root, repo_id), repo_id, block)
 
     return changed
+
+
+def sync_repo(repo_root: Path, repo_id: str) -> bool:
+    return sync_targets(repo_root, repo_id, only=None)
 
 
 def verify_repo(repo_root: Path, repo_id: str) -> list[str]:
@@ -136,14 +240,37 @@ def verify_repo(repo_root: Path, repo_id: str) -> list[str]:
         if not path.exists():
             missing.append(rel)
             continue
-        if not block_present(path.read_text(encoding="utf-8")):
+        text = path.read_text(encoding="utf-8")
+        try:
+            validate_markers(text)
+        except MarkerError:
             missing.append(rel)
-    rule_path = _cursor_rule_path(repo_root, repo_id)
+            continue
+        if not block_present(text):
+            missing.append(rel)
+    mdc_rel = cursor_rule_rel(repo_id)
+    rule_path = cursor_rule_path(repo_root, repo_id)
     if not rule_path.exists():
-        missing.append(str(rule_path.relative_to(repo_root)))
-    elif MARKER_BEGIN not in rule_path.read_text(encoding="utf-8"):
-        missing.append(str(rule_path.relative_to(repo_root)))
+        missing.append(mdc_rel)
+    else:
+        text = rule_path.read_text(encoding="utf-8")
+        _, body = _split_mdc_frontmatter(text)
+        try:
+            validate_markers(body)
+        except MarkerError:
+            missing.append(mdc_rel)
+        else:
+            if not block_present(body):
+                missing.append(mdc_rel)
     return missing
+
+
+def restore_repo(repo_root: Path, repo_id: str) -> tuple[list[str], bool]:
+    missing = verify_repo(repo_root, repo_id)
+    if not missing:
+        return [], False
+    changed = sync_targets(repo_root, repo_id, only=set(missing))
+    return missing, changed
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -166,12 +293,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--restore",
         action="store_true",
-        help="Write only when verify would fail (maintain-verification-skill)",
+        help="Write only paths --verify reports missing (maintain-verification-skill)",
     )
     args = parser.parse_args(argv)
 
-    repo_root = args.repo_root.resolve()
-    repo_id = args.repo_id or repo_root.name
+    try:
+        repo_root = resolve_repo_root(args.repo_root)
+        repo_id = validate_repo_id(args.repo_id or repo_root.name)
+        cursor_rule_path(repo_root, repo_id)
+    except ValueError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
 
     if args.verify:
         missing = verify_repo(repo_root, repo_id)
@@ -182,15 +314,22 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.restore:
-        missing = verify_repo(repo_root, repo_id)
+        try:
+            missing, _changed = restore_repo(repo_root, repo_id)
+        except MarkerError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 2
         if not missing:
             print("OK: nothing to restore")
             return 0
-        sync_repo(repo_root, repo_id)
         print("RESTORED:", ", ".join(missing))
         return 0
 
-    changed = sync_repo(repo_root, repo_id)
+    try:
+        changed = sync_repo(repo_root, repo_id)
+    except MarkerError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
     print("SYNC:", "changed" if changed else "unchanged")
     return 0
 

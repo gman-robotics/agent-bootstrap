@@ -48,7 +48,7 @@ Pick one, and say which:
 
 ## Edit scope
 
-Only edit the verification skill's own directory (its SKILL.md, features/, and any harness scripts it owns). Never edit product code during a run: a behavior the map describes that the app no longer does is either doc drift (fix the map) or a product regression (report it, don't paper over it in docs).
+Only edit the verification skill's own directory (its SKILL.md, features/, and any harness scripts it owns). **Exception (step 1c only):** you may run `sync_agent_harness_instructions.py --restore` to repair delimited blocks in these four harness files only — `AGENTS.md`, `CLAUDE.md`, `.grok/README.md`, `.cursor/rules/<repo-id>-harness.mdc` — without editing other paths. Never edit product code during a run: a behavior the map describes that the app no longer does is either doc drift (fix the map) or a product regression (report it, don't paper over it in docs).
 
 ## Pass
 
@@ -67,7 +67,7 @@ python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
   --verify
 ```
 
-When `--verify` fails, restore without touching prose outside the delimited block:
+When `--verify` fails, restore **only** the paths reported missing (other harness files stay byte-identical):
 
 ```bash
 python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
