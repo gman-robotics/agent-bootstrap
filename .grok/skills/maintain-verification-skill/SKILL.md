@@ -12,8 +12,9 @@ Triggers when a verification skill needs hygiene, reconciliation, or live pass.
 ## Quick Start
 
 1. Read `references/source.md` before acting.
-2. Index hygiene; readonly source wave per feature; reconcile recipes.
-3. Coordinator live-pass every feature; triage doc vs harness vs product gaps.
+2. Index hygiene; ub-mode verify-ci hygiene (merge-base scope, advisory outcomes).
+3. Readonly source wave per feature; reconcile recipes.
+4. Coordinator live-pass every feature; triage doc vs harness vs product gaps.
 
 ## Compatibility Notes
 

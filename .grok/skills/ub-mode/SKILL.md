@@ -7,12 +7,12 @@ metadata:
 
 # ub-mode
 
-Triggers on /ub-mode or advisory gate report in plan-code-review, expert-pr-review, or lfg.
+Triggers on /ub-mode or CI ub-gates confirmation in plan-code-review, expert-pr-review, or lfg.
 
 ## Quick Start
 
 1. Read `references/source.md` and `references/gates-by-language.md` before acting.
-2. Phase 1: write-tests and pstack-principles by name. Phase 2: advisory gate report. Phase 3: log and commits.
+2. Implementer: pre-PR crapper/dryer/mutator on merge-base scope. Reviewer: read CI ub-gates outcome only.
 3. Put results on the PR Gates line; gate findings do not block APPROVE in advisory mode.
 
 ## Compatibility Notes

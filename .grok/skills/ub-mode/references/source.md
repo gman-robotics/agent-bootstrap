@@ -24,9 +24,9 @@ Enforce a thin, repeatable engineering loop when implementing or reviewing code.
 | --- | --- |
 | `pstack-principles` | Named principles only — never copy definitions here |
 | `write-tests` | Red/Green/Refactor during Make it Work |
-| `plan-code-review-workflow` | Advisory gate report in Phase 2.75 |
-| `expert-pr-review` | Advisory gate report in Step 3.5 |
-| `lfg` | Advisory gate report in step 3.5 |
+| `plan-code-review-workflow` | Reviewer reads CI `ub-gates` outcome in Phase 3 (implementer Phase 2.75) |
+| `expert-pr-review` | Reviewer reads CI `ub-gates` outcome in Step 3.5 |
+| `lfg` | Reviewer reads CI `ub-gates` outcome in step 4 |
 
 **Verification**
 - Phase 1 checks cite real test output (prove-it-works).

@@ -16,6 +16,7 @@ class RunUbGatesCiTests(unittest.TestCase):
         run_env = os.environ.copy()
         run_env["UB_GATES_OUTCOME_FILE"] = str(repo / ".metrics" / "ub-gates-outcome.txt")
         run_env.pop("GITHUB_STEP_SUMMARY", None)
+        run_env.pop("CURSOR_AGENT", None)
         if env:
             run_env.update(env)
         return subprocess.run(
@@ -115,6 +116,112 @@ exit 0
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
             self.assertIn("outcome=ran_clean", outcome)
             self.assertIn("gates_ran=1", outcome)
+
+    def _mock_repo_with_tools(self, tmp: str, crapper_body: str, dryer_body: str, mutator_body: str) -> Path:
+        repo = Path(tmp)
+        bin_dir = repo / "bin"
+        bin_dir.mkdir()
+        (bin_dir / "crapper").write_text(crapper_body, encoding="utf-8")
+        (bin_dir / "dryer").write_text(dryer_body, encoding="utf-8")
+        (bin_dir / "mutator").write_text(mutator_body, encoding="utf-8")
+        for name in ("crapper", "dryer", "mutator"):
+            (bin_dir / name).chmod(0o755)
+
+        subprocess.run(["git", "init", "-b", "main"], cwd=repo, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "t@example.com"], cwd=repo, check=True)
+        subprocess.run(["git", "config", "user.name", "t"], cwd=repo, check=True)
+        (repo / "lib").mkdir()
+        (repo / "lib" / "a.py").write_text("def f():\n    return 1\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True)
+        subprocess.run(["git", "commit", "-m", "base"], cwd=repo, check=True, capture_output=True)
+        subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+        (repo / "lib" / "a.py").write_text("def f():\n    return 2\n", encoding="utf-8")
+        subprocess.run(["git", "add", "lib/a.py"], cwd=repo, check=True)
+        subprocess.run(["git", "commit", "-m", "change"], cwd=repo, check=True, capture_output=True)
+        return repo, bin_dir
+
+    def test_dryer_high_score_yields_ran_with_findings(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, bin_dir = self._mock_repo_with_tools(
+                tmp,
+                crapper_body="#!/usr/bin/env bash\nexit 0\n",
+                dryer_body="""#!/usr/bin/env bash
+mkdir -p .metrics
+cat > .metrics/dry.edn <<'EDN'
+{:candidates [{:score 0.85 :language "python"}]}
+EDN
+exit 0
+""",
+                mutator_body="#!/usr/bin/env bash\nexit 0\n",
+            )
+            proc = self._run_in_repo(
+                repo,
+                {"UB_GATES_BASE_REF": "main", "PATH": f"{bin_dir}:/usr/bin:/bin"},
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
+            self.assertIn("outcome=ran_with_findings", outcome)
+            self.assertIn("gates_ran=1", outcome)
+
+    def test_dryer_exit_2_yields_tool_error_not_ran_clean(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, bin_dir = self._mock_repo_with_tools(
+                tmp,
+                crapper_body="#!/usr/bin/env bash\nexit 0\n",
+                dryer_body="#!/usr/bin/env bash\nexit 2\n",
+                mutator_body="#!/usr/bin/env bash\nexit 0\n",
+            )
+            proc = self._run_in_repo(
+                repo,
+                {
+                    "UB_GATES_BASE_REF": "main",
+                    "PATH": f"{bin_dir}:/usr/bin:/bin",
+                    "GITHUB_ACTIONS": "true",
+                },
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            self.assertIn("tool_error", proc.stdout + proc.stderr)
+            outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
+            self.assertIn("outcome=tool_error", outcome)
+            self.assertNotIn("outcome=ran_clean", outcome)
+            self.assertIn("gate_miss=1", outcome)
+
+    def test_missing_dry_edn_after_dryer_yields_tool_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, bin_dir = self._mock_repo_with_tools(
+                tmp,
+                crapper_body="#!/usr/bin/env bash\nexit 0\n",
+                dryer_body="#!/usr/bin/env bash\nexit 0\n",
+                mutator_body="#!/usr/bin/env bash\nexit 0\n",
+            )
+            proc = self._run_in_repo(
+                repo,
+                {"UB_GATES_BASE_REF": "main", "PATH": f"{bin_dir}:/usr/bin:/bin"},
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
+            self.assertIn("outcome=tool_error", outcome)
+
+    def test_mutator_exit_2_yields_tool_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, bin_dir = self._mock_repo_with_tools(
+                tmp,
+                crapper_body="#!/usr/bin/env bash\nexit 0\n",
+                dryer_body="""#!/usr/bin/env bash
+mkdir -p .metrics
+echo '{:candidates []}' > .metrics/dry.edn
+exit 0
+""",
+                mutator_body="#!/usr/bin/env bash\nexit 2\n",
+            )
+            proc = self._run_in_repo(
+                repo,
+                {"UB_GATES_BASE_REF": "main", "PATH": f"{bin_dir}:/usr/bin:/bin"},
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
+            self.assertIn("outcome=tool_error", outcome)
+            self.assertIn("mutator_exit=2", outcome)
 
 
 if __name__ == "__main__":

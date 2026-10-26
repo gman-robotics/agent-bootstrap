@@ -89,7 +89,7 @@ All helpers are executable bash scripts in `.cursor/skills/verify-hub/bin/`:
 - `verify-hub-doctor` — environment and repo layout checks.
 - `verify-hub-drive-index-live-gate` — runs `python3 scripts/index_skills.py`, saves transcript, asserts success line.
 - `verify-hub-drive-check-skill-live <skill-name>` — runs `python3 scripts/check_skill_live.py <skill-name>`.
-- `verify-hub-ci` — doctor, INDEX live gate drive, and live check for `create-verification-skill` (used by GitHub Actions).
+- `verify-hub-ci` — doctor, INDEX live gate drive, live check for `create-verification-skill`, coverage-backed unit tests, and advisory `scripts/run_ub_gates_report.sh` (used by GitHub Actions).
 
 ## Maintenance
 

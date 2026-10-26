@@ -4,7 +4,7 @@ description: >-
   Generate a project-local verification skill that drives your app the way a
   user does. Use when a project has no scripted way to prove UI/CLI/service
   behavior.
-version: 1.0.1
+version: 1.1.0
 ---
 
 # create-verification-skill
@@ -63,6 +63,21 @@ Write `skills/verify-<app>/SKILL.md` with YAML frontmatter (`name: verify-<app>`
 - **Evidence:** what to capture for a proof and where it goes. State the proof standards: exercise the real user path, not internal setters or test-only endpoints; capture the action and the resulting state, not just the final screen; verify side effects (files written, rows inserted, messages sent) alongside what's visible; mocks only where a production boundary already isolates the external system. When the safe path is a dry-run or test mode, verify what it actually skips by observing (files, network, git refs) rather than trusting its name: some dry-runs still touch the network or open a browser.
 - **Cleanup:** how to tear down instances the run created. Never kill by process name; kill what you started. Cleanup removes instances and scratch state, never the evidence: proof artifacts survive the teardown, in a location the skill names.
 - **Helpers:** any script the skill ships is executable and its invocation is shown in the skill body. A helper the reader has to reverse-engineer is not a helper. A step the next agent would otherwise retype (launch, doctor, a drive of more than one command) ships as a helper script, per the **pstack-principles** (build-the-lever) principle. Prose alone is not a lever.
+- **CI bundle (`bin/verify-<app>-ci`):** one script that runs doctor, coverage-backed tests, drives, and **advisory** ub-mode gates. Never fail the verify bundle on gate debt (report-only until blocking mode). Copy and adapt [`references/verify-ci-ub-gates.sh`](references/verify-ci-ub-gates.sh) or call the repo's `scripts/run_ub_gates_report.sh` when bootstrapped from agent-bootstrap.
+
+### ub-mode gates in verify-ci (GMA-410, report-only)
+
+Ship these in every generated `verify-<app>-ci` (or document why the stack has no unclebob gates):
+
+| Step | Rule |
+| --- | --- |
+| Coverage | Run the stack's coverage command before gates (`pytest --cov` / `pytest-cov`, `coverage run`, JaCoCo, `go test -coverprofile`, etc.) so **crapper** and **mutator** can read profiles when tools exist (`docs/shared/ub-mode-practice.md`). |
+| Scope | Build the merge-base path list (`git merge-base` → `git diff --name-only --diff-filter=ACMRT`); pass explicit paths to **crapper** and **dryer**. Do **not** use upstream `--changed` for committed PR scope (it reads `git status`). |
+| crapper | `crapper --threshold 10` on scope paths. |
+| dryer | `rm -f .metrics/dry.edn` then `dryer --threshold 0.8` on scope; parse `.metrics/dry.edn` for `:score` ≥ 0.8. |
+| mutator | Scope paths on **laptop or CI only** — skip in cloud agent harnesses (`CURSOR_AGENT` without `GITHUB_ACTIONS`). |
+| Outcomes | Reuse hub names: `ran_clean`, `ran_with_findings`, `skipped_no_scope`, `skipped_tools_missing`, `tool_error` (see `scripts/run_ub_gates_ci.sh`). Write to `.metrics/verify-ub-outcome.txt` or `.metrics/ub-gates-outcome.txt`. |
+| Exit code | verify-ci **always exits 0** on advisory gate debt; record outcomes in the skill **Evidence** section and PR **`Gates:`** line. |
 
 ## 3. Seed the feature map
 
@@ -80,4 +95,4 @@ Point the user at `maintain-verification-skill` for keeping the map honest as th
 
 Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) (MIT). Native multi-harness hub playbook — not a marketplace plugin copy. Cursor-only harness names stripped per `skills/subagent-routing/SKILL.md`.
 
-*Last updated: 2026-10-03 | Hub version: 0.12.0*
+*Last updated: 2026-10-26 | Hub version: 0.14.0*
