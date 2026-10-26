@@ -1,5 +1,8 @@
 ## Current Focus
-**GMA-410 ub-mode dev flow** (2026-10-26, branch `dex/gma-410-ub-dev-flow`): Pre-PR crapper/dryer fix + mutator laptop/CI; CI `ub-gates` advisory job; reviewer CI confirmation only at head SHA.
+**GMA-410 verify-skill ub follow-up** (2026-10-26, branch `dex/gma-410-verify-ub`, PR #46): ub gates in create/maintain-verification-skill + `tool_error` outcome; #45 companion/outcome fixes.
+
+## Prior Focus
+**GMA-410 ub-mode dev flow** (2026-10-26): Pre-PR crapper/dryer fix + mutator laptop/CI; CI `ub-gates` advisory job; reviewer CI confirmation only at head SHA.
 
 ## Prior Focus
 **Compound-loop borrow** (2026-10-05, branch `borrow-compound-loop`): Independent rewrites of EveryInc/compound-engineering-plugin (MIT) as `compound`, `compound-refresh`, `ideate`, `strategy`, and `lfg`. Hooks in plan, grill, LEARN, expert-pr-review, arena, and pstack-principles. No plugin tree vendored. Live-gated before INDEX listing.

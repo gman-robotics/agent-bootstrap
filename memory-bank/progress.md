@@ -1,5 +1,11 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-10-26 — GMA-410 verify-skill ub gates (PR #46)
+
+**Task**: Branch `dex/gma-410-verify-ub` from `main` `741117ce` — verify-ci ub template, `tool_error` outcome, #45 leftovers.
+
+**Verification**: unittest 167/167; live-gate create-verification-skill, maintain-verification-skill, ub-mode; verify-hub-ci OK.
+
 ## 2026-10-26 — GMA-410 ub-mode dev flow (CI + reviewer handback)
 
 **Task**: Branch `dex/gma-410-ub-dev-flow` from `main` `8a3eaae` — move crapper/dryer/mutator into implementer pre-PR dev flow; CI `ub-gates` job; reviewer confirms CI at head SHA only; update plan-code-review-workflow, lfg, expert-pr-review, implementer briefs, `docs/shared/ub-mode-practice.md`.
