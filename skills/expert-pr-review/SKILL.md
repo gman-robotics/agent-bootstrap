@@ -176,6 +176,8 @@ When tests passed (or were skipped with reason) and the changed code is in a lan
 
 Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`.
 
+**Optional — project standards:** When the PR's project ships `standards-<repo>/SKILL.md`, verify the PR body and issue links match that skill before APPROVE (`docs/shared/repo-standards-practice.md`).
+
 ### Step 4: Parallel Analysis
 
 In a **single message**, spawn both tasks so they run concurrently — each reads the same diff independently:

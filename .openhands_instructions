@@ -47,6 +47,8 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 | `blast-radius.md` | What could this break |
 | `security-audit.md` | Literal "security audit"/"security-audit" or explicit full/pen-test ask (opt-in Cloudflare vendor; not "security review"/"review this PR") |
 | `create-verification-skill.md` | Bootstrap verify-<app> skill |
+| `create-repo-standards.md` | Bootstrap standards-<repo> + GitHub templates |
+| `maintain-repo-standards.md` | Drift pass for standards-<repo> |
 | `figure-it-out.md` | No narrower playbook; large migration |
 | `how.md` | How does X work (runtime) |
 | `interrogate.md` | Adversarial multi-model review |
@@ -59,7 +61,7 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 | `teach.md` | Teach me this |
 | `technical-writing.md` | Docs, RFCs, PR prose |
 | `unslop.md` | Cut AI tells from prose |
-| `ub-mode.md` | Reduced principles; crapper/dryer/mutator before APPROVE |
+| `ub-mode.md` | ub-mode gates advisory (report; do not block APPROVE) |
 | `why.md` | Why is X shaped this way |
 | `project-carry-through.md` | A project or plan is agreed; ask-or-continue decision |
 | `blocker-walkthrough.md` | "Walk me through the blockers"; open decisions |

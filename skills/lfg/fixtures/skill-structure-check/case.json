@@ -12,6 +12,7 @@
       "invalidates a settled decision",
       "compound",
       "pr-shepherd",
+      "standards-<repo>/SKILL.md",
       "report advisory results on the PR **`Gates:`** line",
       "Gate findings do not block review sign-off and do not count as review rounds until Tom approves blocking mode"
     ],

@@ -48,6 +48,8 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `blast-radius.md`             → what could this break
 - `security-audit.md`           → literal "security audit"/"security-audit" or explicit full/pen-test ask (opt-in Cloudflare vendor, not "security review"/"review this PR")
 - `create-verification-skill.md`→ bootstrap verify-<app> skill
+- `create-repo-standards.md`   → bootstrap standards-<repo> + GitHub templates
+- `maintain-repo-standards.md` → drift pass for standards-<repo>
 - `figure-it-out.md`            → no narrower playbook; large migration
 - `how.md`                      → how does X work (runtime)
 - `interrogate.md`              → adversarial multi-model review
@@ -60,7 +62,7 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `teach.md`                    → teach me this
 - `technical-writing.md`        → docs, RFCs, PR prose
 - `unslop.md`                   → cut AI tells from prose
-- `ub-mode.md`                  → reduced principles and quality gates before APPROVE
+- `ub-mode.md`                  → ub-mode gates advisory (report; do not block APPROVE)
 - `why.md`                      → why is X shaped this way
 - `project-carry-through.md`    → A project or plan is agreed; ask-or-continue decision
 - `blocker-walkthrough.md`      → "Walk me through the blockers"; open decisions

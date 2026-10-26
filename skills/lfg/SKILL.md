@@ -1,7 +1,7 @@
 ---
 name: lfg
 description: "Use to run the agreed loop hands-off: route, implement, simplify the diff, review against the plan, compound, push a PR, watch CI. Do not merge unless the human granted it."
-version: 1.0.2
+version: 1.0.3
 ---
 
 # lfg — Run the loop, do not merge
@@ -22,6 +22,7 @@ Compose skills that already exist. Do not reimplement them. The pipeline stops o
 2. Implement on an isolated branch with `write-tests`. Do not call an open PR shipped.
 3. Simplify the fresh diff before review. Behavior stays. This is not `codebase-simplification-audit`.
 3.5. Run `ub-mode` phase 2 gates (`skills/ub-mode/SKILL.md`, `references/gates-by-language.md`) after tests pass; report advisory results on the PR **`Gates:`** line (`rm -f .metrics/dry.edn` before dryer; missing dry.edn after empty `--changed` = no selection/skipped). Gate findings do not block review sign-off and do not count as review rounds until Tom approves blocking mode.
+3.6. If the target project has `standards-<repo>/SKILL.md`, align the PR description with it (Tier, Models, sketch link, Gates) before review (`docs/shared/repo-standards-practice.md`).
 4. Review against the plan with `expert-pr-review`. A finding that invalidates a settled decision stops the pipeline.
 5. Apply fixes. Put unapplied findings in the PR body.
 6. Call `compound`. Honor its skip rule.

@@ -79,7 +79,7 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | --- | --- |
 | crapper | `cargo llvm-cov` or `cargo tarpaulin` LCOV |
 | dryer | Functions and methods with a body; skips `mod tests` and closures |
-| mutator | Mutation testing on covered Rust sites (mutate4go-style rules in Rust syntax); uses LCOV only to skip uncovered lines |
+| mutator | Rust uses the **Java** mutation set (mutate4java: `&&`/`||`, delete `!`, unary `-`); LCOV only to skip uncovered lines |
 
 ### Python
 
