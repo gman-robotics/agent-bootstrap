@@ -93,13 +93,20 @@ python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
 
 The script is idempotent: it upserts a single delimited block (`<!-- agent-bootstrap-hub:BEGIN harness-workflow -->` … `END`) in `AGENTS.md`, `CLAUDE.md`, `.grok/README.md`, and `.cursor/rules/<repo-id>-harness.mdc`. Missing files are created with minimal safe defaults; existing prose outside the block is unchanged.
 
-Copy the hub PR template when `.github/PULL_REQUEST_TEMPLATE.md` is missing:
+Copy the hub PR template when `.github/PULL_REQUEST_TEMPLATE.md` is missing (body starts at `Tier:` — same as the hub `.github/PULL_REQUEST_TEMPLATE.md`, not the doc title in `docs/shared/hub-pull-request-template.md`):
 
 ```bash
-cp /path/to/agent-bootstrap/docs/shared/hub-pull-request-template.md .github/PULL_REQUEST_TEMPLATE.md
+mkdir -p .github
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py copy --out .github/PULL_REQUEST_TEMPLATE.md
 ```
 
-(`create-repo-standards` already copies the same canonical file; do not maintain a second template shape.)
+Verify after copy (or on maintain passes):
+
+```bash
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_TEMPLATE.md
+```
+
+(`create-repo-standards` uses the same commands; do not maintain a second template shape.)
 
 Fixture proof: `skills/create-verification-skill/fixtures/agent-harness-sync/` (pre-existing `AGENTS.md` content preserved; second run is a no-op).
 

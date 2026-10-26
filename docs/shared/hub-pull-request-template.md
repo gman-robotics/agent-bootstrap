@@ -1,6 +1,19 @@
 # Hub pull request body template (canonical)
 
-Copy this file to `.github/PULL_REQUEST_TEMPLATE.md` in each repo (`create-repo-standards` reads this hub path). Header order is fixed (GMA-412 / arm rule): **Tier → Models → Linear → Summary → Gates**, then pstack (Poteto) principles, then evidence.
+Edit this file first. The GitHub template body starts at **`Tier:`** (not this H1). Header order is fixed (GMA-412 / arm rule): **Tier → Models → Linear → Summary → Gates**, then pstack (Poteto) principles, then evidence.
+
+Install and verify `.github/PULL_REQUEST_TEMPLATE.md` in each repo (same commands in `create-verification-skill`, `maintain-verification-skill`, `create-repo-standards`, and `maintain-repo-standards`):
+
+```bash
+mkdir -p .github
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py copy --out .github/PULL_REQUEST_TEMPLATE.md
+```
+
+```bash
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_TEMPLATE.md
+```
+
+On agent-bootstrap itself, keep `.github/PULL_REQUEST_TEMPLATE.md` in sync with the `Tier:` body here (optional footer comment pointing at this file is allowed; `check` strips that footer).
 
 ---
 

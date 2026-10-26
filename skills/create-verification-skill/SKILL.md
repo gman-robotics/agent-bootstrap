@@ -97,11 +97,16 @@ Copy the hub PR template when `.github/PULL_REQUEST_TEMPLATE.md` is missing (bod
 
 ```bash
 mkdir -p .github
-awk '/^Tier:/{found=1} found' /path/to/agent-bootstrap/docs/shared/hub-pull-request-template.md \
-  > .github/PULL_REQUEST_TEMPLATE.md
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py copy --out .github/PULL_REQUEST_TEMPLATE.md
 ```
 
-(`create-repo-standards` already copies the same canonical file; do not maintain a second template shape.)
+Verify after copy (or on maintain passes):
+
+```bash
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_TEMPLATE.md
+```
+
+(`create-repo-standards` uses the same commands; do not maintain a second template shape.)
 
 Fixture proof: `skills/create-verification-skill/fixtures/agent-harness-sync/` (pre-existing `AGENTS.md` content preserved; second run is a no-op).
 

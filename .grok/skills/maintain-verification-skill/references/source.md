@@ -48,7 +48,7 @@ Pick one, and say which:
 
 ## Edit scope
 
-Only edit the verification skill's own directory (its SKILL.md, features/, and any harness scripts it owns). Never edit product code during a run: a behavior the map describes that the app no longer does is either doc drift (fix the map) or a product regression (report it, don't paper over it in docs).
+Only edit the verification skill's own directory (its SKILL.md, features/, and any harness scripts it owns). **Exception (step 1c only):** you may run `sync_agent_harness_instructions.py --restore` to repair delimited blocks in these four harness files only — `AGENTS.md`, `CLAUDE.md`, `.grok/README.md`, `.cursor/rules/<repo-id>-harness.mdc` — without editing other paths. Never edit product code during a run: a behavior the map describes that the app no longer does is either doc drift (fix the map) or a product regression (report it, don't paper over it in docs).
 
 ## Pass
 
@@ -67,7 +67,7 @@ python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
   --verify
 ```
 
-When `--verify` fails, restore without touching prose outside the delimited block:
+When `--verify` fails, restore **only** the paths reported missing (other harness files stay byte-identical):
 
 ```bash
 python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
@@ -76,7 +76,18 @@ python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
   --restore
 ```
 
-Also confirm `.github/PULL_REQUEST_TEMPLATE.md` matches `docs/shared/hub-pull-request-template.md` (or the pinned hub SHA copy) when the repo was bootstrapped from agent-bootstrap.
+Also confirm `.github/PULL_REQUEST_TEMPLATE.md` matches the hub canonical doc **from `Tier:` onward** (same helper as `create-verification-skill` / `create-repo-standards` — not the doc H1) when the repo was bootstrapped from agent-bootstrap:
+
+```bash
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_TEMPLATE.md
+```
+
+Re-install when missing or drifted:
+
+```bash
+mkdir -p .github
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py copy --out .github/PULL_REQUEST_TEMPLATE.md
+```
 
 2. **Source wave.** One read-only subagent per feature file, launched concurrently. Each explains "how does this user-facing feature work?" from source, flags likely doc drift with citations, and returns one concise live-verification recipe. Children never drive the app and never edit files. Return shape: feature summary / source entry points / likely drift or none / one recipe.
 

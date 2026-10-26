@@ -64,11 +64,19 @@ Product regressions or broken workflows discovered during the pass → record in
    | Tier table T0–T3 | Present in the standards skill **PR format** section and matches hub `docs/shared/repo-standards-practice.md` (or pinned hub SHA) |
    | Pass bar vs CI | Every required CI job/step named in the skill matches live workflow YAML (commands, exit codes, env splits) |
    | Test-file cites | Paths to test files or workflow steps cited in the pass bar still exist |
-   | PR template | `.github/PULL_REQUEST_TEMPLATE.md` matches hub `docs/shared/hub-pull-request-template.md` (or pinned hub SHA), including per-header HTML hints and **pstack (Poteto) principles cited** section |
+   | PR template | `hub_pull_request_template.py check` passes against `docs/shared/hub-pull-request-template.md` body from `Tier:` (same `copy`/`check` as `create-repo-standards`), including per-header HTML hints and **pstack (Poteto) principles cited** section |
    | PR header order | Template and skill agree on order: Tier → Models → Linear → Summary → Gates → Poteto section → evidence |
    | Issue `config.yml` | Only `blank_issues_enabled` and `contact_links` — no ignored keys like `issue_templates:` |
    | Question template | No `question` issue form unless the `question` label exists |
    | Skill id | `standards-<repo>` id still matches create rules (basename default; manifest/pyproject only when justified) |
+
+   PR template install/verify (same as `create-repo-standards`):
+
+```bash
+mkdir -p .github
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py copy --out .github/PULL_REQUEST_TEMPLATE.md
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_TEMPLATE.md
+```
 
 2. **Format-lint vs templates (advisory).** If the repo has a PR-body format-lint workflow or script, compare its required fields to `.github/PULL_REQUEST_TEMPLATE.md` and the standards skill PR section. Report mismatches in the handback. When fields disagree, treat as drift: outcome **changed** when you can fix templates/skill text in scope, or **blocked** when CI rules are unclear or out of scope. The format check itself stays **advisory** — it does not block APPROVE on the standards PR.
 
@@ -89,3 +97,5 @@ When updating the standards skill, preserve or add a **local pre-push (project /
 ## Provenance
 
 Hub-authored skill modeled on `maintain-verification-skill` structure (not verify logic).
+
+*Last updated: 2026-10-26 | Hub version: 0.14.0*
