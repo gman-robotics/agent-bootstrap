@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T06:30:00.487948+00:00",
+  "captured_at": "2026-10-26T07:22:24.563634+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure check for skills/maintain-repo-standards/SKILL.md.",
@@ -15,7 +15,7 @@
     "command": [
       "python3",
       "-c",
-      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nref = Path(\"skills/%s/references/source.md\" % name)\nassert ref.is_file(), \"missing references/source.md\"\nref.read_text(encoding=\"utf-8\")\nassert \"Drift checklist\" in text, \"drift checklist heading\"\nassert \"issue_templates:\" in text and \"no ignored\" in text.lower() or \"Do **not**\" in text and \"issue_templates\" in text, \"config.yml rule\"\nassert \"T0\" in text and \"T3\" in text, \"tier table in checklist\"\nassert \"pipefail\" in text, \"pre-push pipefail\"\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
       "maintain-repo-standards",
       "**clean**",
       "**changed**",
@@ -27,12 +27,17 @@
       "No scheduled routine",
       "format-lint",
       "advisory",
-      "linear.app"
+      "linear.app",
+      "VERIFY_SKIP",
+      "Pass bar",
+      "self-check",
+      "blank_issues_enabled",
+      "under each"
     ],
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "334a791dab6fdf8e6effe5bbb1cd32bbe8d656508a790238a32358e84e3a6f46",
+  "skill_sha256": "e5500af72cea606c06aa5230d277072e84eef5ad112e0cb71e95a74dc9bbd8f4",
   "stderr_tail": "",
   "stdout_tail": "OK: maintain-repo-standards\n",
   "verdict": "pass"

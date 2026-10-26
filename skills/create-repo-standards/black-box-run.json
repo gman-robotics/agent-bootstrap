@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T06:44:52.913858+00:00",
+  "captured_at": "2026-10-26T07:22:24.510869+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure check for skills/create-repo-standards/SKILL.md.",
@@ -15,7 +15,7 @@
     "command": [
       "python3",
       "-c",
-      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\npractice = Path(\"docs/shared/repo-standards-practice.md\").read_text(encoding=\"utf-8\")\nforbidden = \"git fetch origin <\"\nassert forbidden not in text, \"SKILL must not recommend git fetch origin <sha>\"\nassert forbidden not in practice, \"practice doc must not recommend git fetch origin <sha>\"\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nassert re.search(r'^description: .+$', fm, re.M), \"description\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\npractice = Path(\"docs/shared/repo-standards-practice.md\").read_text(encoding=\"utf-8\")\nforbidden = \"git fetch origin <\"\nassert forbidden not in text, \"SKILL must not recommend git fetch origin <sha>\"\nassert forbidden not in practice, \"practice doc must not recommend git fetch origin <sha>\"\nassert \"ignored keys such as\" in text and \"issue_templates\" in text, \"config.yml must warn against issue_templates:\"\nassert \"under each header\" in text.lower() or \"under each\" in text and \"header\" in text, \"per-header PR template hints\"\nassert \"pipefail\" in text, \"pre-push pipefail\"\nassert \"VERIFY_SKIP\" in text or \"verify splits\" in text.lower() or \"VERIFY_SKIP_FULL_PYTEST\" in text, \"CI verify splits\"\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nassert re.search(r'^description: .+$', fm, re.M), \"description\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
       "create-repo-standards",
       "standards-<repo>",
       ".cursor/skills/standards-<repo>/SKILL.md",
@@ -35,12 +35,20 @@
       "pyproject.toml",
       "create absent",
       "maintain-repo-standards",
-      "angle-bracket placeholders"
+      "angle-bracket placeholders",
+      "blank_issues_enabled",
+      "contact_links",
+      "question",
+      "version: 1.0.0",
+      "No `AGENTS.md`",
+      "repository directory basename",
+      "self-check",
+      "skills/write-tests/"
     ],
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "1745a41ed7d8e516fed314075ba2c592cb00058a474d0bc3d2c7416da6195e2a",
+  "skill_sha256": "289c1292443a1c07d055c18f93bf5466e59fa96a91aa57712e17aaa1ea9713bb",
   "stderr_tail": "",
   "stdout_tail": "OK: create-repo-standards\n",
   "verdict": "pass"
