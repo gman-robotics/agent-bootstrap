@@ -5,7 +5,7 @@
     "command": [
       "python3",
       "-c",
-      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nassert re.search(r'^description: .+$', fm, re.M), \"description\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\npractice = Path(\"docs/shared/repo-standards-practice.md\").read_text(encoding=\"utf-8\")\nforbidden = \"git fetch origin <\"\nassert forbidden not in text, \"SKILL must not recommend git fetch origin <sha>\"\nassert forbidden not in practice, \"practice doc must not recommend git fetch origin <sha>\"\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nassert re.search(r'^description: .+$', fm, re.M), \"description\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
       "create-repo-standards",
       "standards-<repo>",
       ".cursor/skills/standards-<repo>/SKILL.md",
@@ -18,6 +18,8 @@
       "symlink",
       "Gates:",
       "contents API",
+      "tarball",
+      "raw.githubusercontent.com",
       "gh label",
       "T0",
       "pyproject.toml",

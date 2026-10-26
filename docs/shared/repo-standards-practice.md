@@ -12,14 +12,15 @@
 
 ## Reading agent-bootstrap at a pinned hub SHA
 
-When the run must cite a specific hub commit (for example a `manifest.yaml` pin), use one of these — **`git fetch origin <sha>` often fails** because a bare SHA is not a ref:
+When the run must cite a specific hub commit (for example a `manifest.yaml` pin), use **one** of these and confirm the bytes came from that ref:
 
-| Method | Use when |
+| Method | Command / URL |
 | --- | --- |
-| GitHub **contents API** | `GET .../repos/<org>/agent-bootstrap/contents/<path>?ref=<full-40-char-sha>` |
-| **Shallow clone** | `git clone --depth 1 <url> && cd agent-bootstrap && git fetch origin <full-sha> && git checkout <full-sha>` (fetch by SHA after clone) |
+| **Contents API** | `gh api repos/<owner>/<repo>/contents/<path>?ref=<full-40-char-sha>` |
+| **Raw.githubusercontent.com** | `https://raw.githubusercontent.com/<owner>/<repo>/<full-sha>/<path>` |
+| **Tarball** | `gh api repos/<owner>/<repo>/tarball/<full-sha>` → extract archive to a temp dir |
 
-Record the full SHA in interview notes. Do not assume `git fetch origin <sha>` works on its own.
+Record the full SHA and the path(s) read in interview notes. Do not fetch by bare SHA with git.
 
 ## Tier scale (copy into generated standards skills)
 

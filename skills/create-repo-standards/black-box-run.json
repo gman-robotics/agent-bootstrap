@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T06:30:00.440719+00:00",
+  "captured_at": "2026-10-26T06:44:52.913858+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure check for skills/create-repo-standards/SKILL.md.",
@@ -15,7 +15,7 @@
     "command": [
       "python3",
       "-c",
-      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nassert re.search(r'^description: .+$', fm, re.M), \"description\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\npractice = Path(\"docs/shared/repo-standards-practice.md\").read_text(encoding=\"utf-8\")\nforbidden = \"git fetch origin <\"\nassert forbidden not in text, \"SKILL must not recommend git fetch origin <sha>\"\nassert forbidden not in practice, \"practice doc must not recommend git fetch origin <sha>\"\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nassert re.search(r'^description: .+$', fm, re.M), \"description\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
       "create-repo-standards",
       "standards-<repo>",
       ".cursor/skills/standards-<repo>/SKILL.md",
@@ -28,6 +28,8 @@
       "symlink",
       "Gates:",
       "contents API",
+      "tarball",
+      "raw.githubusercontent.com",
       "gh label",
       "T0",
       "pyproject.toml",
@@ -38,7 +40,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "d553e5ccd4c22be28c51aa93d398bfd37081f7c0e1fa793000f2f69f52068cd3",
+  "skill_sha256": "1745a41ed7d8e516fed314075ba2c592cb00058a474d0bc3d2c7416da6195e2a",
   "stderr_tail": "",
   "stdout_tail": "OK: create-repo-standards\n",
   "verdict": "pass"

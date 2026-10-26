@@ -1,7 +1,7 @@
 ---
 name: create-repo-standards
 description: "Interview a repository and generate a project-local standards-<repo> skill plus GitHub PR/issue templates so agents follow one PR format, issue format, planning rules, implementation workflow, and verification pointers. Use for /create-repo-standards on a manifest project. Do not run on agent-bootstrap hub-only Markdown unless explicitly asked."
-version: 1.0.2
+version: 1.0.3
 ---
 
 # create-repo-standards
@@ -35,7 +35,13 @@ Encode how this repository expects work to be planned, implemented, verified, an
 
 ## 0. Read agent-bootstrap at a pinned SHA (when needed)
 
-If the run must load hub docs or skills at a specific commit, use the GitHub **contents API** with `?ref=<full-40-char-sha>` or a **shallow clone** then `git fetch` + `git checkout` that full SHA. **`git fetch origin <sha>` alone often fails** (SHA is not a ref). See `docs/shared/repo-standards-practice.md`.
+If the run must load hub docs or skills at a specific commit, use **one** of these (then confirm paths came from that full SHA in interview notes):
+
+**(a) contents API or raw file** — `gh api repos/<owner>/<repo>/contents/<path>?ref=<full-40-char-sha>` (base64-decode `content` from the JSON), or `https://raw.githubusercontent.com/<owner>/<repo>/<full-sha>/<path>`.
+
+**(b) Tarball** — `gh api repos/<owner>/<repo>/tarball/<full-sha>` (follow redirects; extract the `.tar.gz` to a temp dir) and read files from the extracted tree.
+
+Do **not** use `git fetch` by bare SHA. See `docs/shared/repo-standards-practice.md`.
 
 ---
 
