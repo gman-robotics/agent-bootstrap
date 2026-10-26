@@ -1,5 +1,9 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-10-26 — GMA-410 ub-mode dev flow (CI + reviewer handback)
+
+**Task**: Branch `dex/gma-410-ub-dev-flow` from `main` `8a3eaae` — move crapper/dryer/mutator into implementer pre-PR dev flow; CI `ub-gates` job; reviewer confirms CI at head SHA only; update plan-code-review-workflow, lfg, expert-pr-review, implementer briefs, `docs/shared/ub-mode-practice.md`.
+
 ## 2026-10-26 — GMA-412 repo-standards gaps (create/maintain)
 
 **Task**: Branch `tginter_ca/repo-standards-gaps-2-46b8` from `420afacc` — drift checklist, CI pass-bar parity, per-header PR hints, placeholder self-check, UTF-8 `maintain-repo-standards/references/source.md`.

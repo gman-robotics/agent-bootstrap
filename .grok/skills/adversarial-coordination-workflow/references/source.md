@@ -64,6 +64,7 @@ This skill establishes a standardized division of labor and coordination workspa
   - The implementer harness must retrieve the plan from shared memory (or read it directly if no shared-memory layer is configured).
   - The implementer harness must strictly follow the **TDD Red/Green/Refactor standard** (failing test first, then minimal passing code, then refactor).
   - The implementer harness must write code, run local test suites, and commit changes locally.
+  - Before PR handoff: run **Pre-PR ub-mode dev flow** (`crapper --changed`, `dryer --changed` — fix flags; `mutator --changed` on laptop/CI only, never in cloud agents). See `docs/shared/ub-mode-practice.md`.
   - **The implementer harness must NOT attempt to create or submit a pull request.**
 
 ### Step C & D: The Adversarial Review & Iteration Loop

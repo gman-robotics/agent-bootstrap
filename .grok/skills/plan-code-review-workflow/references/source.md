@@ -1,7 +1,7 @@
 ---
 name: plan-code-review-workflow
 description: "This skill should be used for any non-trivial task touching more than one file or with user-facing impact. It is the default development workflow for all significant features, refactors, bugfixes, or changes. Runs a Plan -> Code -> Review -> Iterate -> Finalize cycle with dynamic role switching between Software Architect, Software Engineer, and QA Critical Reviewer. Enforces TDD, expert review via expert-pr-review, and user approval gates before committing or pushing."
-version: 1.0.1
+version: 1.0.2
 ---
 
 # plan-code-review-workflow.md
@@ -74,28 +74,30 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 
 **Exit Criteria**: Diff is simpler and the same checks still pass. Then hand off to QA.
 
-### Phase 2.75: ub-mode gates (advisory report)
-1. Load `skills/ub-mode/SKILL.md` and run **Phase 2 — Make it Right** (judgment + advisory gate block) on the change scope.
-2. Use `skills/ub-mode/references/gates-by-language.md` when crapper, dryer, or mutator are available for the project's language.
-3. Record measured results on the PR **`Gates:`** line and in `progress.md` (see `docs/shared/ub-mode-practice.md`). **dryer (GMA-411):** delete `.metrics/dry.edn` before each run; missing file after `--changed` with no selection = **no selection/skipped**, not a pass from an old file.
-4. Gate findings are **advisory** until Tom approves blocking mode; they **do not** block QA **APPROVE** and **do not** count as review rounds.
+### Phase 2.75: ub-mode pre-PR dev flow (implementer)
+1. Load `docs/shared/ub-mode-practice.md` (Pre-PR dev flow) and `skills/ub-mode/references/gates-by-language.md`.
+2. After tests pass, run **`crapper --changed --threshold 10`** and **`dryer --changed --threshold 0.8`** (`rm -f .metrics/dry.edn` before dryer). **Fix** what they flag before opening a PR.
+3. Run **`mutator --changed`** on changed functions only on a **laptop** or in **CI** — **never** in a cloud agent harness.
+4. Record measured results on the PR **`Gates:`** line and in `progress.md`. **dryer (GMA-411):** missing `.metrics/dry.edn` after empty `--changed` = **no selection/skipped**, not a pass from an old file.
+5. Push so CI job **`ub-gates`** runs the same checks (`scripts/run_ub_gates_ci.sh`). Advisory mode: gate debt on the **`Gates:`** line does not block QA **APPROVE**; a **red/missing `ub-gates` check** at head SHA is a gate miss (hand back without a review round).
 
-**Exit Criteria**: ub-mode phase 2 reported or skipped with reason. Then hand off to QA.
+**Exit Criteria**: Pre-PR dev flow done or skipped with documented reason; CI ub-gates triggered. Then hand off to QA.
 
 **Optional — project standards:** When the active manifest project has `standards-<repo>/SKILL.md` in its harness skill folders, follow its PR and planning formats before QA recommends APPROVE (`docs/shared/repo-standards-practice.md`). Compatible with advisory ub-mode.
 
 ### Phase 3: REVIEW (QA Critical Reviewer Role)
 1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review/SKILL.md` if this results in a PR.
-2. **Perform Critical Review**
+2. **Ub-gates at head SHA** — Confirm CI check **`ub-gates`** completed at the PR head SHA; do **not** re-run crapper/dryer/mutator. Gate miss → implementer fix; **not** a review round.
+3. **Perform Critical Review**
    - If GitHub PR: Follow **exact** 8-step flow in expert-pr-review.md (gather context in parallel, resolve threads, build/test, security checklist, summarize).
    - If internal changes (no PR yet): Use the same rigor — checklist for correctness, style, tests, security, performance, accessibility (if UI), breaking changes.
    - Focus on highest-risk files first.
    - Be extremely critical but friendly ("Thanks @user! ...").
-3. **Output**
+4. **Output**
    - Clear summary: What works, bugs/issues (grouped by severity), minor nits.
    - Recommendation: **APPROVE** | **REQUEST_CHANGES** | **COMMENT only**.
    - If REQUEST_CHANGES: List specific actionable items with file/line references.
-4. **User Gate**
+5. **User Gate**
    - Present findings to user.
    - **Wait for explicit confirmation** before posting any review (if PR) or before engineer proceeds to fix.
 

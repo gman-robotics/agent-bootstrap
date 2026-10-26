@@ -1,7 +1,7 @@
 ---
 name: ub-mode
 description: "Use when writing or changing code under the reduced Make it Work, Make it Right, and Practice loop (/ub-mode). Reports advisory quality-gate results (crapper, dryer, mutator) when those tools exist; gates do not block APPROVE until Tom approves blocking mode. Cite pstack-principles by name only; definitions live in skills/pstack-principles/SKILL.md."
-version: 1.0.3
+version: 1.0.4
 ---
 
 # ub-mode — Make it Work, Make it Right, Practice
@@ -45,7 +45,7 @@ Every change walks:
 
 **Advisory mode (hub default):** Run phase 2 gates when practical and **report** results in the PR body (`Gates:` line) or review handback. Gate findings **do not** block APPROVE and **do not** count as review rounds. Blocking mode starts only after Tom explicitly approves switching ub-mode to blocking gates.
 
-**Pre-PR dev loop (optional):** Before the full gate block, you may run advisory `crapper --changed --threshold 10` and `dryer --changed --threshold 0.8` only (`rm -f .metrics/dry.edn` first). See `docs/shared/ub-mode-practice.md`. `lfg` step 3.4 points here.
+**Pre-PR dev flow (implementer):** Before opening a PR, run `crapper --changed --threshold 10` and `dryer --changed --threshold 0.8` (`rm -f .metrics/dry.edn` first) and **fix** what they flag. Run `mutator --changed` on changed functions only on a **laptop** or in **CI** — never in a cloud agent. CI job **`ub-gates`** runs the same checks on every push. See `docs/shared/ub-mode-practice.md`.
 
 ---
 
@@ -101,7 +101,7 @@ Language matrix and commands: `references/gates-by-language.md`. Supported langu
 2. **dryer (GMA-411):** `rm -f .metrics/dry.edn` then `dryer --changed --threshold 0.8` (default **min 4 lines** / **20 nodes** per upstream). If `--changed` selects nothing, dryer exits `0` and may leave no new file — treat **missing** `.metrics/dry.edn` after the run as **no selection / skipped**, never as a pass from an old file. Otherwise parse candidates ≥ 0.8.
 3. `mutator --changed` (install crapper beside mutator per upstream README). Note exit `3` = survivors.
 
-Record results on the PR **`Gates:`** line (see `docs/shared/ub-mode-practice.md`). Fix issues when you choose; gate debt does not block APPROVE in advisory mode.
+Record results on the PR **`Gates:`** line (see `docs/shared/ub-mode-practice.md`). Implementer fixes crapper/dryer flags before PR; mutator on laptop/CI. Reviewer confirms **`ub-gates`** at head SHA only. Gate debt on the **`Gates:`** line does not block APPROVE in advisory mode; red/missing **`ub-gates`** is a gate miss (hand back, not a review round).
 
 Optional visualization: [uml-viewer](https://github.com/unclebob/uml-viewer) reads the same `.metrics/` files.
 

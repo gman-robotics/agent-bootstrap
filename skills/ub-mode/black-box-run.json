@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T06:05:31.158589+00:00",
+  "captured_at": "2026-10-26T13:34:42.341048+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/ub-mode/SKILL.md.",
@@ -33,7 +33,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "1352cfe432791a84d638667bfa28c4caf9d7515a561e9ad7d6e900e592abbadc",
+  "skill_sha256": "45a4bdec42a83a7939c4e34c40e4abeb77e311e9b9257d488942fb9707536063",
   "stderr_tail": "",
   "stdout_tail": "OK: ub-mode\n",
   "verdict": "pass"

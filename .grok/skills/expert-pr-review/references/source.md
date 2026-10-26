@@ -164,17 +164,16 @@ Poll build until done:
 while pgrep -f "<build-process-name>" > /dev/null 2>&1; do sleep 5; done && tail -20 /tmp/build.log
 ```
 
-### Step 3.5: ub-mode quality gates (advisory report)
+### Step 3.5: ub-mode CI gate confirmation (do not re-run tools)
 
-When tests passed (or were skipped with reason) and the changed code is in a language supported by [unclebob/crapper](https://github.com/unclebob/crapper) (Clojure, Java, Go, TypeScript/JS, Rust, Python):
+When tests passed (or were skipped with reason):
 
-1. Load `skills/ub-mode/SKILL.md` phase 2 and `skills/ub-mode/references/gates-by-language.md`.
-2. After checkout, run the advisory gate block on the PR scope (prefer `--changed`): crapper `--threshold 10`; `rm -f .metrics/dry.edn` then dryer `--threshold 0.8`; mutator.
-3. **Report** measured results: **crapper** worst CRAP ≤ 10 or not; **dryer** candidates ≥ 0.8 from a fresh `.metrics/dry.edn` (GMA-411: missing file after empty `--changed` = no selection/skipped); **mutator** exit `0` / `2` / `3` (survivors).
-4. Put commands, exits, and snapshot paths in the summary or `quality_findings` as **informational** findings. Gate debt **does not** change **APPROVE** vs **REQUEST_CHANGES** in advisory mode and **does not** count as a review round.
-5. Skip only when the tool is missing or the language is unsupported — state that on the PR **`Gates:`** line.
+1. At the PR **head SHA**, confirm CI check **`ub-gates`** completed (`gh pr checks` or the forge equivalent). **Do not** run crapper, dryer, or mutator in the reviewer harness.
+2. **Green `ub-gates`:** Note in the review summary that implementer pre-PR dev flow + CI gates ran at head SHA; trust the PR **`Gates:`** line for measured detail.
+3. **Gate miss** (`ub-gates` missing or red): Hand back to the implementer to fix and re-push. This is **not** a review round — do **not** use **REQUEST_CHANGES** for gate misses alone.
+4. Advisory mode: gate debt on the **`Gates:`** line **does not** change **APPROVE** vs **REQUEST_CHANGES** for code-quality findings until Tom approves blocking mode.
 
-Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`.
+Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`; **`ub-gates`** may skip when no supported language files changed.
 
 **Optional — project standards:** When the PR's project ships `standards-<repo>/SKILL.md`, verify the PR body and issue links match that skill before APPROVE (`docs/shared/repo-standards-practice.md`).
 

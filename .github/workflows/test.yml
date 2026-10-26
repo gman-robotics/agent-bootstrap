@@ -49,6 +49,22 @@ jobs:
       - name: Run verify-hub CI harness
         run: bash .cursor/skills/verify-hub/bin/verify-hub-ci
 
+  ub-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Run advisory ub-gates (GMA-410)
+        env:
+          UB_GATES_ADVISORY: "1"
+          UB_GATES_BASE_REF: origin/main
+        run: bash scripts/run_ub_gates_ci.sh
+
   box-tools-shellcheck:
     runs-on: ubuntu-latest
     timeout-minutes: 5
