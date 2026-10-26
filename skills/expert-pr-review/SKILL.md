@@ -21,6 +21,7 @@ version: 1.0.1
 | `subagent-routing` | Model tier defaults for spawned SecurityReviewer and quality analysis workers |
 | `security-audit` | Explicit full-audit/pen-test mode only, on direct user request — never launched by this skill's Step 4 `SecurityReviewer` spawn |
 | `pstack-principles` | minimize-reader-load for the Step 4 quality pass |
+| `blast-radius` | Changed-surface risk pass before APPROVE (Step 4) |
 
 ---
 
@@ -178,11 +179,11 @@ When tests passed (or were skipped with reason):
 
 Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`; expect **`skipped_no_scope`** when CI ran.
 
-**Optional — project standards:** When the PR's project ships `standards-<repo>/SKILL.md`, verify the PR body and issue links match that skill before APPROVE (`docs/shared/repo-standards-practice.md`).
+**Optional — project standards:** When the PR's project ships `standards-<repo>/SKILL.md`, verify the PR body matches that skill and `docs/shared/hub-pull-request-template.md` before APPROVE (`docs/shared/repo-standards-practice.md`).
 
 ### Step 4: Parallel Analysis
 
-In a **single message**, spawn both tasks so they run concurrently — each reads the same diff independently:
+In a **single message**, spawn all three tasks so they run concurrently — each reads the same diff independently:
 
 ```
 Task(
@@ -197,13 +198,19 @@ Task(
   description="Code quality analysis: PR #<N>",
   prompt="You are a code quality reviewer. Diff:\n\n<full diff here>\n\nAnalyze: correctness, style/consistency with surrounding code, readability (layers a reader must trace, pass-through wrappers, hidden shared mutable state), test coverage, edge cases, breaking changes, semver impact, docs updates needed. Return findings grouped by severity (critical/major/minor/nit) with file:line citations. If no issues found in a category, say so."
 )
+
+Task(
+  model="sonnet",
+  description="Blast radius: PR #<N>",
+  prompt="Read skills/blast-radius/SKILL.md and apply it to this PR diff (changed surface only). Diff:\n\n<full diff here>\n\nReturn: (1) what could break elsewhere, (2) one safety-critical fact proven by execution or concrete code citation (prove-it-works), (3) severity-tagged findings with file:line when applicable. Docs-only/Markdown-only PRs: state 'skipped — docs only' with one sentence why."
+)
 ```
 
 > **Reader load:** The quality task must report what the diff adds that raises reader load: new layers to trace, pass-through wrappers, and hidden shared mutable state. Judge only what the PR adds. This is the **pstack-principles** (minimize-reader-load) principle.
 
 > **Dependency audit:** Only flag `npm audit` / `pip audit` findings if the PR modified `package.json` or lock files. Pre-existing vulnerabilities are out of scope — note that clearly rather than listing them as PR concerns.
 
-Wait for both tasks to return. Synthesize results into the Findings Schema above and return it.
+Wait for all three tasks to return. Synthesize results into the Findings Schema above and return it.
 
 ---
 

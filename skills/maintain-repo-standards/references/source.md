@@ -64,8 +64,8 @@ Product regressions or broken workflows discovered during the pass → record in
    | Tier table T0–T3 | Present in the standards skill **PR format** section and matches hub `docs/shared/repo-standards-practice.md` (or pinned hub SHA) |
    | Pass bar vs CI | Every required CI job/step named in the skill matches live workflow YAML (commands, exit codes, env splits) |
    | Test-file cites | Paths to test files or workflow steps cited in the pass bar still exist |
-   | PR template hints | `.github/PULL_REQUEST_TEMPLATE.md` has HTML comment hints **under each** of `Tier:`, `Models:`, `Linear:`, `Summary:`, `Gates:` — not only a single top comment block |
-   | PR header order | Template and skill agree on order: Tier → Models → Linear → Summary → Gates |
+   | PR template | `.github/PULL_REQUEST_TEMPLATE.md` matches hub `docs/shared/hub-pull-request-template.md` (or pinned hub SHA), including per-header HTML hints and **pstack (Poteto) principles cited** section |
+   | PR header order | Template and skill agree on order: Tier → Models → Linear → Summary → Gates → Poteto section → evidence |
    | Issue `config.yml` | Only `blank_issues_enabled` and `contact_links` — no ignored keys like `issue_templates:` |
    | Question template | No `question` issue form unless the `question` label exists |
    | Skill id | `standards-<repo>` id still matches create rules (basename default; manifest/pyproject only when justified) |

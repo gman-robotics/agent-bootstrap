@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T14:42:27.599920+00:00",
+  "captured_at": "2026-10-26T15:21:10.452056+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/lfg/SKILL.md (compound-loop borrow).",
@@ -25,7 +25,8 @@
       "standards-<repo>/SKILL.md",
       "Pre-PR dev flow",
       "ub-gates",
-      "Linear:",
+      "hub-pull-request-template.md",
+      "blast-radius",
       "report results on the PR **`Gates:`** line",
       "not a review round",
       "never in a cloud agent"
@@ -33,7 +34,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "559804ce1325066c820029c278436dfadac548d225b83cf388a478d604587257",
+  "skill_sha256": "2f41c3d3b3f73a7e8a68ed85ef2843aa63facbc879e0d2f06fbc2bd567b3a7ce",
   "stderr_tail": "",
   "stdout_tail": "OK: lfg\n",
   "verdict": "pass"

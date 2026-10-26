@@ -59,7 +59,7 @@ Hub workflows (`plan-code-review-workflow`, `expert-pr-review`, `lfg`) say: **if
 
 ## PR header order (hub default)
 
-When the project has no overriding `standards-<repo>` skill, match `docs/shared/ub-mode-practice.md`: `Tier:`, `Models:`, `Linear:` (`https://linear.app/...` or `N/A`), `Summary:`, `Gates:`, then evidence/checklist.
+When the project has no overriding `standards-<repo>` skill, copy `docs/shared/hub-pull-request-template.md` to `.github/PULL_REQUEST_TEMPLATE.md` and match `docs/shared/ub-mode-practice.md` header order.
 
 Example Linear line (concrete): `Linear: https://linear.app/gman-personal-projects/issue/GMA-412` or `Linear: N/A`.
 

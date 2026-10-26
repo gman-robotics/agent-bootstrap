@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T13:53:55.236388+00:00",
+  "captured_at": "2026-10-26T15:20:42.964738+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure check for skills/create-repo-standards/SKILL.md.",
@@ -15,7 +15,7 @@
     "command": [
       "python3",
       "-c",
-      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\npractice = Path(\"docs/shared/repo-standards-practice.md\").read_text(encoding=\"utf-8\")\nforbidden = \"git fetch origin <\"\nassert forbidden not in text, \"SKILL must not recommend git fetch origin <sha>\"\nassert forbidden not in practice, \"practice doc must not recommend git fetch origin <sha>\"\nassert \"ignored keys such as\" in text and \"issue_templates\" in text, \"config.yml must warn against issue_templates:\"\nassert \"under each header\" in text.lower() or \"under each\" in text and \"header\" in text, \"per-header PR template hints\"\nassert \"pipefail\" in text, \"pre-push pipefail\"\nassert \"VERIFY_SKIP\" in text or \"verify splits\" in text.lower() or \"VERIFY_SKIP_FULL_PYTEST\" in text, \"CI verify splits\"\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nassert re.search(r'^description: .+$', fm, re.M), \"description\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\npractice = Path(\"docs/shared/repo-standards-practice.md\").read_text(encoding=\"utf-8\")\nforbidden = \"git fetch origin <\"\nassert forbidden not in text, \"SKILL must not recommend git fetch origin <sha>\"\nassert forbidden not in practice, \"practice doc must not recommend git fetch origin <sha>\"\nassert \"ignored keys such as\" in text and \"issue_templates\" in text, \"config.yml must warn against issue_templates:\"\nassert \"hub-pull-request-template.md\" in text or \"under each header\" in text.lower(), \"PR template canonical path\"\nassert \"pipefail\" in text, \"pre-push pipefail\"\nassert \"VERIFY_SKIP\" in text or \"verify splits\" in text.lower() or \"VERIFY_SKIP_FULL_PYTEST\" in text, \"CI verify splits\"\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nassert re.search(r'^description: .+$', fm, re.M), \"description\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
       "create-repo-standards",
       "standards-<repo>",
       ".cursor/skills/standards-<repo>/SKILL.md",
@@ -43,12 +43,14 @@
       "No `AGENTS.md`",
       "repository directory basename",
       "self-check",
-      "skills/write-tests/"
+      "skills/write-tests/",
+      "hub-pull-request-template.md",
+      "Poteto"
     ],
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "132bfa692975bbed2816e2c4dac7c6da705c22d9bfa476d7127d91fa957e0754",
+  "skill_sha256": "5d8c8784ca8ec529d62493280d61bff13e548dd7c15b60b2606949c2110dfa44",
   "stderr_tail": "",
   "stdout_tail": "OK: create-repo-standards\n",
   "verdict": "pass"

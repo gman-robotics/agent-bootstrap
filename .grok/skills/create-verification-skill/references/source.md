@@ -4,7 +4,7 @@ description: >-
   Generate a project-local verification skill that drives your app the way a
   user does. Use when a project has no scripted way to prove UI/CLI/service
   behavior.
-version: 1.1.0
+version: 1.2.0
 ---
 
 # create-verification-skill
@@ -78,6 +78,30 @@ Ship these in every generated `verify-<app>-ci` (or document why the stack has n
 | mutator | Scope paths on **laptop or CI only** — skip in cloud agent harnesses (`CURSOR_AGENT` without `GITHUB_ACTIONS`). |
 | Outcomes | Reuse hub names: `ran_clean`, `ran_with_findings`, `skipped_no_scope`, `skipped_tools_missing`, `tool_error` (see `scripts/run_ub_gates_ci.sh`). Write to `.metrics/verify-ub-outcome.txt` or `.metrics/ub-gates-outcome.txt`. |
 | Exit code | verify-ci **always exits 0** on advisory gate debt; record outcomes in the skill **Evidence** section and PR **`Gates:`** line. |
+
+## 2.5. Wire agent harness files (GMA-410)
+
+After generating `skills/verify-<app>/`, ensure agent harness entrypoints tell every harness to load project standards, run verify/ub checks before a PR, and use the PR template. **Never skip a file because it already exists** — edit in place.
+
+Run (from the target repo root; `repo-id` defaults to the directory basename):
+
+```bash
+python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
+  --repo-root . \
+  --repo-id <repo-id>
+```
+
+The script is idempotent: it upserts a single delimited block (`<!-- agent-bootstrap-hub:BEGIN harness-workflow -->` … `END`) in `AGENTS.md`, `CLAUDE.md`, `.grok/README.md`, and `.cursor/rules/<repo-id>-harness.mdc`. Missing files are created with minimal safe defaults; existing prose outside the block is unchanged.
+
+Copy the hub PR template when `.github/PULL_REQUEST_TEMPLATE.md` is missing:
+
+```bash
+cp /path/to/agent-bootstrap/docs/shared/hub-pull-request-template.md .github/PULL_REQUEST_TEMPLATE.md
+```
+
+(`create-repo-standards` already copies the same canonical file; do not maintain a second template shape.)
+
+Fixture proof: `skills/create-verification-skill/fixtures/agent-harness-sync/` (pre-existing `AGENTS.md` content preserved; second run is a no-op).
 
 ## 3. Seed the feature map
 

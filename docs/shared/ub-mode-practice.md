@@ -19,25 +19,17 @@ Use **`/ub-mode`** or load `skills/ub-mode/SKILL.md` when you want the reduced l
 
 ## PR body header (hub PRs)
 
-When the hub defines PR body fields, use this **order** at the top of the description (adapt values per PR):
+**Canonical template:** `docs/shared/hub-pull-request-template.md` (GitHub copy: `.github/PULL_REQUEST_TEMPLATE.md`). Do not maintain a second header order elsewhere.
 
-```text
-Tier: T0
-Models: composer-2.5
-Linear: https://linear.app/gman-personal-projects/issue/GMA-412
-Summary: one short paragraph
-Gates: crapper/dryer/mutator advisory results or skip reason
-```
+Required top-of-body order (GMA-412 / arm rule): `Tier:`, `Models:`, `Linear:` (`https://linear.app/...` or `N/A` only), `Summary:`, `Gates:`, then **pstack (Poteto) principles cited**, then verification evidence/checklist.
 
 Use `Linear: N/A` when there is no tracking issue. Tier meanings: see **Tier scale** in `docs/shared/repo-standards-practice.md` (T0 small/docs/check-only through T3 infra/migration/new service).
-
-Then add verification evidence (commands + exit codes) and any checklist aligned with CI.
 
 **Linear line:** Must be an `https://linear.app/...` issue URL, or `N/A`. Never use a Cursor store path, box path, or sketch link. Do not use angle-bracket placeholders in committed examples.
 
 For hub Markdown-only PRs, use `Gates: N/A (hub Markdown)`.
 
-The same stanza appears in `skills/technical-writing/SKILL.md`, `skills/lfg/SKILL.md`, `skills/multi-harness-coordination/SKILL.md`, `skills/split-branch-for-pr/SKILL.md`, and `skills/adversarial-coordination-workflow/SKILL.md`.
+Workflow skills point here: `skills/technical-writing/SKILL.md`, `skills/lfg/SKILL.md`, `skills/multi-harness-coordination/SKILL.md`, `skills/split-branch-for-pr/SKILL.md`, `skills/adversarial-coordination-workflow/SKILL.md`, `skills/create-repo-standards/SKILL.md`, `skills/maintain-repo-standards/SKILL.md`.
 
 ## Prerequisites (repo / CI)
 

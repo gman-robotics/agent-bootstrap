@@ -99,7 +99,7 @@ YAML frontmatter (required on the generated project skill): `name: standards-<re
 
 Required sections (all concrete — **encode-lessons-in-structure**):
 
-1. **PR format** — Copy the **Tier scale** table (T0–T3) verbatim from `docs/shared/repo-standards-practice.md` (or the hub pin you read at step 0). Header order: `Tier:`, `Models:`, `Linear:` (`https://linear.app/...` or `N/A` only), `Summary:`, `Gates:`; then verification evidence (commands + exit codes) and checklist aligned with CI.
+1. **PR format** — Copy the **Tier scale** table (T0–T3) verbatim from `docs/shared/repo-standards-practice.md` (or the hub pin you read at step 0). Copy **`.github/PULL_REQUEST_TEMPLATE.md`** from the hub canonical file `docs/shared/hub-pull-request-template.md` (same header order: `Tier:`, `Models:`, `Linear:` (`https://linear.app/...` or `N/A` only), `Summary:`, `Gates:`, then **pstack (Poteto) principles cited**, then evidence/checklist). Do not invent a second template shape in the standards skill prose.
 2. **Issue format** — Problem; acceptance criteria; non-goals; verification plan. Note: issue forms must not reference labels the repo lacks (see step 4).
 3. **Planning** — When to use `architect` vs `plan-code-review-workflow`; what a plan must contain (files, risks, named checks per **sequence-verifiable-units**).
 4. **Implementation** — TDD order (`write-tests` — hub skill at `skills/write-tests/` when bootstrapped from agent-bootstrap); implementer **Pre-PR ub-mode dev flow** (`crapper --threshold 10`, `dryer --threshold 0.8` on merge-base scope — fix flags; `mutator` on scope laptop/CI only); CI **`ub-gates`** on every `push` / `pull_request`; advisory until Tom approves blocking (`docs/shared/ub-mode-practice.md`, GMA-411: `rm -f .metrics/dry.edn` before dryer); commit message style.
@@ -111,7 +111,7 @@ Mirror hub `docs/shared/ub-mode-practice.md` when the repo adopts ub-mode; state
 
 | Artifact | Action |
 | --- | --- |
-| `.github/PULL_REQUEST_TEMPLATE.md` | Match PR format. Put an HTML comment **under each header line** (`Tier:`, `Models:`, `Linear:`, `Summary:`, `Gates:`) with hints (tier scale pointer, Linear URL rule, advisory Gates) — not one large HTML block at the top only |
+| `.github/PULL_REQUEST_TEMPLATE.md` | Copy from hub `docs/shared/hub-pull-request-template.md` (per-header HTML hints already in that file). After copy, run placeholder self-check (step 5) |
 | `.github/ISSUE_TEMPLATE/config.yml` | Only keys GitHub honors: `blank_issues_enabled` and `contact_links`. Do **not** use ignored keys such as `issue_templates:` (list templates as files in the same directory instead) |
 | `.github/ISSUE_TEMPLATE/` | One template per common issue type; **list repo labels first** — omit `labels:` when a label is missing. Add a `question` form **only** if the `question` label exists |
 | `STANDARDS.md` or `CONTRIBUTING.md` section | Optional human-readable mirror; link to the skill path |

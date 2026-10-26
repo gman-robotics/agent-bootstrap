@@ -47,6 +47,22 @@ jobs:
       - name: Run verify-hub CI harness
         run: bash .cursor/skills/verify-hub/bin/verify-hub-ci
 
+  pr-body-format-advisory:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Advisory PR body format (never fails build)
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: python3 scripts/advisory_pr_body_format.py
+
   ub-gates:
     runs-on: ubuntu-latest
     timeout-minutes: 10
