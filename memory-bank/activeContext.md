@@ -1,5 +1,5 @@
 ## Current Focus
-**ub-mode skill** (2026-10-25, branch `dex/ub-mode`): Hub `skills/ub-mode/` adapted from unclebob/ub-mode; gates wired into plan-code-review-workflow, expert-pr-review, and lfg. Black-box live gate captured for `ub-mode` and refreshed for `lfg`.
+**GMA-410 ub-mode dev flow** (2026-10-26, branch `dex/gma-410-ub-dev-flow`): Pre-PR crapper/dryer fix + mutator laptop/CI; CI `ub-gates` advisory job; reviewer CI confirmation only at head SHA.
 
 ## Prior Focus
 **Compound-loop borrow** (2026-10-05, branch `borrow-compound-loop`): Independent rewrites of EveryInc/compound-engineering-plugin (MIT) as `compound`, `compound-refresh`, `ideate`, `strategy`, and `lfg`. Hooks in plan, grill, LEARN, expert-pr-review, arena, and pstack-principles. No plugin tree vendored. Live-gated before INDEX listing.

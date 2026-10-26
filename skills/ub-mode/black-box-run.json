@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T06:05:31.158589+00:00",
+  "captured_at": "2026-10-26T13:53:50.845390+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/ub-mode/SKILL.md.",
@@ -21,7 +21,7 @@
       "**do not** count as review rounds",
       "worst function **CRAP \u2264 10**",
       "rm -f .metrics/dry.edn",
-      "no selection / skipped",
+      "merge-base",
       "exit `3` means **survivors**",
       "Keep a log of every action and the reason",
       "keep the main thread small; bulk work elsewhere with a summary",
@@ -33,7 +33,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "1352cfe432791a84d638667bfa28c4caf9d7515a561e9ad7d6e900e592abbadc",
+  "skill_sha256": "6fd14619d8e8bacc37fa859277a23f1c12682d1d5ec4607824344461846ce04e",
   "stderr_tail": "",
   "stdout_tail": "OK: ub-mode\n",
   "verdict": "pass"

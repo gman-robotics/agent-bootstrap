@@ -4,14 +4,16 @@ Use **`/ub-mode`** or load `skills/ub-mode/SKILL.md` when you want the reduced l
 
 ## Advisory vs blocking
 
-**Advisory (hub default):** Run gates when practical, report honest measured results, and put them on the PR **`Gates:`** line. Findings **do not** block APPROVE and **do not** count as review rounds. **Blocking mode** starts only after Tom explicitly approves switching ub-mode to blocking gates.
+**Advisory (hub default — GMA-410 rollout):** Run gates in the implementer pre-PR dev flow and in CI on every `push` and `pull_request`; report honest measured results on the PR **`Gates:`** line. Gate **findings** **do not** block QA **APPROVE** and **do not** count as review rounds until Tom explicitly approves **blocking mode**. Roll out on **systemone** and **packet** first; measure review rounds per PR before and after. No blocking mode until Tom OKs.
+
+**Gate miss (advisory):** When **`ub-gates`** is **red/missing** for infrastructure errors, the reviewer hands the PR back to the implementer (**not** a review round). **`outcome=skipped_tools_missing`** is a **neutral skip**: job exits **0** (not red), emits a **`::warning`** and step-summary note, sets **`gates_ran=0`** — **not** a gate pass. Reviewer reads the job summary/outcome file; gates did **not** run. **Follow-up:** install crapper, dryer, and mutator in CI (separate ticket). A **green** `ub-gates` with **`skipped_no_scope`** is OK for docs-only PRs. **`ran_with_findings`** means tools ran; findings are advisory until blocking mode.
 
 ## When to use
 
 | Situation | Use ub-mode |
 | --- | --- |
 | Implementing a feature or fix in a supported language | Yes — phases 1–3 |
-| PR review | Yes — advisory gate report (Step 3.5 / Phase 2.75) |
+| PR review | Confirm CI `ub-gates` outcome at head SHA only (do not re-run tools) |
 | Docs-only or Markdown hub skill edit | Phase 1 judgment only; `Gates: N/A (hub Markdown)` |
 | Whole-repo audit | No — use `codebase-simplification-audit` |
 
@@ -37,15 +39,55 @@ For hub Markdown-only PRs, use `Gates: N/A (hub Markdown)`.
 
 The same stanza appears in `skills/technical-writing/SKILL.md`, `skills/lfg/SKILL.md`, `skills/multi-harness-coordination/SKILL.md`, `skills/split-branch-for-pr/SKILL.md`, and `skills/adversarial-coordination-workflow/SKILL.md`.
 
-## Pre-PR dev loop (optional)
+## Prerequisites (repo / CI)
 
-Before the full phase 2 gate block (or before opening a PR in `lfg`), you may run a **quick advisory** subset when crapper and dryer are on PATH:
+Before ub-gates can run in CI or locally:
 
-1. `rm -f .metrics/dry.edn`
-2. `crapper --changed --threshold 10`
-3. `dryer --changed --threshold 0.8`
+| Prerequisite | Why |
+| --- | --- |
+| **Coverage in CI** | **crapper** and **mutator** need an LCOV or coverage profile (e.g. `pytest --cov` / `pytest-cov`, JaCoCo, `go test -coverprofile`, per `skills/ub-mode/references/gates-by-language.md`) |
+| **Explicit scope paths** | Upstream `--changed` uses **`git status`** (uncommitted adds/edits), not the PR diff. For committed branches and CI, pass the merge-base file list (see below). Do not claim “git diff selection” for `--changed`. |
+| **crapper, dryer, mutator on PATH** | Or project-root `./crapper` wrappers; **mutator** expects **crapper** beside it per upstream README |
 
-Fix what you choose; record measured results on the PR **`Gates:`** line. This does not replace mutator when you run the full ub-mode phase 2 block.
+Hub CI: workflow job **`ub-gates`** runs `bash scripts/run_ub_gates_ci.sh` on every **`push`** and **`pull_request`**. The script writes `.metrics/ub-gates-outcome.txt` and a GitHub step summary (plus **`::warning`** when tools are missing). **`skipped_tools_missing`** exits **0** with **`gates_ran=0`** (visible warn, not a pass). Installing unclebob tools on the runner is a **follow-up ticket** — not in this hub PR. Advisory mode still allows **`ran_with_findings`** to exit 0.
+
+## Scope file list (committed diff)
+
+```bash
+BASE="$(git merge-base HEAD origin/main)"
+# Add only paths that exist and match your stack (see gates-by-language.md)
+mapfile -t SCOPE < <(git diff --name-only --diff-filter=ACMRT "${BASE}" HEAD)
+```
+
+Hub CI uses the same merge-base → `HEAD` list (gate-relevant extensions only). Pass those paths to the tools:
+
+```bash
+crapper --threshold 10 "${SCOPE[@]}"
+rm -f .metrics/dry.edn && dryer --threshold 0.8 "${SCOPE[@]}"
+mutator "${SCOPE[@]}"
+```
+
+## Pre-PR dev flow (implementer)
+
+Before opening a PR (`plan-code-review-workflow` Phase 2.75, `lfg` step 3.4–3.5):
+
+1. Tests green for the scoped change.
+2. Build **SCOPE** (above) or use **`--changed`** only while you still have **uncommitted** gate-relevant edits (`git status`).
+3. `crapper --threshold 10` on SCOPE — **fix** anything it flags before you open the PR.
+4. `rm -f .metrics/dry.edn` then `dryer --threshold 0.8` on SCOPE — **fix** candidates ≥ 0.8 (read `.metrics/dry.edn`; dryer exit `0` is not “clean”).
+5. **`mutator`** on SCOPE on a **laptop** or in **CI** only — **never** in a cloud agent. Upstream **`--changed`** selects **changed source files** from `git status`; use **`--since-last-run`** for function-level reruns after the first pass.
+6. Record measured exits, dryer candidates, and `.metrics/ub-gates-outcome.txt` / CI outcome on the PR **`Gates:`** line.
+
+Cloud agents may run steps 3–4 when tools are on PATH; skip mutator and rely on CI for step 5.
+
+## Reviewer (CI confirmation only)
+
+In `expert-pr-review` Step 3.5 and `plan-code-review-workflow` Phase 3:
+
+1. At the PR **head SHA**, read CI check **`ub-gates`** and the job log / step summary / `.metrics/ub-gates-outcome.txt` (`outcome=...`). **Do not** re-run crapper, dryer, or mutator locally.
+2. **`ran_clean`** or **`ran_with_findings`**: tools executed; advisory findings do not block APPROVE.
+3. **`skipped_no_scope`**: OK when the PR has no gate-relevant sources.
+4. **`skipped_tools_missing`** (`gates_ran=0`): gates did **not** run — not a pass; note or handback; **not** a review round. Red/missing check for other failures: gate miss.
 
 ## How tools pair with principles
 
@@ -63,8 +105,8 @@ Definitions of principle names live only in `skills/pstack-principles/SKILL.md`.
 
 1. Test command and exit code.
 2. **crapper**: worst CRAP ≤ 10 or the exceeding value (`.metrics/crap.edn` or stdout).
-3. **dryer**: delete `.metrics/dry.edn` before run (GMA-411); if file missing after `--changed` with no selection, say **no selection/skipped**; else list `:candidates` with `:score` ≥ 0.8.
-4. **mutator**: exit `0` / `2` / `3` (survivors) and `.metrics/mutate/`.
-5. Skip reasons when a tool is not installed.
+3. **dryer**: delete `.metrics/dry.edn` before run (GMA-411); parse `.metrics/dry.edn` for `:score` ≥ 0.8.
+4. **mutator**: exit `0` / `2` / `3` (survivors) and `.metrics/mutate/` (laptop or CI only).
+5. **CI outcome** line from `ub-gates` when present (`outcome=`, `gate_miss=`).
 
-Summarize on the PR **`Gates:`** line. In advisory mode, missing gate data is not an APPROVE blocker.
+Summarize on the PR **`Gates:`** line. In advisory mode, gate debt on the **`Gates:`** line is not an APPROVE blocker. **`skipped_tools_missing`** must be called out explicitly (not “gates green”).

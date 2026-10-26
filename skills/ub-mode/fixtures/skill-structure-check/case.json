@@ -11,7 +11,7 @@
       "**do not** count as review rounds",
       "worst function **CRAP ≤ 10**",
       "rm -f .metrics/dry.edn",
-      "no selection / skipped",
+      "merge-base",
       "exit `3` means **survivors**",
       "Keep a log of every action and the reason",
       "keep the main thread small; bulk work elsewhere with a summary",

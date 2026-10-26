@@ -13,10 +13,12 @@
       "compound",
       "pr-shepherd",
       "standards-<repo>/SKILL.md",
-      "Pre-PR dev loop",
+      "Pre-PR dev flow",
+      "ub-gates",
       "Linear:",
-      "report advisory results on the PR **`Gates:`** line",
-      "Gate findings do not block review sign-off and do not count as review rounds until Tom approves blocking mode"
+      "report results on the PR **`Gates:`** line",
+      "not a review round",
+      "never in a cloud agent"
     ],
     "cwd": "."
   },

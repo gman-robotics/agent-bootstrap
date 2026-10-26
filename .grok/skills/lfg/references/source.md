@@ -1,7 +1,7 @@
 ---
 name: lfg
 description: "Use to run the agreed loop hands-off: route, implement, simplify the diff, review against the plan, compound, push a PR, watch CI. Do not merge unless the human granted it."
-version: 1.0.4
+version: 1.0.5
 ---
 
 # lfg — Run the loop, do not merge
@@ -21,10 +21,10 @@ Compose skills that already exist. Do not reimplement them. The pipeline stops o
 1. Route. Failing behavior → `debug-investigation`. Unsettled product shape with a human present → `grill-with-docs`. Unsettled judgment → `interrogate`. A costly shape still open → `arena`. Otherwise require an implementation-ready plan from `plan-code-review-workflow` Phase 1.
 2. Implement on an isolated branch with `write-tests`. Do not call an open PR shipped.
 3. Simplify the fresh diff before review. Behavior stays. This is not `codebase-simplification-audit`.
-3.4. (Optional) Pre-PR dev loop: run advisory crapper + dryer per `docs/shared/ub-mode-practice.md` (Pre-PR dev loop) when tools are on PATH; fix or defer, then report on **`Gates:`** in step 8.
-3.5. Run `ub-mode` phase 2 gates (`skills/ub-mode/SKILL.md`, `references/gates-by-language.md`) after tests pass; report advisory results on the PR **`Gates:`** line (`rm -f .metrics/dry.edn` before dryer; missing dry.edn after empty `--changed` = no selection/skipped). Gate findings do not block review sign-off and do not count as review rounds until Tom approves blocking mode.
+3.4. Pre-PR dev flow: `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (`rm -f .metrics/dry.edn` first) per `docs/shared/ub-mode-practice.md`; **fix** what they flag before the PR.
+3.5. `mutator` on merge-base **scope** — **laptop or CI only**; never in a cloud agent. Push so CI **`ub-gates`** runs the same scope; report results on the PR **`Gates:`** line in step 8. `skipped_tools_missing` (`gates_ran=0`) is not a gate pass; red/missing for other failures → implementer; not a review round. Advisory until Tom approves blocking mode.
 3.6. If the target project has `standards-<repo>/SKILL.md`, align the PR description with it (`Tier:`, `Models:`, `Linear:`, `Summary:`, `Gates:`) before review (`docs/shared/repo-standards-practice.md`).
-4. Review against the plan with `expert-pr-review`. A finding that invalidates a settled decision stops the pipeline.
+4. Review against the plan with `expert-pr-review` (reviewer confirms **`ub-gates`** at head SHA only — no local gate re-run). A finding that invalidates a settled decision stops the pipeline.
 5. Apply fixes. Put unapplied findings in the PR body.
 6. Call `compound`. Honor its skip rule.
 7. Run the stack's check (`black-box-agent-qa` for a skill, the project's tests otherwise).
@@ -37,7 +37,7 @@ Compose skills that already exist. Do not reimplement them. The pipeline stops o
 |---|---|
 | `project-carry-through` | Ask the human only for a new decision or a manual action |
 | `plan-code-review-workflow` | Plan, implement, simplify-the-diff, review |
-| `ub-mode` | Advisory phase 2 gate report (step 3.5) |
+| `ub-mode` | Implementer pre-PR dev flow (steps 3.4–3.5); reviewer reads CI outcome only |
 | `compound` | Durable learning after verified work |
 | `pr-shepherd` | CI and reviewer blockers after the PR exists |
 

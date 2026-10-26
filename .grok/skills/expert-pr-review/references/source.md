@@ -164,17 +164,18 @@ Poll build until done:
 while pgrep -f "<build-process-name>" > /dev/null 2>&1; do sleep 5; done && tail -20 /tmp/build.log
 ```
 
-### Step 3.5: ub-mode quality gates (advisory report)
+### Step 3.5: ub-mode CI gate confirmation (do not re-run tools)
 
-When tests passed (or were skipped with reason) and the changed code is in a language supported by [unclebob/crapper](https://github.com/unclebob/crapper) (Clojure, Java, Go, TypeScript/JS, Rust, Python):
+When tests passed (or were skipped with reason):
 
-1. Load `skills/ub-mode/SKILL.md` phase 2 and `skills/ub-mode/references/gates-by-language.md`.
-2. After checkout, run the advisory gate block on the PR scope (prefer `--changed`): crapper `--threshold 10`; `rm -f .metrics/dry.edn` then dryer `--threshold 0.8`; mutator.
-3. **Report** measured results: **crapper** worst CRAP ≤ 10 or not; **dryer** candidates ≥ 0.8 from a fresh `.metrics/dry.edn` (GMA-411: missing file after empty `--changed` = no selection/skipped); **mutator** exit `0` / `2` / `3` (survivors).
-4. Put commands, exits, and snapshot paths in the summary or `quality_findings` as **informational** findings. Gate debt **does not** change **APPROVE** vs **REQUEST_CHANGES** in advisory mode and **does not** count as a review round.
-5. Skip only when the tool is missing or the language is unsupported — state that on the PR **`Gates:`** line.
+1. At the PR **head SHA**, read the **`ub-gates`** job **step summary** and/or `.metrics/ub-gates-outcome.txt` (`outcome=`, `gates_ran=`). **Do not** run crapper, dryer, or mutator in the reviewer harness.
+2. **`gates_ran=1`** with **`outcome=ran_clean` or `outcome=ran_with_findings`:** Tools ran on the merge-base scope. Advisory findings do not block **APPROVE**; cite the PR **`Gates:`** line.
+3. **`outcome=skipped_no_scope`:** OK when the PR has no gate-relevant source files (e.g. hub Markdown).
+4. **`outcome=skipped_tools_missing`** (`gates_ran=0`): CI job may be **green** with a **`::warning`** — this is **not** “gates ran”. Note in the review; hand back to the implementer for local gates or wait for the CI tool-install follow-up; **not** a review round.
+5. **Red/missing `ub-gates` check** (non-tool infrastructure failure): gate miss → implementer; **not** a review round.
+6. A **green** check alone does **not** prove gates ran; always read `gates_ran=` and `outcome=`.
 
-Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`.
+Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`; expect **`skipped_no_scope`** when CI ran.
 
 **Optional — project standards:** When the PR's project ships `standards-<repo>/SKILL.md`, verify the PR body and issue links match that skill before APPROVE (`docs/shared/repo-standards-practice.md`).
 
