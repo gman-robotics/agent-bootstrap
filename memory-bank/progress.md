@@ -1,5 +1,11 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-10-26 — GMA-412 repo-standards gaps (create/maintain)
+
+**Task**: Branch `tginter_ca/repo-standards-gaps-2-46b8` from `420afacc` — drift checklist, CI pass-bar parity, per-header PR hints, placeholder self-check, UTF-8 `maintain-repo-standards/references/source.md`.
+
+**Verification**: unittest 158/158; `index_skills.py --check`; `check_skill_live.py` for create-repo-standards and maintain-repo-standards → 0.
+
 ## 2026-10-26 — GMA-412 hub PR format and exporter references
 
 **Task**: Branch `dex/repo-standards-fixes` from `main` `f7fe70e0` — PR header order, Cline row, exporter copies `skills/*/references/`, repo-standards symlink skip + maintain format-lint drift, optional pre-PR crapper/dryer loop.
