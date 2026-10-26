@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-25T22:55:46.876588+00:00",
+  "captured_at": "2026-10-26T05:41:29.730703+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/lfg/SKILL.md (compound-loop borrow).",
@@ -22,13 +22,14 @@
       "invalidates a settled decision",
       "compound",
       "pr-shepherd",
+      "standards-<repo>/SKILL.md",
       "report advisory results on the PR **`Gates:`** line",
       "Gate findings do not block review sign-off and do not count as review rounds until Tom approves blocking mode"
     ],
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "4292f4dfe5aa049196894b8bf28b5eb0b8faf9b9d725b6618d1e8bbdaeb1808c",
+  "skill_sha256": "dbf18cd810ea9f189c2cdc8bf344f6b85f5c9a3453f4a1e8e8c73f250d8fc83a",
   "stderr_tail": "",
   "stdout_tail": "OK: lfg\n",
   "verdict": "pass"

@@ -559,6 +559,19 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Prove end-to-end once before handoff; point to maintain-verification-skill.",
         ),
     ),
+    "create-repo-standards": SkillConfig(
+        description=(
+            "Interview a repository and generate standards-<repo> in harness skill folders plus "
+            "GitHub PR/issue templates for consistent agent workflows."
+        ),
+        short_description="Bootstrap repo standards skill",
+        trigger_summary="Triggers on /create-repo-standards for a manifest-owned project.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Interview templates, CI, AGENTS.md, PRs; write standards-<repo> and .github templates.",
+            "Prove the skill loads with no placeholders; offer maintain-repo-standards.",
+        ),
+    ),
     "figure-it-out": SkillConfig(
         description=(
             "Use when no narrower playbook fits: design an auditable workflow with scaled "
@@ -650,6 +663,19 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Read `references/source.md` before acting.",
             "Index hygiene; readonly source wave per feature; reconcile recipes.",
             "Coordinator live-pass every feature; triage doc vs harness vs product gaps.",
+        ),
+    ),
+    "maintain-repo-standards": SkillConfig(
+        description=(
+            "Periodic drift pass for standards-<repo> and GitHub templates; at most one PR; "
+            "never product code."
+        ),
+        short_description="Maintain repo standards",
+        trigger_summary="Triggers on /maintain-repo-standards or standards drift audit.",
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Re-interview CI and templates vs standards skill; fix drift in scope only.",
+            "Declare outcome clean, changed, or blocked.",
         ),
     ),
     "pstack-principles": SkillConfig(

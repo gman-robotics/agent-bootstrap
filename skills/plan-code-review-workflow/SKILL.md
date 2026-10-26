@@ -82,6 +82,8 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 
 **Exit Criteria**: ub-mode phase 2 reported or skipped with reason. Then hand off to QA.
 
+**Optional — project standards:** When the active manifest project has `standards-<repo>/SKILL.md` in its harness skill folders, follow its PR and planning formats before QA recommends APPROVE (`docs/shared/repo-standards-practice.md`). Compatible with advisory ub-mode.
+
 ### Phase 3: REVIEW (QA Critical Reviewer Role)
 1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review/SKILL.md` if this results in a PR.
 2. **Perform Critical Review**

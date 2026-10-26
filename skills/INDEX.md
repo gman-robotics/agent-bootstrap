@@ -234,6 +234,13 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### create-repo-standards
+**File**: `skills/create-repo-standards/SKILL.md`  
+**Trigger**: `/create-repo-standards`, bootstrap repo standards for a manifest-owned project.  
+**What it does**: Interview repo (templates, CI, AGENTS.md, PRs/issues, verify skill); generate `standards-<repo>` in harness skill folders plus GitHub PR/issue templates; prove skill has no placeholders. See `docs/shared/repo-standards-practice.md`.
+
+---
+
 ### figure-it-out
 **File**: `skills/figure-it-out/SKILL.md`  
 **Trigger**: "Figure it out", large migration, ambitious multi-part change, or no narrower playbook fits.  
@@ -273,6 +280,13 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 **File**: `skills/maintain-verification-skill/SKILL.md`  
 **Trigger**: Hygiene, reconciliation, or live pass for an existing `verify-<app>` skill.  
 **What it does**: Index hygiene, readonly source wave per feature, reconcile recipes, coordinator live-pass, triage doc vs harness vs product gaps. Ported from pstack (GMA-48).
+
+---
+
+### maintain-repo-standards
+**File**: `skills/maintain-repo-standards/SKILL.md`  
+**Trigger**: `/maintain-repo-standards`, audit repo standards drift.  
+**What it does**: Re-interview CI/templates vs `standards-<repo>`; at most one PR touching standards dirs and `.github` templates only; outcome **clean** | **changed** | **blocked**.
 
 ---
 
@@ -469,4 +483,4 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 6. Add a `SkillConfig` entry in `scripts/export_codex_skills.py` (the exporter hard-fails on missing configs), run `python3 -m unittest tests.test_export_codex_skills`, then re-export: `python3 scripts/export_codex_skills.py --output-dir .grok/skills --force`.
 7. If any later edit changes `SKILL.md`, re-run step 2 before the edit ships — `check_skill_live.py` (and therefore `tests/test_index_live_binding.py`) will fail on the stale `skill_sha256` until you do.
 
-*Last updated: 2026-10-25 | Hub version: 0.13.1*
+*Last updated: 2026-10-26 | Hub version: 0.14.0*

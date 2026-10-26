@@ -333,6 +333,8 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/blast-radius/SKILL.md` | "What could this break", untrusted small diff | One safety fact, prove with real code, write through unslop |
 | `skills/security-audit/SKILL.md` | Literal "security audit"/"security-audit", "run the Cloudflare security audit", or an explicit full/comprehensive/pen-test ask — **not** generic "security review"/"review this PR"/"what could this break" | Opt-in vendor of Cloudflare's `security-audit-skill` (MIT, GMA-56); guidance-mode by default, full audit only after explicit ask **and** a capability check against the four Universal execution-safety controls; never a substitute for `expert-pr-review` or `blast-radius` |
 | `skills/create-verification-skill/SKILL.md` | Bootstrap verify-<app> skill | Interview repo, generate skill + feature map, prove E2E |
+| `skills/create-repo-standards/SKILL.md` | `/create-repo-standards` on a manifest project | Generate standards-<repo> + GitHub templates; prove no placeholders |
+| `skills/maintain-repo-standards/SKILL.md` | `/maintain-repo-standards`, standards drift | One PR max; templates + standards skill only; clean/changed/blocked |
 | `skills/figure-it-out/SKILL.md` | No narrower playbook fits; large migration | Design auditable workflow, hypothesis loop, TSV trail |
 | `skills/how/SKILL.md` | How does X work (runtime behavior) | Parallel explorers, synthesized behavior explanation |
 | `skills/interrogate/SKILL.md` | Adversarial multi-model review | Parallel reviewers, verdict buckets, no auto-apply |
@@ -434,4 +436,4 @@ See `skills/docs-protocol/SKILL.md` for the full playbook on creating, updating,
 
 ---
 
-*Last updated: 2026-10-25 | Version: 0.13.1 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2 + pstack skill port (GMA-48) + opt-in Cloudflare security-audit vendor (GMA-56)*
+*Last updated: 2026-10-26 | Version: 0.14.0 | Maintained by the Agent Bootstrap Hub itself (self-hosting) — first-class Grok support + lean memory-bank v2 + pstack skill port (GMA-48) + opt-in Cloudflare security-audit vendor (GMA-56)*

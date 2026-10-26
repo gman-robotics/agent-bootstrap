@@ -47,6 +47,8 @@ When any skill is triggered, read the full file at `skills/<name>.md` before exe
 | `blast-radius.md` | What could this break |
 | `security-audit.md` | Literal "security audit"/"security-audit" or explicit full/pen-test ask (opt-in Cloudflare vendor; not "security review"/"review this PR") |
 | `create-verification-skill.md` | Bootstrap verify-<app> skill |
+| `create-repo-standards.md` | Bootstrap standards-<repo> + GitHub templates |
+| `maintain-repo-standards.md` | Drift pass for standards-<repo> |
 | `figure-it-out.md` | No narrower playbook; large migration |
 | `how.md` | How does X work (runtime) |
 | `interrogate.md` | Adversarial multi-model review |
