@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T06:05:31.018288+00:00",
+  "captured_at": "2026-10-26T06:30:00.440719+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure check for skills/create-repo-standards/SKILL.md.",
@@ -27,13 +27,18 @@
       "Linear:",
       "symlink",
       "Gates:",
+      "contents API",
+      "gh label",
+      "T0",
+      "pyproject.toml",
+      "create absent",
       "maintain-repo-standards",
-      "no placeholders"
+      "angle-bracket placeholders"
     ],
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "8016a56c5fef728fe06171d0df86d8643a55d65065e428e13603318ee89e3cc5",
+  "skill_sha256": "d553e5ccd4c22be28c51aa93d398bfd37081f7c0e1fa793000f2f69f52068cd3",
   "stderr_tail": "",
   "stdout_tail": "OK: create-repo-standards\n",
   "verdict": "pass"

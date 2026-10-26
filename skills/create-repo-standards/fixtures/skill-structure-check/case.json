@@ -17,8 +17,13 @@
       "Linear:",
       "symlink",
       "Gates:",
+      "contents API",
+      "gh label",
+      "T0",
+      "pyproject.toml",
+      "create absent",
       "maintain-repo-standards",
-      "no placeholders"
+      "angle-bracket placeholders"
     ],
     "cwd": "."
   },
