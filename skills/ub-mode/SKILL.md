@@ -45,7 +45,7 @@ Every change walks:
 
 **Advisory mode (hub default):** Run phase 2 gates when practical and **report** results in the PR body (`Gates:` line) or review handback. Gate findings **do not** block APPROVE and **do not** count as review rounds. Blocking mode starts only after Tom explicitly approves switching ub-mode to blocking gates.
 
-**Pre-PR dev flow (implementer):** Before opening a PR, run `crapper --changed --threshold 10` and `dryer --changed --threshold 0.8` (`rm -f .metrics/dry.edn` first) and **fix** what they flag. Run `mutator --changed` on changed functions only on a **laptop** or in **CI** — never in a cloud agent. CI job **`ub-gates`** runs the same checks on every push. See `docs/shared/ub-mode-practice.md`.
+**Pre-PR dev flow (implementer):** Pass the merge-base **scope** file list to `crapper --threshold 10` and `dryer --threshold 0.8` (`rm -f .metrics/dry.edn` first) and **fix** what they flag. Use upstream `--changed` only for **uncommitted** edits (`git status`). Run **mutator** on scope on a **laptop** or in **CI** only (`--since-last-run` for incremental function reruns). CI **`ub-gates`** uses the same scope on every `push` / `pull_request`. See `docs/shared/ub-mode-practice.md`.
 
 ---
 
@@ -97,9 +97,9 @@ Language matrix and commands: `references/gates-by-language.md`. Supported langu
 
 **Gate block (run in order after tests pass; report only — advisory until blocking mode is approved)**
 
-1. `crapper --changed --threshold 10` (or full tree when the diff is wide). Report worst CRAP from `.metrics/crap.edn` or stdout.
-2. **dryer (GMA-411):** `rm -f .metrics/dry.edn` then `dryer --changed --threshold 0.8` (default **min 4 lines** / **20 nodes** per upstream). If `--changed` selects nothing, dryer exits `0` and may leave no new file — treat **missing** `.metrics/dry.edn` after the run as **no selection / skipped**, never as a pass from an old file. Otherwise parse candidates ≥ 0.8.
-3. `mutator --changed` (install crapper beside mutator per upstream README). Note exit `3` = survivors.
+1. `crapper --threshold 10` on **scope** paths (merge-base diff, or `--changed` only with uncommitted edits). Report worst CRAP from `.metrics/crap.edn` or stdout.
+2. **dryer (GMA-411):** `rm -f .metrics/dry.edn` then `dryer --threshold 0.8` on **scope**. Parse `.metrics/dry.edn` for candidates ≥ 0.8 (dryer exit `0` is not “clean”).
+3. `mutator` on **scope** (install crapper beside mutator per upstream README). `--changed` = changed **files** from `git status`; `--since-last-run` for function-level reruns. Note exit `3` = survivors.
 
 Record results on the PR **`Gates:`** line (see `docs/shared/ub-mode-practice.md`). Implementer fixes crapper/dryer flags before PR; mutator on laptop/CI. Reviewer confirms **`ub-gates`** at head SHA only. Gate debt on the **`Gates:`** line does not block APPROVE in advisory mode; red/missing **`ub-gates`** is a gate miss (hand back, not a review round).
 
@@ -124,9 +124,9 @@ Push only when the parent workflow allows (hub global rules).
 
 ## Wiring in other skills
 
-- **`plan-code-review-workflow`**: After phase 2.5, run this skill's advisory gate block (Phase 2.75).
-- **`expert-pr-review`**: After Step 3 build/test pass, run advisory gates (Step 3.5).
-- **`lfg`**: After step 3 (simplify), run advisory gates (step 3.5).
+- **`plan-code-review-workflow`**: Implementer runs pre-PR dev flow (Phase 2.75); reviewer confirms CI `ub-gates` outcome (Phase 3).
+- **`expert-pr-review`**: Step 3.5 confirms CI `ub-gates` at head SHA — does **not** re-run gate tools.
+- **`lfg`**: Steps 3.4–3.5 implementer pre-PR dev flow; step 4 reviewer confirms CI only.
 
 ---
 

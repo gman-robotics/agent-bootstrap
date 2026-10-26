@@ -32,7 +32,7 @@ Execute the approved plan from the Software Architect phase. Produce high-qualit
 - Use absolute paths for all file operations.
 - After every file change: Re-read it to verify.
 - Run available linters/tests locally before declaring done.
-- **Pre-PR ub-mode dev flow** (supported languages): after tests pass, run `crapper --changed --threshold 10` and `dryer --changed --threshold 0.8` (`rm -f .metrics/dry.edn` first) and fix what they flag; run `mutator --changed` only on a laptop or in CI (never in a cloud agent). Push so CI **`ub-gates`** runs; record on the PR **`Gates:`** line (`docs/shared/ub-mode-practice.md`).
+- **Pre-PR ub-mode dev flow** (supported languages): after tests pass, run `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (`rm -f .metrics/dry.edn` first) and fix what they flag; run `mutator` on scope only on a laptop or in CI (never in a cloud agent). Push so CI **`ub-gates`** runs; record on the PR **`Gates:`** line (`docs/shared/ub-mode-practice.md`).
 - Self-review checklist (before QA handoff):
   - Does it do exactly what the plan says?
   - Style & consistency perfect?

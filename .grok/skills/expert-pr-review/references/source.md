@@ -168,12 +168,13 @@ while pgrep -f "<build-process-name>" > /dev/null 2>&1; do sleep 5; done && tail
 
 When tests passed (or were skipped with reason):
 
-1. At the PR **head SHA**, confirm CI check **`ub-gates`** completed (`gh pr checks` or the forge equivalent). **Do not** run crapper, dryer, or mutator in the reviewer harness.
-2. **Green `ub-gates`:** Note in the review summary that implementer pre-PR dev flow + CI gates ran at head SHA; trust the PR **`Gates:`** line for measured detail.
-3. **Gate miss** (`ub-gates` missing or red): Hand back to the implementer to fix and re-push. This is **not** a review round — do **not** use **REQUEST_CHANGES** for gate misses alone.
-4. Advisory mode: gate debt on the **`Gates:`** line **does not** change **APPROVE** vs **REQUEST_CHANGES** for code-quality findings until Tom approves blocking mode.
+1. At the PR **head SHA**, read CI check **`ub-gates`** (`gh pr checks` or equivalent) **and** the job log / step summary / `outcome=` line in `.metrics/ub-gates-outcome.txt`. **Do not** run crapper, dryer, or mutator in the reviewer harness.
+2. **`outcome=ran_clean` or `outcome=ran_with_findings`:** Tools ran on the merge-base scope. Advisory findings do not block **APPROVE**; cite the PR **`Gates:`** line.
+3. **`outcome=skipped_no_scope`:** OK when the PR has no gate-relevant source files (e.g. hub Markdown).
+4. **Gate miss** — check red/missing, or `outcome=skipped_tools_missing` / `gate_miss=1`: Hand back to the implementer; **not** a review round (no **REQUEST_CHANGES** for gate misses alone).
+5. A **green** check alone does **not** prove gates ran; always read `outcome=`.
 
-Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`; **`ub-gates`** may skip when no supported language files changed.
+Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`; expect **`skipped_no_scope`** when CI ran.
 
 **Optional — project standards:** When the PR's project ships `standards-<repo>/SKILL.md`, verify the PR body and issue links match that skill before APPROVE (`docs/shared/repo-standards-practice.md`).
 

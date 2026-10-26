@@ -34,7 +34,7 @@ Designated as the **Software Engineer / Implementer**. It is responsible for tra
 - **Code Implementation:** Writing the physical code, creating new features, and making the requested code changes.
 - **Refactoring:** Executing code adjustments and cleanups based on plans and reviews.
 - **Test-Driven Development (TDD):** Writing and running tests (Red-Green-Refactor) for code changes.
-- **Pre-PR ub-mode dev flow:** `crapper --changed` and `dryer --changed` (fix flags); `mutator --changed` on laptop/CI only (`docs/shared/ub-mode-practice.md`).
+- **Pre-PR ub-mode dev flow:** `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (fix flags); `mutator` on scope on laptop/CI only (`docs/shared/ub-mode-practice.md`).
 
 *Guideline:* The implementer harness focuses on writing clean, functional code according to the plans and review feedback provided by the planner harness.
 

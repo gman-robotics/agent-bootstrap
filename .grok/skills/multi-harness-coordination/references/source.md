@@ -122,7 +122,7 @@ skill, not here.
 - Retrieve the plan from mem0 or `activeContext.md` — do not rely on chat history.
 - Follow **TDD Red/Green/Refactor** (`write-tests.md`) — failing test before production code.
 - Run the relevant test suite; commit locally.
-- Before handoff for PR: **Pre-PR ub-mode dev flow** — `crapper --changed` and `dryer --changed` (fix flags); `mutator --changed` on laptop/CI only, not in cloud agents (`docs/shared/ub-mode-practice.md`).
+- Before handoff for PR: **Pre-PR ub-mode dev flow** — `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (fix flags); `mutator` on scope on laptop/CI only, not in cloud agents (`docs/shared/ub-mode-practice.md`).
 - Implementer does **not** create or submit the pull request.
 
 ---

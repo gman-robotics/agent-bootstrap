@@ -76,8 +76,8 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 
 ### Phase 2.75: ub-mode pre-PR dev flow (implementer)
 1. Load `docs/shared/ub-mode-practice.md` (Pre-PR dev flow) and `skills/ub-mode/references/gates-by-language.md`.
-2. After tests pass, run **`crapper --changed --threshold 10`** and **`dryer --changed --threshold 0.8`** (`rm -f .metrics/dry.edn` before dryer). **Fix** what they flag before opening a PR.
-3. Run **`mutator --changed`** on changed functions only on a **laptop** or in **CI** — **never** in a cloud agent harness.
+2. After tests pass, run **`crapper --threshold 10`** and **`dryer --threshold 0.8`** on merge-base **scope** (`rm -f .metrics/dry.edn` before dryer). **Fix** what they flag before opening a PR (`--changed` only for uncommitted edits).
+3. Run **`mutator`** on scope on a **laptop** or in **CI** — **never** in a cloud agent harness.
 4. Record measured results on the PR **`Gates:`** line and in `progress.md`. **dryer (GMA-411):** missing `.metrics/dry.edn` after empty `--changed` = **no selection/skipped**, not a pass from an old file.
 5. Push so CI job **`ub-gates`** runs the same checks (`scripts/run_ub_gates_ci.sh`). Advisory mode: gate debt on the **`Gates:`** line does not block QA **APPROVE**; a **red/missing `ub-gates` check** at head SHA is a gate miss (hand back without a review round).
 
@@ -87,7 +87,7 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 
 ### Phase 3: REVIEW (QA Critical Reviewer Role)
 1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review/SKILL.md` if this results in a PR.
-2. **Ub-gates at head SHA** — Confirm CI check **`ub-gates`** completed at the PR head SHA; do **not** re-run crapper/dryer/mutator. Gate miss → implementer fix; **not** a review round.
+2. **Ub-gates at head SHA** — Read CI **`ub-gates`** `outcome=` at the PR head SHA; do **not** re-run crapper/dryer/mutator. `skipped_tools_missing` or red check → implementer; **not** a review round.
 3. **Perform Critical Review**
    - If GitHub PR: Follow **exact** 8-step flow in expert-pr-review.md (gather context in parallel, resolve threads, build/test, security checklist, summarize).
    - If internal changes (no PR yet): Use the same rigor — checklist for correctness, style, tests, security, performance, accessibility (if UI), breaking changes.

@@ -17,7 +17,8 @@ All six languages below are supported by the unclebob tools when the project has
 ### GMA-411 — dryer hygiene
 
 - **Delete** `.metrics/dry.edn` before every dryer run (`rm -f .metrics/dry.edn`).
-- `dryer --changed` with an **empty** git selection exits `0` and does **not** refresh the snapshot; a stale file may remain if you skip the delete step.
+- Upstream **`--changed`** uses **`git status`** (uncommitted files), not the PR diff. For committed branches and CI, pass an explicit path list from `git diff merge-base...HEAD` (see `docs/shared/ub-mode-practice.md`).
+- `dryer --changed` with an **empty** `git status` selection exits `0` and does **not** refresh the snapshot; a stale file may remain if you skip the delete step.
 - If `.metrics/dry.edn` is **missing** after the run, report **no selection / skipped** — never treat a pre-run file as evidence.
 - Default size filters: **4 lines** (`--min-lines`) and **20 nodes** (`--min-nodes`) unless you override.
 
@@ -28,7 +29,12 @@ Dryer writes EDN shaped like `{:candidates [{:score 0.89 :language "clojure" :le
 ## Commands (any supported language in the tree)
 
 ```bash
-# Changed files only (typical advisory report on a PR)
+# PR / branch scope (committed diff — preferred for CI and pre-PR)
+./path/to/crapper --threshold 10 path/to/changed.py ...
+rm -f .metrics/dry.edn && ./path/to/dryer --threshold 0.8 path/to/changed.py ...
+./path/to/mutator path/to/changed.py ...
+
+# Uncommitted edits only (git status — upstream --changed)
 ./path/to/crapper --changed --threshold 10
 rm -f .metrics/dry.edn && ./path/to/dryer --changed --threshold 0.8
 ./path/to/mutator --changed
@@ -96,7 +102,7 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Tool not installed | Record "gate skipped: &lt;tool&gt; not on PATH" on the PR `Gates:` line |
 | Project language not in the six | State plainly; do not fake a gate |
 | Baseline tests fail | Fix tests first; mutator exit `2` means baseline failure |
-| Advisory mode | Report CRAP &gt; 10, dry candidate ≥ 0.8, or mutator exit `3`; fixing is optional for APPROVE |
+| Advisory mode | Implementer must **fix** crapper/dryer flags before PR; CI reports findings. Advisory findings do not block APPROVE until blocking mode; **`skipped_tools_missing`** is a gate miss |
 
 ## uml-viewer (optional)
 
