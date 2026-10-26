@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T05:41:29.633538+00:00",
+  "captured_at": "2026-10-26T05:45:56.925432+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure check for skills/create-repo-standards/SKILL.md.",
