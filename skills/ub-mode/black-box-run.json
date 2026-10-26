@@ -1,9 +1,9 @@
 {
-  "captured_at": "2026-10-26T13:53:40.006127+00:00",
+  "captured_at": "2026-10-26T13:53:50.845390+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/ub-mode/SKILL.md.",
-  "exit_code": 1,
+  "exit_code": 0,
   "expected": {
     "exit_code": 0,
     "stdout_contains": [
@@ -21,7 +21,7 @@
       "**do not** count as review rounds",
       "worst function **CRAP \u2264 10**",
       "rm -f .metrics/dry.edn",
-      "no selection / skipped",
+      "merge-base",
       "exit `3` means **survivors**",
       "Keep a log of every action and the reason",
       "keep the main thread small; bulk work elsewhere with a summary",
@@ -32,12 +32,9 @@
     ],
     "cwd": "."
   },
-  "mismatches": [
-    "exit_code: expected 0, got 1",
-    "stdout missing expected substring: 'OK: ub-mode'"
-  ],
+  "mismatches": [],
   "skill_sha256": "6fd14619d8e8bacc37fa859277a23f1c12682d1d5ec4607824344461846ce04e",
-  "stderr_tail": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError: rule text missing: no selection / skipped\n",
-  "stdout_tail": "",
-  "verdict": "fail"
+  "stderr_tail": "",
+  "stdout_tail": "OK: ub-mode\n",
+  "verdict": "pass"
 }
