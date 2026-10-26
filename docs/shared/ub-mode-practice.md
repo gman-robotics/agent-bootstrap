@@ -22,14 +22,16 @@ When the hub defines PR body fields, use this **order** at the top of the descri
 ```text
 Tier: T0
 Models: composer-2.5
-Linear: https://linear.app/<workspace>/issue/<ID> or N/A
+Linear: https://linear.app/gman-personal-projects/issue/GMA-412
 Summary: one short paragraph
 Gates: crapper/dryer/mutator advisory results or skip reason
 ```
 
+Use `Linear: N/A` when there is no tracking issue. Tier meanings: see **Tier scale** in `docs/shared/repo-standards-practice.md` (T0 small/docs/check-only through T3 infra/migration/new service).
+
 Then add verification evidence (commands + exit codes) and any checklist aligned with CI.
 
-**Linear line:** Must be an `https://linear.app/...` issue URL, or `N/A`. Never use a Cursor store path, box path, or sketch link.
+**Linear line:** Must be an `https://linear.app/...` issue URL, or `N/A`. Never use a Cursor store path, box path, or sketch link. Do not use angle-bracket placeholders in committed examples.
 
 For hub Markdown-only PRs, use `Gates: N/A (hub Markdown)`.
 

@@ -10,9 +10,34 @@
 
 **Do not** run `create-repo-standards` against arbitrary third-party repos from the hub task runner; run it only when the user targets a project they own and the agent may write `.github/` and harness skill dirs.
 
+## Reading agent-bootstrap at a pinned hub SHA
+
+When the run must cite a specific hub commit (for example a `manifest.yaml` pin), use **one** of these and confirm the bytes came from that ref:
+
+| Method | Command / URL |
+| --- | --- |
+| **Contents API** | `gh api repos/<owner>/<repo>/contents/<path>?ref=<full-40-char-sha>` |
+| **Raw.githubusercontent.com** | `https://raw.githubusercontent.com/<owner>/<repo>/<full-sha>/<path>` |
+| **Tarball** | `gh api repos/<owner>/<repo>/tarball/<full-sha>` → extract archive to a temp dir |
+
+Record the full SHA and the path(s) read in interview notes. Do not fetch by bare SHA with git.
+
+## Tier scale (copy into generated standards skills)
+
+| Tier | Meaning |
+| --- | --- |
+| **T0** | Small change, docs-only, or check-only (hub Markdown, typos, config tweak) |
+| **T1** | Medium feature or fix in an existing module |
+| **T2** | Larger feature, new module, or cross-cutting behavior change |
+| **T3** | Infra, migration, or new service / major architectural move |
+
+`create-repo-standards` copies this table into each generated `standards-<repo>` skill and may repeat it in an HTML comment at the top of `.github/PULL_REQUEST_TEMPLATE.md`.
+
 ## Generated artifact
 
-`standards-<repo>/SKILL.md` in project harness folders, for example:
+`standards-<repo>/SKILL.md` only in harness folders the project **already uses** (do not create `.claude/`, `.grok/`, or Cline-only paths unless that harness is present).
+
+Examples when those folders exist:
 
 - `.cursor/skills/standards-my-app/SKILL.md`
 - `.claude/skills/standards-my-app/SKILL.md`
@@ -35,6 +60,12 @@ Hub workflows (`plan-code-review-workflow`, `expert-pr-review`, `lfg`) say: **if
 ## PR header order (hub default)
 
 When the project has no overriding `standards-<repo>` skill, match `docs/shared/ub-mode-practice.md`: `Tier:`, `Models:`, `Linear:` (`https://linear.app/...` or `N/A`), `Summary:`, `Gates:`, then evidence/checklist.
+
+Example Linear line (concrete): `Linear: https://linear.app/gman-personal-projects/issue/GMA-412` or `Linear: N/A`.
+
+## Issue templates and labels
+
+Before writing `.github/ISSUE_TEMPLATE/*`, list labels the repo actually has (`gh label list` or API). **Omit** a `labels:` key in a form when the label does not exist — GitHub rejects unknown labels.
 
 ## Principles (names only)
 

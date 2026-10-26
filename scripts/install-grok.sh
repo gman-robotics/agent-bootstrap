@@ -101,8 +101,9 @@ fi
 python3 "${REPO_ROOT}/scripts/export_codex_skills.py" "${EXPORT_ARGS[@]}"
 echo "  ✓ Skills exported to ${SKILLS_DIR}"
 
-# export --force rmtree's each skill dir and only regenerates references/source.md.
-# Copy any other canonical reference files the exporter does not emit. Walks recursively
+# export --force rmtree's each skill dir. export_codex_skills.py regenerates SKILL.md,
+# references/source.md, and copies every other file under skills/<name>/references/.
+# This loop re-copies the same canonical reference tree (idempotent backfill). Walks recursively
 # (not a one-level glob) so a nested vendor subtree like
 # skills/security-audit/references/cloudflare/** round-trips too (GMA-56 Blocker 2) —
 # a plain `[[ -f "$ref" ]]` one-level loop silently skips directories entirely.

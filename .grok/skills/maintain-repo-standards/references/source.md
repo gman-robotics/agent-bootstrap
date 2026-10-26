@@ -1,7 +1,7 @@
 ---
 name: maintain-repo-standards
 description: "Trigger-only drift pass for a project-local standards-<repo> skill and GitHub templates. At most one PR per run; only standards paths and templates; never product code. Outcome clean, changed, or blocked."
-version: 1.0.1
+version: 1.0.2
 ---
 
 # maintain-repo-standards
@@ -61,7 +61,7 @@ Product regressions or broken workflows discovered during the pass → record in
 
 5. **Ship or stop.**
    - **clean** / **blocked** — no PR; report outcome.
-   - **changed** — one PR, standards + templates only; PR body uses the repo's header order (`Tier:`, `Models:`, `Linear:`, `Summary:`, `Gates:`, then evidence).
+   - **changed** — one PR, standards + templates only; PR body uses the repo's header order (`Tier:`, `Models:`, `Linear:` must be `https://linear.app/...` or `N/A` — never a store or box path, `Summary:`, `Gates:`, then evidence).
 
 Keep run notes in scratch space; do not commit interview logs.
 

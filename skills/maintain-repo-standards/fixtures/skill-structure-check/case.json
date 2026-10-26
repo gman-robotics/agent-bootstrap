@@ -16,7 +16,8 @@
       "encode-lessons-in-structure",
       "No scheduled routine",
       "format-lint",
-      "advisory"
+      "advisory",
+      "linear.app"
     ],
     "cwd": "."
   },
