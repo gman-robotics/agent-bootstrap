@@ -164,17 +164,17 @@ Poll build until done:
 while pgrep -f "<build-process-name>" > /dev/null 2>&1; do sleep 5; done && tail -20 /tmp/build.log
 ```
 
-### Step 3.5: ub-mode quality gates (before APPROVE recommendation)
+### Step 3.5: ub-mode quality gates (advisory report)
 
 When tests passed (or were skipped with reason) and the changed code is in a language supported by [unclebob/crapper](https://github.com/unclebob/crapper) (Clojure, Java, Go, TypeScript/JS, Rust, Python):
 
 1. Load `skills/ub-mode/SKILL.md` phase 2 and `skills/ub-mode/references/gates-by-language.md`.
-2. After checkout, run the gate block on the PR scope (prefer `--changed`): crapper `--threshold 10`, dryer `--threshold 0.8`, mutator.
-3. **crapper**: worst function CRAP ≤ 10 (`--threshold 10` fails only when worst &gt; 10). **dryer**: read `.metrics/dry.edn` after the run; any `:candidates` entry with `:score` ≥ 0.8 blocks APPROVE (dryer exits `0` even when pairs meet the threshold). **mutator**: exit `0`.
-4. Put command, exit code, snapshot paths, and dry.edn pass/fail in `build`/`tests` summary fields or `quality_findings` when a gate fails.
-5. **Do not** set `recommendation` to **APPROVE** if a gate failed. Skip only when the tool is missing or the language is unsupported — state that in the summary.
+2. After checkout, run the advisory gate block on the PR scope (prefer `--changed`): crapper `--threshold 10`; `rm -f .metrics/dry.edn` then dryer `--threshold 0.8`; mutator.
+3. **Report** measured results: **crapper** worst CRAP ≤ 10 or not; **dryer** candidates ≥ 0.8 from a fresh `.metrics/dry.edn` (GMA-411: missing file after empty `--changed` = no selection/skipped); **mutator** exit `0` / `2` / `3` (survivors).
+4. Put commands, exits, and snapshot paths in the summary or `quality_findings` as **informational** findings. Gate debt **does not** change **APPROVE** vs **REQUEST_CHANGES** in advisory mode and **does not** count as a review round.
+5. Skip only when the tool is missing or the language is unsupported — state that on the PR **`Gates:`** line.
 
-Docs-only or hub-Markdown PRs: skip gates; say "ub-mode gates N/A".
+Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`.
 
 ### Step 4: Parallel Analysis
 

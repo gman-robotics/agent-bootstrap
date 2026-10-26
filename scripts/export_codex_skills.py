@@ -966,15 +966,15 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
     "ub-mode": SkillConfig(
         description=(
             "Use when writing or changing code under the reduced Make it Work, Make it Right, "
-            "and Practice loop. Run crapper, dryer, and mutator before APPROVE when those tools "
-            "exist for the project language."
+            "and Practice loop. Report advisory crapper, dryer, and mutator results; gates do not "
+            "block APPROVE until blocking mode is approved."
         ),
-        short_description="Reduced principles and quality gates",
-        trigger_summary="Triggers on /ub-mode or before APPROVE in plan-code-review, expert-pr-review, or lfg.",
+        short_description="Reduced principles and advisory gates",
+        trigger_summary="Triggers on /ub-mode or advisory gate report in plan-code-review, expert-pr-review, or lfg.",
         quick_start=(
             "Read `references/source.md` and `references/gates-by-language.md` before acting.",
-            "Phase 1: write-tests and pstack-principles by name. Phase 2: gate block. Phase 3: log and commits.",
-            "Do not APPROVE while a gate failed; record skip reasons when tools are missing.",
+            "Phase 1: write-tests and pstack-principles by name. Phase 2: advisory gate report. Phase 3: log and commits.",
+            "Put results on the PR Gates line; gate findings do not block APPROVE in advisory mode.",
         ),
     ),
 }
