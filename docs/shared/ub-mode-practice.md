@@ -49,7 +49,9 @@ Before ub-gates can run in CI or locally:
 | **Explicit scope paths** | Upstream `--changed` uses **`git status`** (uncommitted adds/edits), not the PR diff. For committed branches and CI, pass the merge-base file list (see below). Do not claim “git diff selection” for `--changed`. |
 | **crapper, dryer, mutator on PATH** | Or project-root `./crapper` wrappers; **mutator** expects **crapper** beside it per upstream README |
 
-Hub CI: workflow job **`ub-gates`** runs `bash scripts/run_ub_gates_ci.sh` on every **`push`** and **`pull_request`**. The script writes `.metrics/ub-gates-outcome.txt` and a GitHub step summary (plus **`::warning`** when tools are missing). **`skipped_tools_missing`** exits **0** with **`gates_ran=0`** (visible warn, not a pass). Installing unclebob tools on the runner is a **follow-up ticket** — not in this hub PR. Advisory mode still allows **`ran_with_findings`** to exit 0.
+Hub CI: workflow job **`ub-gates`** runs `bash scripts/run_ub_gates_ci.sh` on every **`push`** and **`pull_request`** with **`fetch-depth: 0`** so merge-base scope resolves. The script writes `.metrics/ub-gates-outcome.txt` and a GitHub step summary (plus **`::warning`** when tools are missing). **`skipped_tools_missing`** exits **0** with **`gates_ran=0`** (visible warn, not a pass). Installing unclebob tools on the runner is a **follow-up ticket** — not in this hub PR. Advisory mode still allows **`ran_with_findings`** to exit 0.
+
+The **`verify-hub`** job uses default checkout (**depth 1**) and runs `verify-hub-ci` (doctor, drives, optional local `run_ub_gates_report.sh`). **Reviewers confirm ub-mode gates from the `ub-gates` job at head SHA**, not from `verify-hub` (shallow checkout may skip or skew merge-base scope).
 
 ## Scope file list (committed diff)
 

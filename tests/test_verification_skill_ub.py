@@ -36,6 +36,8 @@ class VerificationSkillUbTests(unittest.TestCase):
         report = (REPO_ROOT / "scripts" / "run_ub_gates_report.sh").read_text(encoding="utf-8")
         self.assertIn("UB_GATES_ADVISORY=1", report)
         self.assertIn("run_ub_gates_ci.sh", report)
+        self.assertNotIn("exec bash", report)
+        self.assertIn("exit 0", report)
 
 
 if __name__ == "__main__":

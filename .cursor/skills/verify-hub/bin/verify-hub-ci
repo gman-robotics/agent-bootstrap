@@ -23,7 +23,7 @@ else
 fi
 
 # Advisory ub gates (report-only; merge-base scope via hub script).
-bash scripts/run_ub_gates_report.sh || true
+bash scripts/run_ub_gates_report.sh
 if [[ -f .metrics/ub-gates-outcome.txt ]]; then
   cp .metrics/ub-gates-outcome.txt "${VERIFY_HUB_ARTIFACTS_DIR}/ub-gates-outcome.txt"
 fi

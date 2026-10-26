@@ -7,12 +7,15 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "${REPO_ROOT}"
 
-# --- Coverage (language-specific; required for crapper/mutator when tools exist) ---
-# Python example (install coverage or pytest-cov in dev deps):
-#   python3 -m coverage run -m pytest
-#   python3 -m coverage report -m || true
-# Go: go test ./... -coverprofile=coverage.out
-# Node: vitest/jest with --coverage per gates-by-language.md
+# --- Coverage (customize for your stack; required for crapper/mutator when tools exist) ---
+# Python example below runs when `coverage` is installed. Non-Python repos: replace this
+# entire block (see skills/ub-mode/references/gates-by-language.md) — do not ship comments only.
+if python3 -m coverage --help >/dev/null 2>&1 && [[ -d tests ]]; then
+  python3 -m coverage run -m unittest discover -s tests
+  python3 -m coverage report -m || true
+else
+  echo "verify-ub-gates: PLACEHOLDER — install stack coverage (e.g. pytest-cov, JaCoCo, go -coverprofile) before unclebob gates"
+fi
 
 UB_OUT="${VERIFY_UB_OUTCOME_FILE:-.metrics/verify-ub-outcome.txt}"
 export UB_GATES_OUTCOME_FILE="${UB_OUT}"
@@ -21,9 +24,6 @@ export UB_GATES_BASE_REF="${VERIFY_UB_BASE_REF:-origin/main}"
 
 if [[ -f "${REPO_ROOT}/scripts/run_ub_gates_report.sh" ]]; then
   bash "${REPO_ROOT}/scripts/run_ub_gates_report.sh"
-elif [[ -f "${REPO_ROOT}/scripts/run_ub_gates_ci.sh" ]]; then
-  export UB_GATES_ADVISORY=1
-  bash "${REPO_ROOT}/scripts/run_ub_gates_ci.sh"
 else
   mkdir -p "$(dirname "${UB_OUT}")"
   printf 'outcome=skipped_tools_missing\n' >"${UB_OUT}"
