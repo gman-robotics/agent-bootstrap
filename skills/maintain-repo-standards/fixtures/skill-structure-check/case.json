@@ -22,7 +22,8 @@
       "Pass bar",
       "self-check",
       "blank_issues_enabled",
-      "under each"
+      "hub-pull-request-template.md",
+      "Poteto"
     ],
     "cwd": "."
   },

@@ -23,12 +23,13 @@ Compose skills that already exist. Do not reimplement them. The pipeline stops o
 3. Simplify the fresh diff before review. Behavior stays. This is not `codebase-simplification-audit`.
 3.4. Pre-PR dev flow: `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (`rm -f .metrics/dry.edn` first) per `docs/shared/ub-mode-practice.md`; **fix** what they flag before the PR.
 3.5. `mutator` on merge-base **scope** — **laptop or CI only**; never in a cloud agent. Push so CI **`ub-gates`** runs the same scope; report results on the PR **`Gates:`** line in step 8. `skipped_tools_missing` (`gates_ran=0`) is not a gate pass; **`tool_error`** is not `ran_clean` (hand back); red/missing for other failures → implementer; not a review round. Advisory until Tom approves blocking mode.
-3.6. If the target project has `standards-<repo>/SKILL.md`, align the PR description with it (`Tier:`, `Models:`, `Linear:`, `Summary:`, `Gates:`) before review (`docs/shared/repo-standards-practice.md`).
+3.6. If the target project has `standards-<repo>/SKILL.md`, align the PR description with it and the hub template (`docs/shared/repo-standards-practice.md`, `docs/shared/hub-pull-request-template.md`).
+3.7. Before review on non-docs PRs, run `skills/blast-radius/SKILL.md` on the merge-base changed surface (or spawn a worker with that skill); record top risks in the PR body or review handback.
 4. Review against the plan with `expert-pr-review` (reviewer confirms **`ub-gates`** at head SHA only — no local gate re-run). A finding that invalidates a settled decision stops the pipeline.
 5. Apply fixes. Put unapplied findings in the PR body.
 6. Call `compound`. Honor its skip rule.
 7. Run the stack's check (`black-box-agent-qa` for a skill, the project's tests otherwise).
-8. Commit, push, open a PR. PR body must follow hub header order (`Tier:`, `Models:`, `Linear:`, `Summary:`, **`Gates:`**, then evidence — see `docs/shared/ub-mode-practice.md`). Watch CI with `pr-shepherd`.
+8. Commit, push, open a PR. PR body must follow `docs/shared/hub-pull-request-template.md` (header order + Poteto section — see `docs/shared/ub-mode-practice.md`). Watch CI with `pr-shepherd`.
 9. Do not merge, force-push, or delete data. Report DONE only when CI has decided and residuals are in the PR body.
 
 ## Companions

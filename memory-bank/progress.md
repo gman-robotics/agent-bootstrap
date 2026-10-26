@@ -1,5 +1,11 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-10-26 — GMA-410 agent harness files + hub PR template (PR #47)
+
+**Task**: Branch `dex/gma-410-agent-files` from `main` `9ac8938` — `sync_agent_harness_instructions.py`, canonical `docs/shared/hub-pull-request-template.md`, maintain/create-verification-skill wiring, blast-radius in review skills, advisory PR-body CI.
+
+**Verification**: unittest 178/178; live-gate create-verification-skill, maintain-verification-skill, create-repo-standards, maintain-repo-standards, lfg, technical-writing, split-branch-for-pr; `.grok/skills` re-exported.
+
 ## 2026-10-26 — GMA-410 verify-skill ub gates (PR #46)
 
 **Task**: Branch `dex/gma-410-verify-ub` from `main` `741117ce` — verify-ci ub template, `tool_error` outcome, #45 leftovers.

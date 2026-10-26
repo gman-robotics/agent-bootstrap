@@ -15,7 +15,8 @@
       "standards-<repo>/SKILL.md",
       "Pre-PR dev flow",
       "ub-gates",
-      "Linear:",
+      "hub-pull-request-template.md",
+      "blast-radius",
       "report results on the PR **`Gates:`** line",
       "not a review round",
       "never in a cloud agent"

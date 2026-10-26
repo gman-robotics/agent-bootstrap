@@ -1,4 +1,7 @@
 ## Current Focus
+**GMA-410 agent harness files** (2026-10-26, branch `dex/gma-410-agent-files`, PR #47): harness sync script + hub PR template + blast-radius in review; advisory PR-body CI.
+
+## Prior Focus
 **GMA-410 verify-skill ub follow-up** (2026-10-26, branch `dex/gma-410-verify-ub`, PR #46): ub gates in create/maintain-verification-skill + `tool_error` outcome; #45 companion/outcome fixes.
 
 ## Prior Focus

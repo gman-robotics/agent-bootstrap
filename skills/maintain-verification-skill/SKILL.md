@@ -3,7 +3,7 @@ name: maintain-verification-skill
 description: >-
   Periodic pass that keeps a project's verification skill and feature map
   honest. Use for "audit the verify skill".
-version: 1.1.0
+version: 1.2.0
 ---
 
 # maintain-verification-skill
@@ -48,7 +48,7 @@ Pick one, and say which:
 
 ## Edit scope
 
-Only edit the verification skill's own directory (its SKILL.md, features/, and any harness scripts it owns). Never edit product code during a run: a behavior the map describes that the app no longer does is either doc drift (fix the map) or a product regression (report it, don't paper over it in docs).
+Only edit the verification skill's own directory (its SKILL.md, features/, and any harness scripts it owns). **Exception (step 1c only):** you may run `sync_agent_harness_instructions.py --restore` to repair delimited blocks in these four harness files only — `AGENTS.md`, `CLAUDE.md`, `.grok/README.md`, `.cursor/rules/<repo-id>-harness.mdc` — without editing other paths. Never edit product code during a run: a behavior the map describes that the app no longer does is either doc drift (fix the map) or a product regression (report it, don't paper over it in docs).
 
 ## Pass
 
@@ -57,6 +57,26 @@ Only edit the verification skill's own directory (its SKILL.md, features/, and a
 1. **Index hygiene.** Read the feature map README and glob its sibling files. Fix missing, extra, duplicate, or dead entries. Lightweight; no generated inventory.
 
 1b. **ub-mode verify-ci hygiene (GMA-410).** Read `bin/verify-*-ci` (and any `verify-ub-gates` helper). Confirm: coverage step exists for the stack; merge-base scope file list (not `--changed` for PR scope); `crapper --threshold 10` and `dryer --threshold 0.8` with `rm -f .metrics/dry.edn` first; mutator skipped on cloud agents but documented for laptop/CI; outcome file uses hub names (`ran_clean`, `ran_with_findings`, `skipped_no_scope`, `skipped_tools_missing`, `tool_error`); verify-ci stays report-only (advisory, does not fail on gate debt). Drift → fix under edit scope or `changed` outcome.
+
+1c. **Agent harness workflow blocks (GMA-410).** From the project repo root, verify harness instructions are still present:
+
+```bash
+python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
+  --repo-root . \
+  --repo-id <repo-id> \
+  --verify
+```
+
+When `--verify` fails, restore **only** the paths reported missing (other harness files stay byte-identical):
+
+```bash
+python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
+  --repo-root . \
+  --repo-id <repo-id> \
+  --restore
+```
+
+Also confirm `.github/PULL_REQUEST_TEMPLATE.md` matches `docs/shared/hub-pull-request-template.md` (or the pinned hub SHA copy) when the repo was bootstrapped from agent-bootstrap.
 
 2. **Source wave.** One read-only subagent per feature file, launched concurrently. Each explains "how does this user-facing feature work?" from source, flags likely doc drift with citations, and returns one concise live-verification recipe. Children never drive the app and never edit files. Return shape: feature summary / source entry points / likely drift or none / one recipe.
 

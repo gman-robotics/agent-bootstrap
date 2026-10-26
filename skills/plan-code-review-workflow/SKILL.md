@@ -83,11 +83,12 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 
 **Exit Criteria**: Pre-PR dev flow done or skipped with documented reason; CI ub-gates triggered. Then hand off to QA.
 
-**Optional — project standards:** When the active manifest project has `standards-<repo>/SKILL.md` in its harness skill folders, follow its PR and planning formats before QA recommends APPROVE (`docs/shared/repo-standards-practice.md`). Compatible with advisory ub-mode.
+**Optional — project standards:** When the active manifest project has `standards-<repo>/SKILL.md` in its harness skill folders, follow its PR and planning formats before QA recommends APPROVE (`docs/shared/repo-standards-practice.md`, `docs/shared/hub-pull-request-template.md`). Compatible with advisory ub-mode.
 
 ### Phase 3: REVIEW (QA Critical Reviewer Role)
 1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review/SKILL.md` if this results in a PR.
 2. **Ub-gates at head SHA** — Read the **`ub-gates`** job summary / `.metrics/ub-gates-outcome.txt` (`outcome=`, `gates_ran=`); do **not** re-run tools. `ran_clean` / `ran_with_findings` = tools ran (advisory findings OK for APPROVE). **`tool_error`** = tool failure, not `ran_clean` — hand back to implementer; **not** a review round. `skipped_tools_missing` (`gates_ran=0`) is not gates ran; red/missing check for other infrastructure failures → implementer; **not** a review round.
+2.5. **Blast radius (non-docs PRs)** — Load `skills/blast-radius/SKILL.md` and analyze the PR's changed paths before recommending APPROVE. Summarize what could break elsewhere; cite at least one prove-it-works check when risk is non-obvious.
 3. **Perform Critical Review**
    - If GitHub PR: Follow **exact** 8-step flow in expert-pr-review.md (gather context in parallel, resolve threads, build/test, security checklist, summarize).
    - If internal changes (no PR yet): Use the same rigor — checklist for correctness, style, tests, security, performance, accessibility (if UI), breaking changes.
