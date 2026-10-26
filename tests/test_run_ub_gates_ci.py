@@ -17,9 +17,11 @@ class RunUbGatesCiTests(unittest.TestCase):
         run_env = os.environ.copy()
         run_env["UB_GATES_OUTCOME_FILE"] = str(repo / ".metrics" / "ub-gates-outcome.txt")
         run_env.pop("GITHUB_STEP_SUMMARY", None)
-        run_env.pop("CURSOR_AGENT", None)
+        preserve_cursor_agent = env is not None and "CURSOR_AGENT" in env
         if env:
             run_env.update(env)
+        if not preserve_cursor_agent:
+            run_env.pop("CURSOR_AGENT", None)
         return subprocess.run(
             ["/bin/bash", str(SCRIPT)],
             cwd=repo,
