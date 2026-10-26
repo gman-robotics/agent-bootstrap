@@ -5,7 +5,7 @@
     "command": [
       "python3",
       "-c",
-      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nref = Path(\"skills/%s/references/source.md\" % name)\nassert ref.is_file(), \"missing references/source.md\"\nref.read_text(encoding=\"utf-8\")\nassert \"Drift checklist\" in text, \"drift checklist heading\"\nassert \"issue_templates:\" in text and \"no ignored\" in text.lower() or \"Do **not**\" in text and \"issue_templates\" in text, \"config.yml rule\"\nassert \"T0\" in text and \"T3\" in text, \"tier table in checklist\"\nassert \"pipefail\" in text, \"pre-push pipefail\"\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, marker\nfor p in phrases:\n    assert p in text, \"missing: \" + p\nprint(\"OK: \" + name)",
       "maintain-repo-standards",
       "**clean**",
       "**changed**",
@@ -17,7 +17,12 @@
       "No scheduled routine",
       "format-lint",
       "advisory",
-      "linear.app"
+      "linear.app",
+      "VERIFY_SKIP",
+      "Pass bar",
+      "self-check",
+      "blank_issues_enabled",
+      "under each"
     ],
     "cwd": "."
   },
