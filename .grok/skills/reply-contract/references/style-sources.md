@@ -1,21 +1,33 @@
 # Style sources (reply-contract)
 
-House style wins. These guides change **voice and marks**, not the six required slots, the show-me pairing, or Photon/iMessage bans.
+House slots win. Voice is ASD-STE100 unless the information cannot be expressed any other way. These guides do not change the six required slots, the show-me pairing, or Photon/iMessage bans.
 
-Applied 2026-08-18 from Google’s developer documentation style guide plus the two “other editorial resources” it names (Apple, Red Hat).
+Applied 2026-10-03: ASD-STE100 is the writing standard. Google, Apple, and Red Hat apply only where STE has no rule.
 
 ## Hierarchy
 
 1. This skill + channel constraints + the project in front of the human
-2. [Google developer documentation style guide](https://developers.google.com/style)
-3. [Apple Style Guide](https://support.apple.com/guide/applestyleguide/welcome/web) (June 2026) and [Red Hat supplementary style guide](https://redhat-documentation.github.io/supplementary-style-guide/)
-4. Merriam-Webster (spelling), Chicago (nontechnical)
+2. ASD-STE100 (Simplified Technical English). Required. Exception only when the fact cannot be said with an approved word or a permitted technical name.
+3. [Google developer documentation style guide](https://developers.google.com/style)
+4. [Apple Style Guide](https://support.apple.com/guide/applestyleguide/welcome/web) (June 2026) and [Red Hat supplementary style guide](https://redhat-documentation.github.io/supplementary-style-guide/)
+5. Merriam-Webster (spelling), Chicago (nontechnical)
 
 Google lists Apple and Red Hat as other resources, not peers. Red Hat sits under IBM Style for RH product docs — do not import IBM.
 
 Break a rule sooner than write something barbarous. Stay consistent inside one reply.
 
+## ASD-STE100
+
+Use the licensed dictionary as the word check. Do not copy the dictionary into this repo.
+
+- One topic per sentence. Procedural max 20 words. Descriptive max 25 words.
+- Imperative procedures. Active voice. Write the condition before the action.
+- Approved word when one exists. Technical name only when no approved word keeps the meaning. Define that name once, then reuse it.
+- Noun cluster of 3 nouns maximum. No slang. No synonym for an approved word.
+- Different words must not mean the same thing in one reply.
+
 ## Imported (behavior)
+
 
 | Rule | Source |
 |------|--------|

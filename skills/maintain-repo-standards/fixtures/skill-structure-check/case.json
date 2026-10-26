@@ -13,7 +13,10 @@
       "never product code",
       "At most one PR opened when outcome is **changed**",
       "create-repo-standards",
-      "encode-lessons-in-structure"
+      "encode-lessons-in-structure",
+      "No scheduled routine",
+      "format-lint",
+      "advisory"
     ],
     "cwd": "."
   },

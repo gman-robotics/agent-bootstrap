@@ -91,6 +91,20 @@ class ExportCodexSkillsTests(unittest.TestCase):
             self.assertIn("## Step 1: Orient", source_text)
             self.assertNotIn("Last updated:", source_text.splitlines()[-1])
 
+    def test_export_copies_canonical_reference_files_from_skills_tree(self) -> None:
+        """skills/<name>/references/* (e.g. ub-mode/gates-by-language.md) must land in export output."""
+        canonical = SOURCE_DIR / "ub-mode" / "references" / "gates-by-language.md"
+        self.assertTrue(canonical.is_file())
+        expected = canonical.read_bytes()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            export_skills(SOURCE_DIR, output_dir)
+
+            exported = output_dir / "ub-mode" / "references" / "gates-by-language.md"
+            self.assertTrue(exported.is_file(), "canonical references/ file missing from export")
+            self.assertEqual(exported.read_bytes(), expected)
+
     def test_force_reexport_preserves_hand_added_reference_files(self) -> None:
         """REPEAT-lock mechanical check.
 

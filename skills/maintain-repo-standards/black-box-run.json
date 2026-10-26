@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T05:45:56.971379+00:00",
+  "captured_at": "2026-10-26T06:05:31.088434+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure check for skills/maintain-repo-standards/SKILL.md.",
@@ -23,12 +23,15 @@
       "never product code",
       "At most one PR opened when outcome is **changed**",
       "create-repo-standards",
-      "encode-lessons-in-structure"
+      "encode-lessons-in-structure",
+      "No scheduled routine",
+      "format-lint",
+      "advisory"
     ],
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "e678b3af00420e6db3aa494a378796c8fb7aee94c0ca9fdb4c0664632fd74897",
+  "skill_sha256": "ae1249268bfed9a1db1887d1220968a50e1a1cf7171e1cc76cdf22e03fde59e0",
   "stderr_tail": "",
   "stdout_tail": "OK: maintain-repo-standards\n",
   "verdict": "pass"

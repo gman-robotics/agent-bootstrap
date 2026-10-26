@@ -667,11 +667,11 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
     ),
     "maintain-repo-standards": SkillConfig(
         description=(
-            "Periodic drift pass for standards-<repo> and GitHub templates; at most one PR; "
+            "Trigger-only drift pass for standards-<repo> and GitHub templates; at most one PR; "
             "never product code."
         ),
         short_description="Maintain repo standards",
-        trigger_summary="Triggers on /maintain-repo-standards or standards drift audit.",
+        trigger_summary="Triggers on /maintain-repo-standards or an explicit standards drift audit.",
         quick_start=(
             "Read `references/source.md` before acting.",
             "Re-interview CI and templates vs standards skill; fix drift in scope only.",
@@ -1006,23 +1006,42 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
 }
 
 
-def collect_preserved_files(skill_dir: Path) -> dict[Path, bytes]:
-    """Return every file under skill_dir the exporter does not itself generate.
+def collect_source_reference_files(skill_name: str, source_dir: Path) -> dict[Path, bytes]:
+    """Copy every file under skills/<name>/references/ except generated source.md."""
+    ref_dir = source_dir / skill_name / "references"
+    if not ref_dir.is_dir():
+        return {}
+    files: dict[Path, bytes] = {}
+    for path in ref_dir.rglob("*"):
+        if path.is_file():
+            rel = path.relative_to(ref_dir)
+            if rel == Path("source.md"):
+                continue
+            files[rel] = path.read_bytes()
+    return files
 
-    `SKILL.md` and `references/source.md` are fully regenerated on every export; anything
-    else (a hand-added reference file, for example) must survive a `force=True` re-export
-    byte-for-byte. See the REPEAT-lock fixture at
+
+def collect_preserved_files(
+    skill_dir: Path, source_reference_files: dict[Path, bytes]
+) -> dict[Path, bytes]:
+    """Return output-only files that must survive `force=True` re-export.
+
+    Regenerated every export: `SKILL.md`, `references/source.md`, and every file copied
+    from `skills/<name>/references/`. Anything else in the previous output (for example a
+    hand-added reference only in `.grok/skills/`) is preserved byte-for-byte. See
     `skills/triage-review-feedback/fixtures/repeat-exporter-dropped-references/`.
     """
     if not skill_dir.is_dir():
         return {}
     generated = {Path("SKILL.md"), Path("references") / "source.md"}
+    from_source = {Path("references") / rel for rel in source_reference_files}
     preserved: dict[Path, bytes] = {}
     for path in skill_dir.rglob("*"):
         if path.is_file():
             rel = path.relative_to(skill_dir)
-            if rel not in generated:
-                preserved[rel] = path.read_bytes()
+            if rel in generated or rel in from_source:
+                continue
+            preserved[rel] = path.read_bytes()
     return preserved
 
 
@@ -1081,11 +1100,12 @@ def export_skills(source_dir: Path, output_dir: Path, force: bool = False) -> li
     for skill_name, source_text in source_skills.items():
         config = SKILL_CONFIGS[skill_name]
         skill_dir = output_dir / skill_name
+        source_reference_files = collect_source_reference_files(skill_name, source_dir)
         preserved_files: dict[Path, bytes] = {}
         if skill_dir.exists():
             if not force:
                 raise FileExistsError(f"{skill_dir} already exists; rerun with --force")
-            preserved_files = collect_preserved_files(skill_dir)
+            preserved_files = collect_preserved_files(skill_dir, source_reference_files)
             shutil.rmtree(skill_dir)
         (skill_dir / "references").mkdir(parents=True, exist_ok=True)
         (skill_dir / "SKILL.md").write_text(
@@ -1096,6 +1116,10 @@ def export_skills(source_dir: Path, output_dir: Path, force: bool = False) -> li
             strip_trailing_footer(source_text),
             encoding="utf-8",
         )
+        for rel_path, content in source_reference_files.items():
+            target = skill_dir / "references" / rel_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(content)
         for rel_path, content in preserved_files.items():
             target = skill_dir / rel_path
             target.parent.mkdir(parents=True, exist_ok=True)

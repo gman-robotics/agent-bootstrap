@@ -1,7 +1,7 @@
 ---
 name: ub-mode
 description: "Use when writing or changing code under the reduced Make it Work, Make it Right, and Practice loop (/ub-mode). Reports advisory quality-gate results (crapper, dryer, mutator) when those tools exist; gates do not block APPROVE until Tom approves blocking mode. Cite pstack-principles by name only; definitions live in skills/pstack-principles/SKILL.md."
-version: 1.0.2
+version: 1.0.3
 ---
 
 # ub-mode — Make it Work, Make it Right, Practice
@@ -44,6 +44,8 @@ Every change walks:
 3. **Practice** — log, context, worktrees, commits.
 
 **Advisory mode (hub default):** Run phase 2 gates when practical and **report** results in the PR body (`Gates:` line) or review handback. Gate findings **do not** block APPROVE and **do not** count as review rounds. Blocking mode starts only after Tom explicitly approves switching ub-mode to blocking gates.
+
+**Pre-PR dev loop (optional):** Before the full gate block, you may run advisory `crapper --changed --threshold 10` and `dryer --changed --threshold 0.8` only (`rm -f .metrics/dry.edn` first). See `docs/shared/ub-mode-practice.md`. `lfg` step 3.4 points here.
 
 ---
 
