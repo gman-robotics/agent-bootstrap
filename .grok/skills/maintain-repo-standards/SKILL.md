@@ -1,13 +1,13 @@
 ---
 name: maintain-repo-standards
-description: Periodic drift pass for standards-<repo> and GitHub templates; at most one PR; never product code.
+description: Trigger-only drift pass for standards-<repo> and GitHub templates; at most one PR; never product code.
 metadata:
   short-description: Maintain repo standards
 ---
 
 # maintain-repo-standards
 
-Triggers on /maintain-repo-standards or standards drift audit.
+Triggers on /maintain-repo-standards or an explicit standards drift audit.
 
 ## Quick Start
 

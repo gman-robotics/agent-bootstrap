@@ -17,18 +17,33 @@ Use **`/ub-mode`** or load `skills/ub-mode/SKILL.md` when you want the reduced l
 
 ## PR body header (hub PRs)
 
-When the hub defines PR body fields, include these lines at the top of the description (adapt values per PR):
+When the hub defines PR body fields, use this **order** at the top of the description (adapt values per PR):
 
 ```text
 Tier: T0
 Models: composer-2.5
-sketch link: N/A
+Linear: https://linear.app/<workspace>/issue/<ID> or N/A
+Summary: one short paragraph
 Gates: crapper/dryer/mutator advisory results or skip reason
 ```
+
+Then add verification evidence (commands + exit codes) and any checklist aligned with CI.
+
+**Linear line:** Must be an `https://linear.app/...` issue URL, or `N/A`. Never use a Cursor store path, box path, or sketch link.
 
 For hub Markdown-only PRs, use `Gates: N/A (hub Markdown)`.
 
 The same stanza appears in `skills/technical-writing/SKILL.md`, `skills/lfg/SKILL.md`, `skills/multi-harness-coordination/SKILL.md`, `skills/split-branch-for-pr/SKILL.md`, and `skills/adversarial-coordination-workflow/SKILL.md`.
+
+## Pre-PR dev loop (optional)
+
+Before the full phase 2 gate block (or before opening a PR in `lfg`), you may run a **quick advisory** subset when crapper and dryer are on PATH:
+
+1. `rm -f .metrics/dry.edn`
+2. `crapper --changed --threshold 10`
+3. `dryer --changed --threshold 0.8`
+
+Fix what you choose; record measured results on the PR **`Gates:`** line. This does not replace mutator when you run the full ub-mode phase 2 block.
 
 ## How tools pair with principles
 

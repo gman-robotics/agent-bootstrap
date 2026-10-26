@@ -1,7 +1,7 @@
 ---
 name: create-repo-standards
 description: "Interview a repository and generate a project-local standards-<repo> skill plus GitHub PR/issue templates so agents follow one PR format, issue format, planning rules, implementation workflow, and verification pointers. Use for /create-repo-standards on a manifest project. Do not run on agent-bootstrap hub-only Markdown unless explicitly asked."
-version: 1.0.0
+version: 1.0.1
 ---
 
 # create-repo-standards
@@ -21,7 +21,7 @@ Encode how this repository expects work to be planned, implemented, verified, an
 
 | Skill | Role here |
 | --- | --- |
-| `maintain-repo-standards` | Periodic drift pass after generation |
+| `maintain-repo-standards` | Trigger-only drift pass after generation |
 | `create-verification-skill` | Optional input when `verify-<app>` already exists |
 | `plan-code-review-workflow` | Planning section points here when appropriate |
 | `pstack-principles` | encode-lessons-in-structure, prove-it-works, sequence-verifiable-units (cite by name only) |
@@ -57,20 +57,20 @@ Use `standards-<repo>` where `<repo>` is the manifest `name` field or the reposi
 
 ## 3. Generate the project-local skill
 
-Write the **same** `SKILL.md` into each harness skill folder the project uses (create missing dirs):
+Write the **same** `SKILL.md` into each harness skill folder the project uses (create missing dirs). **Skip** any folder that already loads hub skills via symlinks into that harness path (for example `.cursor/skills/write-tests` → agent-bootstrap `skills/write-tests`); record skipped paths in the handback with a one-line reason — do not duplicate copies there.
 
 | Harness | Typical path (project root) |
 | --- | --- |
 | Cursor | `.cursor/skills/standards-<repo>/SKILL.md` |
 | Claude Code | `.claude/skills/standards-<repo>/SKILL.md` |
 | Grok | `.grok/skills/standards-<repo>/SKILL.md` |
-| Cline / generic | `.cursor/skills/...` or path named in project `AGENTS.md` |
+| Cline / Roo | On-disk path named in `.clinerules` or `AGENTS.md` (Cline does not load `.cursor/skills/`) |
 
 YAML frontmatter: `name: standards-<repo>`, `description:` one line naming the repo and when to load it.
 
 Required sections (all concrete — **encode-lessons-in-structure**):
 
-1. **PR format** — Summary; header lines `Tier:`, `Models:`, `sketch link:` (or Linear/issue link), **`Gates:`** (crapper/dryer/mutator advisory results, `N/A (hub Markdown)`, or project verify command); verification evidence (commands + exit codes); checklist aligned with CI.
+1. **PR format** — In order: `Tier:`, `Models:`, `Linear:` (must be `https://linear.app/...` issue URL or `N/A` — never a Cursor store path, box path, or sketch link); `Summary:`; `Gates:` (crapper/dryer/mutator advisory results, `N/A (hub Markdown)`, or project verify command); then verification evidence (commands + exit codes) and checklist aligned with CI.
 2. **Issue format** — Problem; acceptance criteria; non-goals; verification plan (how a reviewer knows it is done).
 3. **Planning** — When to use `architect` vs `plan-code-review-workflow`; what a plan must contain (files, risks, named checks per **sequence-verifiable-units**).
 4. **Implementation** — TDD order (`write-tests`); ub-mode Make it Right **advisory** gates when unclebob tools exist (GMA-411: `rm -f .metrics/dry.edn` before dryer); commit message style.
@@ -101,7 +101,7 @@ This proof is documentation completeness, not a full product test run (**prove-i
 
 ## 6. Offer maintenance
 
-Point at `maintain-repo-standards` for quarterly or post-milestone drift passes.
+Point at `maintain-repo-standards` when CI, templates, or verify skills drift (trigger only — no scheduled routine).
 
 ## Provenance
 

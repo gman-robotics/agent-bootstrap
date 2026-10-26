@@ -152,7 +152,7 @@ For review semantics, align with `expert-pr-review.md` (read-only on the branch)
 
 **Rules:**
 - PR title and body reflect the **final** implemented state (cite test evidence, link issue).
-- Hub PR bodies include `Tier:`, `Models:`, `sketch link:`, and **`Gates:`** (`docs/shared/ub-mode-practice.md`).
+- Hub PR bodies use `Tier:`, `Models:`, `Linear:`, `Summary:`, **`Gates:`**, then evidence (`docs/shared/ub-mode-practice.md`).
 - Push branch, then `gh pr create` (or equivalent).
 - User confirmation before push if not already authorized.
 

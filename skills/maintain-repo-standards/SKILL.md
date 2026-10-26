@@ -1,7 +1,7 @@
 ---
 name: maintain-repo-standards
-description: "Periodic drift pass for a project-local standards-<repo> skill and GitHub templates. At most one PR per run; only standards paths and templates; never product code. Outcome clean, changed, or blocked."
-version: 1.0.0
+description: "Trigger-only drift pass for a project-local standards-<repo> skill and GitHub templates. At most one PR per run; only standards paths and templates; never product code. Outcome clean, changed, or blocked."
+version: 1.0.1
 ---
 
 # maintain-repo-standards
@@ -10,7 +10,7 @@ version: 1.0.0
 Keep `standards-<repo>` and PR/issue templates aligned with how the repository actually works — CI renames, new verify skills, ub-mode adoption, template drift.
 
 **Trigger**
-`/maintain-repo-standards`, "audit repo standards", or scheduled upkeep after `create-repo-standards`.
+`/maintain-repo-standards`, "audit repo standards", or after `create-repo-standards` when the user or workflow explicitly asks for a drift pass. **No scheduled routine** — this skill runs on a trigger only.
 
 **Do not use for**
 - No standards skill yet → `create-repo-standards`
@@ -53,13 +53,15 @@ Product regressions or broken workflows discovered during the pass → record in
 
 1. **Re-interview deltas.** Compare skill + templates against current CI workflows, required checks, `AGENTS.md`, recent merged PRs, and `verify-*` / ub-mode mentions. List drift with file:line or workflow name.
 
-2. **Reconcile.** Update all harness copies of the skill to stay identical. Update templates to match the skill PR/issue sections.
+2. **Format-lint vs templates (advisory).** If the repo has a PR-body format-lint workflow or script, compare its required fields to `.github/PULL_REQUEST_TEMPLATE.md` and the standards skill PR section. Report mismatches in the handback. When fields disagree, treat as drift: outcome **changed** when you can fix templates/skill text in scope, or **blocked** when CI rules are unclear or out of scope. The format check itself stays **advisory** — it does not block APPROVE on the standards PR.
 
-3. **Prove read.** Re-read the skill cold; every section still concrete (**prove-it-works**).
+3. **Reconcile.** Update all harness copies of the skill to stay identical. Update templates to match the skill PR/issue sections.
 
-4. **Ship or stop.**
+4. **Prove read.** Re-read the skill cold; every section still concrete (**prove-it-works**).
+
+5. **Ship or stop.**
    - **clean** / **blocked** — no PR; report outcome.
-   - **changed** — one PR, standards + templates only; PR body uses the repo's own header lines including **`Gates:`**.
+   - **changed** — one PR, standards + templates only; PR body uses the repo's header order (`Tier:`, `Models:`, `Linear:`, `Summary:`, `Gates:`, then evidence).
 
 Keep run notes in scratch space; do not commit interview logs.
 

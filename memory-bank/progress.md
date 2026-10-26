@@ -1,5 +1,11 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-10-26 — GMA-412 hub PR format and exporter references
+
+**Task**: Branch `dex/repo-standards-fixes` from `main` `f7fe70e0` — PR header order, Cline row, exporter copies `skills/*/references/`, repo-standards symlink skip + maintain format-lint drift, optional pre-PR crapper/dryer loop.
+
+**Verification**: `python3 -m unittest discover -s tests` — 158/158; `index_skills.py --check` live-eligible; black-box recapture on touched live skills.
+
 ## 2026-10-25 — ub-mode quality-gate practice
 
 **Task**: Add thin `ub-mode` skill from unclebob/ub-mode; wire crapper/dryer/mutator gates before APPROVE; live-gate and INDEX listing.
