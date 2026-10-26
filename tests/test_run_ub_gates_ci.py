@@ -15,6 +15,7 @@ class RunUbGatesCiTests(unittest.TestCase):
     def _run_in_repo(self, repo: Path, env: dict | None = None) -> subprocess.CompletedProcess:
         run_env = os.environ.copy()
         run_env["UB_GATES_OUTCOME_FILE"] = str(repo / ".metrics" / "ub-gates-outcome.txt")
+        run_env.pop("GITHUB_STEP_SUMMARY", None)
         if env:
             run_env.update(env)
         return subprocess.run(
@@ -25,7 +26,7 @@ class RunUbGatesCiTests(unittest.TestCase):
             text=True,
         )
 
-    def test_tools_missing_with_python_scope_is_gate_miss(self):
+    def test_tools_missing_exits_zero_with_warning_not_gate_pass(self):
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
             subprocess.run(["git", "init", "-b", "main"], cwd=repo, check=True, capture_output=True)
@@ -41,11 +42,21 @@ class RunUbGatesCiTests(unittest.TestCase):
             subprocess.run(["git", "commit", "-m", "change"], cwd=repo, check=True, capture_output=True)
             shutil.copy(SCRIPT, repo / "run_ub_gates_ci.sh")
 
-            proc = self._run_in_repo(repo, {"UB_GATES_BASE_REF": "main"})
-            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            proc = self._run_in_repo(
+                repo,
+                {
+                    "UB_GATES_BASE_REF": "main",
+                    "GITHUB_ACTIONS": "true",
+                    "PATH": "/usr/bin:/bin",
+                },
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            self.assertIn("skipped_tools_missing", proc.stdout + proc.stderr)
+            self.assertIn("::warning title=ub-gates::", proc.stdout)
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
             self.assertIn("outcome=skipped_tools_missing", outcome)
             self.assertIn("gate_miss=1", outcome)
+            self.assertIn("gates_ran=0", outcome)
 
     def test_passes_explicit_file_list_to_mock_crapper(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -103,6 +114,7 @@ exit 0
             self.assertNotIn("--changed", args)
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
             self.assertIn("outcome=ran_clean", outcome)
+            self.assertIn("gates_ran=1", outcome)
 
 
 if __name__ == "__main__":

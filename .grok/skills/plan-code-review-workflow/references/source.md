@@ -87,7 +87,7 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 
 ### Phase 3: REVIEW (QA Critical Reviewer Role)
 1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review/SKILL.md` if this results in a PR.
-2. **Ub-gates at head SHA** — Read CI **`ub-gates`** `outcome=` at the PR head SHA; do **not** re-run crapper/dryer/mutator. `skipped_tools_missing` or red check → implementer; **not** a review round.
+2. **Ub-gates at head SHA** — Read job summary / `outcome=` and `gates_ran=`; do **not** re-run tools. `skipped_tools_missing` (`gates_ran=0`) is not gates ran; red/missing for other failures → implementer; **not** a review round.
 3. **Perform Critical Review**
    - If GitHub PR: Follow **exact** 8-step flow in expert-pr-review.md (gather context in parallel, resolve threads, build/test, security checklist, summarize).
    - If internal changes (no PR yet): Use the same rigor — checklist for correctness, style, tests, security, performance, accessibility (if UI), breaking changes.

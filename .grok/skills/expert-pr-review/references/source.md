@@ -168,11 +168,12 @@ while pgrep -f "<build-process-name>" > /dev/null 2>&1; do sleep 5; done && tail
 
 When tests passed (or were skipped with reason):
 
-1. At the PR **head SHA**, read CI check **`ub-gates`** (`gh pr checks` or equivalent) **and** the job log / step summary / `outcome=` line in `.metrics/ub-gates-outcome.txt`. **Do not** run crapper, dryer, or mutator in the reviewer harness.
-2. **`outcome=ran_clean` or `outcome=ran_with_findings`:** Tools ran on the merge-base scope. Advisory findings do not block **APPROVE**; cite the PR **`Gates:`** line.
+1. At the PR **head SHA**, read the **`ub-gates`** job **step summary** and/or `.metrics/ub-gates-outcome.txt` (`outcome=`, `gates_ran=`). **Do not** run crapper, dryer, or mutator in the reviewer harness.
+2. **`gates_ran=1`** with **`outcome=ran_clean` or `outcome=ran_with_findings`:** Tools ran on the merge-base scope. Advisory findings do not block **APPROVE**; cite the PR **`Gates:`** line.
 3. **`outcome=skipped_no_scope`:** OK when the PR has no gate-relevant source files (e.g. hub Markdown).
-4. **Gate miss** — check red/missing, or `outcome=skipped_tools_missing` / `gate_miss=1`: Hand back to the implementer; **not** a review round (no **REQUEST_CHANGES** for gate misses alone).
-5. A **green** check alone does **not** prove gates ran; always read `outcome=`.
+4. **`outcome=skipped_tools_missing`** (`gates_ran=0`): CI job may be **green** with a **`::warning`** — this is **not** “gates ran”. Note in the review; hand back to the implementer for local gates or wait for the CI tool-install follow-up; **not** a review round.
+5. **Red/missing `ub-gates` check** (non-tool infrastructure failure): gate miss → implementer; **not** a review round.
+6. A **green** check alone does **not** prove gates ran; always read `gates_ran=` and `outcome=`.
 
 Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`; expect **`skipped_no_scope`** when CI ran.
 

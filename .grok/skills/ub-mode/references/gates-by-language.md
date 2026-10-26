@@ -102,7 +102,7 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Tool not installed | Record "gate skipped: &lt;tool&gt; not on PATH" on the PR `Gates:` line |
 | Project language not in the six | State plainly; do not fake a gate |
 | Baseline tests fail | Fix tests first; mutator exit `2` means baseline failure |
-| Advisory mode | Implementer must **fix** crapper/dryer flags before PR; CI reports findings. Advisory findings do not block APPROVE until blocking mode; **`skipped_tools_missing`** is a gate miss |
+| Advisory mode | Implementer must **fix** crapper/dryer flags before PR; CI reports findings. Advisory findings do not block APPROVE until blocking mode; **`skipped_tools_missing`** exits 0 with warning — **`gates_ran=0`**, not a pass |
 
 ## uml-viewer (optional)
 

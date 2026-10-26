@@ -15,29 +15,47 @@ write_outcome() {
   {
     printf 'outcome=%s\n' "$1"
     printf 'gate_miss=%s\n' "${GATE_MISS:-0}"
+    printf 'gates_ran=%s\n' "${GATES_RAN:-0}"
     printf 'advisory=%s\n' "${ADVISORY}"
-    [[ -n "${SCOPE_COUNT:-}" ]] && printf 'scope_files=%s\n' "${SCOPE_COUNT}"
-    [[ -n "${CRAPPER_RC:-}" ]] && printf 'crapper_exit=%s\n' "${CRAPPER_RC}"
-    [[ -n "${DRYER_RC:-}" ]] && printf 'dryer_exit=%s\n' "${DRYER_RC}"
-    [[ -n "${DRYER_HIGH:-}" ]] && printf 'dryer_candidates_ge_threshold=%s\n' "${DRYER_HIGH}"
-    [[ -n "${MUTATOR_RC:-}" ]] && printf 'mutator_exit=%s\n' "${MUTATOR_RC}"
+    if [[ -n "${SCOPE_COUNT:-}" ]]; then printf 'scope_files=%s\n' "${SCOPE_COUNT}"; fi
+    if [[ -n "${CRAPPER_RC:-}" ]]; then printf 'crapper_exit=%s\n' "${CRAPPER_RC}"; fi
+    if [[ -n "${DRYER_RC:-}" ]]; then printf 'dryer_exit=%s\n' "${DRYER_RC}"; fi
+    if [[ -n "${DRYER_HIGH:-}" ]]; then printf 'dryer_candidates_ge_threshold=%s\n' "${DRYER_HIGH}"; fi
+    if [[ -n "${MUTATOR_RC:-}" ]]; then printf 'mutator_exit=%s\n' "${MUTATOR_RC}"; fi
   } >"${OUTCOME_FILE}"
+}
+
+emit_warning() {
+  local msg="$1"
+  log "ub-gates: WARNING: ${msg}"
+  if [[ -n "${GITHUB_ACTIONS:-}" ]]; then
+    local safe="${msg//'%'/'%25'}"
+    safe="${safe//$'\n'/'%0A'}"
+    safe="${safe//$'\r'/'%0D'}"
+    echo "::warning title=ub-gates::${safe}"
+  fi
 }
 
 append_step_summary() {
   [[ -n "${GITHUB_STEP_SUMMARY:-}" ]] || return 0
+  mkdir -p "$(dirname "${GITHUB_STEP_SUMMARY}")" 2>/dev/null || return 0
   {
     echo "## ub-gates"
     echo ""
+    if [[ "${OUTCOME:-}" == "skipped_tools_missing" ]]; then
+      echo "> **Neutral skip (not a gate pass):** \`skipped_tools_missing\` — crapper, dryer, and mutator were not on PATH. Install tools in CI is a follow-up ticket."
+      echo ""
+    fi
     echo "| Field | Value |"
     echo "| --- | --- |"
     echo "| outcome | ${OUTCOME:-unknown} |"
+    echo "| gates_ran | ${GATES_RAN:-0} |"
     echo "| gate_miss | ${GATE_MISS:-0} |"
     echo "| scope_files | ${SCOPE_COUNT:-0} |"
-    [[ -n "${CRAPPER_RC:-}" ]] && echo "| crapper_exit | ${CRAPPER_RC} |"
-    [[ -n "${DRYER_RC:-}" ]] && echo "| dryer_exit | ${DRYER_RC} |"
-    [[ -n "${DRYER_HIGH:-}" ]] && echo "| dryer_candidates_ge_${DRYER_THRESHOLD} | ${DRYER_HIGH} |"
-    [[ -n "${MUTATOR_RC:-}" ]] && echo "| mutator_exit | ${MUTATOR_RC} |"
+    if [[ -n "${CRAPPER_RC:-}" ]]; then echo "| crapper_exit | ${CRAPPER_RC} |"; fi
+    if [[ -n "${DRYER_RC:-}" ]]; then echo "| dryer_exit | ${DRYER_RC} |"; fi
+    if [[ -n "${DRYER_HIGH:-}" ]]; then echo "| dryer_candidates_ge_${DRYER_THRESHOLD} | ${DRYER_HIGH} |"; fi
+    if [[ -n "${MUTATOR_RC:-}" ]]; then echo "| mutator_exit | ${MUTATOR_RC} |"; fi
     echo ""
     echo "Outcome file: \`${OUTCOME_FILE}\`"
   } >>"${GITHUB_STEP_SUMMARY}"
@@ -77,6 +95,7 @@ PY
 }
 
 GATE_MISS=0
+GATES_RAN=0
 OUTCOME=""
 
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -112,6 +131,7 @@ collect_scope_files "${MERGE_BASE}"
 if [[ "${SCOPE_COUNT}" -eq 0 ]]; then
   OUTCOME="skipped_no_scope"
   GATE_MISS=0
+  GATES_RAN=0
   write_outcome "${OUTCOME}"
   append_step_summary
   log "ub-gates: no gate-relevant files in ${MERGE_BASE}...HEAD — skipped (OK)"
@@ -134,11 +154,12 @@ MUTATOR="$(gate_bin mutator || true)"
 if [[ -z "${CRAPPER}" || -z "${DRYER}" || -z "${MUTATOR}" ]]; then
   OUTCOME="skipped_tools_missing"
   GATE_MISS=1
+  GATES_RAN=0
   write_outcome "${OUTCOME}"
   append_step_summary
-  log "ub-gates: tools missing (need crapper, dryer, mutator on PATH) — gate miss"
+  emit_warning "skipped_tools_missing — crapper, dryer, and mutator not on PATH (${SCOPE_COUNT} gate-relevant file(s) in scope). This is not a gate pass; install tools in CI is a follow-up ticket."
   log "ub-gates: scope had ${SCOPE_COUNT} file(s); see skills/ub-mode/references/gates-by-language.md"
-  exit 1
+  exit 0
 fi
 
 log "ub-gates: running on ${SCOPE_COUNT} file(s) from ${MERGE_BASE}...HEAD (advisory=${ADVISORY})"
@@ -163,15 +184,16 @@ set -e
 log "ub-gates: crapper exit ${CRAPPER_RC}; dryer exit ${DRYER_RC}; dryer candidates >= ${DRYER_THRESHOLD}: ${DRYER_HIGH}; mutator exit ${MUTATOR_RC}"
 
 FINDING=0
-[[ "${CRAPPER_RC}" -ne 0 ]] && FINDING=1
-[[ "${DRYER_HIGH}" -gt 0 ]] && FINDING=1
-[[ "${MUTATOR_RC}" -eq 3 ]] && FINDING=1
+if [[ "${CRAPPER_RC}" -ne 0 ]]; then FINDING=1; fi
+if [[ "${DRYER_HIGH}" -gt 0 ]]; then FINDING=1; fi
+if [[ "${MUTATOR_RC}" -eq 3 ]]; then FINDING=1; fi
 
 if [[ "${FINDING}" -eq 1 ]]; then
   OUTCOME="ran_with_findings"
 else
   OUTCOME="ran_clean"
 fi
+GATES_RAN=1
 
 write_outcome "${OUTCOME}"
 append_step_summary
