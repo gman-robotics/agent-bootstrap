@@ -103,8 +103,8 @@ Required sections (all concrete — **encode-lessons-in-structure**):
 
 ```bash
 mkdir -p .github
-awk '/^Tier:/{found=1} found' /path/to/agent-bootstrap/docs/shared/hub-pull-request-template.md \
-  > .github/PULL_REQUEST_TEMPLATE.md
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py copy --out .github/PULL_REQUEST_TEMPLATE.md
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_TEMPLATE.md
 ```
 
 Do not invent a second template shape in the standards skill prose.
@@ -119,7 +119,7 @@ Mirror hub `docs/shared/ub-mode-practice.md` when the repo adopts ub-mode; state
 
 | Artifact | Action |
 | --- | --- |
-| `.github/PULL_REQUEST_TEMPLATE.md` | Same `awk` copy from hub `docs/shared/hub-pull-request-template.md` starting at `Tier:` (per-header HTML hints are in that body). After copy, run placeholder self-check (step 5) |
+| `.github/PULL_REQUEST_TEMPLATE.md` | Same `hub_pull_request_template.py copy` / `check` from `docs/shared/hub-pull-request-template.md` starting at `Tier:` (per-header HTML hints are in that body). After copy, run placeholder self-check (step 5) |
 | `.github/ISSUE_TEMPLATE/config.yml` | Only keys GitHub honors: `blank_issues_enabled` and `contact_links`. Do **not** use ignored keys such as `issue_templates:` (list templates as files in the same directory instead) |
 | `.github/ISSUE_TEMPLATE/` | One template per common issue type; **list repo labels first** — omit `labels:` when a label is missing. Add a `question` form **only** if the `question` label exists |
 | `STANDARDS.md` or `CONTRIBUTING.md` section | Optional human-readable mirror; link to the skill path |

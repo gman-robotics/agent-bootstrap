@@ -59,7 +59,13 @@ Hub workflows (`plan-code-review-workflow`, `expert-pr-review`, `lfg`) say: **if
 
 ## PR header order (hub default)
 
-When the project has no overriding `standards-<repo>` skill, copy `docs/shared/hub-pull-request-template.md` to `.github/PULL_REQUEST_TEMPLATE.md` and match `docs/shared/ub-mode-practice.md` header order.
+When the project has no overriding `standards-<repo>` skill, install the hub PR template body from `Tier:` (not the doc H1) and match `docs/shared/ub-mode-practice.md` header order:
+
+```bash
+mkdir -p .github
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py copy --out .github/PULL_REQUEST_TEMPLATE.md
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_TEMPLATE.md
+```
 
 Example Linear line (concrete): `Linear: https://linear.app/gman-personal-projects/issue/GMA-412` or `Linear: N/A`.
 

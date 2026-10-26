@@ -76,10 +76,17 @@ python3 /path/to/agent-bootstrap/scripts/sync_agent_harness_instructions.py \
   --restore
 ```
 
-Also confirm `.github/PULL_REQUEST_TEMPLATE.md` matches the hub canonical doc **from `Tier:` onward** (same `awk` extract as `create-verification-skill` / `create-repo-standards` — not the doc H1) when the repo was bootstrapped from agent-bootstrap:
+Also confirm `.github/PULL_REQUEST_TEMPLATE.md` matches the hub canonical doc **from `Tier:` onward** (same helper as `create-verification-skill` / `create-repo-standards` — not the doc H1) when the repo was bootstrapped from agent-bootstrap:
 
 ```bash
-diff -u "$(awk '/^Tier:/{found=1} found' /path/to/agent-bootstrap/docs/shared/hub-pull-request-template.md)" .github/PULL_REQUEST_TEMPLATE.md
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_TEMPLATE.md
+```
+
+Re-install when missing or drifted:
+
+```bash
+mkdir -p .github
+python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py copy --out .github/PULL_REQUEST_TEMPLATE.md
 ```
 
 2. **Source wave.** One read-only subagent per feature file, launched concurrently. Each explains "how does this user-facing feature work?" from source, flags likely doc drift with citations, and returns one concise live-verification recipe. Children never drive the app and never edit files. Return shape: feature summary / source entry points / likely drift or none / one recipe.
