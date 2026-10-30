@@ -65,21 +65,27 @@ jobs:
 
   ub-gates:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Coverage plus the mutator budget (20 minutes) needs more than the old advisory job.
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
 
-      - name: Run advisory ub-gates (GMA-410)
+      - name: Run blocking ub-gates
+        uses: ./.github/actions/ub-gates
+        with:
+          advisory: "0"
+          base-ref: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'origin/main' }}
+          coverage-command: coverage run -m unittest discover -s tests && mkdir -p target/coverage/python && coverage lcov -o target/coverage/python/lcov.info
+          rust: "false"
+          hub-path: "."
+
+      - name: Crapper function contract
         env:
-          UB_GATES_ADVISORY: "1"
-          UB_GATES_BASE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'origin/main' }}
-        run: |
-          bash scripts/run_ub_gates_ci.sh
-          echo "--- ub-gates outcome ---"
-          cat .metrics/ub-gates-outcome.txt 2>/dev/null || echo "(no outcome file)"
+          UB_REQUIRE_CRAPPER: "1"
+        run: python -m unittest tests.test_ub_crapper_contract
 
   box-tools-shellcheck:
     runs-on: ubuntu-latest

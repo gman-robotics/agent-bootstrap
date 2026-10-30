@@ -1,0 +1,102 @@
+# Coverage reports crapper and mutator read when --use-existing-coverage is set.
+# Pass one of these as coverage-command (the hub job uses the Python command).
+#
+# Rust (cargo-llvm-cov 0.6.21, works with rustc 1.83):
+#   cargo llvm-cov --lcov --output-path target/coverage/rust/lcov.info
+#
+# TypeScript with bun (crapper's own runner only knows vitest):
+#   bun test --coverage --coverage-reporter=lcov && mkdir -p target/coverage/typescript && cp coverage/lcov.info target/coverage/typescript/lcov.info
+#
+# Python. crapper's runners._coverage_report writes
+# target/coverage/<language>/lcov.info when the package root is the repo root.
+# For this hub that path is target/coverage/python/lcov.info:
+#   coverage run -m unittest discover -s tests && mkdir -p target/coverage/python && coverage lcov -o target/coverage/python/lcov.info
+name: ub-gates
+description: Install pinned crapper, dryer, and mutator, then run scripts/run_ub_gates_ci.sh.
+inputs:
+  advisory:
+    description: "1 reports findings and exits 0. 0 fails the job."
+    required: false
+    default: "0"
+  base-ref:
+    description: Git ref used to compute the merge base.
+    required: true
+  coverage-command:
+    description: Optional shell command that writes coverage before the gates.
+    required: false
+    default: ""
+  rust:
+    description: "true installs llvm-tools-preview and the pinned cargo-llvm-cov."
+    required: false
+    default: "false"
+  hub-path:
+    description: Path to the agent-bootstrap checkout that contains scripts/.
+    required: false
+    default: "."
+runs:
+  using: composite
+  steps:
+    # astral-sh/setup-uv is not pinned by commit SHA in this repo.
+    # Install the uv version named in scripts/ub-tools.lock instead.
+    - name: Install pinned uv
+      shell: bash
+      run: |
+        set -euo pipefail
+        lock="${{ inputs.hub-path }}/scripts/ub-tools.lock"
+        uv_ver="$(awk -F= '$1=="uv" {print $2; exit}' "${lock}")"
+        test -n "${uv_ver}"
+        curl -LsSf "https://astral.sh/uv/${uv_ver}/install.sh" | env UV_INSTALL_DIR="${RUNNER_TEMP}/uv" UV_NO_MODIFY_PATH=1 sh
+        echo "${RUNNER_TEMP}/uv" >> "${GITHUB_PATH}"
+
+    - name: Install pinned crapper, dryer, and mutator
+      shell: bash
+      run: |
+        set -euo pipefail
+        hub="${{ inputs.hub-path }}"
+        lock="${hub}/scripts/ub-tools.lock"
+        py_ver="$(awk -F= '$1=="python" {print $2; exit}' "${lock}")"
+        test -n "${py_ver}"
+        venv="${RUNNER_TEMP}/ub-venv"
+        uv venv -p "${py_ver}" "${venv}"
+        dest="${RUNNER_TEMP}/ub-tools"
+        mkdir -p "${dest}"
+        clone_tool() {
+          local name="$1"
+          local url="$2"
+          local sha="$3"
+          local dir="${dest}/${name}"
+          mkdir -p "${dir}"
+          git -C "${dir}" init -q
+          git -C "${dir}" remote add origin "${url}"
+          git -C "${dir}" fetch --depth 1 origin "${sha}"
+          git -C "${dir}" checkout --detach FETCH_HEAD
+        }
+        clone_tool crapper https://github.com/unclebob/crapper "$(awk -F= '$1=="crapper" {print $2; exit}' "${lock}")"
+        clone_tool dryer https://github.com/unclebob/dryer "$(awk -F= '$1=="dryer" {print $2; exit}' "${lock}")"
+        clone_tool mutator https://github.com/unclebob/mutator "$(awk -F= '$1=="mutator" {print $2; exit}' "${lock}")"
+        VIRTUAL_ENV="${venv}" uv pip install "${dest}/crapper" "${dest}/dryer" "${dest}/mutator"
+        if [[ -f "${hub}/requirements-dev.txt" ]]; then
+          VIRTUAL_ENV="${venv}" uv pip install -r "${hub}/requirements-dev.txt"
+        fi
+        echo "${venv}/bin" >> "${GITHUB_PATH}"
+
+    - name: Install pinned cargo-llvm-cov
+      if: inputs.rust == 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        lock="${{ inputs.hub-path }}/scripts/ub-tools.lock"
+        ver="$(awk -F= '$1=="cargo_llvm_cov" {print $2; exit}' "${lock}")"
+        test -n "${ver}"
+        rustup component add llvm-tools-preview
+        cargo install cargo-llvm-cov --version "${ver}" --locked
+
+    - name: Run ub-gates
+      shell: bash
+      env:
+        UB_GATES_ADVISORY: ${{ inputs.advisory }}
+        UB_GATES_BASE_REF: ${{ inputs.base-ref }}
+        UB_GATES_COVERAGE_CMD: ${{ inputs.coverage-command }}
+      run: |
+        set -euo pipefail
+        bash "${{ inputs.hub-path }}/scripts/run_ub_gates_ci.sh"
