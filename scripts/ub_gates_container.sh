@@ -24,6 +24,7 @@ inside() {
     apt-get update -qq
     apt-get install -y -qq git ca-certificates curl
   fi
+  git config --global --add safe.directory '*'
   lock="/work/scripts/ub-tools.lock"
   uv_ver="$(awk -F= '$1=="uv" {print $2; exit}' "${lock}")"
   py_ver="$(awk -F= '$1=="python" {print $2; exit}' "${lock}")"
@@ -130,10 +131,18 @@ case "${MAIN_GIT}" in
 esac
 
 printf '%s\n' "${METRICS_DIR}"
-docker run --rm \
+docker run --rm -i \
   "${mounts[@]}" \
   -e UB_GATES_ADVISORY=0 \
   -e "UB_GATES_BASE_REF=${UB_GATES_BASE_REF:-origin/main}" \
+  -e "UB_GATES_COVERAGE_CMD=${UB_GATES_COVERAGE_CMD:-}" \
+  -e "UB_GATES_MUTATOR_TEST_CMD=${UB_GATES_MUTATOR_TEST_CMD:-}" \
   -w /tmp \
   rust:1.83 \
-  bash /work/scripts/ub_gates_container.sh --inside
+  bash -s <<'EOS'
+set -euo pipefail
+if command -v git >/dev/null 2>&1; then
+  git config --global --add safe.directory '*'
+fi
+exec bash /work/scripts/ub_gates_container.sh --inside
+EOS

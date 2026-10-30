@@ -5,8 +5,9 @@
 # run_ub_gates_report.sh sets UB_GATES_ADVISORY=1. A direct call does not.
 # Blocking mode fails on skip (except skipped_no_scope), tool_error, findings in
 # changed scope, and skipped_mutator.
-# UB_GATES_SKIP_MUTATOR=1 and the CURSOR_AGENT auto-skip are skipped_mutator in
-# blocking mode (exit 1). They are never ran_clean. Advisory mode may still skip.
+# UB_GATES_SKIP_MUTATOR=1 and the CURSOR_AGENT auto-skip are skipped_mutator.
+# They are never ran_clean. Blocking mode exits 1. Advisory mode records the
+# same outcome and exits 0.
 # A failed git diff --name-only is tool_error. A missing merge base is tool_error.
 # Base-ref fetch honors UB_GATES_BASE_REF, uses no depth limit, and unshallows
 # a shallow clone. Mutator budget timeout is non-blocking; the step summary's
@@ -65,7 +66,11 @@ append_step_summary() {
     fi
     echo "## ub-gates"
     echo ""
-    if [[ "${OUTCOME:-}" == "skipped_mutator" ]]; then
+    if [[ "${OUTCOME:-}" == "skipped_mutator" && "${ADVISORY}" == "1" ]]; then
+      echo "> **Advisory skip (not clean):** \`skipped_mutator\` — mutator did not run. This is not a clean result."
+      echo ""
+    fi
+    if [[ "${OUTCOME:-}" == "skipped_mutator" && "${ADVISORY}" != "1" ]]; then
       echo "> **Blocking skip:** \`skipped_mutator\` — mutator did not run. This is not a clean result."
       echo ""
     fi
@@ -137,8 +142,13 @@ exit_for_outcome() {
       fi
       ;;
     skipped_mutator)
-      log "ub-gates: blocking mode — mutator skip is not ran_clean"
-      code=1
+      if [[ "${ADVISORY}" == "1" ]]; then
+        log "ub-gates: advisory mode — mutator skip is not ran_clean; job succeeds"
+        code=0
+      else
+        log "ub-gates: blocking mode — mutator skip is not ran_clean"
+        code=1
+      fi
       ;;
     *)
       code=1
@@ -593,7 +603,7 @@ if [[ "${TOOL_ERROR}" -eq 1 ]]; then
   emit_warning "tool_error — dryer/mutator tool failure or missing .metrics/dry.edn after dryer; not ran_clean."
 elif [[ "${FINDING}" -eq 1 ]]; then
   OUTCOME="ran_with_findings"
-elif [[ "${ADVISORY}" != "1" && "${MUTATOR_SKIPPED}" == "1" ]]; then
+elif [[ "${MUTATOR_SKIPPED}" == "1" ]]; then
   OUTCOME="skipped_mutator"
   GATE_MISS=1
 else
