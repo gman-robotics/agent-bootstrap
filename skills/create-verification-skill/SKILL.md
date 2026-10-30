@@ -72,9 +72,9 @@ Ship these in every generated `verify-<app>-ci` (or document why the stack has n
 | Step | Rule |
 | --- | --- |
 | Coverage | Run the stack's coverage command before gates (`pytest --cov` / `pytest-cov`, `coverage run`, JaCoCo, `go test -coverprofile`, etc.) so **crapper** and **mutator** can read profiles when tools exist (`docs/shared/ub-mode-practice.md`). |
-| Scope | Build the merge-base path list (`git merge-base` → `git diff --name-only --diff-filter=ACMRT`); pass explicit paths to **crapper** and **dryer**. Do **not** use upstream `--changed` for committed PR scope (it reads `git status`). |
-| crapper | `crapper --threshold 10` on scope paths. |
-| dryer | `rm -f .metrics/dry.edn` then `dryer --threshold 0.8` on scope; parse `.metrics/dry.edn` for `:score` ≥ 0.8. |
+| Scope | Build the merge-base path list (`git merge-base` → `git diff --name-only --diff-filter=ACMRT`). Drop test paths, `.pyi`, and `.d.ts`. Blocking scope is changed functions (crapper) and changed lines (dryer, mutator). Do **not** use upstream `--changed` for committed PR scope (it reads `git status`). |
+| crapper | `crapper --threshold 10` on changed functions. A blocking finding is a changed function with CRAP > 10. Other CRAP hits are debt and do not block. |
+| dryer | `rm -f .metrics/dry.edn` then `dryer --threshold 0.8` on scope. Findings are candidates with `:score` ≥ 0.8 that overlap changed lines. Other candidates ≥ 0.8 are debt and do not block. |
 | mutator | The report wrapper may skip mutator when `CURSOR_AGENT` is set and `GITHUB_ACTIONS` is unset. In the blocking **`ub-gates`** job that skip is `skipped_mutator` and fails. Run mutator via `bash scripts/ub_gates_container.sh` before the PR. |
 | Outcomes | Reuse hub names: `ran_clean`, `ran_with_findings`, `skipped_no_scope`, `skipped_tools_missing`, `skipped_mutator`, `tool_error` (see `scripts/run_ub_gates_ci.sh`). Write to `.metrics/verify-ub-outcome.txt` or `.metrics/ub-gates-outcome.txt`. |
 | Exit code | verify-ci **always exits 0** because it uses the report wrapper (`UB_GATES_ADVISORY=1`). Record outcomes in the skill **Evidence** section and PR **`Gates:`** line. The blocking `ub-gates` job exits 1 on findings in changed scope. |

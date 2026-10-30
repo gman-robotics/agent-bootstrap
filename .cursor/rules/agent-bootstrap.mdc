@@ -66,7 +66,7 @@ When any skill is triggered, read the full skill file (`skills/<name>.md`) befor
 | `teach.md` | Teach me this |
 | `technical-writing.md` | Docs, RFCs, PR prose |
 | `unslop.md` | Cut AI tells from prose |
-| `ub-mode.md` | ub-mode gates advisory (report; do not block APPROVE) |
+| `ub-mode.md` | Blocking by default (UB_GATES_ADVISORY=0). Run gates on new code before the PR (`bash scripts/ub_gates_container.sh`). Changed functions (crapper) and changed lines (dryer, mutator). Old debt does not block. A 20-minute mutator timeout is reported and does not block. No waiver. |
 | `why.md` | Why is X shaped this way |
 | `project-carry-through.md` | A project or plan is agreed; ask-or-continue decision |
 | `blocker-walkthrough.md` | "Walk me through the blockers"; open decisions |

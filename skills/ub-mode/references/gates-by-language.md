@@ -1,6 +1,6 @@
 # ub-mode — quality gates by language
 
-Run these from the **project root** after tests pass. Install each tool once per machine (each repo ships a `./crapper`, `./dryer`, or `./mutator` wrapper that creates a local `.venv` on first run). Do not invent substitutes; if the binary is missing, say so and skip that gate with evidence.
+Run these from the **project root** after tests pass. Do not install crapper, dryer, or mutator on the host, and do not skip a missing binary. The tools run inside the throwaway `--rm` container (`bash scripts/ub_gates_container.sh`, `docker run --rm`, `UB_GATES_ADVISORY=0`). In blocking mode a missing tool is `skipped_tools_missing` and the job exits 1.
 
 **Hub mode:** Dryer, crapper, and mutator are **blocking** by default. `scripts/run_ub_gates_ci.sh` defaults to `UB_GATES_ADVISORY=0`. Advisory mode is only `scripts/run_ub_gates_report.sh` or an explicit `UB_GATES_ADVISORY=1`. Scope is changed functions (crapper) and changed lines (dryer, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. Debt in untouched old functions does not block. There is no waiver: fix blocking findings on changed code, or escalate them to the CoS. A red `ub-gates` check does **not** count as a review round.
 
@@ -10,42 +10,30 @@ All six languages below are supported by the unclebob tools when the project has
 
 | Gate | Tool | Clean result to report | Snapshot |
 | --- | --- | --- | --- |
-| CRAP | `crapper` | worst function **CRAP ≤ 10** (`--threshold 10` fails only when worst **&gt; 10**) | `.metrics/crap.edn` |
-| Duplication | `dryer` | read `.metrics/dry.edn` from **this** run: no `:candidates` with `:score` **≥ 0.8** | `.metrics/dry.edn` |
-| Mutation | `mutator` | exit `0`; exit `2` baseline tests failed; exit `3` **survivors** | `.metrics/mutate/*.edn` |
+| CRAP | `crapper` | no **changed function** with **CRAP > 10** (`--threshold 10`). Every other CRAP hit is `crapper_debt` and does not block | `.metrics/crap.edn` |
+| Duplication | `dryer` | no `:candidates` with `:score` **≥ 0.8** that overlap **changed lines**. Every other candidate ≥ 0.8 is `dryer_debt` and does not block | `.metrics/dry.edn` |
+| Mutation | `mutator` | changed lines only; exit `0`; exit `2` baseline tests failed; exit `3` **survivors**. A 20-minute budget timeout is reported and does not block | `.metrics/mutate/*.edn` |
 
 ### GMA-411 — dryer hygiene
 
 - **Delete** `.metrics/dry.edn` before every dryer run (`rm -f .metrics/dry.edn`).
 - Upstream **`--changed`** uses **`git status`** (uncommitted files), not the PR diff. For committed branches and CI, pass an explicit path list from `git diff merge-base...HEAD` (see `docs/shared/ub-mode-practice.md`).
 - `dryer --changed` with an **empty** `git status` selection exits `0` and does **not** refresh the snapshot; a stale file may remain if you skip the delete step.
-- If `.metrics/dry.edn` is **missing** after the run, report **no selection / skipped** — never treat a pre-run file as evidence.
+- After dryer exit `0`, a missing `.metrics/dry.edn` is `tool_error`, not a skip. Any dryer exit other than `0` is `tool_error`, even when that file exists. Never treat a pre-run file as evidence.
 - Default size filters: **4 lines** (`--min-lines`) and **20 nodes** (`--min-nodes`) unless you override.
 
 ### Reading `.metrics/dry.edn`
 
-Dryer writes EDN shaped like `{:candidates [{:score 0.89 :language "clojure" :left {...} :right {...}} ...]}`. Report every candidate with `:score` ≥ 0.8. Dryer exit `0` does not mean “clean”.
+Dryer writes EDN shaped like `{:candidates [{:score 0.89 :language "clojure" :left {...} :right {...}} ...]}`. Report every candidate with `:score` ≥ 0.8. Split that list: **findings** overlap changed lines and block; **debt** is every other candidate ≥ 0.8 (`dryer_debt`) and does not block. Dryer exit `0` does not mean “clean”.
 
 ## Commands (any supported language in the tree)
 
+Do not call host `./crapper`, `./dryer`, or `./mutator` binaries, and do not run a full-tree mutator. The container runs `scripts/run_ub_gates_ci.sh` with `UB_GATES_ADVISORY=0`. Crapper checks changed functions. Dryer checks candidates that overlap changed lines. Mutator runs only on changed lines, with a 20-minute budget. A timeout is reported and does not block.
+
 ```bash
-# PR / branch scope (committed diff — preferred for CI and pre-PR)
-./path/to/crapper --threshold 10 path/to/changed.py ...
-rm -f .metrics/dry.edn && ./path/to/dryer --threshold 0.8 path/to/changed.py ...
-./path/to/mutator path/to/changed.py ...
-
-# Uncommitted edits only (git status — upstream --changed)
-./path/to/crapper --changed --threshold 10
-rm -f .metrics/dry.edn && ./path/to/dryer --changed --threshold 0.8
-./path/to/mutator --changed
-
-# Full tree (release or wide refactor)
-./path/to/crapper --threshold 10
-rm -f .metrics/dry.edn && ./path/to/dryer --threshold 0.8
-./path/to/mutator
+# Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git PATH] [--metrics-dir PATH]
+bash scripts/ub_gates_container.sh
 ```
-
-Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `PATH`. **mutator** expects **crapper** checked out beside it (`../crapper`) for namespace names.
 
 ### Clojure
 
@@ -99,7 +87,7 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 
 | Situation | Action |
 | --- | --- |
-| Tool not installed | Record "gate skipped: &lt;tool&gt; not on PATH" on the PR `Gates:` line |
+| Tool missing | Blocking mode: `skipped_tools_missing` and exit 1. A missing tool is not a skip on the PR `Gates:` line. It fails the job |
 | Project language not in the six | State plainly; do not fake a gate |
 | Baseline tests fail | Fix tests first; mutator exit `2` means baseline failure |
 | Advisory mode | Only `scripts/run_ub_gates_report.sh` or explicit `UB_GATES_ADVISORY=1`. Findings and **`skipped_tools_missing`** then exit 0 with a warning — **`gates_ran=0`** is not a pass. A direct `scripts/run_ub_gates_ci.sh` call defaults to blocking (`UB_GATES_ADVISORY=0`) |
@@ -109,7 +97,7 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Local run | Throwaway `--rm` container, no host installs. Usage: `Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git PATH] [--metrics-dir PATH]` |
 | Declaration files | `.pyi` and `.d.ts` are outside gate scope (no function bodies). Test paths are outside gate scope |
 | Mutator budget | 20-minute per-PR cap. A timeout is reported and leads the step summary. A timeout does not block |
-| Dryer exit | Exit 0 with a fresh `.metrics/dry.edn` is the only dryer success. Exit 1, 2, or any other code is `tool_error` even when that file exists |
+| Dryer exit | Exit 0 with a fresh `.metrics/dry.edn` is the only dryer success. Exit 1, 2, or any other code is `tool_error` even when that file exists. After exit 0, a missing `.metrics/dry.edn` is `tool_error`, not a skip |
 | Base ref | Fetch `UB_GATES_BASE_REF` with no depth limit and unshallow a shallow clone. A missing merge base is `tool_error` |
 
 ## uml-viewer (optional)

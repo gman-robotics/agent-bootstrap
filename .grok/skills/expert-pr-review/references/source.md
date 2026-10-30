@@ -174,9 +174,10 @@ When tests passed (or were skipped with reason):
 3. **`outcome=ran_with_findings`:** Blocking findings on changed functions (crapper) or changed lines (dryer, mutator). `scripts/run_ub_gates_ci.sh` defaults to blocking (`UB_GATES_ADVISORY=0`), so the job fails. Hand back. The implementer fixes the findings or escalates them to the CoS. There is no waiver. **Not** a review round. Debt in untouched old functions does not block.
 4. **`outcome=tool_error`** (`gate_miss=1`, often with **`::warning`**): Tools started but **dryer/mutator failed** (e.g. dryer exit `1`/`2`, missing `.metrics/dry.edn` after dryer exit `0`, mutator exit `2`). This is **not** `ran_clean` and **not** a quality finding — hand back to the implementer; **not** a review round.
 5. **`outcome=skipped_no_scope`:** OK when the PR has no gate-relevant source files (e.g. hub Markdown). Test paths, `.pyi`, and `.d.ts` are out of scope.
-6. **`outcome=skipped_tools_missing`** (`gates_ran=0`) or **`outcome=skipped_mutator`:** In blocking mode the job fails. A mutator skip is not `ran_clean`. Hand back to the implementer; **not** a review round. A mutator timeout (20-minute per-PR budget) is reported, leads the summary, and does not block.
-7. **Red/missing `ub-gates` check**: gate miss → implementer; **not** a review round.
-8. A **green** check alone does **not** prove gates ran; always read `gates_ran=` and `outcome=`. Advisory mode is only `scripts/run_ub_gates_report.sh` or `UB_GATES_ADVISORY=1`.
+6. **`outcome=skipped_tools_missing`** (`gates_ran=0`) or **`outcome=skipped_mutator`:** In blocking mode the job fails. A mutator skip is not `ran_clean`. Hand back to the implementer; **not** a review round.
+7. **Mutator timeout:** A 20-minute per-PR budget timeout is reported, leads the summary, and does not fail the job.
+8. **Red/missing `ub-gates` check**: gate miss → implementer; **not** a review round.
+9. A **green** check alone does **not** prove gates ran; always read `gates_ran=` and `outcome=`. Advisory mode is only `scripts/run_ub_gates_report.sh` or `UB_GATES_ADVISORY=1`.
 
 Docs-only or hub-Markdown PRs: `Gates: N/A (hub Markdown)`; expect **`skipped_no_scope`** when CI ran.
 
