@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T14:17:33.952831+00:00",
+  "captured_at": "2026-10-30T21:19:51.751270+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure and rule-text check for skills/ub-mode/SKILL.md.",
@@ -19,7 +19,7 @@
       "ub-mode",
       "Dryer, crapper, and mutator block by default (scripts/run_ub_gates_ci.sh, UB_GATES_ADVISORY=0).",
       "**do not** count as review rounds",
-      "worst function **CRAP \u2264 10**",
+      "changed functions at **CRAP \u2264 10**",
       "rm -f .metrics/dry.edn",
       "merge-base",
       "exit `3` means **survivors**",
@@ -33,7 +33,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "9128408c7119a5bb8d3f6cb88e99721d0e8103e78253a018f10878a19fe04b5a",
+  "skill_sha256": "2c80dbab5adcc5361df187e1594b24e0cdb8dc53628d8eb5ec567523090c1529",
   "stderr_tail": "",
   "stdout_tail": "OK: ub-mode\n",
   "verdict": "pass"

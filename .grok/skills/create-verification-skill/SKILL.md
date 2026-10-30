@@ -13,7 +13,7 @@ Triggers when creating a new verification skill for an app or surface.
 
 1. Read `references/source.md` before acting.
 2. Interview surface, run, drive, observe, isolate; generate verify skill + feature map.
-3. Ship verify-<app>-ci with coverage + advisory ub gates (references/verify-ci-ub-gates.sh).
+3. Ship verify-<app>-ci with coverage. The ub-gates CI job is blocking (UB_GATES_ADVISORY=0); references/verify-ci-ub-gates.sh is the report wrapper only.
 4. Prove end-to-end once before handoff; point to maintain-verification-skill.
 
 ## Compatibility Notes

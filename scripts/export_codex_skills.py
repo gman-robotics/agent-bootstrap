@@ -556,7 +556,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         quick_start=(
             "Read `references/source.md` before acting.",
             "Interview surface, run, drive, observe, isolate; generate verify skill + feature map.",
-            "Ship verify-<app>-ci with coverage + advisory ub gates (references/verify-ci-ub-gates.sh).",
+            "Ship verify-<app>-ci with coverage. The ub-gates CI job is blocking (UB_GATES_ADVISORY=0); references/verify-ci-ub-gates.sh is the report wrapper only.",
             "Prove end-to-end once before handoff; point to maintain-verification-skill.",
         ),
     ),
@@ -662,7 +662,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         ),
         quick_start=(
             "Read `references/source.md` before acting.",
-            "Index hygiene; ub-mode verify-ci hygiene (merge-base scope, advisory outcomes).",
+            "Index hygiene; ub-mode verify-ci hygiene (merge-base scope, blocking ub-gates job).",
             "Readonly source wave per feature; reconcile recipes.",
             "Coordinator live-pass every feature; triage doc vs harness vs product gaps.",
         ),

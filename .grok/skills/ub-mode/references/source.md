@@ -91,9 +91,9 @@ Language matrix and commands: `references/gates-by-language.md`. Supported langu
 
 | Gate | Tool | Measured result (report honestly) | Evidence |
 | --- | --- | --- | --- |
-| CRAP | crapper | worst function **CRAP ≤ 10** is clean; `--threshold 10` exits non-zero only when worst **&gt; 10** | `.metrics/crap.edn` |
-| Duplication | dryer | read `.metrics/dry.edn`: list any `:candidates` with `:score` **≥ 0.8** (dryer exits `0` even when pairs meet the threshold) | `.metrics/dry.edn` |
-| Mutation | mutator | exit `0` clean; exit `3` means **survivors**; cover the uncovered, kill the survivors, delete dead code | `.metrics/mutate/*.edn` |
+| CRAP | crapper | changed functions at **CRAP ≤ 10** are clean; other functions are `crapper_debt` (reported only) | `.metrics/crap.edn` |
+| Duplication | dryer | candidates **≥ 0.8** that overlap changed lines block; other candidates are `dryer_debt` (reported only) | `.metrics/dry.edn` |
+| Mutation | mutator | changed lines; 20-minute budget; a timeout is reported and does not block; exit `3` means **survivors** | `.metrics/mutate/*.edn` |
 
 **Gate block (run after tests pass, before the PR; blocking on changed scope)**
 

@@ -9,7 +9,7 @@
       "ub-mode",
       "Dryer, crapper, and mutator block by default (scripts/run_ub_gates_ci.sh, UB_GATES_ADVISORY=0).",
       "**do not** count as review rounds",
-      "worst function **CRAP ≤ 10**",
+      "changed functions at **CRAP ≤ 10**",
       "rm -f .metrics/dry.edn",
       "merge-base",
       "exit `3` means **survivors**",
