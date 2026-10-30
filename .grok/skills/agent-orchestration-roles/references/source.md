@@ -34,7 +34,7 @@ Designated as the **Software Engineer / Implementer**. It is responsible for tra
 - **Code Implementation:** Writing the physical code, creating new features, and making the requested code changes.
 - **Refactoring:** Executing code adjustments and cleanups based on plans and reviews.
 - **Test-Driven Development (TDD):** Writing and running tests (Red-Green-Refactor) for code changes.
-- **Pre-PR ub-mode dev flow:** `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (fix flags); `mutator` on scope on laptop/CI only (`docs/shared/ub-mode-practice.md`).
+- **Pre-PR ub-mode dev flow:** Before the PR, run dryer, crapper, and mutator on new code (`bash scripts/ub_gates_container.sh`; no host installs; `UB_GATES_ADVISORY=0` by default). Scope is changed functions (crapper) and changed lines (dryer, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. Debt in untouched old functions does not block. A mutator skip is `skipped_mutator` and fails. A 20-minute mutator timeout is reported and does not block. No waiver: fix blocking findings on changed code, or escalate to the CoS. The PR `Gates:` section reports the real results (`docs/shared/ub-mode-practice.md`).
 
 *Guideline:* The implementer harness focuses on writing clean, functional code according to the plans and review feedback provided by the planner harness.
 

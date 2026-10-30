@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-26T17:09:33.768214+00:00",
+  "captured_at": "2026-10-30T21:19:51.799175+00:00",
   "captured_by": "scripts/run_black_box_fixture.py",
   "case_name": "skill-structure-check",
   "description": "Structure check for skills/create-repo-standards/SKILL.md.",
@@ -50,7 +50,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "194bc2c95e18cdf01786be541fb1547f538409246140c4ae7598648572f49396",
+  "skill_sha256": "36a2ba2a79f2b748b9a45227bd5f39efe0a2596cc5309442ba7a93a58a1696f8",
   "stderr_tail": "",
   "stdout_tail": "OK: create-repo-standards\n",
   "verdict": "pass"

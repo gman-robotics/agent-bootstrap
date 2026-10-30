@@ -556,7 +556,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         quick_start=(
             "Read `references/source.md` before acting.",
             "Interview surface, run, drive, observe, isolate; generate verify skill + feature map.",
-            "Ship verify-<app>-ci with coverage + advisory ub gates (references/verify-ci-ub-gates.sh).",
+            "Ship verify-<app>-ci with coverage. The ub-gates CI job is blocking (UB_GATES_ADVISORY=0); references/verify-ci-ub-gates.sh is the report wrapper only.",
             "Prove end-to-end once before handoff; point to maintain-verification-skill.",
         ),
     ),
@@ -662,7 +662,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         ),
         quick_start=(
             "Read `references/source.md` before acting.",
-            "Index hygiene; ub-mode verify-ci hygiene (merge-base scope, advisory outcomes).",
+            "Index hygiene; ub-mode verify-ci hygiene (merge-base scope, blocking ub-gates job).",
             "Readonly source wave per feature; reconcile recipes.",
             "Coordinator live-pass every feature; triage doc vs harness vs product gaps.",
         ),
@@ -994,17 +994,17 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
     "ub-mode": SkillConfig(
         description=(
             "Use when writing or changing code under the reduced Make it Work, Make it Right, "
-            "and Practice loop. Report advisory crapper, dryer, and mutator results; gates do not "
-            "block APPROVE until blocking mode is approved."
+            "and Practice loop. Dryer, crapper, and mutator block by default (UB_GATES_ADVISORY=0). "
+            "Advisory mode is only run_ub_gates_report.sh or UB_GATES_ADVISORY=1."
         ),
-        short_description="Reduced principles and advisory gates",
+        short_description="Reduced principles and blocking gates",
         trigger_summary=(
             "Triggers on /ub-mode or CI ub-gates confirmation in plan-code-review, expert-pr-review, or lfg."
         ),
         quick_start=(
             "Read `references/source.md` and `references/gates-by-language.md` before acting.",
-            "Implementer: pre-PR crapper/dryer/mutator on merge-base scope. Reviewer: read CI ub-gates outcome only.",
-            "Put results on the PR Gates line; gate findings do not block APPROVE in advisory mode.",
+            "Implementer: run dryer, crapper, and mutator on new code before the PR (bash scripts/ub_gates_container.sh). Reviewer: read CI ub-gates outcome only.",
+            "Put real results on the PR Gates line. Blocking findings on changed code are fixed or escalated to the CoS.",
         ),
     ),
 }

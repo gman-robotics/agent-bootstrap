@@ -11,7 +11,7 @@ Summary:
 <!-- One short paragraph: what changed and why -->
 
 Gates:
-<!-- Advisory ub-mode: crapper/dryer/mutator results, verify-ci outcome, or `N/A (hub Markdown)`; cite CI `ub-gates` at head SHA when applicable -->
+<!-- Blocking ub-gates by default (UB_GATES_ADVISORY=0): real crapper/dryer/mutator results, or `N/A (hub Markdown)`; cite CI `ub-gates` at head SHA. Advisory only via run_ub_gates_report.sh. -->
 
 ## pstack (Poteto) principles cited
 

@@ -1,7 +1,7 @@
 ---
 name: lfg
 description: "Use to run the agreed loop hands-off: route, implement, simplify the diff, review against the plan, compound, push a PR, watch CI. Do not merge unless the human granted it."
-version: 1.0.5
+version: 1.0.6
 ---
 
 # lfg — Run the loop, do not merge
@@ -21,8 +21,8 @@ Compose skills that already exist. Do not reimplement them. The pipeline stops o
 1. Route. Failing behavior → `debug-investigation`. Unsettled product shape with a human present → `grill-with-docs`. Unsettled judgment → `interrogate`. A costly shape still open → `arena`. Otherwise require an implementation-ready plan from `plan-code-review-workflow` Phase 1.
 2. Implement on an isolated branch with `write-tests`. Do not call an open PR shipped.
 3. Simplify the fresh diff before review. Behavior stays. This is not `codebase-simplification-audit`.
-3.4. Pre-PR dev flow: `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (`rm -f .metrics/dry.edn` first) per `docs/shared/ub-mode-practice.md`; **fix** what they flag before the PR.
-3.5. `mutator` on merge-base **scope** — **laptop or CI only**; never in a cloud agent. Push so CI **`ub-gates`** runs the same scope; report results on the PR **`Gates:`** line in step 8. `skipped_tools_missing` (`gates_ran=0`) is not a gate pass; **`tool_error`** is not `ran_clean` (hand back); red/missing for other failures → implementer; not a review round. Advisory until Tom approves blocking mode.
+3.4. Pre-PR dev flow: before the PR, run dryer, crapper, and mutator on the new code (`bash scripts/ub_gates_container.sh`; no host installs; `UB_GATES_ADVISORY=0`). Usage: `Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git PATH] [--metrics-dir PATH]`. Scope is changed functions (crapper `--threshold 10`) and changed lines (dryer `--threshold 0.8` after `rm -f .metrics/dry.edn`, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. See `docs/shared/ub-mode-practice.md`.
+3.5. Act on the results before the PR. Fix blocking findings on changed code, or escalate them to the CoS. There is no waiver. Debt in untouched old functions does not block. Mutator budget is 20 minutes per PR; a timeout is reported, leads the summary, and does not block. A mutator skip is `skipped_mutator` and fails. The cloud-agent auto-skip (`CURSOR_AGENT` without `GITHUB_ACTIONS`) is the same failure: never in a cloud agent is not a pass. Run the container instead. Push so CI **`ub-gates`** runs (`scripts/run_ub_gates_ci.sh` defaults to blocking) and report results on the PR **`Gates:`** line in step 8 (real exits, findings, debt, and timeout). `skipped_tools_missing` (`gates_ran=0`) is not a gate pass; **`tool_error`** is not `ran_clean` (hand back); red/missing → implementer; not a review round. Advisory mode is only `scripts/run_ub_gates_report.sh` or `UB_GATES_ADVISORY=1`.
 3.6. If the target project has `standards-<repo>/SKILL.md`, align the PR description with it and the hub template (`docs/shared/repo-standards-practice.md`, `docs/shared/hub-pull-request-template.md`).
 3.7. Before review on non-docs PRs, run `skills/blast-radius/SKILL.md` on the merge-base changed surface (or spawn a worker with that skill); record top risks in the PR body or review handback.
 4. Review against the plan with `expert-pr-review` (reviewer confirms **`ub-gates`** at head SHA only — no local gate re-run). A finding that invalidates a settled decision stops the pipeline.

@@ -20,7 +20,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "44cd061514fb7d92859510139e17df5b08b88a434f779a2283ff1b050c98987f",
+  "skill_sha256": "ee39cf31cb65e74c902e195b2accf34fcdf8aa5bd3fdb105bd80580b59a9b6f5",
   "stderr_tail": "",
   "stdout_tail": "OK: create-verification-skill\n",
   "verdict": "pass"

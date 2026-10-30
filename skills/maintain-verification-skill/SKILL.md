@@ -56,7 +56,7 @@ Only edit the verification skill's own directory (its SKILL.md, features/, and a
 
 1. **Index hygiene.** Read the feature map README and glob its sibling files. Fix missing, extra, duplicate, or dead entries. Lightweight; no generated inventory.
 
-1b. **ub-mode verify-ci hygiene (GMA-410).** Read `bin/verify-*-ci` (and any `verify-ub-gates` helper). Confirm: coverage step exists for the stack; merge-base scope file list (not `--changed` for PR scope); `crapper --threshold 10` and `dryer --threshold 0.8` with `rm -f .metrics/dry.edn` first; mutator skipped on cloud agents but documented for laptop/CI; outcome file uses hub names (`ran_clean`, `ran_with_findings`, `skipped_no_scope`, `skipped_tools_missing`, `tool_error`); verify-ci stays report-only (advisory, does not fail on gate debt). Drift → fix under edit scope or `changed` outcome.
+1b. **ub-mode verify-ci hygiene (GMA-410).** Read `bin/verify-*-ci` (and any `verify-ub-gates` helper). Confirm: coverage step exists for the stack; merge-base scope file list (not `--changed` for PR scope); `crapper --threshold 10` and `dryer --threshold 0.8` with `rm -f .metrics/dry.edn` first; the verify bundle calls `scripts/run_ub_gates_report.sh` (`UB_GATES_ADVISORY=1`) and exits 0; the **`ub-gates`** CI job stays blocking (`UB_GATES_ADVISORY=0`); outcome file uses hub names (`ran_clean`, `ran_with_findings`, `skipped_no_scope`, `skipped_tools_missing`, `skipped_mutator`, `tool_error`). A mutator skip in the blocking job is `skipped_mutator` and fails. Drift → fix under edit scope or `changed` outcome.
 
 1c. **Agent harness workflow blocks (GMA-410).** From the project repo root, verify harness instructions are still present:
 

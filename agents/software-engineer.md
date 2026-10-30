@@ -32,7 +32,7 @@ Execute the approved plan from the Software Architect phase. Produce high-qualit
 - Use absolute paths for all file operations.
 - After every file change: Re-read it to verify.
 - Run available linters/tests locally before declaring done.
-- **Pre-PR ub-mode dev flow** (supported languages): after tests pass, run `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (`rm -f .metrics/dry.edn` first) and fix what they flag; run `mutator` on scope only on a laptop or in CI (never in a cloud agent). Push so CI **`ub-gates`** runs; record on the PR **`Gates:`** line (`docs/shared/ub-mode-practice.md`).
+- **Pre-PR ub-mode dev flow** (supported languages): before opening a PR, run dryer, crapper, and mutator on the new code and act on the results. Local recipe (no host installs): `bash scripts/ub_gates_container.sh` (`docker run --rm`, blocking `UB_GATES_ADVISORY=0`). Usage: `Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git PATH] [--metrics-dir PATH]`. Scope is changed functions (crapper) and changed lines (dryer, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. Debt in untouched old functions does not block. Mutator budget is 20 minutes per PR; a timeout is reported and does not block; a skip is `skipped_mutator` and fails. There is no waiver: fix blocking findings on changed code, or escalate to the CoS. The PR **`Gates:`** section reports the real results. CI **`ub-gates`** uses `scripts/run_ub_gates_ci.sh` (blocking by default). Advisory mode is only `scripts/run_ub_gates_report.sh` or `UB_GATES_ADVISORY=1` (`docs/shared/ub-mode-practice.md`).
 - Self-review checklist (before QA handoff):
   - Does it do exactly what the plan says?
   - Style & consistency perfect?

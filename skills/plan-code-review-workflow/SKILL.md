@@ -76,18 +76,19 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 
 ### Phase 2.75: ub-mode pre-PR dev flow (implementer)
 1. Load `docs/shared/ub-mode-practice.md` (Pre-PR dev flow) and `skills/ub-mode/references/gates-by-language.md`.
-2. After tests pass, run **`crapper --threshold 10`** and **`dryer --threshold 0.8`** on merge-base **scope** (`rm -f .metrics/dry.edn` before dryer). **Fix** what they flag before opening a PR (`--changed` only for uncommitted edits).
-3. Run **`mutator`** on scope on a **laptop** or in **CI** — **never** in a cloud agent harness.
-4. Record measured results on the PR **`Gates:`** line and in `progress.md`. **dryer (GMA-411):** missing `.metrics/dry.edn` after empty `--changed` = **no selection/skipped**, not a pass from an old file.
-5. Push so CI job **`ub-gates`** runs the same checks (`scripts/run_ub_gates_ci.sh`). Advisory mode: gate debt on the **`Gates:`** line does not block QA **APPROVE**; a **red/missing `ub-gates` check** at head SHA is a gate miss (hand back without a review round).
+2. After tests pass, and **before opening a PR**, run dryer, crapper, and mutator on the new code. Local recipe (no host installs): `bash scripts/ub_gates_container.sh` (`docker run --rm`, `UB_GATES_ADVISORY=0`). Usage: `Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git PATH] [--metrics-dir PATH]`.
+3. Scope is changed functions (crapper, `--threshold 10`) and changed lines (dryer `--threshold 0.8` after `rm -f .metrics/dry.edn`, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. Debt in untouched old functions does not block.
+4. Act on the results. Fix blocking findings on changed code, or escalate them to the CoS. There is no waiver. A mutator skip is `skipped_mutator` and fails. A mutator timeout (20-minute per-PR budget) is reported, leads the summary, and does not block.
+5. Record the real results on the PR **`Gates:`** line and in `progress.md`. **dryer (GMA-411):** missing `.metrics/dry.edn` after the run is `tool_error`, not a pass from an old file.
+6. Push so CI job **`ub-gates`** runs `scripts/run_ub_gates_ci.sh` (blocking default `UB_GATES_ADVISORY=0`). Advisory mode is only `scripts/run_ub_gates_report.sh` or explicit `UB_GATES_ADVISORY=1`. A **red/missing `ub-gates` check** at head SHA is a gate miss (hand back without a review round).
 
-**Exit Criteria**: Pre-PR dev flow done or skipped with documented reason; CI ub-gates triggered. Then hand off to QA.
+**Exit Criteria**: For gate-relevant code, dryer, crapper, and mutator ran and blocking findings were fixed or escalated before the PR. Docs-only diffs are `skipped_no_scope`. Then hand off to QA.
 
-**Optional — project standards:** When the active manifest project has `standards-<repo>/SKILL.md` in its harness skill folders, follow its PR and planning formats before QA recommends APPROVE (`docs/shared/repo-standards-practice.md`, `docs/shared/hub-pull-request-template.md`). Compatible with advisory ub-mode.
+**Optional — project standards:** When the active manifest project has `standards-<repo>/SKILL.md` in its harness skill folders, follow its PR and planning formats before QA recommends APPROVE (`docs/shared/repo-standards-practice.md`, `docs/shared/hub-pull-request-template.md`). The PR **`Gates:`** section still reports the real ub-gates results.
 
 ### Phase 3: REVIEW (QA Critical Reviewer Role)
 1. **Switch Role** — Load `agents/qa-critical-reviewer.md` + full `skills/expert-pr-review/SKILL.md` if this results in a PR.
-2. **Ub-gates at head SHA** — Read the **`ub-gates`** job summary / `.metrics/ub-gates-outcome.txt` (`outcome=`, `gates_ran=`); do **not** re-run tools. `ran_clean` / `ran_with_findings` = tools ran (advisory findings OK for APPROVE). **`tool_error`** = tool failure, not `ran_clean` — hand back to implementer; **not** a review round. `skipped_tools_missing` (`gates_ran=0`) is not gates ran; red/missing check for other infrastructure failures → implementer; **not** a review round.
+2. **Ub-gates at head SHA** — Read the **`ub-gates`** job summary / `.metrics/ub-gates-outcome.txt` (`outcome=`, `gates_ran=`); do **not** re-run tools. `ran_clean` = tools ran and changed scope is clean. `ran_with_findings` fails the blocking job — hand back; fix or escalate to the CoS; **not** a review round. **`tool_error`**, **`skipped_mutator`**, and **`skipped_tools_missing`** fail the blocking job and are not `ran_clean` — hand back to the implementer; **not** a review round. Debt in untouched old functions does not block. A mutator timeout leads the summary and does not block. `skipped_no_scope` is OK for docs-only diffs.
 2.5. **Blast radius (non-docs PRs)** — Load `skills/blast-radius/SKILL.md` and analyze the PR's changed paths before recommending APPROVE. Summarize what could break elsewhere; cite at least one prove-it-works check when risk is non-obvious.
 3. **Perform Critical Review**
    - If GitHub PR: Follow **exact** 8-step flow in expert-pr-review.md (gather context in parallel, resolve threads, build/test, security checklist, summarize).

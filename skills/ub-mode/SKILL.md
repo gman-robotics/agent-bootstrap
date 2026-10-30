@@ -1,7 +1,7 @@
 ---
 name: ub-mode
-description: "Use when writing or changing code under the reduced Make it Work, Make it Right, and Practice loop (/ub-mode). Reports advisory quality-gate results (crapper, dryer, mutator) when those tools exist; gates do not block APPROVE until Tom approves blocking mode. Cite pstack-principles by name only; definitions live in skills/pstack-principles/SKILL.md."
-version: 1.0.4
+description: "Use when writing or changing code under the reduced Make it Work, Make it Right, and Practice loop (/ub-mode). Dryer, crapper, and mutator block by default (scripts/run_ub_gates_ci.sh, UB_GATES_ADVISORY=0). Advisory mode is only run_ub_gates_report.sh or UB_GATES_ADVISORY=1. Cite pstack-principles by name only; definitions live in skills/pstack-principles/SKILL.md."
+version: 1.0.5
 ---
 
 # ub-mode — Make it Work, Make it Right, Practice
@@ -30,7 +30,7 @@ Enforce a thin, repeatable engineering loop when implementing or reviewing code.
 
 **Verification**
 - Phase 1 checks cite real test output (prove-it-works).
-- Phase 2 gate block cites measured results (CRAP, dry.edn candidates, mutator exits) when tools exist; findings are advisory only.
+- Phase 2 gate block cites measured results (CRAP, dry.edn candidates, mutator exits). Blocking findings on changed code are fixed or escalated before the PR.
 - Practice log lists action + reason for each gate run or skip.
 
 ---
@@ -43,9 +43,9 @@ Every change walks:
 2. **Make it Right** — root cause, units, behavior tests, then gates.
 3. **Practice** — log, context, worktrees, commits.
 
-**Advisory mode (hub default):** Run phase 2 gates when practical and **report** results in the PR body (`Gates:` line) or review handback. Gate findings **do not** block APPROVE and **do not** count as review rounds. Blocking mode starts only after Tom explicitly approves switching ub-mode to blocking gates.
+**Blocking by default:** `scripts/run_ub_gates_ci.sh` defaults to `UB_GATES_ADVISORY=0`. Dryer, crapper, and mutator fail the job on findings in changed scope, on `tool_error`, on `skipped_tools_missing`, and on `skipped_mutator`. Advisory mode is only `scripts/run_ub_gates_report.sh` or an explicit `UB_GATES_ADVISORY=1`. There is no waiver. A red **`ub-gates`** check is a gate miss. Gate misses **do not** count as review rounds.
 
-**Pre-PR dev flow (implementer):** Pass the merge-base **scope** file list to `crapper --threshold 10` and `dryer --threshold 0.8` (`rm -f .metrics/dry.edn` first) and **fix** what they flag. Use upstream `--changed` only for **uncommitted** edits (`git status`). Run **mutator** on scope on a **laptop** or in **CI** only (`--since-last-run` for incremental function reruns). CI **`ub-gates`** uses the same scope on every `push` / `pull_request`. See `docs/shared/ub-mode-practice.md`.
+**Pre-PR dev flow (implementer):** Before opening a PR, run dryer, crapper, and mutator on the new code and act on the results. Local recipe (no host installs): `bash scripts/ub_gates_container.sh` (`docker run --rm`, `UB_GATES_ADVISORY=0`). Usage line: `Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git PATH] [--metrics-dir PATH]`. Scope is changed functions (crapper) and changed lines (dryer, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. Debt in untouched old functions does not block. The PR **`Gates:`** section reports the real results. See `docs/shared/ub-mode-practice.md`.
 
 ---
 
@@ -85,23 +85,25 @@ Apply these **pstack-principles** by name while implementing:
 
 Refactor only after behavior is pinned: structure changes, proof unchanged (**prove-it-works**).
 
-### Quality gates (advisory report when tools exist)
+### Quality gates (blocking on changed code)
 
 Language matrix and commands: `references/gates-by-language.md`. Supported languages: Clojure, Java, Go, TypeScript, Rust, Python (crapper also covers JavaScript variants; dryer TypeScript files only — see reference). If the repo uses another language, state that no unclebob gate applies; do not invent a scanner.
 
 | Gate | Tool | Measured result (report honestly) | Evidence |
 | --- | --- | --- | --- |
-| CRAP | crapper | worst function **CRAP ≤ 10** is clean; `--threshold 10` exits non-zero only when worst **&gt; 10** | `.metrics/crap.edn` |
-| Duplication | dryer | read `.metrics/dry.edn`: list any `:candidates` with `:score` **≥ 0.8** (dryer exits `0` even when pairs meet the threshold) | `.metrics/dry.edn` |
-| Mutation | mutator | exit `0` clean; exit `3` means **survivors**; cover the uncovered, kill the survivors, delete dead code | `.metrics/mutate/*.edn` |
+| CRAP | crapper | changed functions at **CRAP ≤ 10** are clean; other functions are `crapper_debt` (reported only) | `.metrics/crap.edn` |
+| Duplication | dryer | candidates **≥ 0.8** that overlap changed lines block; other candidates are `dryer_debt` (reported only) | `.metrics/dry.edn` |
+| Mutation | mutator | changed lines; 20-minute budget; a timeout is reported and does not block; exit `3` means **survivors** | `.metrics/mutate/*.edn` |
 
-**Gate block (run in order after tests pass; report only — advisory until blocking mode is approved)**
+**Gate block (run after tests pass, before the PR; blocking on changed scope)**
 
-1. `crapper --threshold 10` on **scope** paths (merge-base diff, or `--changed` only with uncommitted edits). Report worst CRAP from `.metrics/crap.edn` or stdout.
-2. **dryer (GMA-411):** `rm -f .metrics/dry.edn` then `dryer --threshold 0.8` on **scope**. Parse `.metrics/dry.edn` for candidates ≥ 0.8 (dryer exit `0` is not “clean”).
-3. `mutator` on **scope** (install crapper beside mutator per upstream README). `--changed` = changed **files** from `git status`; `--since-last-run` for function-level reruns. Note exit `3` = survivors.
+1. `crapper --threshold 10` on the merge-base file list. Blocking findings are changed functions with CRAP > 10. Report them from `.metrics/crap.edn`.
+2. **dryer (GMA-411):** `rm -f .metrics/dry.edn` then `dryer --threshold 0.8` on that list. Blocking findings are candidates ≥ 0.8 that touch changed lines (dryer exit `0` still needs the fresh `.metrics/dry.edn` read).
+3. `mutator` on changed lines. Budget is 20 minutes per PR. A timeout is reported (it leads the summary) and does not block. Exit `3` means **survivors** and blocks. A skip in blocking mode is `skipped_mutator` and fails.
 
-Record results on the PR **`Gates:`** line (see `docs/shared/ub-mode-practice.md`). Implementer fixes crapper/dryer flags before PR; mutator on laptop/CI. Reviewer confirms **`ub-gates`** at head SHA only. Gate debt on the **`Gates:`** line does not block APPROVE in advisory mode; red/missing **`ub-gates`** is a gate miss (hand back, not a review round).
+Prefer `bash scripts/ub_gates_container.sh` so the three tools run inside a throwaway container. Fix blocking findings on changed code, or escalate them to the CoS. Findings and debt in untouched old functions do not block.
+
+Record real results on the PR **`Gates:`** line (see `docs/shared/ub-mode-practice.md`). The reviewer reads **`ub-gates`** at head SHA only. A red or missing **`ub-gates`** check is a gate miss (hand back, not a review round).
 
 Optional visualization: [uml-viewer](https://github.com/unclebob/uml-viewer) reads the same `.metrics/` files.
 
@@ -134,4 +136,4 @@ Push only when the parent workflow allows (hub global rules).
 
 Adapted from [unclebob/ub-mode](https://github.com/unclebob/ub-mode). Gate tools are external repositories (see `NOTICE.md`). Hub doc: `docs/shared/ub-mode-practice.md`.
 
-*Last updated: 2026-10-25 | Hub version: 0.13.1*
+*Last updated: 2026-10-30 | Hub version: 0.14.0*
