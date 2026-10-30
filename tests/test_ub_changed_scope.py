@@ -387,6 +387,64 @@ class DryFilterTests(unittest.TestCase):
         self.assertEqual(result["findings"], [])
         self.assertEqual(len(result["debt"]), 1)
 
+    def test_one_parsed_side_above_threshold_without_overlap_is_a_tool_error(self) -> None:
+        edn = "\n".join(
+            [
+                "{:candidates [",
+                " {:score 0.91",
+                '  :language "python"',
+                '  :left {:file "a.py", :start-line 30, :end-line 33}',
+                '  :right {:file "b.py"}',
+                "  :left-nodes 4",
+                "  :right-nodes 4}}",
+                "]}",
+            ]
+        )
+        with self.assertRaises(ScopeJoinError) as caught:
+            filter_dry(edn, {"a.py": [2]}, 0.8)
+        self.assertIn("parsed", str(caught.exception).lower())
+
+    def test_one_parsed_side_at_threshold_without_overlap_is_a_tool_error(self) -> None:
+        edn = "\n".join(
+            [
+                "{:candidates [",
+                " {:score 0.8",
+                '  :language "python"',
+                '  :left {:file "a.py"}',
+                '  :right {:file "a.py", :start-line 30, :end-line 33}',
+                "  :left-nodes 4",
+                "  :right-nodes 4}}",
+                "]}",
+            ]
+        )
+        with self.assertRaises(ScopeJoinError) as caught:
+            filter_dry(edn, {"a.py": [2]}, 0.8)
+        self.assertIn("parsed", str(caught.exception).lower())
+
+    def test_both_sides_at_threshold_without_overlap_stay_debt(self) -> None:
+        edn = self._edn(
+            '{:file "a.py", :start-line 30, :end-line 33}',
+            '{:file "a.py", :start-line 40, :end-line 44}',
+            "0.8",
+        )
+        result = filter_dry(edn, {"a.py": [2]}, 0.8)
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(len(result["debt"]), 1)
+
+    def test_one_parsed_side_below_threshold_without_overlap_stays_debt(self) -> None:
+        edn = "\n".join(
+            [
+                "{:candidates [",
+                " {:score 0.79",
+                '  :language "python"',
+                '  :left {:file "a.py", :start-line 30, :end-line 33}}',
+                "]}",
+            ]
+        )
+        result = filter_dry(edn, {"a.py": [2]}, 0.8)
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(len(result["debt"]), 1)
+
     def test_score_equal_to_threshold_is_a_finding_when_one_span_overlaps(self) -> None:
         edn = "\n".join(
             [

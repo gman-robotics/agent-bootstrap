@@ -326,7 +326,10 @@ exit 0
             )
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
+            self.assertIn("outcome=skipped_mutator", outcome)
+            self.assertNotIn("outcome=ran_clean", outcome)
             self.assertIn("mutator_skipped=1", outcome)
+            self.assertIn("gate_miss=1", outcome)
             self.assertFalse(log.exists())
 
     def test_cursor_agent_with_github_actions_runs_mutator(self):
@@ -1078,6 +1081,30 @@ exit 0
             self.assertIn("outcome=skipped_mutator", outcome)
             self.assertNotIn("outcome=ran_clean", outcome)
 
+    def test_advisory_skip_mutator_is_skipped_mutator_and_exits_zero(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                _EMPTY_CRAP,
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\necho ran >&2\nexit 0\n",
+            )
+            env = self._empty_spans(repo, self._block_env(bin_dir))
+            env["UB_GATES_ADVISORY"] = "1"
+            env["UB_GATES_SKIP_MUTATOR"] = "1"
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=skipped_mutator", outcome)
+            self.assertNotIn("outcome=ran_clean", outcome)
+            self.assertIn("mutator_skipped=1", outcome)
+            self.assertIn("advisory=1", outcome)
+            self.assertIn("gate_miss=1", outcome)
+
     def test_blocking_name_only_diff_failure_is_tool_error(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
@@ -1294,6 +1321,37 @@ exit 0
             proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
             self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
             self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+
+    def test_blocking_one_sided_dryer_row_at_threshold_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            dryer = "\n".join(
+                [
+                    "#!/usr/bin/env bash",
+                    "mkdir -p .metrics",
+                    "cat > .metrics/dry.edn <<'EDN'",
+                    "{:candidates [",
+                    " {:score 0.8",
+                    '  :language "python"',
+                    '  :left {:file "lib/a.py", :start-line 10, :end-line 12}',
+                    '  :right {:file "lib/b.py"}',
+                    "  :left-nodes 4",
+                    "  :right-nodes 4}}",
+                    "]}",
+                    "EDN",
+                    "exit 0",
+                    "",
+                ]
+            )
+            self._install_quiet_tools(repo, bin_dir, _EMPTY_CRAP, dryer, "#!/usr/bin/env bash\nexit 0\n")
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=tool_error", outcome)
+            self.assertNotIn("outcome=ran_clean", outcome)
+            self.assertNotIn("dryer_debt=1", outcome)
 
     def test_blocking_unjoined_nil_crap_with_coverage_is_tool_error(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

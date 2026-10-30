@@ -468,6 +468,10 @@ def _dry_is_finding(row: DryRow, changed: dict[str, list[int]], threshold: float
     return _either_side(row, changed, root)
 
 
+def _exactly_one_side(row: DryRow) -> bool:
+    return (row.left is None) != (row.right is None)
+
+
 def _classify_dry(
     row: DryRow,
     changed: dict[str, list[int]],
@@ -478,6 +482,10 @@ def _classify_dry(
 ) -> None:
     if row.score >= threshold and row.left is None and row.right is None:
         raise ScopeJoinError("dryer row meets threshold but neither side parsed")
+    if row.score >= threshold and _exactly_one_side(row) and not _either_side(row, changed, root):
+        raise ScopeJoinError(
+            "dryer row meets threshold but the one parsed side does not overlap changed lines"
+        )
     if _dry_is_finding(row, changed, threshold, root):
         findings.append(_dry_payload(row))
         return
