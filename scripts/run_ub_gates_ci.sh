@@ -1,13 +1,21 @@
 #!/usr/bin/env bash
-# ub-mode gates for CI (GMA-410 advisory, GMA-499 blocking).
+# ub-mode gates for CI (GMA-410 report path, GMA-499 blocking).
 # Uses the merge-base file list. Upstream `--changed` reads git status only.
-# UB_GATES_ADVISORY=1 (default) reports and exits 0.
-# UB_GATES_ADVISORY=0 fails the job on skip (except skipped_no_scope), tool_error, and findings in changed scope.
+# UB_GATES_ADVISORY defaults to 0 (blocking). UB_GATES_ADVISORY=1 reports and exits 0.
+# run_ub_gates_report.sh sets UB_GATES_ADVISORY=1. A direct call does not.
+# Blocking mode fails on skip (except skipped_no_scope), tool_error, findings in
+# changed scope, and skipped_mutator.
+# UB_GATES_SKIP_MUTATOR=1 and the CURSOR_AGENT auto-skip are skipped_mutator in
+# blocking mode (exit 1). They are never ran_clean. Advisory mode may still skip.
+# A failed git diff --name-only is tool_error. A missing merge base is tool_error.
+# Base-ref fetch honors UB_GATES_BASE_REF, uses no depth limit, and unshallows
+# a shallow clone. Mutator budget timeout is non-blocking; the step summary's
+# first line states the timeout. .pyi and .d.ts are outside gate scope.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCOPE_PY="${SCRIPT_DIR}/ub_changed_scope.py"
-ADVISORY="${UB_GATES_ADVISORY:-1}"
+ADVISORY="${UB_GATES_ADVISORY:-0}"
 BASE_REF="${UB_GATES_BASE_REF:-origin/main}"
 OUTCOME_FILE="${UB_GATES_OUTCOME_FILE:-.metrics/ub-gates-outcome.txt}"
 DRYER_THRESHOLD="${UB_GATES_DRYER_THRESHOLD:-0.8}"
@@ -52,8 +60,15 @@ append_step_summary() {
   [[ -n "${GITHUB_STEP_SUMMARY:-}" ]] || return 0
   mkdir -p "$(dirname "${GITHUB_STEP_SUMMARY}")" 2>/dev/null || return 0
   {
+    if [[ "${MUTATOR_TIMEOUT:-0}" == "1" ]]; then
+      echo "mutator timeout: budget exhausted; non-blocking"
+    fi
     echo "## ub-gates"
     echo ""
+    if [[ "${OUTCOME:-}" == "skipped_mutator" ]]; then
+      echo "> **Blocking skip:** \`skipped_mutator\` — mutator did not run. This is not a clean result."
+      echo ""
+    fi
     if [[ "${OUTCOME:-}" == "skipped_tools_missing" && "${ADVISORY}" == "1" ]]; then
       echo "> **Neutral skip (not a gate pass):** \`skipped_tools_missing\` — crapper, dryer, and mutator were not on PATH. Install tools in CI is a follow-up ticket."
       echo ""
@@ -121,6 +136,10 @@ exit_for_outcome() {
         code=1
       fi
       ;;
+    skipped_mutator)
+      log "ub-gates: blocking mode — mutator skip is not ran_clean"
+      code=1
+      ;;
     *)
       code=1
       ;;
@@ -132,7 +151,8 @@ exit_for_outcome() {
 
 gate_relevant_file() {
   case "$1" in
-    *.py|*.pyi|*.ts|*.tsx|*.mts|*.cts|*.js|*.jsx|*.mjs|*.cjs|*.go|*.rs|*.java|*.clj|*.cljs|*.cljc) return 0 ;;
+    *.pyi|*.d.ts) return 1 ;;
+    *.py|*.ts|*.tsx|*.mts|*.cts|*.js|*.jsx|*.mjs|*.cjs|*.go|*.rs|*.java|*.clj|*.cljs|*.cljc) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -154,15 +174,28 @@ is_test_path() {
 
 collect_scope_files() {
   local merge_base="$1"
-  local f
+  local f list rc
   SCOPE_FILES=()
+  SCOPE_DIFF_FAILED=0
+  list="$(mktemp)"
+  set +e
+  git diff --name-only --diff-filter=ACMRT "${merge_base}" HEAD >"${list}" 2>/dev/null
+  rc=$?
+  set -e
+  if [[ "${rc}" -ne 0 ]]; then
+    rm -f "${list}"
+    SCOPE_DIFF_FAILED=1
+    SCOPE_COUNT=0
+    return 0
+  fi
   while IFS= read -r f; do
     [[ -z "${f}" ]] && continue
     [[ -f "${f}" ]] || continue
     gate_relevant_file "${f}" || continue
     is_test_path "${f}" && continue
     SCOPE_FILES+=("${f}")
-  done < <(git diff --name-only --diff-filter=ACMRT "${merge_base}" HEAD 2>/dev/null || true)
+  done <"${list}"
+  rm -f "${list}"
   SCOPE_COUNT="${#SCOPE_FILES[@]}"
 }
 
@@ -362,7 +395,9 @@ classify_dryer() {
   DRYER_FINDINGS=0
   DRYER_DEBT=0
   DRYER_HIGH=0
-  if [[ "${DRYER_RC}" -eq 1 || "${DRYER_RC}" -eq 2 ]]; then
+  # 0 is the only dryer success code. Exit 1, 2, and every other code are
+  # tool_error even when .metrics/dry.edn exists.
+  if [[ "${DRYER_RC}" -ne 0 ]]; then
     return 1
   fi
   if [[ ! -f .metrics/dry.edn ]]; then
@@ -395,9 +430,39 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit_for_outcome
 fi
 
-if ! git rev-parse --verify "${BASE_REF}^{commit}" >/dev/null 2>&1; then
-  git fetch origin main --depth=1 2>/dev/null || true
-fi
+base_remote_name() {
+  if [[ "${BASE_REF}" == */* ]]; then
+    printf '%s\n' "${BASE_REF%%/*}"
+  else
+    printf '%s\n' "origin"
+  fi
+}
+
+base_branch_name() {
+  if [[ "${BASE_REF}" == */* ]]; then
+    printf '%s\n' "${BASE_REF#*/}"
+  else
+    printf '%s\n' "${BASE_REF}"
+  fi
+}
+
+repo_is_shallow() {
+  [[ "$(git rev-parse --is-shallow-repository 2>/dev/null || echo false)" == "true" ]]
+}
+
+fetch_base_ref() {
+  local remote branch
+  remote="$(base_remote_name)"
+  branch="$(base_branch_name)"
+  if repo_is_shallow; then
+    git fetch --unshallow "${remote}" 2>/dev/null || git fetch --unshallow 2>/dev/null || true
+  fi
+  if ! git rev-parse --verify "${BASE_REF}^{commit}" >/dev/null 2>&1; then
+    git fetch "${remote}" "+refs/heads/${branch}:refs/remotes/${remote}/${branch}" 2>/dev/null || true
+  fi
+}
+
+fetch_base_ref
 
 if ! git rev-parse --verify "${BASE_REF}^{commit}" >/dev/null 2>&1; then
   OUTCOME="skipped_no_base_ref"
@@ -407,12 +472,21 @@ fi
 
 MERGE_BASE="$(git merge-base HEAD "${BASE_REF}" 2>/dev/null || echo "")"
 if [[ -z "${MERGE_BASE}" ]]; then
-  OUTCOME="skipped_no_merge_base"
+  OUTCOME="tool_error"
   GATE_MISS=1
+  TOOL_ERROR=1
+  emit_warning "tool_error — no merge base between HEAD and ${BASE_REF}"
   exit_for_outcome
 fi
 
 collect_scope_files "${MERGE_BASE}"
+if [[ "${SCOPE_DIFF_FAILED}" -eq 1 ]]; then
+  OUTCOME="tool_error"
+  GATE_MISS=1
+  TOOL_ERROR=1
+  emit_warning "tool_error — git diff --name-only failed"
+  exit_for_outcome
+fi
 if [[ "${SCOPE_COUNT}" -eq 0 ]]; then
   OUTCOME="skipped_no_scope"
   GATE_MISS=0
@@ -519,6 +593,9 @@ if [[ "${TOOL_ERROR}" -eq 1 ]]; then
   emit_warning "tool_error — dryer/mutator tool failure or missing .metrics/dry.edn after dryer; not ran_clean."
 elif [[ "${FINDING}" -eq 1 ]]; then
   OUTCOME="ran_with_findings"
+elif [[ "${ADVISORY}" != "1" && "${MUTATOR_SKIPPED}" == "1" ]]; then
+  OUTCOME="skipped_mutator"
+  GATE_MISS=1
 else
   OUTCOME="ran_clean"
 fi

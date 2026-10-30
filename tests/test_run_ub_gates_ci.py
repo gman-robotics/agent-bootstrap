@@ -61,6 +61,7 @@ class RunUbGatesCiTests(unittest.TestCase):
             proc = self._run_in_repo(
                 repo,
                 {
+                    "UB_GATES_ADVISORY": "1",
                     "UB_GATES_BASE_REF": "main",
                     "GITHUB_ACTIONS": "true",
                     "PATH": "/usr/bin:/bin",
@@ -114,7 +115,11 @@ exit 0
 
             proc = self._run_in_repo(
                 repo,
-                {"UB_GATES_BASE_REF": "main", "PATH": f"{bin_dir}:/usr/bin:/bin"},
+                {
+                    "UB_GATES_ADVISORY": "1",
+                    "UB_GATES_BASE_REF": "main",
+                    "PATH": f"{bin_dir}:/usr/bin:/bin",
+                },
             )
             self.assertEqual(
                 proc.returncode,
@@ -171,7 +176,11 @@ exit 0
             )
             proc = self._run_in_repo(
                 repo,
-                {"UB_GATES_BASE_REF": "main", "PATH": f"{bin_dir}:/usr/bin:/bin"},
+                {
+                    "UB_GATES_ADVISORY": "1",
+                    "UB_GATES_BASE_REF": "main",
+                    "PATH": f"{bin_dir}:/usr/bin:/bin",
+                },
             )
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
@@ -189,6 +198,7 @@ exit 0
             proc = self._run_in_repo(
                 repo,
                 {
+                    "UB_GATES_ADVISORY": "1",
                     "UB_GATES_BASE_REF": "main",
                     "PATH": f"{bin_dir}:/usr/bin:/bin",
                     "GITHUB_ACTIONS": "true",
@@ -211,7 +221,11 @@ exit 0
             )
             proc = self._run_in_repo(
                 repo,
-                {"UB_GATES_BASE_REF": "main", "PATH": f"{bin_dir}:/usr/bin:/bin"},
+                {
+                    "UB_GATES_ADVISORY": "1",
+                    "UB_GATES_BASE_REF": "main",
+                    "PATH": f"{bin_dir}:/usr/bin:/bin",
+                },
             )
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
@@ -231,7 +245,11 @@ exit 0
             )
             proc = self._run_in_repo(
                 repo,
-                {"UB_GATES_BASE_REF": "main", "PATH": f"{bin_dir}:/usr/bin:/bin"},
+                {
+                    "UB_GATES_ADVISORY": "1",
+                    "UB_GATES_BASE_REF": "main",
+                    "PATH": f"{bin_dir}:/usr/bin:/bin",
+                },
             )
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
@@ -300,6 +318,7 @@ exit 0
             proc = self._run_in_repo(
                 repo,
                 {
+                    "UB_GATES_ADVISORY": "1",
                     "UB_GATES_BASE_REF": "main",
                     "PATH": f"{bin_dir}:/usr/bin:/bin",
                     "CURSOR_AGENT": "1",
@@ -338,6 +357,7 @@ exit 0
             proc = self._run_in_repo(
                 repo,
                 {
+                    "UB_GATES_ADVISORY": "1",
                     "UB_GATES_BASE_REF": "main",
                     "PATH": f"{bin_dir}:/usr/bin:/bin",
                     "CURSOR_AGENT": "1",
@@ -447,7 +467,8 @@ exit 0
                 {"UB_GATES_ADVISORY": "0", "UB_GATES_BASE_REF": "main", "PATH": "/usr/bin:/bin"},
             )
             self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
-            self.assertIn("outcome=skipped_no_merge_base", self._gate_outcome(repo))
+            self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+            self.assertNotIn("outcome=skipped_no_merge_base", self._gate_outcome(repo))
 
     def test_blocking_not_git_exits_one(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -684,11 +705,15 @@ exit 0
             )
             env = self._empty_spans(repo, self._block_env(bin_dir))
             env["UB_GATES_MUTATOR_BUDGET_SECS"] = "1"
+            summary = repo / "step-summary.md"
+            env["GITHUB_STEP_SUMMARY"] = str(summary)
             proc = self._run_in_repo(repo, env)
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = self._gate_outcome(repo)
             self.assertIn("mutator_timeout=1", outcome)
             self.assertNotIn("outcome=tool_error", outcome)
+            first = summary.read_text(encoding="utf-8").splitlines()[0]
+            self.assertIn("timeout", first.lower())
             self.assertIn("budget", proc.stdout + proc.stderr)
             ran = mutator_log.read_text(encoding="utf-8").strip().splitlines()
             self.assertEqual(len(ran), 1)
@@ -800,6 +825,8 @@ exit 0
             "web/view.test.cjs",
             "java/FooTest.java",
             "rust/foo_test.rs",
+            "lib/api.pyi",
+            "web/types.d.ts",
         )
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
@@ -994,6 +1021,331 @@ exit 0
             outcome = self._gate_outcome(repo)
             self.assertIn("outcome=tool_error", outcome)
             self.assertIn("dryer_exit=9", outcome)
+
+    def test_direct_call_defaults_to_blocking(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._init_repo(repo)
+            (repo / "lib").mkdir()
+            (repo / "lib" / "a.py").write_text("x = 1\n", encoding="utf-8")
+            self._commit_all(repo, "base")
+            subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+            (repo / "lib" / "a.py").write_text("x = 2\n", encoding="utf-8")
+            self._commit_all(repo, "change")
+            proc = self._run_in_repo(repo, {"UB_GATES_BASE_REF": "main", "PATH": "/usr/bin:/bin"})
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            self.assertIn("outcome=skipped_tools_missing", self._gate_outcome(repo))
+            self.assertIn("advisory=0", self._gate_outcome(repo))
+
+    def test_blocking_skip_mutator_is_not_ran_clean(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                _EMPTY_CRAP,
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\necho ran >&2\nexit 0\n",
+            )
+            env = self._empty_spans(repo, self._block_env(bin_dir))
+            env["UB_GATES_SKIP_MUTATOR"] = "1"
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=skipped_mutator", outcome)
+            self.assertNotIn("outcome=ran_clean", outcome)
+            self.assertIn("mutator_skipped=1", outcome)
+
+    def test_blocking_cursor_agent_skip_is_not_ran_clean(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                _EMPTY_CRAP,
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\necho ran >&2\nexit 0\n",
+            )
+            env = self._empty_spans(repo, self._block_env(bin_dir))
+            env["CURSOR_AGENT"] = "1"
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=skipped_mutator", outcome)
+            self.assertNotIn("outcome=ran_clean", outcome)
+
+    def test_blocking_name_only_diff_failure_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            real_git = shutil.which("git")
+            self.assertIsNotNone(real_git)
+            wrapper = bin_dir / "git"
+            bin_dir.mkdir()
+            wrapper.write_text(
+                "\n".join(
+                    [
+                        "#!/usr/bin/env bash",
+                        'if [[ "$1" == "diff" ]]; then',
+                        '  for arg in "$@"; do',
+                        '    if [[ "${arg}" == "--name-only" ]]; then',
+                        "      echo name-only-failed >&2",
+                        "      exit 1",
+                        "    fi",
+                        "  done",
+                        "fi",
+                        f'exec {real_git} "$@"',
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            wrapper.chmod(0o755)
+            proc = self._run_in_repo(
+                repo,
+                {"UB_GATES_ADVISORY": "0", "UB_GATES_BASE_REF": "main", "PATH": f"{bin_dir}:/usr/bin:/bin"},
+            )
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=tool_error", outcome)
+            self.assertNotIn("outcome=skipped_no_scope", outcome)
+
+    def test_blocking_shallow_fetch_uses_base_ref_without_depth(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            origin = Path(tmp) / "origin"
+            origin.mkdir()
+            self._init_repo(origin)
+            lib = origin / "lib"
+            lib.mkdir()
+            (lib / "a.py").write_text("v1\n", encoding="utf-8")
+            self._commit_all(origin, "base")
+            (lib / "a.py").write_text("v2\n", encoding="utf-8")
+            self._commit_all(origin, "main tip")
+            subprocess.run(
+                ["git", "checkout", "-b", "feat", "HEAD~1"],
+                cwd=origin,
+                check=True,
+                capture_output=True,
+            )
+            (lib / "a.py").write_text("v3\n", encoding="utf-8")
+            self._commit_all(origin, "feat")
+            clone = Path(tmp) / "clone"
+            subprocess.run(
+                ["git", "clone", "--depth", "1", "--branch", "feat", origin.as_uri(), str(clone)],
+                check=True,
+                capture_output=True,
+            )
+            log = clone / "git-args.log"
+            bin_dir = clone / "bin"
+            bin_dir.mkdir()
+            real_git = shutil.which("git")
+            (bin_dir / "git").write_text(
+                "\n".join(
+                    [
+                        "#!/usr/bin/env bash",
+                        f'printf "%s\\n" "$*" >> "{log}"',
+                        f'exec {real_git} "$@"',
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            (bin_dir / "git").chmod(0o755)
+            proc = self._run_in_repo(
+                clone,
+                {
+                    "UB_GATES_ADVISORY": "0",
+                    "UB_GATES_BASE_REF": "origin/main",
+                    "PATH": f"{bin_dir}:/usr/bin:/bin",
+                },
+            )
+            fetched = log.read_text(encoding="utf-8")
+            self.assertNotIn("--depth", fetched)
+            self.assertIn("main", fetched)
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(clone)
+            self.assertIn("outcome=skipped_tools_missing", outcome)
+            self.assertNotIn("outcome=skipped_no_merge_base", outcome)
+            self.assertNotIn("outcome=skipped_no_scope", outcome)
+
+    def test_base_ref_fetch_source_has_no_depth_limit(self) -> None:
+        text = SCRIPT.read_text(encoding="utf-8")
+        self.assertNotIn("--depth=1", text)
+        self.assertNotIn("--depth 1", text)
+        self.assertIn("UB_GATES_BASE_REF", text)
+
+    def test_blocking_dryer_unexpected_exit_with_edn_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            dryer = "\n".join(
+                [
+                    "#!/usr/bin/env bash",
+                    "mkdir -p .metrics",
+                    "echo '{:candidates []}' > .metrics/dry.edn",
+                    "exit 9",
+                    "",
+                ]
+            )
+            self._install_quiet_tools(repo, bin_dir, _EMPTY_CRAP, dryer, "#!/usr/bin/env bash\nexit 0\n")
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=tool_error", outcome)
+            self.assertIn("dryer_exit=9", outcome)
+
+    def test_blocking_dryer_overlap_on_changed_line_exits_one(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            dryer = "\n".join(
+                [
+                    "#!/usr/bin/env bash",
+                    "mkdir -p .metrics",
+                    "cat > .metrics/dry.edn <<'EDN'",
+                    "{:candidates [",
+                    " {:score 0.91",
+                    '  :language "python"',
+                    '  :left {:file "lib/a.py", :start-line 1, :end-line 2}',
+                    '  :right {:file "lib/b.py", :start-line 40, :end-line 44}',
+                    "  :left-nodes 4",
+                    "  :right-nodes 4}}",
+                    "]}",
+                    "EDN",
+                    "exit 0",
+                    "",
+                ]
+            )
+            self._install_quiet_tools(repo, bin_dir, _EMPTY_CRAP, dryer, "#!/usr/bin/env bash\nexit 0\n")
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=ran_with_findings", outcome)
+            self.assertIn("dryer_findings=1", outcome)
+
+    def test_blocking_crapper_exit_2_debt_only_exits_zero(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            spec = repo / "fns.json"
+            spec.write_text(
+                "["
+                '{"namespace":"lib.a","name":"f","start_line":1,"end_line":2,"path":"lib/a.py"},'
+                '{"namespace":"lib.a","name":"old","start_line":10,"end_line":12,"path":"lib/a.py"}'
+                "]",
+                encoding="utf-8",
+            )
+            crapper = "\n".join(
+                [
+                    "#!/usr/bin/env bash",
+                    "mkdir -p .metrics",
+                    "cat > .metrics/crap.edn <<'EDN'",
+                    "{:entries [",
+                    '  {:name "f", :namespace "lib.a", :complexity 1, :coverage 0.0, :crap 2.0}',
+                    '  {:name "old", :namespace "lib.a", :complexity 4, :coverage 0.0, :crap 40.0}',
+                    "]}",
+                    "EDN",
+                    "exit 2",
+                    "",
+                ]
+            )
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                crapper,
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            env = self._block_env(bin_dir)
+            env["UB_SCOPE_FUNCTIONS_JSON"] = str(spec)
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=ran_clean", outcome)
+            self.assertIn("crapper_findings=0", outcome)
+            self.assertIn("crapper_debt=1", outcome)
+            self.assertIn("crapper_exit=2", outcome)
+
+    def test_blocking_unparsed_dryer_row_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            dryer = "\n".join(
+                [
+                    "#!/usr/bin/env bash",
+                    "mkdir -p .metrics",
+                    "cat > .metrics/dry.edn <<'EDN'",
+                    '{:candidates [{:score 0.91 :language "python" :left {:file "lib/a.py"} :right {:file "lib/b.py"}}]}',
+                    "EDN",
+                    "exit 0",
+                    "",
+                ]
+            )
+            self._install_quiet_tools(repo, bin_dir, _EMPTY_CRAP, dryer, "#!/usr/bin/env bash\nexit 0\n")
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+
+    def test_blocking_unjoined_nil_crap_with_coverage_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            spec = repo / "fns.json"
+            spec.write_text("[]", encoding="utf-8")
+            crapper = "\n".join(
+                [
+                    "#!/usr/bin/env bash",
+                    "mkdir -p .metrics",
+                    "cat > .metrics/crap.edn <<'EDN'",
+                    "{:entries [",
+                    '  {:name "f", :namespace "lib.a", :complexity 1, :coverage nil, :crap nil}',
+                    "]}",
+                    "EDN",
+                    "exit 0",
+                    "",
+                ]
+            )
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                crapper,
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            env = self._block_env(bin_dir)
+            env["UB_SCOPE_FUNCTIONS_JSON"] = str(spec)
+            env["UB_GATES_COVERAGE_CMD"] = "mkdir -p target/coverage/python && echo TN: > target/coverage/python/lcov.info"
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+
+    def test_declaration_files_are_outside_gate_scope(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._init_repo(repo)
+            self._plant(repo, ("lib/api.pyi", "web/types.d.ts"), "v1\n")
+            self._commit_all(repo, "base")
+            subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+            self._plant(repo, ("lib/api.pyi", "web/types.d.ts"), "v2\n")
+            self._commit_all(repo, "change")
+            proc = self._run_in_repo(
+                repo,
+                {"UB_GATES_ADVISORY": "0", "UB_GATES_BASE_REF": "main", "PATH": "/usr/bin:/bin"},
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=skipped_no_scope", outcome)
+            self.assertIn("scope_files=0", outcome)
 
 
 if __name__ == "__main__":
