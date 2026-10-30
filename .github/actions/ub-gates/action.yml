@@ -25,6 +25,10 @@ inputs:
     description: Optional shell command that writes coverage before the gates.
     required: false
     default: ""
+  mutator-test-command:
+    description: Optional mutator --test-command. Empty keeps the tool default.
+    required: false
+    default: ""
   rust:
     description: "true installs llvm-tools-preview and the pinned cargo-llvm-cov."
     required: false
@@ -97,6 +101,7 @@ runs:
         UB_GATES_ADVISORY: ${{ inputs.advisory }}
         UB_GATES_BASE_REF: ${{ inputs.base-ref }}
         UB_GATES_COVERAGE_CMD: ${{ inputs.coverage-command }}
+        UB_GATES_MUTATOR_TEST_CMD: ${{ inputs.mutator-test-command }}
       run: |
         set -euo pipefail
         bash "${{ inputs.hub-path }}/scripts/run_ub_gates_ci.sh"

@@ -104,6 +104,18 @@ class ChangedLinesTests(unittest.TestCase):
         )
         self.assertEqual(changed_lines_from_diff(diff), {"renamed.py": [2]})
 
+    def test_text_after_a_tab_on_the_plus_line_is_not_part_of_the_path(self) -> None:
+        diff = "+++ b/src/a.py\tother\n@@ -1 +1 @@\n+x\n"
+        self.assertEqual(changed_lines_from_diff(diff), {"src/a.py": [1]})
+
+    def test_a_quote_on_only_one_side_stays_in_the_path(self) -> None:
+        diff = '+++ b/src/a.py"\n@@ -1 +1 @@\n+x\n'
+        self.assertEqual(changed_lines_from_diff(diff), {'src/a.py"': [1]})
+
+    def test_a_quoted_path_with_a_space_is_unquoted(self) -> None:
+        diff = '+++ "b/src/my file.py"\n@@ -4 +8 @@\n+only\n'
+        self.assertEqual(changed_lines_from_diff(diff), {"src/my file.py": [8]})
+
 
 class CrapFilterTests(unittest.TestCase):
     def test_keeps_changed_function_and_marks_unchanged_as_debt(self) -> None:
@@ -178,6 +190,20 @@ class CrapFilterTests(unittest.TestCase):
         self.assertEqual([item["namespace"] for item in result["findings"]], ["a"])
         self.assertEqual([item["namespace"] for item in result["debt"]], ["b"])
 
+    def test_windows_path_uses_the_forward_slash_changed_lines(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 4, :coverage 0.0, :crap 20.0}]}'
+        spans = [FnSpan("pkg", "f", 1, 4, "lib\\a.py")]
+        result = filter_crap(edn, {"lib/a.py": [2]}, _provider(spans), 10)
+        self.assertEqual(result["findings"], [{"namespace": "pkg", "name": "f", "crap": 20.0}])
+        self.assertEqual(result["debt"], [])
+
+    def test_a_short_path_matches_a_longer_changed_path(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 4, :coverage 0.0, :crap 20.0}]}'
+        spans = [FnSpan("pkg", "f", 1, 4, "a.py")]
+        result = filter_crap(edn, {"lib/a.py": [2]}, _provider(spans), 10)
+        self.assertEqual(result["findings"], [{"namespace": "pkg", "name": "f", "crap": 20.0}])
+        self.assertEqual(result["debt"], [])
+
 
 class DryFilterTests(unittest.TestCase):
     def _edn(self, left: str, right: str, score: str) -> str:
@@ -229,6 +255,33 @@ class DryFilterTests(unittest.TestCase):
             '{:file "a.py", :start-line 1, :end-line 4}',
             '{:file "b.py", :start-line 1, :end-line 4}',
             "0.79",
+        )
+        result = filter_dry(edn, {"a.py": [2]}, 0.8)
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(len(result["debt"]), 1)
+
+    def test_score_equal_to_threshold_is_a_finding_when_one_span_overlaps(self) -> None:
+        edn = "\n".join(
+            [
+                "{:candidates [",
+                " {:score 0.8",
+                '  :language "python"',
+                '  :left {:file "a.py", :start-line 1, :end-line 3}}',
+                "]}",
+            ]
+        )
+        result = filter_dry(edn, {"a.py": [2]}, 0.8)
+        self.assertEqual(result["debt"], [])
+        self.assertEqual(len(result["findings"]), 1)
+        self.assertEqual(result["findings"][0]["score"], 0.8)
+        self.assertIsNone(result["findings"][0]["right"])
+        self.assertEqual(result["findings"][0]["left"]["file"], "a.py")
+
+    def test_a_different_file_does_not_use_another_files_lines(self) -> None:
+        edn = self._edn(
+            '{:file "b.py", :start-line 1, :end-line 3}',
+            '{:file "c.py", :start-line 1, :end-line 3}',
+            "0.95",
         )
         result = filter_dry(edn, {"a.py": [2]}, 0.8)
         self.assertEqual(result["findings"], [])

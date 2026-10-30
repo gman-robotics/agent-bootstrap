@@ -31,7 +31,7 @@ class CrapperUnavailable(Exception):
     """crapper could not be imported."""
 
 
-@dataclass(frozen=True)
+@dataclass
 class FnSpan:
     namespace: str
     name: str
@@ -40,21 +40,21 @@ class FnSpan:
     path: str
 
 
-@dataclass(frozen=True)
+@dataclass
 class CrapRow:
     namespace: str
     name: str
     crap: float | None
 
 
-@dataclass(frozen=True)
+@dataclass
 class Span:
     file: str
     start_line: int
     end_line: int
 
 
-@dataclass(frozen=True)
+@dataclass
 class DryRow:
     score: float
     left: Span | None
@@ -68,20 +68,8 @@ def _strip_tab(raw: str) -> str:
     return raw.split("\t", 1)[0].strip()
 
 
-def _quoted(raw: str) -> bool:
-    if len(raw) < 2:
-        return False
-    return _quoted_ends(raw)
-
-
-def _quoted_ends(raw: str) -> bool:
-    if not raw.startswith('"'):
-        return False
-    return raw.endswith('"')
-
-
 def _unquote(raw: str) -> str:
-    if _quoted(raw):
+    if raw.startswith('"') and raw.endswith('"'):
         return raw[1:-1]
     return raw
 
@@ -105,8 +93,6 @@ def _hunk_count(raw: str | None) -> int:
 
 
 def _span_numbers(start: int, count: int) -> list[int]:
-    if count <= 0:
-        return []
     return list(range(start, start + count))
 
 
@@ -163,7 +149,6 @@ def changed_lines_from_diff(text: str) -> dict[str, list[int]]:
 def git_diff_text(base: str) -> str:
     proc = subprocess.run(
         ["git", "diff", "-U0", "--diff-filter=ACMRT", base, "HEAD"],
-        check=False,
         capture_output=True,
         text=True,
     )
@@ -177,7 +162,9 @@ def _unescape(value: str) -> str:
 
 
 def _chunks(text: str) -> list[str]:
-    return text.split("{:name ")[1:]
+    parts = text.split("{:name ")
+    parts.pop(0)
+    return parts
 
 
 def _crap_number(token: str) -> float | None:
@@ -224,15 +211,15 @@ def _span_from_match(match: re.Match[str]) -> Span:
     return Span(_unescape(match.group(1)), int(match.group(2)), int(match.group(3)))
 
 
-def _nth_span(spans: list[Span], index: int) -> Span | None:
-    if index >= len(spans):
+def _at(items: list, index: int):
+    if index >= len(items):
         return None
-    return spans[index]
+    return items[index]
 
 
 def _two_spans(part: str) -> tuple[Span | None, Span | None]:
     spans = [_span_from_match(match) for match in _SPAN.finditer(part)]
-    return _nth_span(spans, 0), _nth_span(spans, 1)
+    return _at(spans, 0), _at(spans, 1)
 
 
 def _dry_row(part: str) -> DryRow | None:
@@ -512,13 +499,7 @@ def default_provider(path: Path, root: Path) -> list[FnSpan]:
 def _flag(argv: list[str], name: str) -> str | None:
     if name not in argv:
         return None
-    return _value_at(argv, argv.index(name) + 1)
-
-
-def _value_at(argv: list[str], index: int) -> str | None:
-    if index >= len(argv):
-        return None
-    return argv[index]
+    return _at(argv, argv.index(name) + 1)
 
 
 def _usage() -> int:
@@ -528,7 +509,7 @@ def _usage() -> int:
 
 def _emit_lines(changed: dict[str, list[int]], one: str | None) -> None:
     if one is None:
-        print(json.dumps(changed, sort_keys=True))
+        print(json.dumps(changed))
         return
     print(",".join(str(number) for number in changed.get(one, [])))
 

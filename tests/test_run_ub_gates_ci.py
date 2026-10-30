@@ -15,6 +15,9 @@ REPORT_SCRIPT = REPO_ROOT / "scripts" / "run_ub_gates_report.sh"
 class RunUbGatesCiTests(unittest.TestCase):
     def _run_in_repo(self, repo: Path, env: dict | None = None) -> subprocess.CompletedProcess:
         run_env = os.environ.copy()
+        # The ub-gates CI step exports UB_GATES_*; keep each case hermetic.
+        for key in [k for k in run_env if k.startswith("UB_GATES_") or k == "UB_SCOPE_FUNCTIONS_JSON"]:
+            run_env.pop(key)
         run_env["UB_GATES_OUTCOME_FILE"] = str(repo / ".metrics" / "ub-gates-outcome.txt")
         run_env.pop("GITHUB_STEP_SUMMARY", None)
         preserve_cursor_agent = env is not None and "CURSOR_AGENT" in env
@@ -377,6 +380,12 @@ exit 0
     def _gate_outcome(self, repo: Path) -> str:
         return (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
 
+    def _plant(self, repo: Path, rels: tuple[str, ...], text: str) -> None:
+        for rel in rels:
+            path = repo / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+
     def test_blocking_tools_missing_exits_one(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
@@ -738,6 +747,90 @@ exit 0
             self.assertFalse(seen.exists())
             self.assertIn("outcome=ran_clean", self._gate_outcome(repo))
             self.assertIn("dryer_findings=0", self._gate_outcome(repo))
+
+    def test_blocking_scope_keeps_source_and_skips_test_paths(self) -> None:
+        included = (
+            "lib/app.py",
+            "src/widget.tsx",
+            "pkg/main.go",
+            "java/Main.java",
+            "rust/lib.rs",
+            "web/view.spec.mts",
+            "src/latest.py",
+            "src/test.py",
+        )
+        excluded = (
+            "tests/test_app.py",
+            "pkg/tests/util.py",
+            "src/test/helper.py",
+            "spec/demo.ts",
+            "specs/demo.js",
+            "testdata/sample.go",
+            "web/__tests__/widget.tsx",
+            "pkg/fixtures/sample.py",
+            "lib/test_mod.py",
+            "lib/mod_test.py",
+            "pkg/foo_test.go",
+            "web/view.test.ts",
+            "web/view.test.tsx",
+            "web/view.test.js",
+            "web/view.test.jsx",
+            "web/view.test.mts",
+            "web/view.test.cts",
+            "web/view.spec.ts",
+            "web/view.spec.tsx",
+            "web/view.spec.js",
+            "web/view.spec.jsx",
+            "java/FooTest.java",
+            "rust/foo_test.rs",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._init_repo(repo)
+            paths = included + excluded
+            self._plant(repo, paths, "v1\n")
+            self._commit_all(repo, "base")
+            subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+            self._plant(repo, paths, "v2\n")
+            self._commit_all(repo, "change")
+            bin_dir = repo / "bin"
+            crapper_log = repo / "crapper.log"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                f'#!/usr/bin/env bash\necho "$@" >> "{crapper_log}"\nexit 0\n',
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            proc = self._run_in_repo(repo, self._block_env(bin_dir))
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=ran_clean", outcome)
+            self.assertIn(f"scope_files={len(included)}", outcome)
+            tokens = crapper_log.read_text(encoding="utf-8").split()
+            for rel in included:
+                self.assertIn(rel, tokens)
+            for rel in excluded:
+                self.assertNotIn(rel, tokens)
+
+    def test_blocking_only_test_paths_exit_as_no_scope(self) -> None:
+        rels = ("tests/test_app.py", "src/test/helper.py", "lib/mod_test.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._init_repo(repo)
+            self._plant(repo, rels, "v1\n")
+            self._commit_all(repo, "base")
+            subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+            self._plant(repo, rels, "v2\n")
+            self._commit_all(repo, "change")
+            proc = self._run_in_repo(
+                repo,
+                {"UB_GATES_ADVISORY": "0", "UB_GATES_BASE_REF": "main", "PATH": "/usr/bin:/bin"},
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=skipped_no_scope", outcome)
+            self.assertIn("scope_files=0", outcome)
 
 
 if __name__ == "__main__":

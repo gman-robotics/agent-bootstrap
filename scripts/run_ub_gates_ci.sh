@@ -137,6 +137,21 @@ gate_relevant_file() {
   esac
 }
 
+# test code is the oracle; mutator upstream skips it too.
+is_test_path() {
+  local path="$1"
+  local base="${path##*/}"
+  case "/${path}/" in
+    */test/*|*/tests/*|*/spec/*|*/specs/*|*/testdata/*|*/__tests__/*|*/fixtures/*) return 0 ;;
+  esac
+  case "${base}" in
+    test_*.py|*_test.py|*_test.go|*_test.rs|*Test.java) return 0 ;;
+    *.test.ts|*.test.tsx|*.test.js|*.test.jsx|*.test.mts|*.test.cts) return 0 ;;
+    *.spec.ts|*.spec.tsx|*.spec.js|*.spec.jsx) return 0 ;;
+  esac
+  return 1
+}
+
 collect_scope_files() {
   local merge_base="$1"
   local f
@@ -145,6 +160,7 @@ collect_scope_files() {
     [[ -z "${f}" ]] && continue
     [[ -f "${f}" ]] || continue
     gate_relevant_file "${f}" || continue
+    is_test_path "${f}" && continue
     SCOPE_FILES+=("${f}")
   done < <(git diff --name-only --diff-filter=ACMRT "${merge_base}" HEAD 2>/dev/null || true)
   SCOPE_COUNT="${#SCOPE_FILES[@]}"
@@ -245,6 +261,13 @@ mark_mutator_timeout() {
   emit_warning "mutator budget exhausted; remaining files skipped"
 }
 
+append_mutator_test_command() {
+  local -n _dest="$1"
+  if [[ -n "${UB_GATES_MUTATOR_TEST_CMD:-}" ]]; then
+    _dest+=(--test-command "${UB_GATES_MUTATOR_TEST_CMD}")
+  fi
+}
+
 run_mutator_blocking() {
   local deadline file lines left rc args
   MUTATOR_RC=0
@@ -265,6 +288,7 @@ run_mutator_blocking() {
       return 0
     fi
     args=(--lines "${lines}")
+    append_mutator_test_command args
     if [[ ${#COVERAGE_PREFIX[@]} -gt 0 ]]; then
       args+=("${COVERAGE_PREFIX[@]}")
     fi
@@ -283,6 +307,7 @@ run_mutator_blocking() {
 
 run_mutator_advisory() {
   local args=()
+  append_mutator_test_command args
   if [[ ${#COVERAGE_PREFIX[@]} -gt 0 ]]; then
     args+=("${COVERAGE_PREFIX[@]}")
   fi
