@@ -64,7 +64,7 @@ This skill establishes a standardized division of labor and coordination workspa
   - The implementer harness must retrieve the plan from shared memory (or read it directly if no shared-memory layer is configured).
   - The implementer harness must strictly follow the **TDD Red/Green/Refactor standard** (failing test first, then minimal passing code, then refactor).
   - The implementer harness must write code, run local test suites, and commit changes locally.
-  - Before PR handoff: run **Pre-PR ub-mode dev flow** (`crapper --threshold 10`, `dryer --threshold 0.8` on merge-base scope — fix flags; `mutator` on scope on laptop/CI only, never in cloud agents). See `docs/shared/ub-mode-practice.md`.
+  - Before PR handoff: run **Pre-PR ub-mode dev flow**. Run dryer, crapper, and mutator on new code (`bash scripts/ub_gates_container.sh`; no host installs). `scripts/run_ub_gates_ci.sh` defaults to blocking (`UB_GATES_ADVISORY=0`). Scope is changed functions (crapper) and changed lines (dryer, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. Debt in untouched old functions does not block. A mutator skip is `skipped_mutator` and fails. A 20-minute mutator timeout is reported and does not block. No waiver: fix blocking findings on changed code, or escalate to the CoS. The PR `Gates:` section reports the real results. See `docs/shared/ub-mode-practice.md`.
   - **The implementer harness must NOT attempt to create or submit a pull request.**
 
 ### Step C & D: The Adversarial Review & Iteration Loop

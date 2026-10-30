@@ -34,7 +34,7 @@ Version is tracked in `manifest.yaml` (`version: 0.1.0`) and file footers.
 Since this repo is pure Markdown/YAML (no compilation), "CI" is lightweight:
 
 ### Pre-PR Checklist (manual — run before opening PR)
-- [ ] **Ub-mode dev flow** (Python/scripts changes): `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (`rm -f .metrics/dry.edn` first) — fix flags; `mutator` on scope on laptop/CI only; CI **`ub-gates`** `outcome=ran_*` or `skipped_no_scope` at head SHA (`docs/shared/ub-mode-practice.md`)
+- [ ] **Ub-mode dev flow** (Python/scripts changes): before the PR, run dryer, crapper, and mutator (`bash scripts/ub_gates_container.sh`; blocking `UB_GATES_ADVISORY=0`). Fix findings on changed code. CI **`ub-gates`** `outcome=ran_clean` or `skipped_no_scope` at head SHA (`docs/shared/ub-mode-practice.md`)
 - [ ] All new files follow kebab-case naming convention
 - [ ] Absolute paths updated to your local machine in `manifest.yaml` (not committed as machine-specific paths)
 - [ ] No sensitive data (tokens, credentials, personal paths) in any committed file

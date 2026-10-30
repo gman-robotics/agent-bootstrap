@@ -122,7 +122,7 @@ skill, not here.
 - Retrieve the plan from mem0 or `activeContext.md` — do not rely on chat history.
 - Follow **TDD Red/Green/Refactor** (`write-tests.md`) — failing test before production code.
 - Run the relevant test suite; commit locally.
-- Before handoff for PR: **Pre-PR ub-mode dev flow** — `crapper --threshold 10` and `dryer --threshold 0.8` on merge-base scope (fix flags); `mutator` on scope on laptop/CI only, not in cloud agents (`docs/shared/ub-mode-practice.md`).
+- Before handoff for PR: **Pre-PR ub-mode dev flow** — run dryer, crapper, and mutator on new code (`bash scripts/ub_gates_container.sh`; no host installs) and act on the results. Blocking default is `UB_GATES_ADVISORY=0`. Scope is changed functions (crapper) and changed lines (dryer, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. Debt in untouched old functions does not block. A mutator skip is `skipped_mutator` and fails. A 20-minute mutator timeout is reported and does not block. No waiver: fix blocking findings on changed code, or escalate to the CoS. The PR `Gates:` section reports the real results (`docs/shared/ub-mode-practice.md`).
 - Implementer does **not** create or submit the pull request.
 
 ---

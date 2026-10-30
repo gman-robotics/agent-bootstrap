@@ -2,7 +2,7 @@
 
 Run these from the **project root** after tests pass. Install each tool once per machine (each repo ships a `./crapper`, `./dryer`, or `./mutator` wrapper that creates a local `.venv` on first run). Do not invent substitutes; if the binary is missing, say so and skip that gate with evidence.
 
-**Hub mode:** Results are **advisory** until Tom approves blocking mode. Report measured results; they do not block APPROVE and do not count as review rounds.
+**Hub mode:** Dryer, crapper, and mutator are **blocking** by default. `scripts/run_ub_gates_ci.sh` defaults to `UB_GATES_ADVISORY=0`. Advisory mode is only `scripts/run_ub_gates_report.sh` or an explicit `UB_GATES_ADVISORY=1`. Scope is changed functions (crapper) and changed lines (dryer, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. Debt in untouched old functions does not block. There is no waiver: fix blocking findings on changed code, or escalate them to the CoS. A red `ub-gates` check does **not** count as a review round.
 
 All six languages below are supported by the unclebob tools when the project has the usual test and coverage tooling for that stack.
 
@@ -102,10 +102,13 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Tool not installed | Record "gate skipped: &lt;tool&gt; not on PATH" on the PR `Gates:` line |
 | Project language not in the six | State plainly; do not fake a gate |
 | Baseline tests fail | Fix tests first; mutator exit `2` means baseline failure |
-| Advisory mode | Set `UB_GATES_ADVISORY=1` (the report wrapper does this). Findings and **`skipped_tools_missing`** exit 0 with a warning — **`gates_ran=0`** is not a pass. A direct `scripts/run_ub_gates_ci.sh` call defaults to blocking (`UB_GATES_ADVISORY=0`) |
+| Advisory mode | Only `scripts/run_ub_gates_report.sh` or explicit `UB_GATES_ADVISORY=1`. Findings and **`skipped_tools_missing`** then exit 0 with a warning — **`gates_ran=0`** is not a pass. A direct `scripts/run_ub_gates_ci.sh` call defaults to blocking (`UB_GATES_ADVISORY=0`) |
 | Blocking mutator skip | `UB_GATES_SKIP_MUTATOR=1` or `CURSOR_AGENT` without `GITHUB_ACTIONS` is outcome **`skipped_mutator`** and exits 1. It is not `ran_clean` |
-| Declaration files | `.pyi` and `.d.ts` are outside gate scope (no function bodies) |
-| Mutator budget | 20-minute cap. A timeout is non-blocking. The step summary's first line states the timeout |
+| Untouched old functions | Findings and debt outside changed functions (crapper) or changed lines (dryer, mutator) do not block |
+| No waiver | Blocking findings on changed code are fixed, or escalated to the CoS |
+| Local run | Throwaway `--rm` container, no host installs. Usage: `Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git PATH] [--metrics-dir PATH]` |
+| Declaration files | `.pyi` and `.d.ts` are outside gate scope (no function bodies). Test paths are outside gate scope |
+| Mutator budget | 20-minute per-PR cap. A timeout is reported and leads the step summary. A timeout does not block |
 | Dryer exit | Exit 0 with a fresh `.metrics/dry.edn` is the only dryer success. Exit 1, 2, or any other code is `tool_error` even when that file exists |
 | Base ref | Fetch `UB_GATES_BASE_REF` with no depth limit and unshallow a shallow clone. A missing merge base is `tool_error` |
 

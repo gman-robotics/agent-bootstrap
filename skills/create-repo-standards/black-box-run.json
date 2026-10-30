@@ -50,7 +50,7 @@
     "cwd": "."
   },
   "mismatches": [],
-  "skill_sha256": "194bc2c95e18cdf01786be541fb1547f538409246140c4ae7598648572f49396",
+  "skill_sha256": "ac53ab638723b25aaba2d732d197667b11b215fd1274c0c042e705246e56faf9",
   "stderr_tail": "",
   "stdout_tail": "OK: create-repo-standards\n",
   "verdict": "pass"

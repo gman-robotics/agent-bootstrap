@@ -1,7 +1,7 @@
 ---
 name: create-repo-standards
 description: "Interview a repository and generate a project-local standards-<repo> skill plus GitHub PR/issue templates so agents follow one PR format, issue format, planning rules, implementation workflow, and verification pointers. Use for /create-repo-standards on a manifest project. Do not run on agent-bootstrap hub-only Markdown unless explicitly asked."
-version: 1.0.4
+version: 1.0.5
 ---
 
 # create-repo-standards
@@ -110,10 +110,10 @@ python3 /path/to/agent-bootstrap/scripts/hub_pull_request_template.py check --fi
 Do not invent a second template shape in the standards skill prose.
 2. **Issue format** — Problem; acceptance criteria; non-goals; verification plan. Note: issue forms must not reference labels the repo lacks (see step 4).
 3. **Planning** — When to use `architect` vs `plan-code-review-workflow`; what a plan must contain (files, risks, named checks per **sequence-verifiable-units**).
-4. **Implementation** — TDD order (`write-tests` — hub skill at `skills/write-tests/` when bootstrapped from agent-bootstrap); implementer **Pre-PR ub-mode dev flow** (`crapper --threshold 10`, `dryer --threshold 0.8` on merge-base scope — fix flags; `mutator` on scope laptop/CI only); CI **`ub-gates`** on every `push` / `pull_request`; advisory until Tom approves blocking (`docs/shared/ub-mode-practice.md`, GMA-411: `rm -f .metrics/dry.edn` before dryer); commit message style.
-5. **Verification** — Pointer to `verify-<app>` if present. **Gates / thresholds:** When crapper, dryer, and mutator are **not** on PATH, document the **exit-code pass bar** of each required CI check (by workflow job and step name) and the assertions or commands from the verify skill instead of unclebob metrics. When tools exist, mirror `docs/shared/ub-mode-practice.md` advisory reporting. Cite real test files or workflow steps the pass bar depends on.
+4. **Implementation** — TDD order (`write-tests` — hub skill at `skills/write-tests/` when bootstrapped from agent-bootstrap); implementer **Pre-PR ub-mode dev flow** (run dryer, crapper, and mutator on new code before the PR via `bash scripts/ub_gates_container.sh`, no host installs; `crapper --threshold 10`, `dryer --threshold 0.8` after `rm -f .metrics/dry.edn`, mutator on changed lines); CI **`ub-gates`** on every `push` / `pull_request` calls `scripts/run_ub_gates_ci.sh`, which defaults to blocking (`UB_GATES_ADVISORY=0`). Advisory mode is only `scripts/run_ub_gates_report.sh` or `UB_GATES_ADVISORY=1`. Scope is changed functions (crapper) and changed lines (dryer, mutator). Test paths, `.pyi`, and `.d.ts` are out of scope. Debt in untouched old functions does not block. A mutator skip is `skipped_mutator` and fails. A 20-minute mutator timeout is reported and does not block. No waiver: fix blocking findings on changed code, or escalate to the CoS. The PR `Gates:` section reports the real results (`docs/shared/ub-mode-practice.md`, GMA-411); commit message style.
+5. **Verification** — Pointer to `verify-<app>` if present. **Gates / thresholds:** When crapper, dryer, and mutator are **not** on PATH, document the **exit-code pass bar** of each required CI check (by workflow job and step name) and the assertions or commands from the verify skill instead of unclebob metrics. When tools exist, mirror `docs/shared/ub-mode-practice.md` (blocking by default). Cite real test files or workflow steps the pass bar depends on.
 
-Mirror hub `docs/shared/ub-mode-practice.md` when the repo adopts ub-mode; state **advisory** unless the project explicitly enables blocking gates.
+Mirror hub `docs/shared/ub-mode-practice.md` when the repo adopts ub-mode. State that ub-gates block by default. State that `run_ub_gates_report.sh` stays advisory.
 
 ## 4. Write GitHub templates and optional docs
 

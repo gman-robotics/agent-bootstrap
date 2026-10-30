@@ -55,7 +55,7 @@ GitHub: `.github/PULL_REQUEST_TEMPLATE.md` (per-header HTML hints), `.github/ISS
 | Cline / Roo Code | Reads `.clinerules` at repo root (bootstrap pointer to `AGENTS.md`). It does **not** load `.cursor/skills/`. Point `.clinerules` or `AGENTS.md` at the on-disk `standards-<repo>/SKILL.md` path if you use Cline. |
 | Hub cloud agent | Read project `AGENTS.md` (or README-inferred habits) + `standards-<repo>/SKILL.md` when `manifest.yaml` names the project |
 
-Hub workflows (`plan-code-review-workflow`, `expert-pr-review`, `lfg`) say: **if** `standards-<repo>` exists for the active project, follow its PR/issue formats before APPROVE. Compatible with **advisory** ub-mode (`Gates:` line reports tool results; does not block APPROVE).
+Hub workflows (`plan-code-review-workflow`, `expert-pr-review`, `lfg`) say: **if** `standards-<repo>` exists for the active project, follow its PR/issue formats before APPROVE. ub-gates (dryer, crapper, mutator) are blocking by default (`UB_GATES_ADVISORY=0`). The PR `Gates:` section reports the real results. Advisory mode is only `scripts/run_ub_gates_report.sh` or `UB_GATES_ADVISORY=1`.
 
 ## PR header order (hub default)
 
