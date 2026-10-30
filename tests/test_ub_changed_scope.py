@@ -9,10 +9,13 @@ import unittest
 from pathlib import Path
 
 from scripts.ub_changed_scope import (
+    CrapperUnavailable,
     FnSpan,
+    ScopeJoinError,
     changed_lines_from_diff,
     filter_crap,
     filter_dry,
+    functions_from_crapper,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -197,12 +200,112 @@ class CrapFilterTests(unittest.TestCase):
         self.assertEqual(result["findings"], [{"namespace": "pkg", "name": "f", "crap": 20.0}])
         self.assertEqual(result["debt"], [])
 
-    def test_a_short_path_matches_a_longer_changed_path(self) -> None:
+    def test_a_short_path_is_not_the_same_file(self) -> None:
         edn = '{:entries [{:name "f", :namespace "pkg", :complexity 4, :coverage 0.0, :crap 20.0}]}'
         spans = [FnSpan("pkg", "f", 1, 4, "a.py")]
         result = filter_crap(edn, {"lib/a.py": [2]}, _provider(spans), 10)
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(result["debt"], [{"namespace": "pkg", "name": "f", "crap": 20.0}])
+
+    def test_util_py_does_not_take_lines_from_lib_util_py(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 4, :coverage 0.0, :crap 20.0}]}'
+        spans = [FnSpan("pkg", "f", 50, 60, "/repo/lib/util.py")]
+        changed = {"util.py": [1], "lib/util.py": [55], "tests/util.py": [1]}
+        result = filter_crap(edn, changed, _provider(spans), 10, root=Path("/repo"))
         self.assertEqual(result["findings"], [{"namespace": "pkg", "name": "f", "crap": 20.0}])
         self.assertEqual(result["debt"], [])
+
+    def test_tests_util_py_does_not_match_util_py(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 4, :coverage 0.0, :crap 20.0}]}'
+        spans = [FnSpan("pkg", "f", 1, 2, "tests/util.py")]
+        result = filter_crap(edn, {"util.py": [1]}, _provider(spans), 10)
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(result["debt"], [{"namespace": "pkg", "name": "f", "crap": 20.0}])
+
+    def test_absolute_path_matches_only_the_same_repo_file(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 4, :coverage 0.0, :crap 20.0}]}'
+        spans = [FnSpan("pkg", "f", 1, 3, "/repo/lib/util.py")]
+        hit = filter_crap(edn, {"lib/util.py": [2]}, _provider(spans), 10, root=Path("/repo"))
+        self.assertEqual(hit["findings"], [{"namespace": "pkg", "name": "f", "crap": 20.0}])
+        miss = filter_crap(edn, {"util.py": [2]}, _provider(spans), 10, root=Path("/repo"))
+        self.assertEqual(miss["findings"], [])
+        self.assertEqual(miss["debt"], [{"namespace": "pkg", "name": "f", "crap": 20.0}])
+
+    def test_unjoined_row_at_threshold_is_ignored(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 1, :coverage nil, :crap 10.0}]}'
+        result = filter_crap(edn, {"a.py": [1]}, _provider([]), 10)
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(result["debt"], [])
+
+    def test_non_source_diff_paths_are_not_language_errors(self) -> None:
+        def provide(path: Path, root: Path) -> list[FnSpan]:
+            if path.suffix != ".py":
+                raise ScopeJoinError(f"no language for {path.as_posix()}")
+            return []
+
+        result = filter_crap("{:entries []}", {"action.yml": [1], "a.py": [1]}, provide, 10)
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(result["debt"], [])
+
+    def test_over_threshold_row_with_no_span_is_a_tool_error(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 4, :coverage 0.0, :crap 20.0}]}'
+        try:
+            result = filter_crap(edn, {"a.py": [2]}, _provider([]), 10)
+        except Exception as exc:
+            self.assertNotIsInstance(exc, CrapperUnavailable)
+            self.assertIn("unjoined", str(exc).lower())
+            return
+        self.fail(f"dropped the row: {result}")
+
+    def test_high_crap_in_an_unchanged_file_stays_debt(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 4, :coverage 0.0, :crap 20.0}]}'
+        spans = [FnSpan("pkg", "f", 1, 4, "other.py")]
+        result = filter_crap(edn, {"a.py": [2]}, _provider(spans), 10)
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(result["debt"], [{"namespace": "pkg", "name": "f", "crap": 20.0}])
+
+    def test_nil_crap_on_a_changed_function_is_a_tool_error_when_coverage_is_expected(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 1, :coverage nil, :crap nil}]}'
+        spans = [FnSpan("pkg", "f", 1, 2, "a.py")]
+        try:
+            result = filter_crap(edn, {"a.py": [1]}, _provider(spans), 10, coverage_expected=True)
+        except TypeError:
+            self.fail("coverage_expected is not implemented")
+        except Exception as exc:
+            self.assertNotIsInstance(exc, CrapperUnavailable)
+            self.assertIn("coverage", str(exc).lower())
+            return
+        self.fail(f"accepted nil coverage: {result}")
+
+    def test_language_of_none_on_a_changed_file_is_a_tool_error(self) -> None:
+        import sys
+        import types
+
+        saved = {
+            name: sys.modules.get(name)
+            for name in ("crapper", "crapper.discover", "crapper.languages")
+        }
+        discover = types.ModuleType("crapper.discover")
+        discover.language_of = lambda path: None
+        languages = types.ModuleType("crapper.languages")
+        languages.functions_in_file = lambda *args, **kwargs: []
+        sys.modules["crapper"] = types.ModuleType("crapper")
+        sys.modules["crapper.discover"] = discover
+        sys.modules["crapper.languages"] = languages
+        try:
+            try:
+                found = functions_from_crapper(Path("lib/a.py"), Path("."))
+            except Exception as exc:
+                self.assertNotIsInstance(exc, CrapperUnavailable)
+                self.assertIn("language", str(exc).lower())
+                return
+            self.fail(f"returned {found}")
+        finally:
+            for name, module in saved.items():
+                if module is None:
+                    sys.modules.pop(name, None)
+                else:
+                    sys.modules[name] = module
 
 
 class DryFilterTests(unittest.TestCase):

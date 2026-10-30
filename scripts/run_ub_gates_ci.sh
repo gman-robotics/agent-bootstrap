@@ -146,8 +146,8 @@ is_test_path() {
   esac
   case "${base}" in
     test_*.py|*_test.py|*_test.go|*_test.rs|*Test.java) return 0 ;;
-    *.test.ts|*.test.tsx|*.test.js|*.test.jsx|*.test.mts|*.test.cts) return 0 ;;
-    *.spec.ts|*.spec.tsx|*.spec.js|*.spec.jsx) return 0 ;;
+    *.test.ts|*.test.tsx|*.test.js|*.test.jsx|*.test.mts|*.test.cts|*.test.mjs|*.test.cjs) return 0 ;;
+    *.spec.ts|*.spec.tsx|*.spec.js|*.spec.jsx|*.spec.mts|*.spec.cts|*.spec.mjs|*.spec.cjs) return 0 ;;
   esac
   return 1
 }
@@ -188,14 +188,35 @@ gate_bin() {
   return 1
 }
 
+lcov_ready() {
+  python3 - <<'PY'
+import pathlib
+import sys
+
+roots = (pathlib.Path("target/coverage"), pathlib.Path("coverage"))
+for root in roots:
+    if not root.exists():
+        continue
+    for path in root.rglob("lcov.info"):
+        if path.is_file() and path.stat().st_size > 0:
+            sys.exit(0)
+sys.exit(1)
+PY
+}
+
 apply_scope_filter() {
   local cmd="$1"
   local edn="$2"
   local thresh="$3"
   local out rc counts findings debt
+  local -a flags
+  flags=(--base "${MERGE_BASE}" --edn "${edn}" --threshold "${thresh}")
+  if [[ "${cmd}" == "crap" && ${#COVERAGE_PREFIX[@]} -gt 0 ]]; then
+    flags+=(--coverage-expected)
+  fi
   out="$(mktemp)"
   set +e
-  python3 "${SCOPE_PY}" "${cmd}" --base "${MERGE_BASE}" --edn "${edn}" --threshold "${thresh}" >"${out}"
+  python3 "${SCOPE_PY}" "${cmd}" "${flags[@]}" >"${out}"
   rc=$?
   set -e
   if [[ "${rc}" -ne 0 ]]; then
@@ -327,11 +348,10 @@ classify_crapper() {
     fi
     return 0
   fi
-  if [[ -f .metrics/crap.edn ]]; then
-    apply_scope_filter crap .metrics/crap.edn 10 || return 1
-  elif [[ "${CRAPPER_RC}" -ne 0 ]]; then
+  if [[ ! -f .metrics/crap.edn ]]; then
     return 1
   fi
+  apply_scope_filter crap .metrics/crap.edn 10 || return 1
   if [[ "${CRAPPER_RC}" -ne 0 && "${CRAPPER_RC}" -ne 2 ]]; then
     return 1
   fi
@@ -345,7 +365,7 @@ classify_dryer() {
   if [[ "${DRYER_RC}" -eq 1 || "${DRYER_RC}" -eq 2 ]]; then
     return 1
   fi
-  if [[ "${DRYER_RC}" -eq 0 && ! -f .metrics/dry.edn ]]; then
+  if [[ ! -f .metrics/dry.edn ]]; then
     return 1
   fi
   if [[ "${ADVISORY}" == "1" ]]; then
@@ -439,6 +459,14 @@ if [[ -n "${UB_GATES_COVERAGE_CMD:-}" ]]; then
     TOOL_ERROR=1
     GATES_RAN=0
     emit_warning "tool_error — UB_GATES_COVERAGE_CMD failed"
+    exit_for_outcome
+  fi
+  if ! lcov_ready; then
+    OUTCOME="tool_error"
+    GATE_MISS=1
+    TOOL_ERROR=1
+    GATES_RAN=0
+    emit_warning "tool_error — coverage command exited 0 but lcov is missing or empty"
     exit_for_outcome
   fi
   COVERAGE_PREFIX=(--use-existing-coverage)

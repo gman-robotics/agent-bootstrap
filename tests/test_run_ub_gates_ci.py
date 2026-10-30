@@ -10,6 +10,12 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = REPO_ROOT / "scripts" / "run_ub_gates_ci.sh"
 REPORT_SCRIPT = REPO_ROOT / "scripts" / "run_ub_gates_report.sh"
+_EMPTY_CRAP = (
+    "#!/usr/bin/env bash\n"
+    "mkdir -p .metrics\n"
+    "echo '{:entries []}' > .metrics/crap.edn\n"
+    "exit 0\n"
+)
 
 
 class RunUbGatesCiTests(unittest.TestCase):
@@ -380,6 +386,12 @@ exit 0
     def _gate_outcome(self, repo: Path) -> str:
         return (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
 
+    def _empty_spans(self, repo: Path, env: dict[str, str]) -> dict[str, str]:
+        spec = repo / "fns.json"
+        spec.write_text("[]", encoding="utf-8")
+        env["UB_SCOPE_FUNCTIONS_JSON"] = str(spec)
+        return env
+
     def _plant(self, repo: Path, rels: tuple[str, ...], text: str) -> None:
         for rel in rels:
             path = repo / rel
@@ -483,12 +495,12 @@ exit 0
             self._install_quiet_tools(
                 repo,
                 bin_dir,
-                f'#!/usr/bin/env bash\necho "$@" >> "{crapper_log}"\nexit 0\n',
+                f'#!/usr/bin/env bash\necho "$@" >> "{crapper_log}"\nmkdir -p .metrics\necho \'{{:entries []}}\' > .metrics/crap.edn\nexit 0\n',
                 "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
                 f'#!/usr/bin/env bash\necho "$@" >> "{mutator_log}"\nexit 0\n',
             )
-            env = self._block_env(bin_dir)
-            env["UB_GATES_COVERAGE_CMD"] = "exit 0"
+            env = self._empty_spans(repo, self._block_env(bin_dir))
+            env["UB_GATES_COVERAGE_CMD"] = "mkdir -p target/coverage/python && echo TN: > target/coverage/python/lcov.info"
             proc = self._run_in_repo(repo, env)
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             self.assertIn("outcome=ran_clean", self._gate_outcome(repo))
@@ -610,11 +622,11 @@ exit 0
             self._install_quiet_tools(
                 repo,
                 bin_dir,
-                "#!/usr/bin/env bash\nexit 0\n",
+                _EMPTY_CRAP,
                 dryer,
                 "#!/usr/bin/env bash\nexit 0\n",
             )
-            proc = self._run_in_repo(repo, self._block_env(bin_dir))
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = self._gate_outcome(repo)
             self.assertIn("outcome=ran_clean", outcome)
@@ -629,11 +641,11 @@ exit 0
             self._install_quiet_tools(
                 repo,
                 bin_dir,
-                "#!/usr/bin/env bash\nexit 0\n",
+                _EMPTY_CRAP,
                 "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
                 "#!/usr/bin/env bash\nexit 3\n",
             )
-            proc = self._run_in_repo(repo, self._block_env(bin_dir))
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
             self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
             outcome = self._gate_outcome(repo)
             self.assertIn("outcome=ran_with_findings", outcome)
@@ -647,11 +659,11 @@ exit 0
             self._install_quiet_tools(
                 repo,
                 bin_dir,
-                "#!/usr/bin/env bash\nexit 0\n",
+                _EMPTY_CRAP,
                 "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
                 "#!/usr/bin/env bash\nexit 2\n",
             )
-            proc = self._run_in_repo(repo, self._block_env(bin_dir))
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
             self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
             outcome = self._gate_outcome(repo)
             self.assertIn("outcome=tool_error", outcome)
@@ -666,11 +678,11 @@ exit 0
             self._install_quiet_tools(
                 repo,
                 bin_dir,
-                "#!/usr/bin/env bash\nexit 0\n",
+                _EMPTY_CRAP,
                 "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
                 f'#!/usr/bin/env bash\necho "$@" >> "{mutator_log}"\nsleep 30\nexit 0\n',
             )
-            env = self._block_env(bin_dir)
+            env = self._empty_spans(repo, self._block_env(bin_dir))
             env["UB_GATES_MUTATOR_BUDGET_SECS"] = "1"
             proc = self._run_in_repo(repo, env)
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
@@ -738,11 +750,11 @@ exit 0
             self._install_quiet_tools(
                 repo,
                 bin_dir,
-                "#!/usr/bin/env bash\nexit 0\n",
+                _EMPTY_CRAP,
                 dryer,
                 "#!/usr/bin/env bash\nexit 0\n",
             )
-            proc = self._run_in_repo(repo, self._block_env(bin_dir))
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             self.assertFalse(seen.exists())
             self.assertIn("outcome=ran_clean", self._gate_outcome(repo))
@@ -755,7 +767,6 @@ exit 0
             "pkg/main.go",
             "java/Main.java",
             "rust/lib.rs",
-            "web/view.spec.mts",
             "src/latest.py",
             "src/test.py",
         )
@@ -781,6 +792,12 @@ exit 0
             "web/view.spec.tsx",
             "web/view.spec.js",
             "web/view.spec.jsx",
+            "web/view.spec.mts",
+            "web/view.spec.cts",
+            "web/view.spec.mjs",
+            "web/view.spec.cjs",
+            "web/view.test.mjs",
+            "web/view.test.cjs",
             "java/FooTest.java",
             "rust/foo_test.rs",
         )
@@ -798,11 +815,11 @@ exit 0
             self._install_quiet_tools(
                 repo,
                 bin_dir,
-                f'#!/usr/bin/env bash\necho "$@" >> "{crapper_log}"\nexit 0\n',
+                f'#!/usr/bin/env bash\necho "$@" >> "{crapper_log}"\nmkdir -p .metrics\necho \'{{:entries []}}\' > .metrics/crap.edn\nexit 0\n',
                 "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
                 "#!/usr/bin/env bash\nexit 0\n",
             )
-            proc = self._run_in_repo(repo, self._block_env(bin_dir))
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = self._gate_outcome(repo)
             self.assertIn("outcome=ran_clean", outcome)
@@ -831,6 +848,152 @@ exit 0
             outcome = self._gate_outcome(repo)
             self.assertIn("outcome=skipped_no_scope", outcome)
             self.assertIn("scope_files=0", outcome)
+
+    def test_blocking_missing_lcov_after_coverage_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            crapper_log = repo / "crapper.log"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                f'#!/usr/bin/env bash\necho ran >> "{crapper_log}"\nmkdir -p .metrics\necho \'{{:entries []}}\' > .metrics/crap.edn\nexit 0\n',
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            env = self._block_env(bin_dir)
+            env["UB_GATES_COVERAGE_CMD"] = "exit 0"
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+            self.assertFalse(crapper_log.exists())
+
+    def test_blocking_empty_lcov_after_coverage_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            crapper_log = repo / "crapper.log"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                f'#!/usr/bin/env bash\necho ran >> "{crapper_log}"\nmkdir -p .metrics\necho \'{{:entries []}}\' > .metrics/crap.edn\nexit 0\n',
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            env = self._block_env(bin_dir)
+            env["UB_GATES_COVERAGE_CMD"] = "mkdir -p target/coverage/python && : > target/coverage/python/lcov.info"
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+            self.assertFalse(crapper_log.exists())
+
+    def test_blocking_nil_crap_on_changed_function_with_coverage_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            spec = repo / "fns.json"
+            spec.write_text(
+                '[{"namespace":"lib.a","name":"f","start_line":1,"end_line":2,"path":"lib/a.py"}]',
+                encoding="utf-8",
+            )
+            crapper = "\n".join(
+                [
+                    "#!/usr/bin/env bash",
+                    "mkdir -p .metrics",
+                    "cat > .metrics/crap.edn <<'EDN'",
+                    "{:entries [",
+                    '  {:name "f", :namespace "lib.a", :complexity 1, :coverage nil, :crap nil}',
+                    "]}",
+                    "EDN",
+                    "exit 0",
+                    "",
+                ]
+            )
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                crapper,
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            env = self._block_env(bin_dir)
+            env["UB_SCOPE_FUNCTIONS_JSON"] = str(spec)
+            env["UB_GATES_COVERAGE_CMD"] = "mkdir -p target/coverage/python && echo TN: > target/coverage/python/lcov.info"
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+
+    def test_blocking_unjoined_crap_row_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            spec = repo / "fns.json"
+            spec.write_text("[]", encoding="utf-8")
+            crapper = "\n".join(
+                [
+                    "#!/usr/bin/env bash",
+                    "mkdir -p .metrics",
+                    "cat > .metrics/crap.edn <<'EDN'",
+                    "{:entries [",
+                    '  {:name "f", :namespace "lib.a", :complexity 4, :coverage 0.0, :crap 40.0}',
+                    "]}",
+                    "EDN",
+                    "exit 2",
+                    "",
+                ]
+            )
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                crapper,
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            env = self._block_env(bin_dir)
+            env["UB_SCOPE_FUNCTIONS_JSON"] = str(spec)
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=tool_error", outcome)
+            self.assertNotIn("outcome=ran_clean", outcome)
+
+    def test_blocking_crapper_exit_0_without_edn_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                "#!/usr/bin/env bash\nexit 0\n",
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            proc = self._run_in_repo(repo, self._block_env(bin_dir))
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+
+    def test_blocking_dryer_unexpected_exit_without_edn_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._two_file_repo(repo)
+            bin_dir = repo / "bin"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                _EMPTY_CRAP,
+                "#!/usr/bin/env bash\nexit 9\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=tool_error", outcome)
+            self.assertIn("dryer_exit=9", outcome)
 
 
 if __name__ == "__main__":

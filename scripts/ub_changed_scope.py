@@ -31,6 +31,10 @@ class CrapperUnavailable(Exception):
     """crapper could not be imported."""
 
 
+class ScopeJoinError(Exception):
+    """A changed-file crapper row could not be joined to a span."""
+
+
 @dataclass
 class FnSpan:
     namespace: str
@@ -65,7 +69,7 @@ Provider = Callable[[Path, Path], list[FnSpan]]
 
 
 def _strip_tab(raw: str) -> str:
-    return raw.split("\t", 1)[0].strip()
+    return raw.partition("\t")[0].strip()
 
 
 def _unquote(raw: str) -> str:
@@ -247,38 +251,79 @@ def parse_dry_edn(text: str) -> list[DryRow]:
     return rows
 
 
-def _suffix_match(left: str, right: str) -> bool:
-    if left.endswith("/" + right):
-        return True
-    return right.endswith("/" + left)
+_SOURCE_SUFFIXES = (
+    ".bb",
+    ".cjs",
+    ".clj",
+    ".cljc",
+    ".cljs",
+    ".cts",
+    ".go",
+    ".java",
+    ".js",
+    ".jsx",
+    ".mjs",
+    ".mts",
+    ".py",
+    ".rs",
+    ".ts",
+    ".tsx",
+)
 
 
-def _same_path(left: str, right: str) -> bool:
-    if left == right:
-        return True
-    return _suffix_match(left, right)
+def _normalize_rel(path: str) -> str:
+    return path.replace("\\", "/")
 
 
-def _lines_from_keys(path: str, keys: list[str], changed: dict[str, list[int]]) -> list[int]:
-    if not keys:
+def _is_source(rel: str) -> bool:
+    name = Path(_normalize_rel(rel)).name
+    if name.endswith(".d.ts"):
+        return False
+    return Path(name).suffix in _SOURCE_SUFFIXES
+
+
+def _under_root(text: str, root: Path | None) -> str | None:
+    if root is None:
+        return None
+    base = root.resolve().as_posix().rstrip("/") + "/"
+    resolved = Path(text).resolve().as_posix()
+    if resolved.startswith(base):
+        return resolved[len(base) :]
+    return None
+
+
+def _repo_rel(path: str, root: Path | None) -> str | None:
+    text = _normalize_rel(path)
+    if text.startswith("/"):
+        return _under_root(text, root)
+    return text
+
+
+def _same_repo_path(left: str, right: str, root: Path | None) -> bool:
+    one = _repo_rel(left, root)
+    if one is None:
+        return False
+    other = _repo_rel(right, root)
+    if other is None:
+        return False
+    return one == other
+
+
+def _lines_for_key(rel: str, key: str, lines: list[int], root: Path | None) -> list[int] | None:
+    if _repo_rel(key, root) == rel:
+        return lines
+    return None
+
+
+def lines_for_path(path: str, changed: dict[str, list[int]], root: Path | None = None) -> list[int]:
+    rel = _repo_rel(path, root)
+    if rel is None:
         return []
-    return _lines_head(path, keys[0], keys[1:], changed)
-
-
-def _lines_head(path: str, key: str, rest: list[str], changed: dict[str, list[int]]) -> list[int]:
-    if _same_path(path, key):
-        return changed[key]
-    return _lines_from_keys(path, rest, changed)
-
-
-def _lines_suffix(path: str, changed: dict[str, list[int]]) -> list[int]:
-    return _lines_from_keys(path, list(changed), changed)
-
-
-def lines_for_path(path: str, changed: dict[str, list[int]]) -> list[int]:
-    if path in changed:
-        return changed[path]
-    return _lines_suffix(path.replace("\\", "/"), changed)
+    for key, lines in changed.items():
+        found = _lines_for_key(rel, key, lines, root)
+        if found is not None:
+            return found
+    return []
 
 
 def _inside(start: int, end: int, number: int) -> bool:
@@ -291,8 +336,8 @@ def _span_hits(start: int, end: int, lines: list[int]) -> bool:
     return any(_inside(start, end, number) for number in lines)
 
 
-def _function_hits(fn: FnSpan, changed: dict[str, list[int]]) -> bool:
-    return _span_hits(fn.start_line, fn.end_line, lines_for_path(fn.path, changed))
+def _function_hits(fn: FnSpan, changed: dict[str, list[int]], root: Path | None) -> bool:
+    return _span_hits(fn.start_line, fn.end_line, lines_for_path(fn.path, changed, root))
 
 
 def _same_fn(fn: FnSpan, row: CrapRow) -> bool:
@@ -305,8 +350,8 @@ def _named(functions: list[FnSpan], row: CrapRow) -> list[FnSpan]:
     return [fn for fn in functions if _same_fn(fn, row)]
 
 
-def _any_changed(functions: list[FnSpan], changed: dict[str, list[int]]) -> bool:
-    return any(_function_hits(fn, changed) for fn in functions)
+def _any_changed(functions: list[FnSpan], changed: dict[str, list[int]], root: Path | None) -> bool:
+    return any(_function_hits(fn, changed, root) for fn in functions)
 
 
 def _crap_payload(row: CrapRow) -> dict[str, object]:
@@ -318,8 +363,19 @@ def _append_if_over(row: CrapRow, threshold: float, findings: list[dict[str, obj
         findings.append(_crap_payload(row))
 
 
-def _keep_finding(row: CrapRow, threshold: float, findings: list[dict[str, object]]) -> None:
+def _nil_coverage(row: CrapRow, coverage_expected: bool) -> None:
+    if coverage_expected:
+        raise ScopeJoinError(f"no coverage for {row.namespace} {row.name}")
+
+
+def _keep_finding(
+    row: CrapRow,
+    threshold: float,
+    findings: list[dict[str, object]],
+    coverage_expected: bool,
+) -> None:
     if row.crap is None:
+        _nil_coverage(row, coverage_expected)
         return
     _append_if_over(row, threshold, findings)
 
@@ -329,6 +385,13 @@ def _keep_debt(row: CrapRow, matched: list[FnSpan], debt: list[dict[str, object]
         debt.append(_crap_payload(row))
 
 
+def _unjoined(row: CrapRow, threshold: float) -> None:
+    if row.crap is None:
+        return
+    if row.crap > threshold:
+        raise ScopeJoinError(f"unjoined {row.namespace} {row.name}")
+
+
 def _classify_crap(
     row: CrapRow,
     functions: list[FnSpan],
@@ -336,10 +399,15 @@ def _classify_crap(
     threshold: float,
     findings: list[dict[str, object]],
     debt: list[dict[str, object]],
+    root: Path | None,
+    coverage_expected: bool,
 ) -> None:
     matched = _named(functions, row)
-    if _any_changed(matched, changed):
-        _keep_finding(row, threshold, findings)
+    if not matched:
+        _unjoined(row, threshold)
+        return
+    if _any_changed(matched, changed, root):
+        _keep_finding(row, threshold, findings, coverage_expected)
         return
     _keep_debt(row, matched, debt)
 
@@ -347,7 +415,8 @@ def _classify_crap(
 def _collect(changed: dict[str, list[int]], provider: Provider, root: Path) -> list[FnSpan]:
     found: list[FnSpan] = []
     for rel in changed:
-        found.extend(provider(root / rel, root))
+        if _is_source(rel):
+            found.extend(provider(root / rel, root))
     return found
 
 
@@ -357,13 +426,15 @@ def filter_crap(
     provider: Provider,
     threshold: float = 10.0,
     root: Path | None = None,
+    *,
+    coverage_expected: bool = False,
 ) -> dict[str, list[dict[str, object]]]:
     base = root or Path(".")
     findings: list[dict[str, object]] = []
     debt: list[dict[str, object]] = []
     functions = _collect(changed, provider, base)
     for row in parse_crap_edn(edn_text):
-        _classify_crap(row, functions, changed, threshold, findings, debt)
+        _classify_crap(row, functions, changed, threshold, findings, debt, base, coverage_expected)
     return {"findings": findings, "debt": debt}
 
 
@@ -377,22 +448,22 @@ def _dry_payload(row: DryRow) -> dict[str, object]:
     return {"score": row.score, "left": _span_payload(row.left), "right": _span_payload(row.right)}
 
 
-def _span_overlap(span: Span | None, changed: dict[str, list[int]]) -> bool:
+def _span_overlap(span: Span | None, changed: dict[str, list[int]], root: Path | None) -> bool:
     if span is None:
         return False
-    return _span_hits(span.start_line, span.end_line, lines_for_path(span.file, changed))
+    return _span_hits(span.start_line, span.end_line, lines_for_path(span.file, changed, root))
 
 
-def _either_side(row: DryRow, changed: dict[str, list[int]]) -> bool:
-    if _span_overlap(row.left, changed):
+def _either_side(row: DryRow, changed: dict[str, list[int]], root: Path | None) -> bool:
+    if _span_overlap(row.left, changed, root):
         return True
-    return _span_overlap(row.right, changed)
+    return _span_overlap(row.right, changed, root)
 
 
-def _dry_is_finding(row: DryRow, changed: dict[str, list[int]], threshold: float) -> bool:
+def _dry_is_finding(row: DryRow, changed: dict[str, list[int]], threshold: float, root: Path | None) -> bool:
     if row.score < threshold:
         return False
-    return _either_side(row, changed)
+    return _either_side(row, changed, root)
 
 
 def _classify_dry(
@@ -401,8 +472,9 @@ def _classify_dry(
     threshold: float,
     findings: list[dict[str, object]],
     debt: list[dict[str, object]],
+    root: Path | None,
 ) -> None:
-    if _dry_is_finding(row, changed, threshold):
+    if _dry_is_finding(row, changed, threshold, root):
         findings.append(_dry_payload(row))
         return
     debt.append(_dry_payload(row))
@@ -412,11 +484,12 @@ def filter_dry(
     edn_text: str,
     changed: dict[str, list[int]],
     threshold: float = 0.8,
+    root: Path | None = None,
 ) -> dict[str, list[dict[str, object]]]:
     findings: list[dict[str, object]] = []
     debt: list[dict[str, object]] = []
     for row in parse_dry_edn(edn_text):
-        _classify_dry(row, changed, threshold, findings, debt)
+        _classify_dry(row, changed, threshold, findings, debt, root)
     return {"findings": findings, "debt": debt}
 
 
@@ -430,22 +503,22 @@ def _span_from_item(item: dict[str, object]) -> FnSpan:
     )
 
 
-def _append_span(found: list[FnSpan], item: dict[str, object], path: Path) -> None:
+def _append_span(found: list[FnSpan], item: dict[str, object], path: Path, root: Path) -> None:
     raw = str(item["path"]).replace("\\", "/")
-    if _same_path(path.as_posix(), raw):
+    if _same_repo_path(path.as_posix(), raw, root):
         found.append(_span_from_item(item))
 
 
-def _spans_for(rows: list[dict[str, object]], path: Path) -> list[FnSpan]:
+def _spans_for(rows: list[dict[str, object]], path: Path, root: Path) -> list[FnSpan]:
     found: list[FnSpan] = []
     for item in rows:
-        _append_span(found, item, path)
+        _append_span(found, item, path, root)
     return found
 
 
-def functions_from_json(spec: str, path: Path) -> list[FnSpan]:
+def functions_from_json(spec: str, path: Path, root: Path) -> list[FnSpan]:
     rows = json.loads(Path(spec).read_text(encoding="utf-8"))
-    return _spans_for(rows, path)
+    return _spans_for(rows, path, root)
 
 
 def _crapper_api():
@@ -481,18 +554,22 @@ def _read_functions(functions_in_file, language: str, path: Path, root: Path) ->
     return [_from_function(item, relative) for item in found]
 
 
+def _reject_unknown_language(language: str | None, path: Path) -> str:
+    if language is None:
+        raise ScopeJoinError(f"no language for {path.as_posix()}")
+    return language
+
+
 def functions_from_crapper(path: Path, root: Path) -> list[FnSpan]:
     language_of, functions_in_file = _crapper_api()
-    language = language_of(path)
-    if language is None:
-        return []
+    language = _reject_unknown_language(language_of(path), path)
     return _read_functions(functions_in_file, language, path, root)
 
 
 def default_provider(path: Path, root: Path) -> list[FnSpan]:
     spec = os.environ.get("UB_SCOPE_FUNCTIONS_JSON")
     if spec:
-        return functions_from_json(spec, path)
+        return functions_from_json(spec, path, root)
     return functions_from_crapper(path, root)
 
 
@@ -545,12 +622,29 @@ def _threshold(argv: list[str], default: float) -> float:
     return float(raw)
 
 
-def _payload(kind: str, base: str, edn: str, threshold: float) -> dict[str, list[dict[str, object]]]:
+def _coverage_expected(argv: list[str]) -> bool:
+    return "--coverage-expected" in argv
+
+
+def _payload(
+    kind: str,
+    base: str,
+    edn: str,
+    threshold: float,
+    coverage_expected: bool,
+) -> dict[str, list[dict[str, object]]]:
     changed = changed_lines_from_diff(git_diff_text(base))
     text = Path(edn).read_text(encoding="utf-8")
     if kind == "crap":
-        return filter_crap(text, changed, default_provider, threshold, Path.cwd())
-    return filter_dry(text, changed, threshold)
+        return filter_crap(
+            text,
+            changed,
+            default_provider,
+            threshold,
+            Path.cwd(),
+            coverage_expected=coverage_expected,
+        )
+    return filter_dry(text, changed, threshold, Path.cwd())
 
 
 def _filter_error(exc: Exception) -> int:
@@ -562,8 +656,14 @@ def _filter_error(exc: Exception) -> int:
 
 def _print_payload(kind: str, base: str, edn: str, argv: list[str], default_threshold: float) -> int:
     try:
-        payload = _payload(kind, base, edn, _threshold(argv, default_threshold))
-    except (RuntimeError, OSError, CrapperUnavailable, ValueError) as exc:
+        payload = _payload(
+            kind,
+            base,
+            edn,
+            _threshold(argv, default_threshold),
+            _coverage_expected(argv),
+        )
+    except (RuntimeError, OSError, CrapperUnavailable, ValueError, ScopeJoinError) as exc:
         return _filter_error(exc)
     print(json.dumps(payload))
     return 0
