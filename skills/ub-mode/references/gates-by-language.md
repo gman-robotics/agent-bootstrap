@@ -102,7 +102,12 @@ Point `./path/to/` at your checkout of each tool repo, or put the wrappers on `P
 | Tool not installed | Record "gate skipped: &lt;tool&gt; not on PATH" on the PR `Gates:` line |
 | Project language not in the six | State plainly; do not fake a gate |
 | Baseline tests fail | Fix tests first; mutator exit `2` means baseline failure |
-| Advisory mode | Implementer must **fix** crapper/dryer flags before PR; CI reports findings. Advisory findings do not block APPROVE until blocking mode; **`skipped_tools_missing`** exits 0 with warning — **`gates_ran=0`**, not a pass |
+| Advisory mode | Set `UB_GATES_ADVISORY=1` (the report wrapper does this). Findings and **`skipped_tools_missing`** exit 0 with a warning — **`gates_ran=0`** is not a pass. A direct `scripts/run_ub_gates_ci.sh` call defaults to blocking (`UB_GATES_ADVISORY=0`) |
+| Blocking mutator skip | `UB_GATES_SKIP_MUTATOR=1` or `CURSOR_AGENT` without `GITHUB_ACTIONS` is outcome **`skipped_mutator`** and exits 1. It is not `ran_clean` |
+| Declaration files | `.pyi` and `.d.ts` are outside gate scope (no function bodies) |
+| Mutator budget | 20-minute cap. A timeout is non-blocking. The step summary's first line states the timeout |
+| Dryer exit | Exit 0 with a fresh `.metrics/dry.edn` is the only dryer success. Exit 1, 2, or any other code is `tool_error` even when that file exists |
+| Base ref | Fetch `UB_GATES_BASE_REF` with no depth limit and unshallow a shallow clone. A missing merge base is `tool_error` |
 
 ## uml-viewer (optional)
 

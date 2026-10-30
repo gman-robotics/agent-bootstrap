@@ -348,7 +348,7 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/teach/SKILL.md` | "Teach me this", explain subsystem | how + why woven into plain explanation via unslop |
 | `skills/technical-writing/SKILL.md` | Docs, RFCs, PR descriptions | Diátaxis + Google/STE/Global English + unslop |
 | `skills/unslop/SKILL.md` | Cut AI tells from prose | Pattern scan, rewrite, self-audit |
-| `skills/ub-mode/SKILL.md` | `/ub-mode`, ub mode, advisory gate report on supported code | Make it Work / Right / Practice; advisory crapper, dryer, mutator until blocking mode approved |
+| `skills/ub-mode/SKILL.md` | `/ub-mode`, ub mode, gate report on supported code | Make it Work / Right / Practice; `scripts/run_ub_gates_ci.sh` defaults to blocking (`UB_GATES_ADVISORY=0`); the report wrapper stays advisory; a blocking mutator skip is `skipped_mutator`, not `ran_clean` |
 | `skills/why/SKILL.md` | Why is X shaped this way (rationale) | Git anchor, MCP investigators, confidence-tier synthesis |
 | `skills/project-carry-through/SKILL.md` | A project or plan is agreed; ask-or-continue decision | Carry agreed projects to completion; ask Tom only for a new decision or manual action |
 | `skills/blocker-walkthrough/SKILL.md` | "Walk me through the blockers"; open decisions | Explain blocking decisions one at a time with answer options last |

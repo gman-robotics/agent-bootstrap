@@ -277,7 +277,7 @@ def _normalize_rel(path: str) -> str:
 
 def _is_source(rel: str) -> bool:
     name = Path(_normalize_rel(rel)).name
-    if name.endswith(".d.ts"):
+    if name.endswith(".d.ts") or name.endswith(".pyi"):
         return False
     return Path(name).suffix in _SOURCE_SUFFIXES
 
@@ -385,8 +385,10 @@ def _keep_debt(row: CrapRow, matched: list[FnSpan], debt: list[dict[str, object]
         debt.append(_crap_payload(row))
 
 
-def _unjoined(row: CrapRow, threshold: float) -> None:
+def _unjoined(row: CrapRow, threshold: float, coverage_expected: bool) -> None:
     if row.crap is None:
+        if coverage_expected:
+            raise ScopeJoinError(f"unjoined nil coverage for {row.namespace} {row.name}")
         return
     if row.crap > threshold:
         raise ScopeJoinError(f"unjoined {row.namespace} {row.name}")
@@ -404,7 +406,7 @@ def _classify_crap(
 ) -> None:
     matched = _named(functions, row)
     if not matched:
-        _unjoined(row, threshold)
+        _unjoined(row, threshold, coverage_expected)
         return
     if _any_changed(matched, changed, root):
         _keep_finding(row, threshold, findings, coverage_expected)
@@ -474,6 +476,8 @@ def _classify_dry(
     debt: list[dict[str, object]],
     root: Path | None,
 ) -> None:
+    if row.score >= threshold and row.left is None and row.right is None:
+        raise ScopeJoinError("dryer row meets threshold but neither side parsed")
     if _dry_is_finding(row, changed, threshold, root):
         findings.append(_dry_payload(row))
         return

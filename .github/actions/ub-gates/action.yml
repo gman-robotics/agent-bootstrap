@@ -74,6 +74,12 @@ runs:
           git -C "${dir}" remote add origin "${url}"
           git -C "${dir}" fetch --depth 1 origin "${sha}"
           git -C "${dir}" checkout --detach FETCH_HEAD
+          local head
+          head="$(cd "${dir}" && git rev-parse HEAD)"
+          if [[ "${head}" != "${sha}" ]]; then
+            echo "ub-gates: ${name} HEAD ${head} does not equal lock ${sha}" >&2
+            exit 1
+          fi
         }
         clone_tool crapper https://github.com/unclebob/crapper "$(awk -F= '$1=="crapper" {print $2; exit}' "${lock}")"
         clone_tool dryer https://github.com/unclebob/dryer "$(awk -F= '$1=="dryer" {print $2; exit}' "${lock}")"
@@ -105,3 +111,11 @@ runs:
       run: |
         set -euo pipefail
         bash "${{ inputs.hub-path }}/scripts/run_ub_gates_ci.sh"
+
+    - name: Upload ub-gates metrics
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ub-gates-metrics
+        path: .metrics/
+        if-no-files-found: ignore

@@ -237,6 +237,30 @@ class CrapFilterTests(unittest.TestCase):
         self.assertEqual(result["findings"], [])
         self.assertEqual(result["debt"], [])
 
+    def test_pyi_and_d_ts_are_not_source(self) -> None:
+        def provide(path: Path, root: Path) -> list[FnSpan]:
+            if path.name.endswith(".pyi") or path.name.endswith(".d.ts"):
+                raise ScopeJoinError(f"scanned {path.name}")
+            return []
+
+        result = filter_crap(
+            "{:entries []}",
+            {"lib/api.pyi": [1], "web/types.d.ts": [2], "lib/a.py": [1]},
+            provide,
+            10,
+        )
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(result["debt"], [])
+
+    def test_unjoined_nil_crap_with_coverage_expected_is_a_tool_error(self) -> None:
+        edn = '{:entries [{:name "f", :namespace "pkg", :complexity 1, :coverage nil, :crap nil}]}'
+        try:
+            result = filter_crap(edn, {"a.py": [1]}, _provider([]), 10, coverage_expected=True)
+        except ScopeJoinError as exc:
+            self.assertIn("unjoined", str(exc).lower())
+            return
+        self.fail(f"dropped the nil row: {result}")
+
     def test_non_source_diff_paths_are_not_language_errors(self) -> None:
         def provide(path: Path, root: Path) -> list[FnSpan]:
             if path.suffix != ".py":
@@ -379,6 +403,26 @@ class DryFilterTests(unittest.TestCase):
         self.assertEqual(result["findings"][0]["score"], 0.8)
         self.assertIsNone(result["findings"][0]["right"])
         self.assertEqual(result["findings"][0]["left"]["file"], "a.py")
+
+    def test_high_score_with_neither_side_parsed_is_a_tool_error(self) -> None:
+        edn = '{:candidates [{:score 0.91 :language "python" :left {:file "a.py"} :right {:file "b.py"}}]}'
+        try:
+            result = filter_dry(edn, {"a.py": [2]}, 0.8)
+        except ScopeJoinError as exc:
+            self.assertIn("neither", str(exc).lower())
+            return
+        self.fail(f"kept an unparsed row: {result}")
+
+    def test_score_at_threshold_with_neither_side_parsed_is_a_tool_error(self) -> None:
+        edn = '{:candidates [{:score 0.8 :language "python" :left {:file "a.py"} :right {:file "b.py"}}]}'
+        with self.assertRaises(ScopeJoinError):
+            filter_dry(edn, {"a.py": [2]}, 0.8)
+
+    def test_low_score_with_neither_side_parsed_stays_debt(self) -> None:
+        edn = '{:candidates [{:score 0.2 :language "python" :left {:file "a.py"} :right {:file "b.py"}}]}'
+        result = filter_dry(edn, {"a.py": [2]}, 0.8)
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(len(result["debt"]), 1)
 
     def test_a_different_file_does_not_use_another_files_lines(self) -> None:
         edn = self._edn(
