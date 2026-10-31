@@ -20,6 +20,12 @@ class UbGatesActionTests(unittest.TestCase):
         self.assertNotIn("actions/upload-artifact@v", text)
         self.assertIn("if: always()", text)
         self.assertIn(".metrics/", text)
+        self.assertIn("include-hidden-files: true", text)
+        self.assertIn("UB_GATES_HUB_PATH: ${{ inputs.hub-path }}", text)
+        runs = text.split("runs:", 1)[1]
+        for part in runs.split("run: |")[1:]:
+            script = part.split("\n    - ")[0]
+            self.assertNotIn("inputs.hub-path", script)
         checkout = text.split("git -C", 1)[1]
         verify_at = checkout.find("rev-parse HEAD")
         self.assertGreater(verify_at, checkout.find("checkout --detach"))
