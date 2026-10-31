@@ -88,6 +88,182 @@ class UbGatesContainerTests(unittest.TestCase):
             self.assertIn("UB_GATES_MUTATOR_TEST_CMD=echo mutator marker", recorded)
             self.assertIn("git config --global --add safe.directory", recorded)
 
+    def test_installs_requirements_dev_into_the_venv(self) -> None:
+        text = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn("[[ -f /work/requirements-dev.txt ]]", text)
+        self.assertIn("uv pip install -r /work/requirements-dev.txt", text)
+        self.assertIn('UB_GATES_COVERAGE_CMD=${UB_GATES_COVERAGE_CMD:-}', text)
+        self.assertIn('UB_GATES_MUTATOR_TEST_CMD=${UB_GATES_MUTATOR_TEST_CMD:-}', text)
+        self.assertIn("UB_GATES_ADVISORY=0", text)
+        self.assertLess(
+            text.find('uv pip install "${dest}/crapper"'),
+            text.find("uv pip install -r /work/requirements-dev.txt"),
+        )
+
+    def test_cleared_clone_matches_the_mounted_tree(self) -> None:
+        text = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn("overlay_worktree()", text)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            src = root / "src-repo"
+            src.mkdir()
+            subprocess.run(["git", "init", "-b", "main"], cwd=src, check=True, capture_output=True)
+            subprocess.run(["git", "config", "user.email", "ub-gates@example.com"], cwd=src, check=True)
+            subprocess.run(["git", "config", "user.name", "ub-gates"], cwd=src, check=True)
+            (src / "scripts").mkdir()
+            (src / "src").mkdir()
+            (src / "scripts" / "run.sh").write_text("echo hi\n", encoding="utf-8")
+            (src / "src" / "lib.rs").write_text("fn main() {}\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=src, check=True)
+            subprocess.run(["git", "commit", "-m", "base"], cwd=src, check=True, capture_output=True)
+            (src / "notes.txt").write_text("untracked\n", encoding="utf-8")
+            (src / "target").mkdir()
+            (src / "target" / "junk").write_text("keep\n", encoding="utf-8")
+            (src / ".metrics").mkdir()
+            (src / ".metrics" / "x").write_text("keep\n", encoding="utf-8")
+            dest = root / "clone"
+            subprocess.run(
+                ["git", "clone", "--quiet", str(src), str(dest)],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            (dest / "stale.txt").write_text("stale\n", encoding="utf-8")
+            (dest / "src" / "src").mkdir()
+            (dest / "src" / "src" / "nested.rs").write_text("nested\n", encoding="utf-8")
+            proc = subprocess.run(
+                [
+                    "bash",
+                    "-c",
+                    'source "$1"; overlay_worktree "$2" "$3"',
+                    "_",
+                    str(SCRIPT),
+                    str(src),
+                    str(dest),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            self.assertFalse((dest / "src" / "src").exists())
+            self.assertFalse((dest / "scripts" / "scripts").exists())
+            self.assertFalse((dest / "stale.txt").exists())
+            self.assertTrue((dest / ".git").exists())
+            self.assertEqual((dest / "scripts" / "run.sh").read_text(encoding="utf-8"), "echo hi\n")
+            self.assertEqual((dest / "src" / "lib.rs").read_text(encoding="utf-8"), "fn main() {}\n")
+            self.assertEqual((dest / "notes.txt").read_text(encoding="utf-8"), "untracked\n")
+            self.assertEqual((dest / "target" / "junk").read_text(encoding="utf-8"), "keep\n")
+            self.assertEqual((dest / ".metrics" / "x").read_text(encoding="utf-8"), "keep\n")
+
+    def test_base_ref_comes_from_the_mounted_worktree(self) -> None:
+        text = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn("map_base_ref()", text)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            src = root / "src-repo"
+            src.mkdir()
+            subprocess.run(["git", "init", "-b", "main"], cwd=src, check=True, capture_output=True)
+            subprocess.run(["git", "config", "user.email", "ub-gates@example.com"], cwd=src, check=True)
+            subprocess.run(["git", "config", "user.name", "ub-gates"], cwd=src, check=True)
+            (src / "f.txt").write_text("a\n", encoding="utf-8")
+            subprocess.run(["git", "add", "f.txt"], cwd=src, check=True)
+            subprocess.run(["git", "commit", "-m", "a"], cwd=src, check=True, capture_output=True)
+            old = subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=src, check=True, capture_output=True, text=True
+            ).stdout.strip()
+            (src / "f.txt").write_text("b\n", encoding="utf-8")
+            subprocess.run(["git", "add", "f.txt"], cwd=src, check=True)
+            subprocess.run(["git", "commit", "-m", "b"], cwd=src, check=True, capture_output=True)
+            upstream = subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=src, check=True, capture_output=True, text=True
+            ).stdout.strip()
+            subprocess.run(["git", "update-ref", "refs/remotes/origin/main", upstream], cwd=src, check=True)
+            subprocess.run(["git", "reset", "--hard", old], cwd=src, check=True, capture_output=True)
+            dest = root / "clone"
+            subprocess.run(
+                ["git", "clone", "--quiet", str(src), str(dest)],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            cloned = subprocess.run(
+                ["git", "rev-parse", "refs/remotes/origin/main"],
+                cwd=dest,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            self.assertEqual(cloned, old)
+            env = os.environ.copy()
+            env["UB_GATES_BASE_REF"] = "origin/main"
+            proc = subprocess.run(
+                [
+                    "bash",
+                    "-c",
+                    'source "$1"; map_base_ref "$2" "$3"',
+                    "_",
+                    str(SCRIPT),
+                    str(src),
+                    str(dest),
+                ],
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            mapped = subprocess.run(
+                ["git", "rev-parse", "refs/remotes/origin/main"],
+                cwd=dest,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            self.assertEqual(mapped, upstream)
+
+    def test_local_scope_commit_includes_untracked_files(self) -> None:
+        text = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn("commit_local_scope()", text)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            src = root / "src-repo"
+            src.mkdir()
+            subprocess.run(["git", "init", "-b", "main"], cwd=src, check=True, capture_output=True)
+            subprocess.run(["git", "config", "user.email", "ub-gates@example.com"], cwd=src, check=True)
+            subprocess.run(["git", "config", "user.name", "ub-gates"], cwd=src, check=True)
+            (src / "tracked.txt").write_text("tracked\n", encoding="utf-8")
+            subprocess.run(["git", "add", "tracked.txt"], cwd=src, check=True)
+            subprocess.run(["git", "commit", "-m", "base"], cwd=src, check=True, capture_output=True)
+            (src / "notes.txt").write_text("untracked\n", encoding="utf-8")
+            dest = root / "clone"
+            subprocess.run(
+                ["git", "clone", "--quiet", str(src), str(dest)],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            proc = subprocess.run(
+                [
+                    "bash",
+                    "-c",
+                    'source "$1"; overlay_worktree "$2" "$3"; (cd "$3" && commit_local_scope)',
+                    "_",
+                    str(SCRIPT),
+                    str(src),
+                    str(dest),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            shown = subprocess.run(
+                ["git", "show", "HEAD:notes.txt"],
+                cwd=dest,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(shown.stdout, "untracked\n")
+
 
 if __name__ == "__main__":
     unittest.main()

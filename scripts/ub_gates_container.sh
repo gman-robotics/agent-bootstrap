@@ -4,6 +4,13 @@
 # Worktree is mounted read-only. The main git directory is mounted read-only
 # when it lives outside the worktree. Tools are installed only inside the
 # container (rust:1.83, uv venv, pinned crapper/dryer/mutator).
+# The throwaway clone is cleared except .git, then the mounted worktree is
+# copied in place so a directory is replaced, not nested. The clone commit
+# stays inside the container. The host repository is not committed.
+# refs/remotes/$UB_GATES_BASE_REF is copied from the mounted worktree.
+# UB_GATES_ADVISORY stays 0. Coverage and the mutator test command stay empty
+# unless the caller sets them. requirements-dev.txt is installed into the
+# container venv when that file is present.
 set -euo pipefail
 
 usage() {
@@ -12,11 +19,35 @@ Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git
 
 Run scripts/run_ub_gates_ci.sh inside `docker run --rm` on image rust:1.83.
 uv creates a Python 3.13 virtualenv inside the container and installs the
-pinned crapper, dryer, and mutator there. The worktree mount is read-only (:ro).
+pinned crapper, dryer, and mutator there. When requirements-dev.txt is
+present it is installed into that venv. The worktree mount is read-only (:ro).
 The main git directory is mounted :ro when it is outside the worktree.
 .metrics is copied to a temp directory on the host. Nothing else is written
 on the host. The launcher sets UB_GATES_ADVISORY=0.
 EOF
+}
+
+overlay_worktree() {
+  local src="$1"
+  local dest="$2"
+  find "${dest}" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+  find "${src}" -mindepth 1 -maxdepth 1 ! -name .git -exec cp -a {} "${dest}/" \;
+}
+
+map_base_ref() {
+  local src="$1"
+  local dest="$2"
+  local remote_ref="refs/remotes/${UB_GATES_BASE_REF:-origin/main}"
+  if git -C "${src}" rev-parse --verify "${remote_ref}^{commit}" >/dev/null 2>&1; then
+    git -C "${dest}" update-ref "${remote_ref}" "$(git -C "${src}" rev-parse "${remote_ref}")"
+  fi
+}
+
+commit_local_scope() {
+  git add -A
+  if ! git diff --cached --quiet; then
+    git -c user.email="ub-gates@localhost" -c user.name="ub-gates" commit -q -m "ub-gates local scope"
+  fi
 }
 
 inside() {
@@ -55,9 +86,15 @@ inside() {
   clone_tool dryer https://github.com/unclebob/dryer "$(awk -F= '$1=="dryer" {print $2; exit}' "${lock}")"
   clone_tool mutator https://github.com/unclebob/mutator "$(awk -F= '$1=="mutator" {print $2; exit}' "${lock}")"
   VIRTUAL_ENV=/opt/ub/.venv /tmp/uv/uv pip install "${dest}/crapper" "${dest}/dryer" "${dest}/mutator"
+  if [[ -f /work/requirements-dev.txt ]]; then
+    VIRTUAL_ENV=/opt/ub/.venv /tmp/uv/uv pip install -r /work/requirements-dev.txt
+  fi
   rm -rf /tmp/app
   git clone --shared /work /tmp/app
+  map_base_ref /work /tmp/app
+  overlay_worktree /work /tmp/app
   cd /tmp/app
+  commit_local_scope
   export PATH="/opt/ub/.venv/bin:${PATH}"
   export UB_GATES_ADVISORY=0
   set +e
@@ -71,78 +108,84 @@ inside() {
   exit "${rc}"
 }
 
-WORKTREE=""
-MAIN_GIT=""
-METRICS_DIR=""
+main() {
+  WORKTREE=""
+  MAIN_GIT=""
+  METRICS_DIR=""
 
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    -h|--help|help)
-      usage
-      exit 0
-      ;;
-    --inside)
-      inside
-      exit 0
-      ;;
-    --worktree)
-      WORKTREE="${2:-}"
-      shift 2
-      ;;
-    --main-git)
-      MAIN_GIT="${2:-}"
-      shift 2
-      ;;
-    --metrics-dir)
-      METRICS_DIR="${2:-}"
-      shift 2
-      ;;
-    *)
-      echo "unknown argument: $1" >&2
-      usage >&2
-      exit 2
-      ;;
-  esac
-done
-
-if [[ -z "${WORKTREE}" ]]; then
-  WORKTREE="$(pwd)"
-fi
-if [[ -z "${MAIN_GIT}" ]]; then
-  if git -C "${WORKTREE}" rev-parse --git-common-dir >/dev/null 2>&1; then
-    MAIN_GIT="$(git -C "${WORKTREE}" rev-parse --git-common-dir)"
-    case "${MAIN_GIT}" in
-      /*) ;;
-      *) MAIN_GIT="$(cd "${WORKTREE}" && cd "${MAIN_GIT}" && pwd)" ;;
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help|help)
+        usage
+        exit 0
+        ;;
+      --inside)
+        inside
+        exit 0
+        ;;
+      --worktree)
+        WORKTREE="${2:-}"
+        shift 2
+        ;;
+      --main-git)
+        MAIN_GIT="${2:-}"
+        shift 2
+        ;;
+      --metrics-dir)
+        METRICS_DIR="${2:-}"
+        shift 2
+        ;;
+      *)
+        echo "unknown argument: $1" >&2
+        usage >&2
+        exit 2
+        ;;
     esac
-  else
-    MAIN_GIT="${WORKTREE}/.git"
+  done
+
+  if [[ -z "${WORKTREE}" ]]; then
+    WORKTREE="$(pwd)"
   fi
-fi
-if [[ -z "${METRICS_DIR}" ]]; then
-  METRICS_DIR="$(mktemp -d "${TMPDIR:-/tmp}/ub-gates-metrics.XXXXXX")"
-fi
-mkdir -p "${METRICS_DIR}"
+  if [[ -z "${MAIN_GIT}" ]]; then
+    if git -C "${WORKTREE}" rev-parse --git-common-dir >/dev/null 2>&1; then
+      MAIN_GIT="$(git -C "${WORKTREE}" rev-parse --git-common-dir)"
+      case "${MAIN_GIT}" in
+        /*) ;;
+        *) MAIN_GIT="$(cd "${WORKTREE}" && cd "${MAIN_GIT}" && pwd)" ;;
+      esac
+    else
+      MAIN_GIT="${WORKTREE}/.git"
+    fi
+  fi
+  if [[ -z "${METRICS_DIR}" ]]; then
+    METRICS_DIR="$(mktemp -d "${TMPDIR:-/tmp}/ub-gates-metrics.XXXXXX")"
+  fi
+  mkdir -p "${METRICS_DIR}"
 
-mounts=(-v "${WORKTREE}:/work:ro" -v "${METRICS_DIR}:/metrics-out")
-case "${MAIN_GIT}" in
-  "${WORKTREE}/.git"|"${WORKTREE}/.git/") ;;
-  *) mounts+=(-v "${MAIN_GIT}:${MAIN_GIT}:ro") ;;
-esac
+  mounts=(-v "${WORKTREE}:/work:ro" -v "${METRICS_DIR}:/metrics-out")
+  case "${MAIN_GIT}" in
+    "${WORKTREE}/.git"|"${WORKTREE}/.git/") ;;
+    *) mounts+=(-v "${MAIN_GIT}:${MAIN_GIT}:ro") ;;
+  esac
 
-printf '%s\n' "${METRICS_DIR}"
-docker run --rm -i \
-  "${mounts[@]}" \
-  -e UB_GATES_ADVISORY=0 \
-  -e "UB_GATES_BASE_REF=${UB_GATES_BASE_REF:-origin/main}" \
-  -e "UB_GATES_COVERAGE_CMD=${UB_GATES_COVERAGE_CMD:-}" \
-  -e "UB_GATES_MUTATOR_TEST_CMD=${UB_GATES_MUTATOR_TEST_CMD:-}" \
-  -w /tmp \
-  rust:1.83 \
-  bash -s <<'EOS'
+  printf '%s\n' "${METRICS_DIR}"
+  docker run --rm -i \
+    "${mounts[@]}" \
+    -e UB_GATES_ADVISORY=0 \
+    -e "UB_GATES_BASE_REF=${UB_GATES_BASE_REF:-origin/main}" \
+    -e "UB_GATES_COVERAGE_CMD=${UB_GATES_COVERAGE_CMD:-}" \
+    -e "UB_GATES_MUTATOR_TEST_CMD=${UB_GATES_MUTATOR_TEST_CMD:-}" \
+    -w /tmp \
+    rust:1.83 \
+    bash -s <<'EOS'
 set -euo pipefail
 if command -v git >/dev/null 2>&1; then
   git config --global --add safe.directory '*'
 fi
 exec bash /work/scripts/ub_gates_container.sh --inside
 EOS
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi

@@ -12,6 +12,9 @@
 # Base-ref fetch honors UB_GATES_BASE_REF, uses no depth limit, and unshallows
 # a shallow clone. Mutator budget timeout is non-blocking; the step summary's
 # first line states the timeout. .pyi and .d.ts are outside gate scope.
+# Advisory mode uses the same changed-code scope join and the same per-file
+# mutator budget. Mutator exit 1 is tool_error. Advisory still exits 0.
+# A non-zero changed-line scope command records tool_error and does not abort.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -42,6 +45,7 @@ write_outcome() {
     if [[ -n "${MUTATOR_RC:-}" ]]; then printf 'mutator_exit=%s\n' "${MUTATOR_RC}"; fi
     if [[ -n "${MUTATOR_SKIPPED:-}" ]]; then printf 'mutator_skipped=%s\n' "${MUTATOR_SKIPPED}"; fi
     if [[ -n "${MUTATOR_TIMEOUT:-}" ]]; then printf 'mutator_timeout=%s\n' "${MUTATOR_TIMEOUT}"; fi
+    if [[ -n "${MUTATOR_BUDGET_USED:-}" ]]; then printf 'mutator_budget_secs=%s\n' "${MUTATOR_BUDGET_USED}"; fi
     if [[ -n "${TOOL_ERROR:-}" ]]; then printf 'tool_error=%s\n' "${TOOL_ERROR}"; fi
   } >"${OUTCOME_FILE}"
 }
@@ -209,19 +213,6 @@ collect_scope_files() {
   SCOPE_COUNT="${#SCOPE_FILES[@]}"
 }
 
-count_dryer_high_candidates() {
-  local path="${1:-.metrics/dry.edn}"
-  [[ -f "${path}" ]] || return 1
-  python3 - "${path}" "${DRYER_THRESHOLD}" <<'PY'
-import re, sys
-path, thresh = sys.argv[1], float(sys.argv[2])
-text = open(path, encoding="utf-8").read()
-scores = [float(m) for m in re.findall(r":score\s+([\d.]+)", text)]
-high = sum(1 for s in scores if s >= thresh)
-print(high)
-PY
-}
-
 gate_bin() {
   command -v "$1" >/dev/null 2>&1 && echo "$1" && return 0
   if [[ -x "./$1" ]]; then
@@ -267,7 +258,14 @@ apply_scope_filter() {
     rm -f "${out}"
     return "${rc}"
   fi
+  set +e
   counts="$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1], encoding="utf-8")); print(len(d["findings"])); print(len(d["debt"]))' "${out}")"
+  counts_rc=$?
+  set -e
+  if [[ "${counts_rc}" -ne 0 ]]; then
+    rm -f "${out}"
+    return "${counts_rc}"
+  fi
   rm -f "${out}"
   findings="${counts%%$'\n'*}"
   debt="${counts##*$'\n'}"
@@ -278,6 +276,7 @@ apply_scope_filter() {
     DRYER_FINDINGS="${findings}"
     DRYER_DEBT="${debt}"
   fi
+  log "ub-gates: scope join ${cmd} findings=${findings} debt=${debt}"
   return 0
 }
 
@@ -322,7 +321,7 @@ note_mutator_rc() {
 
 mark_mutator_timeout() {
   MUTATOR_TIMEOUT=1
-  emit_warning "mutator budget exhausted; remaining files skipped"
+  emit_warning "mutator budget exhausted; remaining files skipped; non-blocking"
 }
 
 append_mutator_test_command() {
@@ -332,17 +331,35 @@ append_mutator_test_command() {
   fi
 }
 
-run_mutator_blocking() {
-  local deadline file lines left rc args
+fail_scope_lines() {
+  local file="$1"
+  TOOL_ERROR=1
+  OUTCOME="tool_error"
+  GATE_MISS=1
+  GATES_RAN=1
+  emit_warning "tool_error — changed-line scope failed for ${file}"
+  exit_for_outcome
+}
+
+run_mutator() {
+  local deadline file lines left rc args lines_rc
   MUTATOR_RC=0
   MUTATOR_TIMEOUT=0
+  MUTATOR_BUDGET_USED="${MUTATOR_BUDGET}"
+  log "ub-gates: mutator budget ${MUTATOR_BUDGET}s"
   deadline=$((SECONDS + MUTATOR_BUDGET))
   for file in "${SCOPE_FILES[@]}"; do
     if (( SECONDS >= deadline )); then
       mark_mutator_timeout
       return 0
     fi
+    set +e
     lines="$(python3 "${SCOPE_PY}" lines --base "${MERGE_BASE}" --file "${file}")"
+    lines_rc=$?
+    set -e
+    if [[ "${lines_rc}" -ne 0 ]]; then
+      fail_scope_lines "${file}"
+    fi
     if [[ -z "${lines}" ]]; then
       continue
     fi
@@ -369,28 +386,9 @@ run_mutator_blocking() {
   done
 }
 
-run_mutator_advisory() {
-  local args=()
-  append_mutator_test_command args
-  if [[ ${#COVERAGE_PREFIX[@]} -gt 0 ]]; then
-    args+=("${COVERAGE_PREFIX[@]}")
-  fi
-  args+=("${SCOPE_FILES[@]}")
-  set +e
-  "${MUTATOR}" "${args[@]}"
-  MUTATOR_RC=$?
-  set -e
-}
-
 classify_crapper() {
   CRAPPER_FINDINGS=0
   CRAPPER_DEBT=0
-  if [[ "${ADVISORY}" == "1" ]]; then
-    if [[ "${CRAPPER_RC}" -ne 0 ]]; then
-      CRAPPER_FINDINGS=1
-    fi
-    return 0
-  fi
   if [[ ! -f .metrics/crap.edn ]]; then
     return 1
   fi
@@ -413,17 +411,8 @@ classify_dryer() {
   if [[ ! -f .metrics/dry.edn ]]; then
     return 1
   fi
-  if [[ "${ADVISORY}" == "1" ]]; then
-    if [[ -f .metrics/dry.edn ]]; then
-      DRYER_HIGH="$(count_dryer_high_candidates .metrics/dry.edn || echo 0)"
-    fi
-    DRYER_FINDINGS="${DRYER_HIGH}"
-    return 0
-  fi
-  if [[ -f .metrics/dry.edn ]]; then
-    apply_scope_filter dry .metrics/dry.edn "${DRYER_THRESHOLD}" || return 1
-    DRYER_HIGH="${DRYER_FINDINGS}"
-  fi
+  apply_scope_filter dry .metrics/dry.edn "${DRYER_THRESHOLD}" || return 1
+  DRYER_HIGH="${DRYER_FINDINGS}"
   return 0
 }
 
@@ -567,11 +556,7 @@ if [[ "${SKIP_MUTATOR}" == "1" ]]; then
   MUTATOR_SKIPPED=1
   MUTATOR_RC=""
 else
-  if [[ "${ADVISORY}" == "1" ]]; then
-    run_mutator_advisory
-  else
-    run_mutator_blocking
-  fi
+  run_mutator
 fi
 
 if [[ -n "${MUTATOR_RC}" ]]; then
@@ -584,9 +569,6 @@ if ! classify_crapper; then
   TOOL_ERROR=1
 fi
 if ! classify_dryer; then
-  TOOL_ERROR=1
-fi
-if [[ "${ADVISORY}" == "1" && -n "${MUTATOR_RC}" && "${MUTATOR_RC}" -eq 2 ]]; then
   TOOL_ERROR=1
 fi
 

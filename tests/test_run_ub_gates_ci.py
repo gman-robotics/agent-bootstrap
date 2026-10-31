@@ -84,6 +84,8 @@ class RunUbGatesCiTests(unittest.TestCase):
             (bin_dir / "crapper").write_text(
                 f"""#!/usr/bin/env bash
 echo "$@" >> "{log_file}"
+mkdir -p .metrics
+echo '{{:entries []}}' > .metrics/crap.edn
 exit 0
 """,
                 encoding="utf-8",
@@ -115,11 +117,14 @@ exit 0
 
             proc = self._run_in_repo(
                 repo,
-                {
-                    "UB_GATES_ADVISORY": "1",
-                    "UB_GATES_BASE_REF": "main",
-                    "PATH": f"{bin_dir}:/usr/bin:/bin",
-                },
+                self._empty_spans(
+                    repo,
+                    {
+                        "UB_GATES_ADVISORY": "1",
+                        "UB_GATES_BASE_REF": "main",
+                        "PATH": f"{bin_dir}:/usr/bin:/bin",
+                    },
+                ),
             )
             self.assertEqual(
                 proc.returncode,
@@ -164,11 +169,16 @@ exit 0
         with tempfile.TemporaryDirectory() as tmp:
             repo, bin_dir = self._mock_repo_with_tools(
                 tmp,
-                crapper_body="#!/usr/bin/env bash\nexit 0\n",
+                crapper_body=_EMPTY_CRAP,
                 dryer_body="""#!/usr/bin/env bash
 mkdir -p .metrics
 cat > .metrics/dry.edn <<'EDN'
-{:candidates [{:score 0.85 :language "python"}]}
+{:candidates [
+ {:score 0.85
+  :language "python"
+  :left {:file "lib/a.py", :start-line 1, :end-line 2}
+  :right {:file "lib/a.py", :start-line 1, :end-line 2}}
+]}
 EDN
 exit 0
 """,
@@ -176,11 +186,14 @@ exit 0
             )
             proc = self._run_in_repo(
                 repo,
-                {
-                    "UB_GATES_ADVISORY": "1",
-                    "UB_GATES_BASE_REF": "main",
-                    "PATH": f"{bin_dir}:/usr/bin:/bin",
-                },
+                self._empty_spans(
+                    repo,
+                    {
+                        "UB_GATES_ADVISORY": "1",
+                        "UB_GATES_BASE_REF": "main",
+                        "PATH": f"{bin_dir}:/usr/bin:/bin",
+                    },
+                ),
             )
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
@@ -304,7 +317,7 @@ exit 0
             log = Path(tmp) / "mutator-ran.log"
             repo, bin_dir = self._mock_repo_with_tools(
                 tmp,
-                crapper_body="#!/usr/bin/env bash\nexit 0\n",
+                crapper_body=_EMPTY_CRAP,
                 dryer_body="""#!/usr/bin/env bash
 mkdir -p .metrics
 echo '{:candidates []}' > .metrics/dry.edn
@@ -317,12 +330,15 @@ exit 0
             )
             proc = self._run_in_repo(
                 repo,
-                {
-                    "UB_GATES_ADVISORY": "1",
-                    "UB_GATES_BASE_REF": "main",
-                    "PATH": f"{bin_dir}:/usr/bin:/bin",
-                    "CURSOR_AGENT": "1",
-                },
+                self._empty_spans(
+                    repo,
+                    {
+                        "UB_GATES_ADVISORY": "1",
+                        "UB_GATES_BASE_REF": "main",
+                        "PATH": f"{bin_dir}:/usr/bin:/bin",
+                        "CURSOR_AGENT": "1",
+                    },
+                ),
             )
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
@@ -336,7 +352,7 @@ exit 0
         with tempfile.TemporaryDirectory() as tmp:
             repo, bin_dir = self._mock_repo_with_tools(
                 tmp,
-                crapper_body="#!/usr/bin/env bash\nexit 0\n",
+                crapper_body=_EMPTY_CRAP,
                 dryer_body="""#!/usr/bin/env bash
 mkdir -p .metrics
 echo '{:candidates []}' > .metrics/dry.edn
@@ -359,13 +375,16 @@ exit 0
             mutator.chmod(0o755)
             proc = self._run_in_repo(
                 repo,
-                {
-                    "UB_GATES_ADVISORY": "1",
-                    "UB_GATES_BASE_REF": "main",
-                    "PATH": f"{bin_dir}:/usr/bin:/bin",
-                    "CURSOR_AGENT": "1",
-                    "GITHUB_ACTIONS": "true",
-                },
+                self._empty_spans(
+                    repo,
+                    {
+                        "UB_GATES_ADVISORY": "1",
+                        "UB_GATES_BASE_REF": "main",
+                        "PATH": f"{bin_dir}:/usr/bin:/bin",
+                        "CURSOR_AGENT": "1",
+                        "GITHUB_ACTIONS": "true",
+                    },
+                ),
             )
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             outcome = (repo / ".metrics" / "ub-gates-outcome.txt").read_text(encoding="utf-8")
@@ -694,6 +713,9 @@ exit 0
             self.assertIn("mutator_exit=2", outcome)
 
     def test_blocking_mutator_budget_exhausted_does_not_fail(self) -> None:
+        # A 1-second wall clock can end inside the scope-lines process, before
+        # the mutator creates its log. The stub returns 124 only after that
+        # log exists, and the budget stays large enough to reach the first file.
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
             self._two_file_repo(repo)
@@ -706,8 +728,38 @@ exit 0
                 "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
                 f'#!/usr/bin/env bash\necho "$@" >> "{mutator_log}"\nsleep 30\nexit 0\n',
             )
+            self._tool(
+                bin_dir,
+                "timeout",
+                "\n".join(
+                    [
+                        "#!/usr/bin/env python3",
+                        "import os, signal, subprocess, sys, time",
+                        "cmd = sys.argv[2:]",
+                        f"log = {str(mutator_log)!r}",
+                        "proc = subprocess.Popen(cmd, start_new_session=True)",
+                        "deadline = time.time() + 15",
+                        "while time.time() < deadline:",
+                        "    if os.path.isfile(log) and os.path.getsize(log) > 0:",
+                        "        break",
+                        "    if proc.poll() is not None:",
+                        "        break",
+                        "    time.sleep(0.05)",
+                        "try:",
+                        "    os.killpg(proc.pid, signal.SIGTERM)",
+                        "except ProcessLookupError:",
+                        "    pass",
+                        "proc.wait()",
+                        "if not (os.path.isfile(log) and os.path.getsize(log) > 0):",
+                        "    sys.stderr.write('mutator log missing\\n')",
+                        "    sys.exit(2)",
+                        "sys.exit(124)",
+                        "",
+                    ]
+                ),
+            )
             env = self._empty_spans(repo, self._block_env(bin_dir))
-            env["UB_GATES_MUTATOR_BUDGET_SECS"] = "1"
+            env["UB_GATES_MUTATOR_BUDGET_SECS"] = "60"
             summary = repo / "step-summary.md"
             env["GITHUB_STEP_SUMMARY"] = str(summary)
             proc = self._run_in_repo(repo, env)
@@ -715,9 +767,11 @@ exit 0
             outcome = self._gate_outcome(repo)
             self.assertIn("mutator_timeout=1", outcome)
             self.assertNotIn("outcome=tool_error", outcome)
+            self.assertIn("outcome=ran_clean", outcome)
             first = summary.read_text(encoding="utf-8").splitlines()[0]
             self.assertIn("timeout", first.lower())
             self.assertIn("budget", proc.stdout + proc.stderr)
+            self.assertIn("non-blocking", proc.stdout + proc.stderr)
             ran = mutator_log.read_text(encoding="utf-8").strip().splitlines()
             self.assertEqual(len(ran), 1)
             self.assertIn("--lines", ran[0])
@@ -1404,6 +1458,193 @@ exit 0
             outcome = self._gate_outcome(repo)
             self.assertIn("outcome=skipped_no_scope", outcome)
             self.assertIn("scope_files=0", outcome)
+
+    def _advisory_repo(self, tmp: str) -> tuple[Path, Path]:
+        repo = Path(tmp)
+        self._init_repo(repo)
+        lib = repo / "lib"
+        lib.mkdir()
+        (lib / "a.py").write_text(
+            "def changed():\n    return 1\n\ndef old():\n    return 0\n",
+            encoding="utf-8",
+        )
+        self._commit_all(repo, "base")
+        subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+        (lib / "a.py").write_text(
+            "def changed():\n    return 2\n\ndef old():\n    return 0\n",
+            encoding="utf-8",
+        )
+        self._commit_all(repo, "change")
+        bin_dir = repo / "bin"
+        bin_dir.mkdir()
+        return repo, bin_dir
+
+    def _advisory_tools(self, repo: Path, bin_dir: Path, mutator: str, dry: str) -> dict[str, str]:
+        spans = repo / "spans.json"
+        spans.write_text(
+            "["
+            '{"namespace":"pkg","name":"changed","start_line":1,"end_line":2,"path":"lib/a.py"},'
+            '{"namespace":"pkg","name":"old","start_line":4,"end_line":5,"path":"lib/a.py"}'
+            "]",
+            encoding="utf-8",
+        )
+        crapper = "\n".join(
+            [
+                "#!/usr/bin/env bash",
+                "mkdir -p .metrics",
+                "cat > .metrics/crap.edn <<'EDN'",
+                "{:entries [",
+                '  {:name "changed", :namespace "pkg", :complexity 1, :coverage 0.0, :crap 2.0}',
+                '  {:name "old", :namespace "pkg", :complexity 4, :coverage 0.0, :crap 30.0}',
+                "]}",
+                "EDN",
+                "exit 0",
+                "",
+            ]
+        )
+        dryer = "\n".join(
+            [
+                "#!/usr/bin/env bash",
+                "mkdir -p .metrics",
+                "cat > .metrics/dry.edn <<'EDN'",
+                dry,
+                "EDN",
+                "exit 0",
+                "",
+            ]
+        )
+        self._tool(bin_dir, "crapper", crapper)
+        self._tool(bin_dir, "dryer", dryer)
+        self._tool(bin_dir, "mutator", mutator)
+        env = {
+            "UB_GATES_ADVISORY": "1",
+            "UB_GATES_BASE_REF": "main",
+            "UB_GATES_MUTATOR_BUDGET_SECS": "1200",
+            "UB_GATES_MUTATOR_TEST_CMD": "python -m unittest tests.test_ub_changed_scope",
+            "UB_SCOPE_FUNCTIONS_JSON": str(spans),
+            "PATH": f"{bin_dir}:/usr/bin:/bin",
+        }
+        return env
+
+    def test_advisory_joins_scope_and_budgets_mutator(self) -> None:
+        dry = "\n".join(
+            [
+                "{:candidates [",
+                " {:score 0.91",
+                '  :language "python"',
+                '  :left {:file "lib/a.py", :start-line 4, :end-line 5}',
+                '  :right {:file "lib/a.py", :start-line 4, :end-line 5}}',
+                "]}",
+            ]
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, bin_dir = self._advisory_repo(tmp)
+            log = repo / "mutator.log"
+            env = self._advisory_tools(
+                repo,
+                bin_dir,
+                f'#!/usr/bin/env bash\necho "$@" >> "{log}"\nexit 0\n',
+                dry,
+            )
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            text = proc.stdout + proc.stderr
+            self.assertIn("scope join crap findings=0 debt=1", text)
+            self.assertIn("scope join dry findings=0 debt=1", text)
+            self.assertIn("mutator budget 1200s", text)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=ran_clean", outcome)
+            self.assertIn("advisory=1", outcome)
+            self.assertIn("crapper_debt=1", outcome)
+            self.assertIn("dryer_debt=1", outcome)
+            self.assertIn("crapper_findings=0", outcome)
+            self.assertIn("dryer_findings=0", outcome)
+            self.assertIn("mutator_budget_secs=1200", outcome)
+            logged = log.read_text(encoding="utf-8")
+            self.assertIn("--lines", logged)
+            self.assertIn("--test-command", logged)
+            self.assertIn("lib/a.py", logged)
+            self.assertNotIn("--lines 4", logged)
+
+    def test_advisory_changed_line_finding_exits_zero(self) -> None:
+        dry = "\n".join(
+            [
+                "{:candidates [",
+                " {:score 0.91",
+                '  :language "python"',
+                '  :left {:file "lib/a.py", :start-line 1, :end-line 2}',
+                '  :right {:file "lib/a.py", :start-line 1, :end-line 2}}',
+                "]}",
+            ]
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, bin_dir = self._advisory_repo(tmp)
+            log = repo / "mutator.log"
+            env = self._advisory_tools(
+                repo,
+                bin_dir,
+                f'#!/usr/bin/env bash\necho "$@" >> "{log}"\nexit 0\n',
+                dry,
+            )
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=ran_with_findings", outcome)
+            self.assertIn("dryer_findings=1", outcome)
+
+    def test_advisory_mutator_exit_one_is_tool_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, bin_dir = self._advisory_repo(tmp)
+            env = self._advisory_tools(
+                repo,
+                bin_dir,
+                "#!/usr/bin/env bash\nexit 1\n",
+                "{:candidates []}\n",
+            )
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=tool_error", outcome)
+            self.assertIn("mutator_exit=1", outcome)
+            self.assertIn("tool_error=1", outcome)
+            env["UB_GATES_ADVISORY"] = "0"
+            blocking = self._run_in_repo(repo, env)
+            self.assertEqual(blocking.returncode, 1, blocking.stdout + blocking.stderr)
+            blocked = self._gate_outcome(repo)
+            self.assertIn("outcome=tool_error", blocked)
+            self.assertIn("mutator_exit=1", blocked)
+
+    def test_scope_lines_failure_records_tool_error(self) -> None:
+        wrapper = "\n".join(
+            [
+                "#!/usr/bin/env bash",
+                'if [[ "${2:-}" == "lines" ]]; then',
+                "  echo 'scope lines failed' >&2",
+                "  exit 9",
+                "fi",
+                "exec /usr/bin/python3 \"$@\"",
+                "",
+            ]
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, bin_dir = self._advisory_repo(tmp)
+            env = self._advisory_tools(
+                repo,
+                bin_dir,
+                "#!/usr/bin/env bash\nexit 0\n",
+                "{:candidates []}\n",
+            )
+            self._tool(bin_dir, "python3", wrapper)
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=tool_error", outcome)
+            self.assertIn("tool_error=1", outcome)
+            self.assertNotEqual(proc.returncode, 9)
+            env["UB_GATES_ADVISORY"] = "0"
+            blocking = self._run_in_repo(repo, env)
+            self.assertEqual(blocking.returncode, 1, blocking.stdout + blocking.stderr)
+            self.assertIn("outcome=tool_error", self._gate_outcome(repo))
 
 
 if __name__ == "__main__":

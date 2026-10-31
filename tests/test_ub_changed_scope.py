@@ -16,6 +16,7 @@ from scripts.ub_changed_scope import (
     filter_crap,
     filter_dry,
     functions_from_crapper,
+    lines_for_path,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -59,6 +60,14 @@ class ChangedLinesTests(unittest.TestCase):
             ]
         )
         self.assertEqual(changed_lines_from_diff(diff), {"a.py": [8]})
+
+    def test_many_paths_do_not_recurse(self) -> None:
+        changed = {f"p{i}.py": [i] for i in range(2000)}
+        changed["hit.py"] = [4, 5]
+        self.assertEqual(lines_for_path("p0.py", changed), [0])
+        self.assertEqual(lines_for_path("p1999.py", changed), [1999])
+        self.assertEqual(lines_for_path("hit.py", changed), [4, 5])
+        self.assertEqual(lines_for_path("missing.py", changed), [])
 
     def test_zero_new_count_is_a_pure_deletion(self) -> None:
         diff = "\n".join(
