@@ -83,6 +83,10 @@ bash scripts/ub_gates_container.sh
 | dryer | Functions and methods; nested functions stay inside the enclosing function |
 | mutator | Functions and methods; nested defs stay inside the parent |
 
+### Known-bad / known-good pairs
+
+`tests/fixtures/ub_gate_pairs/<gate>/{bad,good}/` is a tiny Python project for `crapper`, `dryer`, and `mutator`. `tests/test_ub_gate_pairs.py` copies each project into a temp git repo and runs `scripts/run_ub_gates_ci.sh` with the real tools (`UB_GATES_ADVISORY=0`). Bad must exit 1 with `outcome=ran_with_findings` on that gate. Good must exit 0 with `outcome=ran_clean`. The CI job `ub-gates` runs this test with `UB_REQUIRE_GATE_TOOLS=1`.
+
 ## When a gate cannot run
 
 | Situation | Action |
