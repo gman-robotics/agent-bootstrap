@@ -88,6 +88,11 @@ jobs:
           UB_REQUIRE_CRAPPER: "1"
         run: python -m unittest tests.test_ub_crapper_contract
 
+      - name: Gate fixture pairs (meta-test)
+        env:
+          UB_REQUIRE_GATE_TOOLS: "1"
+        run: python -m unittest tests.test_ub_gate_pairs
+
   box-tools-shellcheck:
     runs-on: ubuntu-latest
     timeout-minutes: 5
