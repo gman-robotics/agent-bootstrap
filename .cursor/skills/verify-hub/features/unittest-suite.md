@@ -24,5 +24,5 @@ Preconditions:
 ## Gotchas
 
 - Some tests emit intentional stderr (evidence-packet escalation fixtures); judge pass/fail on exit code and unittest summary, not stderr silence.
-- CI runs this in the separate `unittest-and-live-gate` job; verify-hub CI focuses on script-level drives — run unittest when validating broader hub changes.
-- Long runtime (~minutes on cold VM); not part of `verify-hub-ci` to avoid duplicating the main job.
+- CI runs discovery in both **`unittest-and-live-gate`** (INDEX gate only) and **`verify-hub`** (`verify-hub-ci`, which runs this suite with coverage when `coverage` is installed, then advisory ub-gates).
+- Full suite is slow (~3 minutes on a cold VM); `verify-hub-ci` always includes it — plan time accordingly when driving the full bundle locally.
