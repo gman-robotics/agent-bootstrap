@@ -4,7 +4,7 @@ GitHub Actions job **`ub-gates`** in `.github/workflows/test.yml` runs unclebob 
 
 ## Sub-features
 
-- `blocking-action` — `run_ub_gates_ci.sh` with default `UB_GATES_ADVISORY=0`; fails on findings in scope, `tool_error`, and non-scope skips (including `skipped_mutator`).
+- `blocking-action` — `run_ub_gates_ci.sh` with default `UB_GATES_ADVISORY=0`. Blocking exits **`0`** on `skipped_no_scope` and `ran_clean`. Blocking exits **`1`** on `ran_with_findings`, `tool_error`, `skipped_tools_missing`, `skipped_no_base_ref`, `skipped_not_git`, and `skipped_mutator`.
 - `crapper-contract` — `tests.test_ub_crapper_contract` with `UB_REQUIRE_CRAPPER=1`.
 - `gate-fixture-meta-test` — `tests.test_ub_gate_pairs` with `UB_REQUIRE_GATE_TOOLS=1` (GMA-488 known-bad/known-good pairs per gate).
 
@@ -26,7 +26,7 @@ Preconditions:
 UB_REQUIRE_GATE_TOOLS=1 python3 -m unittest tests.test_ub_gate_pairs
 ```
 
-Expect exit `0` when tools are present; skipped tests when tools are missing unless `UB_REQUIRE_GATE_TOOLS=1`.
+Expect exit **`0`** when all three tools are on PATH. With **`UB_REQUIRE_GATE_TOOLS=1`**, missing tools **fail** the run (`UB_REQUIRE_GATE_TOOLS=1 but not on PATH: ...`, non-zero exit). Tests skip missing tools only when that variable is **unset**.
 
 - **Blocking dry-run (optional, slow).** With tools installed and a meaningful scope:
 
@@ -34,7 +34,7 @@ Expect exit `0` when tools are present; skipped tests when tools are missing unl
 UB_GATES_ADVISORY=0 UB_GATES_BASE_REF=origin/main bash scripts/run_ub_gates_ci.sh
 ```
 
-Expect exit `0` on clean merge-base scope; non-zero on findings or `skipped_mutator` in blocking mode.
+Expect exit **`0`** on `ran_clean` or `skipped_no_scope`. Expect non-zero on `ran_with_findings`, `tool_error`, `skipped_tools_missing`, `skipped_no_base_ref`, `skipped_not_git`, or `skipped_mutator` in blocking mode.
 
 - **Proof.** Capture unittest footer for meta-test; capture `.metrics/ub-gates-outcome.txt` and exit code for blocking dry-run.
 

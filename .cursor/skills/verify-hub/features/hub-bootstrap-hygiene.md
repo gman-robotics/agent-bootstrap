@@ -27,7 +27,7 @@ python3 scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_T
 
 Expect exit `0` with no stdout on success.
 
-- **Harness verify (hub self).** Running `--repo-id agent-bootstrap --verify` reports `MISSING` for harness blocks — expected on the hub checkout (no `standards-agent-bootstrap` consumer layout). Record as **verified-unreachable** on hub self with prerequisite: run on a bootstrapped project repo from `manifest.yaml`.
+- **Harness verify (hub self).** Running `python3 scripts/sync_agent_harness_instructions.py --repo-id agent-bootstrap --verify` exits **`1`** on the hub checkout and prints stderr like `MISSING: AGENTS.md, CLAUDE.md, .grok/README.md, .cursor/rules/agent-bootstrap-harness.mdc` (expected — hub is source, not a consumer layout). Record exit code **`1`** plus that `MISSING` line as verified hub-self behavior; run `--verify` on a bootstrapped manifest child repo when you need a passing harness check.
 - **Proof.** Save check command exit code; for child repos, save verify/restore transcript under `$VERIFY_HUB_ARTIFACTS_DIR`.
 
 ## Gotchas

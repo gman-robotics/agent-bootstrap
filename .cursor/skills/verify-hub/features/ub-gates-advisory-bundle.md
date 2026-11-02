@@ -20,12 +20,12 @@ Preconditions:
 - Git checkout with a merge base to `origin/main` (or set `UB_GATES_BASE_REF`) when you expect a non-empty scope.
 - `$VERIFY_HUB_ARTIFACTS_DIR` created.
 
-- **Full bundle.** Run `bash .cursor/skills/verify-hub/bin/verify-hub-ci`. Require final line `verify-hub-ci: OK`. Inspect `${VERIFY_HUB_ARTIFACTS_DIR}/ub-gates-outcome.txt` when gates ran or skipped.
-- **Outcome names.** Expect hub keys: `outcome=ran_clean`, `ran_with_findings`, `skipped_no_scope`, `skipped_tools_missing`, `skipped_mutator`, or `tool_error` (see `scripts/run_ub_gates_ci.sh` header).
+- **Full bundle.** Run `bash .cursor/skills/verify-hub/bin/verify-hub-ci`. Require final line `verify-hub-ci: OK (artifacts=<dir>)`. Inspect `${VERIFY_HUB_ARTIFACTS_DIR}/ub-gates-outcome.txt` when gates ran or skipped.
+- **Outcome names.** Expect hub keys from `run_ub_gates_ci.sh`: `outcome=ran_clean`, `ran_with_findings`, `skipped_no_scope`, `skipped_tools_missing`, `skipped_mutator`, `skipped_no_base_ref`, `skipped_not_git`, or `tool_error`. A missing merge-base (empty `git merge-base`) is `tool_error`, not a separate `skipped_no_merge_base` outcome file key (`skipped_no_merge_base` appears only in the exit-case table for blocking mode).
 - **Proof.** `ub-gates-outcome.txt` plus `coverage-report.txt` (when coverage ran) under the artifacts dir.
 
 ## Gotchas
 
-- Scope uses the **merge-base file list** (`scripts/ub_changed_scope.py`), not git status `--changed`. On a branch with no gate-relevant files vs `origin/main`, `outcome=skipped_no_scope` is normal.
-- Cloud agents may set `UB_GATES_SKIP_MUTATOR=1` inside `run_ub_gates_report.sh`; that records `skipped_mutator` in advisory mode and still exits `0`.
+- Scope file list comes from `git diff --name-only --diff-filter=ACMRT <merge-base> HEAD` in `collect_scope_files` inside `scripts/run_ub_gates_ci.sh`, then extension and test-path filters. **`scripts/ub_changed_scope.py`** applies the `lines` / `crap` / `dry` finding filter on gate metrics — not the merge-base file list. This is not git status `--changed`. On a branch with no gate-relevant files vs the merge base, `outcome=skipped_no_scope` is normal.
+- When `CURSOR_AGENT` is set and `GITHUB_ACTIONS` is unset, `run_ub_gates_report.sh` exports `UB_GATES_SKIP_MUTATOR=1` (same skip in `run_ub_gates_ci.sh`). That does **not** always write `skipped_mutator`. Empty gate-relevant scope → `skipped_no_scope` (returns before mutator logic). Missing `crapper` or `dryer` → `skipped_tools_missing` (with mutator skip, missing `mutator` alone does not). Gate findings → `ran_with_findings`. Tool failure → `tool_error`. **`skipped_mutator`** is only after crapper and dryer run with no findings and no tool error, but mutator was skipped. Advisory mode still exits `0` for all of these (`run_ub_gates_report.sh` always ends with `exit 0`).
 - Blocking CI uses the same scripts with `UB_GATES_ADVISORY=0` (see [Blocking ub-gates CI job](./ub-gates-blocking-ci.md)); do not confuse advisory verify output with a failing PR check.
