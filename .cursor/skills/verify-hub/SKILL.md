@@ -51,7 +51,9 @@ Harness recipe: **bash helpers + captured transcripts** under `$VERIFY_HUB_ARTIF
 |------|--------|
 | INDEX.md live binding | `bin/verify-hub-drive-index-live-gate` |
 | One skill live gate | `bin/verify-hub-drive-check-skill-live create-verification-skill` |
-| Full PR CI bundle (doctor + drives) | `bin/verify-hub-ci` |
+| Full PR CI bundle (doctor, drives, unittest+coverage, advisory ub-gates) | `bin/verify-hub-ci` |
+| Ub-gate fixture meta-test (local, needs tools on PATH) | `UB_REQUIRE_GATE_TOOLS=1 python3 -m unittest tests.test_ub_gate_pairs` |
+| Hub PR template hygiene | `python3 scripts/hub_pull_request_template.py check --file .github/PULL_REQUEST_TEMPLATE.md` |
 
 Feature-level recipes and sub-features live in `features/` — read `features/README.md` before driving; a proof that only hits one entry point is incomplete when the map lists others.
 
@@ -89,7 +91,7 @@ All helpers are executable bash scripts in `.cursor/skills/verify-hub/bin/`:
 - `verify-hub-doctor` — environment and repo layout checks.
 - `verify-hub-drive-index-live-gate` — runs `python3 scripts/index_skills.py`, saves transcript, asserts success line.
 - `verify-hub-drive-check-skill-live <skill-name>` — runs `python3 scripts/check_skill_live.py <skill-name>`.
-- `verify-hub-ci` — doctor, INDEX live gate drive, live check for `create-verification-skill`, coverage-backed unit tests, and advisory `scripts/run_ub_gates_report.sh` (used by GitHub Actions).
+- `verify-hub-ci` — doctor, INDEX live gate drive, live check for `create-verification-skill`, coverage-backed unit tests, advisory `scripts/run_ub_gates_report.sh`, and artifact copy of `.metrics/ub-gates-outcome.txt` (GitHub **`verify-hub`** job). Blocking gates and `tests.test_ub_gate_pairs` run in the separate **`ub-gates`** CI job — see `features/ub-gates-blocking-ci.md`.
 
 ## Maintenance
 

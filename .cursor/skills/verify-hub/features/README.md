@@ -33,5 +33,8 @@ Each feature file uses H1 title, one behavior paragraph, then four H2 sections: 
 - [INDEX live gate](./index-live-gate.md) — `scripts/index_skills.py` binds INDEX.md to black-box live records.
 - [Per-skill live check](./check-skill-live.md) — `scripts/check_skill_live.py` for one skill name.
 - [Unit test suite](./unittest-suite.md) — `python3 -m unittest discover -s tests` (hub regression suite).
+- [Ub-gates advisory bundle](./ub-gates-advisory-bundle.md) — coverage + `run_ub_gates_report.sh` tail of `verify-hub-ci`.
+- [Blocking ub-gates CI job](./ub-gates-blocking-ci.md) — GitHub `ub-gates` job and `tests.test_ub_gate_pairs` meta-test.
+- [Hub bootstrap hygiene](./hub-bootstrap-hygiene.md) — canonical PR template check and harness sync verify (consumer repos).
 - [Pstack skill structure validation](./pstack-skill-validation.md) — `scripts/validate_pstack_skill.py`.
 - [Black-box fixture run](./black-box-fixture.md) — `scripts/run_black_box_fixture.py` for a skill fixture.
