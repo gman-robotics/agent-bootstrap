@@ -1,0 +1,18 @@
+{
+  "name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/create-formal-verification-skill/SKILL.md (pstack formal verification port).",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "create-formal-verification-skill"
+    ],
+    "cwd": "."
+  },
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: create-formal-verification-skill"
+    ]
+  }
+}

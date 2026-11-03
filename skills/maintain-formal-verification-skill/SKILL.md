@@ -89,6 +89,6 @@ Put the verification updates in a change of their own, separate from any product
 
 ## Provenance
 
-Adapted from [backnotprop/pstack](https://github.com/backnotprop/pstack) (MIT). Native multi-harness hub skill — not a marketplace plugin copy.
+Adapted from [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack) and [backnotprop/pstack](https://github.com/backnotprop/pstack) (MIT). Native multi-harness hub skill — not a marketplace plugin copy.
 
 *Last updated: 2026-11-02 | Hub version: 0.14.0*

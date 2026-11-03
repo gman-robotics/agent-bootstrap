@@ -1,0 +1,27 @@
+{
+  "captured_at": "2026-11-03T04:29:37.480247+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Mechanical structure/provenance check for skills/create-formal-verification-skill/SKILL.md (pstack formal verification port).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: create-formal-verification-skill"
+    ]
+  },
+  "fixture": "skills/create-formal-verification-skill/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "scripts/validate_pstack_skill.py",
+      "create-formal-verification-skill"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "f2810bb8180b51b1e2c5ac2baab6f0aca12c62f66f107813e0bd87f8abc5e0e7",
+  "stderr_tail": "",
+  "stdout_tail": "OK: create-formal-verification-skill\n",
+  "verdict": "pass"
+}

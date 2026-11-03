@@ -560,6 +560,54 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Prove end-to-end once before handoff; point to maintain-verification-skill.",
         ),
     ),
+    "create-formal-verification-skill": SkillConfig(
+        description=(
+            "Generate a project-local formal verification skill that proves one high-value "
+            "property across every case in a stated scope."
+        ),
+        short_description="Bootstrap a formal verification skill",
+        trigger_summary=(
+            "Triggers on /create-formal-verification-skill, model-check a race, or prove an invariant."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Choose the strongest target from the code; let the question choose the tool (TLA+ default for order).",
+            "Generate the verify skill with coverage record and sync commit; prove it catches a scratch break.",
+            "Point the next agent at statechart for TLA+ results and at maintain-formal-verification-skill for upkeep.",
+        ),
+    ),
+    "maintain-formal-verification-skill": SkillConfig(
+        description=(
+            "Bring a project's formal verification back in line with the code after changes that "
+            "skipped the verify skill."
+        ),
+        short_description="Sync formal verification after code changes",
+        trigger_summary=(
+            "Triggers on /maintain-formal-verification-skill or after merges that touched verified code."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Find the formal checks, run them as-is, read every change to covered code.",
+            "Update the model or harness from the code, rerun, and classify in-sync / updated / bug / blocked.",
+            "Advance the sync commit only after the verification describes the new code.",
+        ),
+    ),
+    "statechart": SkillConfig(
+        description=(
+            "Check a TLA+ model of a system that moves between states and draw it as a Mermaid "
+            "statechart with shortest paths to broken invariants."
+        ),
+        short_description="Render a TLA+ model as a Mermaid statechart",
+        trigger_summary=(
+            "Triggers on /statechart or when a TLA+ model needs a readable chart and bug paths."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Write the TLA+ spec and view module in a scratch folder; run the statechart script.",
+            "Show chart.mmd as a mermaid block; report each bug as rule + reader sentence + numbered path.",
+            "Replay bug paths against the real code before treating them as product bugs.",
+        ),
+    ),
     "create-repo-standards": SkillConfig(
         description=(
             "Interview a repository and generate standards-<repo> in harness skill folders plus "

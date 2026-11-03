@@ -341,6 +341,9 @@ Skills are in `/skills/`. Read `skills/INDEX.md` at session start for the full c
 | `skills/label-adjudication/SKILL.md` | Adjudicate labels, two-model label, curate dataset JSONL | Two labelers + adjudicator on disagreements; `scripts/adjudicate_labels.py` merge; human stamp |
 | `skills/lean-context/SKILL.md` | Large logs, docs, HTML/PDF, or JSON blobs that would crowd the transcript | Targeted extraction with rg/jq/markitdown/trafilatura; `scripts/box-tools.sh --check` shows what is present |
 | `skills/maintain-verification-skill/SKILL.md` | Maintain verify-<app> skill | Reconcile feature map, live-pass, triage drift |
+| `skills/create-formal-verification-skill/SKILL.md` | /create-formal-verification-skill, model-check a race or invariant | Generate project-local formal verify skill for highest-value property (TLA+ default for order questions) |
+| `skills/maintain-formal-verification-skill/SKILL.md` | /maintain-formal-verification-skill, is the model still true | Sync formal verification after code changes; classify in-sync / updated / bug / blocked |
+| `skills/statechart/SKILL.md` | /statechart, draw the statechart | Render TLA+ model as Mermaid statechart with shortest bug paths |
 | `skills/pstack-principles/SKILL.md` | Cited pstack principle or decision lens | Combined principles; never-block carve-out for Approve/Reject gates |
 | `skills/reflect/SKILL.md` | Reflect on harness session | Transcript reviewers, skill proposals, approval gate |
 | `skills/show-me-your-work/SKILL.md` | Decision audit trail for ambitious work | Append-only TSV log (distinct from show-me visuals) |
