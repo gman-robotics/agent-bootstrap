@@ -2,7 +2,7 @@
   "version": "v1",
   "review": {
     "model": "grok-4.7 high",
-    "caps": {"T0": 2, "T1": 2, "T2": 4, "T3": 4},
+    "caps": {"T0": 2, "T1": 2, "T2": 2, "T3": 4},
     "small_tiers": ["T0"],
     "small_labels": ["small"],
     "cap_plus_one_approver": "morgan"

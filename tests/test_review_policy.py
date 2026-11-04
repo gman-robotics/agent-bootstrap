@@ -52,11 +52,11 @@ class PolicyFileTests(unittest.TestCase):
 
 class CapTests(unittest.TestCase):
     def test_caps_per_tier(self) -> None:
-        self.assertEqual([rp.cap_for(POLICY, t) for t in ("T0", "T1", "T2", "T3")], [2, 2, 4, 4])
+        self.assertEqual([rp.cap_for(POLICY, t) for t in ("T0", "T1", "T2", "T3")], [2, 2, 2, 4])
 
     def test_small_label_lowers_a_large_tier(self) -> None:
         self.assertEqual(rp.cap_for(POLICY, "T3", ["small"]), 2)
-        self.assertEqual(rp.cap_for(POLICY, "T2", ["docs"]), 4)
+        self.assertEqual(rp.cap_for(POLICY, "T3", ["docs"]), 4)
 
     def test_is_small(self) -> None:
         self.assertTrue(rp.is_small(POLICY, "T0"))
@@ -154,8 +154,8 @@ class ApproverTests(unittest.TestCase):
 
 class CliTests(unittest.TestCase):
     def test_cap_and_approver(self) -> None:
-        self.assertEqual(_run("cap", "--tier", "T2"), (0, "4", ""))
-        self.assertEqual(_run("cap", "--tier", "T2", "--label", "small"), (0, "2", ""))
+        self.assertEqual(_run("cap", "--tier", "T3"), (0, "4", ""))
+        self.assertEqual(_run("cap", "--tier", "T3", "--label", "small"), (0, "2", ""))
         self.assertEqual(_run("approver", "clear-defaults"), (0, "morgan", ""))
         code, _, err = _run("cap", "--tier", "T7")
         self.assertEqual(code, 2)
