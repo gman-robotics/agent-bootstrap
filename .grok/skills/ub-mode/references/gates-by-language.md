@@ -55,9 +55,9 @@ bash scripts/ub_gates_container.sh
 
 | Gate | Notes |
 | --- | --- |
-| crapper | `go test ./... -coverprofile=...` |
+| crapper | `go test ./... -coverprofile=...` per module inside `go_image` (`golang:1.26`). `scripts/ub_go_coverage.py` rewrites import-path keys to repo-relative paths. No Go profile with a record is `tool_error`. An in-scope `.go` file with no record is a warning. |
 | dryer | Functions and methods with a body; function literals stay inside the enclosing function |
-| mutator | mutate4go lineage |
+| mutator | mutate4go lineage. `.go` files use `--use-existing-coverage` so mutator reads the rewritten profile. |
 
 ### TypeScript (dryer: `.ts`, `.tsx`, `.mts`, `.cts` only)
 

@@ -15,6 +15,10 @@
 # Advisory mode uses the same changed-code scope join and the same per-file
 # mutator budget. Mutator exit 1 is tool_error. Advisory still exits 0.
 # A non-zero changed-line scope command records tool_error and does not abort.
+# Go coverprofiles are rewritten once to repo-relative keys when scope
+# contains .go files. Mutator passes --use-existing-coverage for .go files.
+# No Go profile with a record is tool_error. A file with no record is a
+# warning. Gates still run.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -223,7 +227,12 @@ gate_bin() {
 }
 
 lcov_ready() {
-  python3 - <<'PY'
+  local go_flag=0
+  if [[ ${#GO_SCOPE[@]} -gt 0 ]]; then
+    go_flag=1
+  fi
+  UB_GO_SCOPE="${go_flag}" python3 - <<'PY'
+import os
 import pathlib
 import sys
 
@@ -234,8 +243,134 @@ for root in roots:
     for path in root.rglob("lcov.info"):
         if path.is_file() and path.stat().st_size > 0:
             sys.exit(0)
+
+if os.environ.get("UB_GO_SCOPE") != "1":
+    sys.exit(1)
+
+root = pathlib.Path(".")
+candidates = [
+    root / "target" / "coverage" / "coverage.out",
+    root / "target" / "coverage" / "go" / "coverage.out",
+    root / "coverage.out",
+]
+candidates.extend(root.glob("*/target/coverage/go/coverage.out"))
+candidates.extend(root.glob("*/*/target/coverage/go/coverage.out"))
+for path in candidates:
+    if path.is_file() and path.stat().st_size > 0:
+        sys.exit(0)
 sys.exit(1)
 PY
+}
+
+fail_user_coverage() {
+  local msg="$1"
+  OUTCOME="tool_error"
+  GATE_MISS=1
+  TOOL_ERROR=1
+  GATES_RAN=0
+  emit_warning "${msg}"
+  exit_for_outcome
+}
+
+run_user_coverage_cmd() {
+  local cov_rc
+  set +e
+  bash -c "${UB_GATES_COVERAGE_CMD}"
+  cov_rc=$?
+  set -e
+  if [[ "${cov_rc}" -ne 0 ]]; then
+    fail_user_coverage "tool_error — UB_GATES_COVERAGE_CMD failed"
+  fi
+}
+
+note_go_rewrite() {
+  local rc="$1"
+  if [[ "${rc}" -eq 0 ]]; then
+    return 0
+  fi
+  TOOL_ERROR=1
+  emit_warning "tool_error — Go coverage rewrite failed"
+}
+
+warn_absent_go() {
+  local missing="$1"
+  local line file
+  while IFS= read -r line; do
+    case "${line}" in
+      "absent: "*)
+        file="${line#"absent: "}"
+        emit_warning "Go coverage has no record for ${file}"
+        ;;
+    esac
+  done <<< "${missing}"
+}
+
+note_go_check_error() {
+  local rc="$1"
+  TOOL_ERROR=1
+  if [[ "${rc}" -eq 1 ]]; then
+    emit_warning "tool_error — no Go coverage profile written (is go on PATH?)"
+    return 0
+  fi
+  emit_warning "tool_error — Go coverage check failed"
+}
+
+note_go_check() {
+  local rc="$1"
+  local missing="$2"
+  if [[ "${rc}" -eq 0 ]]; then
+    warn_absent_go "${missing}"
+    return 0
+  fi
+  note_go_check_error "${rc}"
+}
+
+rewrite_go_profiles() {
+  local rc
+  set +e
+  python3 "${SCRIPT_DIR}/ub_go_coverage.py" rewrite --root .
+  rc=$?
+  set -e
+  note_go_rewrite "${rc}"
+  if [[ "${rc}" -eq 0 ]]; then
+    GO_REWRITTEN=1
+  fi
+}
+
+collect_go_scope() {
+  local file
+  GO_SCOPE=()
+  for file in "${SCOPE_FILES[@]}"; do
+    case "${file}" in
+      *.go) GO_SCOPE+=("${file}") ;;
+    esac
+  done
+}
+
+settle_go_coverage() {
+  local rc missing
+  if [[ ${#GO_SCOPE[@]} -eq 0 ]]; then
+    return 0
+  fi
+  if [[ "${GO_REWRITTEN:-0}" != "1" ]]; then
+    rewrite_go_profiles
+  fi
+  set +e
+  missing="$(python3 "${SCRIPT_DIR}/ub_go_coverage.py" check --root . "${GO_SCOPE[@]}")"
+  rc=$?
+  set -e
+  note_go_check "${rc}" "${missing}"
+}
+
+accept_user_coverage() {
+  run_user_coverage_cmd
+  if [[ ${#GO_SCOPE[@]} -gt 0 ]]; then
+    rewrite_go_profiles
+  fi
+  if ! lcov_ready; then
+    fail_user_coverage "tool_error — coverage command exited 0 but lcov is missing or empty"
+  fi
+  COVERAGE_PREFIX=(--use-existing-coverage)
 }
 
 apply_scope_filter() {
@@ -331,6 +466,38 @@ append_mutator_test_command() {
   fi
 }
 
+coverage_prefix_has_existing() {
+  local flag
+  for flag in "${COVERAGE_PREFIX[@]}"; do
+    if [[ "${flag}" == "--use-existing-coverage" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+add_go_existing_coverage() {
+  local -n _cov="$1"
+  local file="$2"
+  case "${file}" in
+    *.go) ;;
+    *) return 0 ;;
+  esac
+  if coverage_prefix_has_existing; then
+    return 0
+  fi
+  _cov+=(--use-existing-coverage)
+}
+
+append_mutator_coverage() {
+  local -n _dest="$1"
+  local file="$2"
+  if [[ ${#COVERAGE_PREFIX[@]} -gt 0 ]]; then
+    _dest+=("${COVERAGE_PREFIX[@]}")
+  fi
+  add_go_existing_coverage _dest "${file}"
+}
+
 fail_scope_lines() {
   local file="$1"
   TOOL_ERROR=1
@@ -370,9 +537,7 @@ run_mutator() {
     fi
     args=(--lines "${lines}")
     append_mutator_test_command args
-    if [[ ${#COVERAGE_PREFIX[@]} -gt 0 ]]; then
-      args+=("${COVERAGE_PREFIX[@]}")
-    fi
+    append_mutator_coverage args "${file}"
     args+=("${file}")
     set +e
     timeout "${left}" "${MUTATOR}" "${args[@]}"
@@ -421,6 +586,7 @@ GATES_RAN=0
 OUTCOME=""
 TOOL_ERROR=0
 COVERAGE_PREFIX=()
+GO_REWRITTEN=0
 FINDING=0
 
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -521,34 +687,16 @@ if [[ -z "${CRAPPER}" || -z "${DRYER}" || ( "${need_mutator}" -eq 1 && -z "${MUT
   exit_for_outcome
 fi
 
+collect_go_scope
 if [[ -n "${UB_GATES_COVERAGE_CMD:-}" ]]; then
-  set +e
-  bash -c "${UB_GATES_COVERAGE_CMD}"
-  cov_rc=$?
-  set -e
-  if [[ "${cov_rc}" -ne 0 ]]; then
-    OUTCOME="tool_error"
-    GATE_MISS=1
-    TOOL_ERROR=1
-    GATES_RAN=0
-    emit_warning "tool_error — UB_GATES_COVERAGE_CMD failed"
-    exit_for_outcome
-  fi
-  if ! lcov_ready; then
-    OUTCOME="tool_error"
-    GATE_MISS=1
-    TOOL_ERROR=1
-    GATES_RAN=0
-    emit_warning "tool_error — coverage command exited 0 but lcov is missing or empty"
-    exit_for_outcome
-  fi
-  COVERAGE_PREFIX=(--use-existing-coverage)
+  accept_user_coverage
 fi
 
 log "ub-gates: running on ${SCOPE_COUNT} file(s) from ${MERGE_BASE}...HEAD (advisory=${ADVISORY})"
 log "ub-gates: ${SCOPE_FILES[*]}"
 
 run_crapper
+settle_go_coverage
 run_dryer
 MUTATOR_SKIPPED=0
 MUTATOR_TIMEOUT=0
