@@ -7,8 +7,9 @@ import unittest
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
+import scripts.check_pr_body_blast_radius as module
 from scripts.check_pr_body_blast_radius import EMPTY, MISSING, check_body, main
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -74,6 +75,29 @@ class CheckPrBodyBlastRadiusTests(unittest.TestCase):
             code = main()
         self.assertEqual(code, 0)
         self.assertNotIn("::error", buf.getvalue())
+
+    def test_main_unset_pr_body_tty_does_not_read_stdin(self) -> None:
+        stdin = Mock()
+        stdin.isatty.return_value = True
+        stdin.read.return_value = "## Blast radius\n\nN/A (docs-only)\n"
+        buf = StringIO()
+        with patch.dict(os.environ):
+            os.environ.pop("PR_BODY", None)
+            with patch.object(module.sys, "stdin", stdin), redirect_stdout(buf):
+                code = main()
+        self.assertEqual(code, 1)
+        stdin.read.assert_not_called()
+
+    def test_main_unset_pr_body_pipe_reads_stdin(self) -> None:
+        stdin = Mock()
+        stdin.isatty.return_value = False
+        stdin.read.return_value = "## Blast radius\n\nN/A (docs-only)\n"
+        buf = StringIO()
+        with patch.dict(os.environ):
+            os.environ.pop("PR_BODY", None)
+            with patch.object(module.sys, "stdin", stdin), redirect_stdout(buf):
+                code = main()
+        self.assertEqual(code, 0)
 
 
 if __name__ == "__main__":
