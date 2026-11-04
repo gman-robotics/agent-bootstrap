@@ -5,12 +5,20 @@ from __future__ import annotations
 import contextlib
 import io
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-from scripts import review_policy as rp
-from scripts.advisory_pr_body_format import check_body
+# Put this checkout first so `scripts` (a namespace package) resolves here, not
+# to another checkout on PYTHONPATH. The mutator relies on this. Same pattern
+# as tests/test_show_me_skill.py.
+REPO_ROOT = Path(__file__).parent.parent
+if sys.path[:1] != [str(REPO_ROOT)]:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from scripts import review_policy as rp  # noqa: E402
+from scripts.advisory_pr_body_format import check_body  # noqa: E402
 
 POLICY = rp.load_policy()
 MODEL = "grok-4.7 high"
