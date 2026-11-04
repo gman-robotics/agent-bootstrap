@@ -1660,7 +1660,10 @@ exit 0
         text = SCRIPT.read_text(encoding="utf-8")
         self.assertIn('ub_go_coverage.py" rewrite --root .', text)
         self.assertIn('ub_go_coverage.py" check --root .', text)
-        self.assertIn("Go coverage missing for", text)
+        self.assertIn("Go coverage has no record for", text)
+        self.assertIn("no Go coverage profile written (is go on PATH?)", text)
+        self.assertIn("UB_GO_SCOPE", text)
+        self.assertIn("GO_REWRITTEN=1", text)
         self.assertIn("target/coverage/go/coverage.out", text)
         self.assertIn('*/target/coverage/go/coverage.out', text)
         self.assertNotIn("go test", text)
@@ -1738,8 +1741,38 @@ exit 0
             proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
             self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
             self.assertIn("outcome=tool_error", self._gate_outcome(repo))
-            self.assertIn("Go coverage missing for main.go", proc.stdout + proc.stderr)
+            self.assertIn(
+                "tool_error — no Go coverage profile written (is go on PATH?)",
+                proc.stdout + proc.stderr,
+            )
             self.assertEqual(dryer_log.read_text(encoding="utf-8").strip(), "ran")
+
+    def test_absent_go_file_warns_and_stays_clean(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._init_repo(repo)
+            (repo / "main.go").write_text("package main\nfunc main() {}\n", encoding="utf-8")
+            self._commit_all(repo, "base")
+            subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+            (repo / "main.go").write_text("package main\nfunc main() { println(1) }\n", encoding="utf-8")
+            self._commit_all(repo, "change")
+            profile = repo / "target" / "coverage" / "go" / "coverage.out"
+            profile.parent.mkdir(parents=True)
+            profile.write_text("mode: set\nother.go:1.1,1.2 1 1\n", encoding="utf-8")
+            bin_dir = repo / "bin"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:entries []}' > .metrics/crap.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            outcome = self._gate_outcome(repo)
+            self.assertIn("outcome=ran_clean", outcome)
+            self.assertIn("tool_error=0", outcome)
+            self.assertIn("Go coverage has no record for main.go", proc.stdout + proc.stderr)
 
     def test_user_coverage_go_profile_counts_without_lcov(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

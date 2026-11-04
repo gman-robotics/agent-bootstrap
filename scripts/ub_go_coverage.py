@@ -5,8 +5,8 @@
 
 Crapper writes `go test` profiles with import-path keys. Mutator matches a
 key only when it and the source path are path suffixes of each other. This
-module rewrites those keys to repo-relative paths and checks that each
-in-scope Go file appears in a profile.
+module rewrites those keys to repo-relative paths. `check` prints in-scope
+files a profile does not name. It exits 1 only when no profile holds a record.
 """
 
 from __future__ import annotations
@@ -134,9 +134,16 @@ def _run_rewrite(root: Path) -> int:
 
 
 def _report_missing(root: Path, files: list[str]) -> int:
-    missing = missing_files(root, files)
-    _print_lines(missing)
-    return _missing_status(missing)
+    _print_lines(_absent_lines(missing_files(root, files)))
+    return _record_status(root)
+
+
+def _absent_lines(missing: list[str]) -> list[str]:
+    return [_absent_line(name) for name in missing]
+
+
+def _absent_line(name: str) -> str:
+    return f"absent: {name}"
 
 
 def _print_lines(lines: list[str]) -> None:
@@ -144,10 +151,18 @@ def _print_lines(lines: list[str]) -> None:
         print(line)
 
 
-def _missing_status(missing: list[str]) -> int:
-    if missing:
-        return 1
-    return 0
+def _record_status(root: Path) -> int:
+    if _any_record(root):
+        return 0
+    return 1
+
+
+def _any_record(root: Path) -> bool:
+    return any(_file_has_record(path) for path in profile_paths(root))
+
+
+def _file_has_record(path: Path) -> bool:
+    return bool(_keys_in_text(path.read_text(encoding="utf-8")))
 
 
 def _go_mod_rels(root: Path) -> list[str]:

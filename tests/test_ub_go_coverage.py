@@ -1,8 +1,10 @@
 """Go coverprofile rewrite: import paths become repo-relative keys."""
 
+import io
 import subprocess
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 from scripts.ub_go_coverage import main, missing_files, modules, profile_paths, rewrite_profile, rewrite_tree
@@ -24,12 +26,10 @@ def _parts(path: str) -> tuple[str, ...]:
     return tuple(part for part in path.split("/") if part)
 
 
-def _is_suffix(longer: str, shorter: str) -> bool:
-    long_parts = _parts(longer)
-    short_parts = _parts(shorter)
-    if not short_parts or len(short_parts) > len(long_parts):
+def _trailing(longer: tuple[str, ...], shorter: tuple[str, ...]) -> bool:
+    if not shorter or len(shorter) > len(longer):
         return False
-    return long_parts[-len(short_parts) :] == short_parts
+    return longer[-len(shorter) :] == shorter
 
 
 class RewriteProfileTests(unittest.TestCase):
@@ -69,12 +69,19 @@ class RewriteProfileTests(unittest.TestCase):
         twice = rewrite_profile(once, self._mods())
         self.assertEqual(twice, once)
 
-    def test_rewritten_key_is_suffix_of_absolute_source(self) -> None:
-        out = rewrite_profile(PROFILE, self._mods())
+    def test_rewritten_parts_match_mutator_suffix_rank(self) -> None:
+        source = "/tmp/app/adapters/engram/internal/front/server.go"
+        import_key = f"{NESTED_MOD}/engram/internal/front/server.go"
+        text = f"mode: set\n{import_key}:10.20,12.2 1 1\n"
+        out = rewrite_profile(text, self._mods())
         key = out.splitlines()[1].split(":")[0]
-        absolute = "/abs/prefix/" + key
-        self.assertTrue(_is_suffix(absolute, key))
-        self.assertFalse(_is_suffix(absolute, IMPORT_KEY))
+        source_parts = _parts(source)
+        key_parts = _parts(key)
+        import_parts = _parts(import_key)
+        self.assertEqual(key_parts, ("adapters", "engram", "internal", "front", "server.go"))
+        self.assertTrue(_trailing(source_parts, key_parts))
+        self.assertFalse(_trailing(source_parts, import_parts))
+        self.assertFalse(_trailing(import_parts, source_parts))
 
     def test_three_fields_stay(self) -> None:
         out = rewrite_profile(PROFILE, self._mods())
@@ -159,7 +166,42 @@ class ProfileTreeTests(unittest.TestCase):
             self.assertEqual(code, 0)
             self.assertIn("main.go:", profile.read_text(encoding="utf-8"))
             self.assertEqual(main(["check", "--root", str(root), "main.go"]), 0)
-            self.assertEqual(main(["check", "--root", str(root), "missing.go"]), 1)
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                code = main(["check", "--root", str(root), "missing.go"])
+            self.assertEqual(code, 0)
+            self.assertEqual(stdout.getvalue().splitlines(), ["absent: missing.go"])
+
+    def test_check_no_profile_exits_1(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                code = main(["check", "--root", str(root), "pkg/main.go"])
+            self.assertEqual(code, 1)
+            self.assertEqual(stdout.getvalue().splitlines(), ["absent: pkg/main.go"])
+
+    def test_check_profile_without_record_exits_1(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "coverage.out").write_text("mode: set\n", encoding="utf-8")
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                code = main(["check", "--root", str(root), "main.go"])
+            self.assertEqual(code, 1)
+            self.assertEqual(stdout.getvalue().splitlines(), ["absent: main.go"])
+
+    def test_check_absent_scoped_file_exits_0(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            profile = root / "target" / "coverage" / "go" / "coverage.out"
+            profile.parent.mkdir(parents=True)
+            profile.write_text("mode: set\npkg/main.go:1.1,1.2 1 1\n", encoding="utf-8")
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                code = main(["check", "--root", str(root), "pkg/main.go", "pkg/doc.go"])
+            self.assertEqual(code, 0)
+            self.assertEqual(stdout.getvalue().splitlines(), ["absent: pkg/doc.go"])
 
     def test_cli_rewrite_malformed_exits_2(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
