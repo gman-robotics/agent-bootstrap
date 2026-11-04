@@ -271,11 +271,29 @@ def validate_companion_reverse_pointers_for(skill_name: str) -> list[str]:
     return errors
 
 
+USAGE = "usage: validate_pstack_skill.py [--skills-root DIR] <skill-name>"
+
+
+def _parse_argv(argv: list[str]) -> tuple[Path, str] | None:
+    """Return (skills_root, skill_name), or None on bad usage."""
+    if len(argv) == 2:
+        return SKILLS_DIR, argv[1]
+    if len(argv) == 4 and argv[1] == "--skills-root":
+        return Path(argv[2]), argv[3]
+    return None
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) != 2:
-        print("usage: validate_pstack_skill.py <skill-name>", file=sys.stderr)
+    global SKILLS_DIR
+    parsed = _parse_argv(argv)
+    if parsed is None:
+        print(USAGE, file=sys.stderr)
         return 2
-    skill_name = argv[1]
+    SKILLS_DIR, skill_name = parsed
+    return _report(skill_name, _errors_for(skill_name))
+
+
+def _errors_for(skill_name: str) -> list[str]:
     errors: list[str] = []
     if skill_name in PSTACK_SKILL_NAMES:
         errors.extend(validate_skill(skill_name))
@@ -283,6 +301,10 @@ def main(argv: list[str]) -> int:
         errors.append(f"unknown pstack skill name: {skill_name}")
     if skill_name in COMPANION_SKILL_NAMES:
         errors.extend(validate_companion_reverse_pointers_for(skill_name))
+    return errors
+
+
+def _report(skill_name: str, errors: list[str]) -> int:
     if errors:
         for err in errors:
             print(f"ERROR: {err}", file=sys.stderr)

@@ -254,7 +254,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         quick_start=(
             "Read `references/source.md` before acting.",
             "Step A: full-context plan, no production code. Step B: TDD on isolated branch.",
-            "Steps C/D: cumulative git diff review, max 3 iterations, then Step E PR if approved.",
+            "Steps C/D: cumulative git diff review up to the policy cap, then Step E PR if approved.",
             "Optional: lead a handoff with the four-field envelope stanza (type/to/priority/task).",
         ),
     ),
@@ -306,7 +306,7 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
         quick_start=(
             "Read `references/source.md` for the full Step A–E loop.",
             "Step A: full-context plan, no production code. Step B: TDD on isolated branch.",
-            "Steps C/D: cumulative `git diff main...HEAD` review, max 3 iterations, then Step E PR if approved.",
+            "Steps C/D: cumulative `git diff main...HEAD` review up to the policy cap, then Step E PR if approved.",
             "Optional: lead a handoff with the four-field envelope stanza (type/to/priority/task).",
         ),
     ),

@@ -78,7 +78,7 @@ This skill establishes a standardized division of labor and coordination workspa
 - **The Adversarial Roleplay:**
   - **Planner harness (The Auditor):** Acts as a highly critical, adversarial QA and Security Auditor. Its goal is to find bugs, security flaws, missing test assertions, edge cases, and style deviations in the implementer's commits. It writes its findings and code corrections back to shared memory (or directly to the user if no shared-memory layer is configured).
   - **Implementer harness (The Implementer):** Acts as an agile, defense-minded Software Engineer. Its goal is to resolve the auditor's findings, fix bugs, add missing test coverage, and write robust code.
-- **Iteration Limit:** The loop continues until the planner harness returns a clear `APPROVE` verdict, or for a maximum of 3 iterations (to prevent infinite loops).
+- **Iteration Limit:** The loop continues until the planner harness returns a clear `APPROVE` verdict, or until the review cap in `docs/shared/review-autonomy-policy.md` is reached (to prevent infinite loops).
 
 ### Step E: Pull Request Submission (Planner harness)
 - **Action:** Once both agents approve, the Orchestrator runs the planner harness to create and submit the GitHub PR.

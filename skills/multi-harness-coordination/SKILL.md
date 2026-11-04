@@ -141,7 +141,7 @@ Review the **full branch delta**, not just the latest commit. Intermediate commi
 - **Planner (auditor):** Critical QA + security lens. Find bugs, missing tests, edge cases, style deviations. Publish findings to mem0 or `activeContext.md`.
 - **Implementer:** Fix findings with TDD; re-run tests after each batch.
 
-**Iteration limit:** Continue until Planner returns `APPROVE`, or **maximum 3 rounds** (then escalate to the user).
+**Iteration limit:** Continue until Planner returns `APPROVE`, or until the review cap in `docs/shared/review-autonomy-policy.md` is reached (then escalate to the user).
 
 For review semantics, align with `expert-pr-review.md` (read-only on the branch) and `write-tests.md` for fix batches.
 
