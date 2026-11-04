@@ -3,7 +3,10 @@
 # The only host write is a copy of .metrics in a temp directory.
 # Worktree is mounted read-only. The main git directory is mounted read-only
 # when it lives outside the worktree. Tools are installed only inside the
-# container (rust:1.83, uv venv, pinned crapper/dryer/mutator).
+# container. The image comes from scripts/ub-tools.lock: rust_image
+# (rust:1.83) or go_image (golang:1.26) when the worktree lists go.mod.
+# UB_GATES_IMAGE overrides that choice. A worktree with go.mod and
+# Cargo.toml needs UB_GATES_IMAGE. uv venv, pinned crapper/dryer/mutator.
 # The throwaway clone is cleared except .git, then the mounted worktree is
 # copied in place so a directory is replaced, not nested. The clone commit
 # stays inside the container. The host repository is not committed.
@@ -17,13 +20,16 @@ usage() {
   cat <<'EOF'
 Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git PATH] [--metrics-dir PATH]
 
-Run scripts/run_ub_gates_ci.sh inside `docker run --rm` on image rust:1.83.
-uv creates a Python 3.13 virtualenv inside the container and installs the
-pinned crapper, dryer, and mutator there. When requirements-dev.txt is
-present it is installed into that venv. The worktree mount is read-only (:ro).
-The main git directory is mounted :ro when it is outside the worktree.
-.metrics is copied to a temp directory on the host. Nothing else is written
-on the host. The launcher sets UB_GATES_ADVISORY=0.
+Run scripts/run_ub_gates_ci.sh inside `docker run --rm`.
+The image comes from scripts/ub-tools.lock (`rust_image`, default rust:1.83).
+A worktree that lists go.mod and no Cargo.toml uses `go_image` (golang:1.26).
+Set UB_GATES_IMAGE to select the image. Set it when the worktree has both
+go.mod and Cargo.toml. uv creates a Python 3.13 virtualenv inside the
+container and installs the pinned crapper, dryer, and mutator there. When
+requirements-dev.txt is present it is installed into that venv. The worktree
+mount is read-only (:ro). The main git directory is mounted :ro when it is
+outside the worktree. .metrics is copied to a temp directory on the host.
+Nothing else is written on the host. The launcher sets UB_GATES_ADVISORY=0.
 EOF
 }
 
@@ -108,6 +114,79 @@ inside() {
   exit "${rc}"
 }
 
+lock_field() {
+  local file="$1"
+  local key="$2"
+  awk -F= -v k="${key}" '$1==k {print $2; exit}' "${file}"
+}
+
+read_lock_images() {
+  local lock="$1"
+  if [[ ! -f "${lock}" ]]; then
+    printf 'ub-gates container: missing scripts/ub-tools.lock\n' >&2
+    return 2
+  fi
+  READ_RUST_IMAGE="$(lock_field "${lock}" rust_image)"
+  READ_GO_IMAGE="$(lock_field "${lock}" go_image)"
+  if [[ -z "${READ_RUST_IMAGE}" || -z "${READ_GO_IMAGE}" ]]; then
+    printf 'ub-gates container: scripts/ub-tools.lock must set rust_image and go_image\n' >&2
+    return 2
+  fi
+}
+
+file_listed() {
+  local listing="$1"
+  local name="$2"
+  grep -Eq "(^|/)${name}$" "${listing}"
+}
+
+choose_image() {
+  local has_go="$1"
+  local has_cargo="$2"
+  local rust_image="$3"
+  local go_image="$4"
+  if [[ "${has_go}" -eq 1 && "${has_cargo}" -eq 1 ]]; then
+    printf 'ub-gates container: worktree has go.mod and Cargo.toml; set UB_GATES_IMAGE\n' >&2
+    return 2
+  fi
+  if [[ "${has_go}" -eq 1 ]]; then
+    printf '%s\n' "${go_image}"
+    return 0
+  fi
+  printf '%s\n' "${rust_image}"
+}
+
+pick_image() {
+  local worktree="$1"
+  local lock listing rc has_go has_cargo
+  if [[ -n "${UB_GATES_IMAGE:-}" ]]; then
+    printf '%s\n' "${UB_GATES_IMAGE}"
+    return 0
+  fi
+  lock="${worktree}/scripts/ub-tools.lock"
+  read_lock_images "${lock}" || return $?
+  listing="$(mktemp)"
+  set +e
+  git -C "${worktree}" ls-files -co --exclude-standard >"${listing}" 2>/dev/null
+  rc=$?
+  set -e
+  if [[ "${rc}" -ne 0 ]]; then
+    rm -f "${listing}"
+    printf '%s\n' "${READ_RUST_IMAGE}"
+    return 0
+  fi
+  has_go=0
+  has_cargo=0
+  if file_listed "${listing}" "go.mod"; then
+    has_go=1
+  fi
+  if file_listed "${listing}" "Cargo.toml"; then
+    has_cargo=1
+  fi
+  rm -f "${listing}"
+  choose_image "${has_go}" "${has_cargo}" "${READ_RUST_IMAGE}" "${READ_GO_IMAGE}"
+}
+
 main() {
   WORKTREE=""
   MAIN_GIT=""
@@ -168,6 +247,15 @@ main() {
     *) mounts+=(-v "${MAIN_GIT}:${MAIN_GIT}:ro") ;;
   esac
 
+  local image pick_rc
+  set +e
+  image="$(pick_image "${WORKTREE}")"
+  pick_rc=$?
+  set -e
+  if [[ "${pick_rc}" -ne 0 ]]; then
+    exit "${pick_rc}"
+  fi
+
   printf '%s\n' "${METRICS_DIR}"
   docker run --rm -i \
     "${mounts[@]}" \
@@ -176,7 +264,7 @@ main() {
     -e "UB_GATES_COVERAGE_CMD=${UB_GATES_COVERAGE_CMD:-}" \
     -e "UB_GATES_MUTATOR_TEST_CMD=${UB_GATES_MUTATOR_TEST_CMD:-}" \
     -w /tmp \
-    rust:1.83 \
+    "${image}" \
     bash -s <<'EOS'
 set -euo pipefail
 if command -v git >/dev/null 2>&1; then

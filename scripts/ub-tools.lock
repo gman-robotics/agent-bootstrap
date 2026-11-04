@@ -4,3 +4,5 @@ mutator=a5a0cb803b66e0cdb8bf471b3b08af701d424a41
 cargo_llvm_cov=0.6.21
 python=3.13
 uv=0.13.6
+rust_image=rust:1.83
+go_image=golang:1.26

@@ -23,6 +23,8 @@ class UbGatesContainerTests(unittest.TestCase):
         self.assertIn("docker run", text)
         self.assertIn("--rm", text)
         self.assertIn("rust:1.83", text)
+        self.assertIn("golang:1.26", text)
+        self.assertIn("UB_GATES_IMAGE", text)
         self.assertIn(":ro", text)
         self.assertIn("uv venv", text)
         self.assertIn("UB_GATES_ADVISORY=0", text)
@@ -50,6 +52,7 @@ class UbGatesContainerTests(unittest.TestCase):
             stub.chmod(0o755)
             work = root / "work"
             work.mkdir()
+            _write_lock(work)
             main_git = root / "main-git"
             main_git.mkdir()
             metrics = root / "metrics"
@@ -263,6 +266,106 @@ class UbGatesContainerTests(unittest.TestCase):
                 text=True,
             )
             self.assertEqual(shown.stdout, "untracked\n")
+
+    def test_pick_image_reads_lock_and_go_mod(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            _git_repo(work)
+            _write_lock(work, rust="rust:from-lock", go="golang:1.26")
+            rust = _pick_image(work)
+            self.assertEqual(rust.returncode, 0, rust.stderr)
+            self.assertEqual(rust.stdout.strip(), "rust:from-lock")
+            (work / "go.mod").write_text("module example.com/app\n", encoding="utf-8")
+            go = _pick_image(work)
+            self.assertEqual(go.returncode, 0, go.stderr)
+            self.assertEqual(go.stdout.strip(), "golang:1.26")
+            forced = _pick_image(work, {"UB_GATES_IMAGE": "example.invalid/override:9"})
+            self.assertEqual(forced.returncode, 0, forced.stderr)
+            self.assertEqual(forced.stdout.strip(), "example.invalid/override:9")
+
+    def test_pick_image_mixed_modules_asks_for_override(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            _git_repo(work)
+            _write_lock(work)
+            (work / "go.mod").write_text("module example.com/app\n", encoding="utf-8")
+            (work / "Cargo.toml").write_text("[package]\nname = \"app\"\n", encoding="utf-8")
+            proc = _pick_image(work)
+            self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+            self.assertIn("UB_GATES_IMAGE", proc.stderr)
+
+    def test_pick_image_git_failure_uses_rust_image(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            _write_lock(work, rust="rust:from-lock", go="golang:1.26")
+            (work / "go.mod").write_text("module example.com/app\n", encoding="utf-8")
+            proc = _pick_image(work)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            self.assertEqual(proc.stdout.strip(), "rust:from-lock")
+
+    def test_docker_stub_uses_go_image_from_lock(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stub_dir = root / "bin"
+            stub_dir.mkdir()
+            record = root / "docker-record"
+            record.mkdir()
+            stub = stub_dir / "docker"
+            stub.write_text(
+                "\n".join(
+                    [
+                        "#!/usr/bin/env bash",
+                        f'printf "%s\\n" "$@" > "{record / "argv"}"',
+                        "exit 0",
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            stub.chmod(0o755)
+            work = root / "work"
+            work.mkdir()
+            _git_repo(work)
+            _write_lock(work)
+            (work / "go.mod").write_text("module example.com/app\n", encoding="utf-8")
+            metrics = root / "metrics"
+            env = os.environ.copy()
+            env["PATH"] = f"{stub_dir}{os.pathsep}{env.get('PATH', '')}"
+            env.pop("UB_GATES_IMAGE", None)
+            proc = subprocess.run(
+                ["bash", str(SCRIPT), "--worktree", str(work), "--metrics-dir", str(metrics)],
+                env=env,
+                capture_output=True,
+                text=True,
+                stdin=subprocess.DEVNULL,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            argv = (record / "argv").read_text(encoding="utf-8")
+            self.assertIn("golang:1.26", argv)
+            self.assertNotIn("rust:1.83", argv)
+
+
+def _write_lock(work: Path, rust: str = "rust:1.83", go: str = "golang:1.26") -> None:
+    scripts = work / "scripts"
+    scripts.mkdir(parents=True, exist_ok=True)
+    (scripts / "ub-tools.lock").write_text(f"rust_image={rust}\ngo_image={go}\n", encoding="utf-8")
+
+
+def _git_repo(work: Path) -> None:
+    subprocess.run(["git", "init", "-b", "main"], cwd=work, check=True, capture_output=True)
+
+
+def _pick_image(work: Path, extra: dict | None = None) -> subprocess.CompletedProcess:
+    env = os.environ.copy()
+    env.pop("UB_GATES_IMAGE", None)
+    if extra:
+        env.update(extra)
+    return subprocess.run(
+        ["bash", "-c", 'source "$1"; pick_image "$2"', "_", str(SCRIPT), str(work)],
+        capture_output=True,
+        text=True,
+        env=env,
+    )
 
 
 if __name__ == "__main__":

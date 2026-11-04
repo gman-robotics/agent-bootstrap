@@ -77,7 +77,7 @@ Run the gates in a throwaway `--rm` container. Usage line from `scripts/ub_gates
 Usage: bash scripts/ub_gates_container.sh [--help] [--worktree PATH] [--main-git PATH] [--metrics-dir PATH]
 ```
 
-The launcher runs `docker run --rm` on `rust:1.83`, installs the pinned crapper, dryer, and mutator inside the container, mounts the worktree read-only, and sets `UB_GATES_ADVISORY=0`. The only host write is a copy of `.metrics` in a temp directory. The script prints that directory on stdout.
+The launcher runs `docker run --rm`. It reads the image from `scripts/ub-tools.lock`. `rust_image` is `rust:1.83`. A worktree that lists `go.mod` and no `Cargo.toml` uses `go_image` (`golang:1.26`). Set `UB_GATES_IMAGE` to choose the image. A worktree with `go.mod` and `Cargo.toml` needs `UB_GATES_IMAGE`. The launcher installs the pinned crapper, dryer, and mutator inside the container. It mounts the worktree read-only. It sets `UB_GATES_ADVISORY=0`. The only host write is a copy of `.metrics` in a temp directory. The script prints that directory on stdout.
 
 ## Pre-PR dev flow (implementer)
 

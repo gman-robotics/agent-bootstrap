@@ -899,7 +899,17 @@ exit 0
             self._install_quiet_tools(
                 repo,
                 bin_dir,
-                f'#!/usr/bin/env bash\necho "$@" >> "{crapper_log}"\nmkdir -p .metrics\necho \'{{:entries []}}\' > .metrics/crap.edn\nexit 0\n',
+                "\n".join(
+                    [
+                        "#!/usr/bin/env bash",
+                        f'echo "$@" >> "{crapper_log}"',
+                        "mkdir -p .metrics pkg/target/coverage/go",
+                        "echo '{:entries []}' > .metrics/crap.edn",
+                        "printf '%s\\n' 'mode: set' 'pkg/main.go:1.1,1.2 1 1' > pkg/target/coverage/go/coverage.out",
+                        "exit 0",
+                        "",
+                    ]
+                ),
                 "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
                 "#!/usr/bin/env bash\nexit 0\n",
             )
@@ -1645,6 +1655,123 @@ exit 0
             blocking = self._run_in_repo(repo, env)
             self.assertEqual(blocking.returncode, 1, blocking.stdout + blocking.stderr)
             self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+
+    def test_go_coverage_wiring_is_present(self) -> None:
+        text = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn('ub_go_coverage.py" rewrite --root .', text)
+        self.assertIn('ub_go_coverage.py" check --root .', text)
+        self.assertIn("Go coverage missing for", text)
+        self.assertIn("target/coverage/go/coverage.out", text)
+        self.assertIn('*/target/coverage/go/coverage.out', text)
+        self.assertNotIn("go test", text)
+
+    def test_go_profile_is_rewritten_and_mutator_reuses_it(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._init_repo(repo)
+            (repo / "go.mod").write_text("module github.com/acme/app\n", encoding="utf-8")
+            (repo / "lib").mkdir()
+            (repo / "lib" / "a.py").write_text("def f():\n    return 1\n", encoding="utf-8")
+            (repo / "main.go").write_text("package main\nfunc main() {}\n", encoding="utf-8")
+            self._commit_all(repo, "base")
+            subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+            (repo / "lib" / "a.py").write_text("def f():\n    return 2\n", encoding="utf-8")
+            (repo / "main.go").write_text("package main\nfunc main() { println(1) }\n", encoding="utf-8")
+            self._commit_all(repo, "change")
+            bin_dir = repo / "bin"
+            crapper_log = repo / "crapper.log"
+            mutator_log = repo / "mutator.log"
+            dryer_log = repo / "dryer.log"
+            crapper = "\n".join(
+                [
+                    "#!/usr/bin/env bash",
+                    f'echo "$@" >> "{crapper_log}"',
+                    "mkdir -p .metrics target/coverage/go",
+                    "echo '{:entries []}' > .metrics/crap.edn",
+                    "printf '%s\\n' 'mode: set' 'github.com/acme/app/main.go:1.1,2.2 1 1' > target/coverage/go/coverage.out",
+                    "exit 0",
+                    "",
+                ]
+            )
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                crapper,
+                f'#!/usr/bin/env bash\necho ran >> "{dryer_log}"\nmkdir -p .metrics\necho \'{{:candidates []}}\' > .metrics/dry.edn\nexit 0\n',
+                f'#!/usr/bin/env bash\necho "$@" >> "{mutator_log}"\nexit 0\n',
+            )
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            self.assertIn("outcome=ran_clean", self._gate_outcome(repo))
+            profile = (repo / "target" / "coverage" / "go" / "coverage.out").read_text(encoding="utf-8")
+            self.assertIn("main.go:1.1,2.2 1 1", profile)
+            self.assertNotIn("github.com/acme/app/main.go", profile)
+            crapper_args = crapper_log.read_text(encoding="utf-8")
+            self.assertNotIn("--use-existing-coverage", crapper_args)
+            mutator_lines = mutator_log.read_text(encoding="utf-8").splitlines()
+            go_lines = [line for line in mutator_lines if line.endswith("main.go")]
+            py_lines = [line for line in mutator_lines if line.endswith("lib/a.py")]
+            self.assertTrue(go_lines)
+            self.assertIn("--use-existing-coverage", go_lines[0])
+            self.assertTrue(py_lines)
+            self.assertNotIn("--use-existing-coverage", py_lines[0])
+            self.assertTrue(dryer_log.exists())
+
+    def test_missing_go_profile_is_tool_error_and_gates_continue(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._init_repo(repo)
+            (repo / "main.go").write_text("package main\nfunc main() {}\n", encoding="utf-8")
+            self._commit_all(repo, "base")
+            subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+            (repo / "main.go").write_text("package main\nfunc main() { println(1) }\n", encoding="utf-8")
+            self._commit_all(repo, "change")
+            bin_dir = repo / "bin"
+            dryer_log = repo / "dryer.log"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:entries []}' > .metrics/crap.edn\nexit 0\n",
+                f'#!/usr/bin/env bash\necho ran >> "{dryer_log}"\nmkdir -p .metrics\necho \'{{:candidates []}}\' > .metrics/dry.edn\nexit 0\n',
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            proc = self._run_in_repo(repo, self._empty_spans(repo, self._block_env(bin_dir)))
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            self.assertIn("outcome=tool_error", self._gate_outcome(repo))
+            self.assertIn("Go coverage missing for main.go", proc.stdout + proc.stderr)
+            self.assertEqual(dryer_log.read_text(encoding="utf-8").strip(), "ran")
+
+    def test_user_coverage_go_profile_counts_without_lcov(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            self._init_repo(repo)
+            (repo / "go.mod").write_text("module github.com/acme/app\n", encoding="utf-8")
+            (repo / "main.go").write_text("package main\nfunc main() {}\n", encoding="utf-8")
+            self._commit_all(repo, "base")
+            subprocess.run(["git", "checkout", "-b", "feat"], cwd=repo, check=True, capture_output=True)
+            (repo / "main.go").write_text("package main\nfunc main() { println(1) }\n", encoding="utf-8")
+            self._commit_all(repo, "change")
+            bin_dir = repo / "bin"
+            crapper_log = repo / "crapper.log"
+            self._install_quiet_tools(
+                repo,
+                bin_dir,
+                f'#!/usr/bin/env bash\necho "$@" >> "{crapper_log}"\nmkdir -p .metrics\necho \'{{:entries []}}\' > .metrics/crap.edn\nexit 0\n',
+                "#!/usr/bin/env bash\nmkdir -p .metrics\necho '{:candidates []}' > .metrics/dry.edn\nexit 0\n",
+                "#!/usr/bin/env bash\nexit 0\n",
+            )
+            env = self._empty_spans(repo, self._block_env(bin_dir))
+            env["UB_GATES_COVERAGE_CMD"] = (
+                "mkdir -p target/coverage/go && "
+                "printf '%s\\n' 'mode: set' 'github.com/acme/app/main.go:1.1,2.2 1 1' "
+                "> target/coverage/go/coverage.out"
+            )
+            proc = self._run_in_repo(repo, env)
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            profile = (repo / "target" / "coverage" / "go" / "coverage.out").read_text(encoding="utf-8")
+            self.assertIn("main.go:", profile)
+            self.assertNotIn("github.com/acme/app/", profile)
+            self.assertIn("--use-existing-coverage", crapper_log.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
