@@ -40,7 +40,7 @@ class PolicyFileTests(unittest.TestCase):
         expected = {
             "self": {"clone-in-dev", "worktree-in-dev", "toolchain-in-dev", "rm-container",
                      "merge-greenfield-poc-no-ci"},
-            "morgan": {"system-install-pinned", "review-cap-plus-one-small",
+            "morgan": {"merge-approved-pr", "system-install-pinned", "review-cap-plus-one-small",
                        "merge-docs-only-final-revise-no-must-fix", "clear-defaults"},
             "tom": {"prod-migration", "aws", "outside-send", "budget", "strategy"},
         }
@@ -96,6 +96,10 @@ class VerdictTests(unittest.TestCase):
 
 
 class NextRoundTests(unittest.TestCase):
+    def test_repeat_verdicts_on_one_sha_count_once(self) -> None:
+        history = [_v("1111111", 1), _v("1111111abc", 1)]
+        self.assertEqual(rp.next_round(POLICY, history, "2222222", "T1"), ("ok", 2))
+
     def test_first_round_ok(self) -> None:
         self.assertEqual(rp.next_round(POLICY, [], "aaaaaaa", "T1"), ("ok", 1))
 
@@ -132,12 +136,20 @@ class ApproverTests(unittest.TestCase):
         self.assertEqual(rp.approver_for(POLICY, "something-new"), "tom")
 
     def test_merge_approver(self) -> None:
-        self.assertEqual(rp.merge_approver(POLICY, "APPROVE", 0, False, True), "self")
-        self.assertEqual(rp.merge_approver(POLICY, "APPROVE", 0, False, False), "morgan")
-        self.assertEqual(rp.merge_approver(POLICY, "REVISE", 0, True, False), "morgan")
-        self.assertEqual(rp.merge_approver(POLICY, "REVISE", 1, True, False), "blocked")
-        self.assertEqual(rp.merge_approver(POLICY, "REVISE", 0, False, False), "blocked")
-        self.assertEqual(rp.merge_approver(POLICY, "REVISE", 0, False, True), "blocked")
+        m = rp.merge_approver
+        self.assertEqual(m(POLICY, "APPROVE", 0, False, True, False), "self")
+        self.assertEqual(m(POLICY, "APPROVE", 0, False, False, False), "morgan")
+        self.assertEqual(m(POLICY, "APPROVE", 1, False, False, True), "blocked")
+        self.assertEqual(m(POLICY, "REVISE", 0, True, False, True), "morgan")
+        self.assertEqual(m(POLICY, "REVISE", 0, True, False, False), "blocked")
+        self.assertEqual(m(POLICY, "REVISE", 1, True, False, True), "blocked")
+        self.assertEqual(m(POLICY, "REVISE", 0, False, False, True), "blocked")
+        self.assertEqual(m(POLICY, "REVISE", 0, False, True, True), "blocked")
+
+    def test_merge_approver_reads_the_json(self) -> None:
+        policy = json.loads(json.dumps(POLICY))
+        del policy["actions"]["merge-approved-pr"]
+        self.assertEqual(rp.merge_approver(policy, "APPROVE", 0, False, False, False), "tom")
 
 
 class CliTests(unittest.TestCase):
@@ -172,6 +184,10 @@ class CliTests(unittest.TestCase):
             path.write_text(json.dumps(data))
             code, out, _ = _run("check-round", "--tier", "T2", "--pr-json", str(path))
             self.assertEqual((code, out), (3, "cap_plus_one_needs_morgan round=3 cap=2"))
+            self.assertEqual(_run("check-round", "--tier", "T2", "--morgan-ok", "--pr-json", str(path))[:2],
+                             (0, "ok round=3 cap=2"))
+            self.assertEqual(_run("check-round", "--tier", "T1", "--morgan-ok", "--pr-json", str(path))[:2],
+                             (0, "ok round=3 cap=2"))
             data["comments"] = data["comments"][:2]
             path.write_text(json.dumps(data))
             self.assertEqual(_run("check-round", "--tier", "T1", "--pr-json", str(path))[:2],
@@ -209,6 +225,15 @@ class CliArgTests(unittest.TestCase):
 
 
 class AdvisoryTierTests(unittest.TestCase):
+    def test_unreadable_policy_warns_instead_of_raising(self) -> None:
+        from unittest import mock
+
+        base = "Tier: T9\nModels: x\nLinear: N/A\nSummary: x\nGates: x\nPoteto\n"
+        with mock.patch.object(rp, "load_policy", side_effect=OSError("gone")):
+            warnings = check_body(base)
+        self.assertIn("Review policy unreadable, tier not checked: gone", warnings)
+        self.assertFalse(any("not a policy tier" in w for w in warnings))
+
     def test_unknown_tier_warns_and_known_tier_does_not(self) -> None:
         base = "Models: x\nLinear: N/A\nSummary: x\nGates: x\nPoteto\n"
         self.assertIn("Tier: T9 is not a policy tier ['T0', 'T1', 'T2', 'T3'] "

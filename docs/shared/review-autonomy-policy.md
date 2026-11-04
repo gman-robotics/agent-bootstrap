@@ -27,6 +27,16 @@ python3 scripts/review_policy.py lint-verdict "Verdict: ..."
 `check-round` reads the PR head and its verdict comments with `gh pr view`
 and prints `ok`, `unchanged_sha`, `cap_reached`, or
 `cap_plus_one_needs_<approver>`. Anything but `ok` means stop and ask.
+Several verdicts on one SHA count as one round. After the approver OKs the
+extra round, rerun with `--morgan-ok`.
+
+Docs PRs are T0 on the tier scale, so they are small. A docs PR filed at a
+higher tier needs the `small` label to get the small cap and the extra round.
+
+Merges: `merge_approver` reads the JSON. A must-fix blocks every merge. An
+APPROVE merges by `merge-approved-pr` (or `merge-greenfield-poc-no-ci`). A
+REVISE merges only when the PR is docs-only and the verdict used the last
+allowed round.
 
 ## Autonomy tiers
 

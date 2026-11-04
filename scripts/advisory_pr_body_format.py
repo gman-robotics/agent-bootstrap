@@ -21,6 +21,17 @@ def _policy_tiers() -> list[str]:
     return sorted(load_policy()["review"]["caps"])
 
 
+def _tier_warnings(body: str) -> list[str]:
+    try:
+        tiers = _policy_tiers()
+    except (OSError, ValueError, KeyError) as err:
+        return [f"Review policy unreadable, tier not checked: {err}"]
+    tier = TIER_LINE.search(body)
+    if tier and tier.group(1) not in tiers:
+        return [f"Tier: {tier.group(1)} is not a policy tier {tiers} (docs/shared/policy/review-autonomy.json)"]
+    return []
+
+
 def check_body(body: str) -> list[str]:
     warnings: list[str] = []
     if not body.strip():
@@ -29,12 +40,7 @@ def check_body(body: str) -> list[str]:
     for field in REQUIRED_LINES:
         if field not in body:
             warnings.append(f"Missing `{field}` header (see docs/shared/hub-pull-request-template.md)")
-    tier = TIER_LINE.search(body)
-    if tier and tier.group(1) not in _policy_tiers():
-        warnings.append(
-            f"Tier: {tier.group(1)} is not a policy tier {_policy_tiers()} "
-            "(docs/shared/policy/review-autonomy.json)"
-        )
+    warnings.extend(_tier_warnings(body))
     if not LINEAR_OK.search(body):
         warnings.append(
             "Linear: must be https://linear.app/... issue URL or N/A (arm rule)"

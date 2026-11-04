@@ -74,8 +74,12 @@ def next_round(policy: dict, history: list[Verdict], head_sha: str, tier: str,
 
     status is ok, unchanged_sha, cap_reached, or cap_plus_one_needs_<approver>.
     """
-    next_no = len(history) + 1
-    if any(same_sha(v.sha, head_sha) for v in history):
+    reviewed: list[str] = []
+    for v in history:
+        if not any(same_sha(v.sha, seen) for seen in reviewed):
+            reviewed.append(v.sha)
+    next_no = len(reviewed) + 1
+    if any(same_sha(sha, head_sha) for sha in reviewed):
         return "unchanged_sha", next_no
     cap = cap_for(policy, tier, labels)
     if next_no <= cap:
@@ -90,13 +94,17 @@ def approver_for(policy: dict, action: str) -> str:
 
 
 def merge_approver(policy: dict, decision: str, must_fixes: int, docs_only: bool,
-                   greenfield_no_ci: bool) -> str:
-    """Who may merge. Returns an approver name or 'blocked'."""
-    if greenfield_no_ci and decision == "APPROVE":
-        return approver_for(policy, "merge-greenfield-poc-no-ci")
+                   greenfield_no_ci: bool, final_round: bool) -> str:
+    """Who may merge. Returns an approver name from the JSON, or 'blocked'.
+
+    final_round is True when the last verdict used the last allowed round.
+    """
+    if must_fixes > 0:
+        return "blocked"
     if decision == "APPROVE":
-        return "morgan"
-    if docs_only and must_fixes == 0:
+        action = "merge-greenfield-poc-no-ci" if greenfield_no_ci else "merge-approved-pr"
+        return approver_for(policy, action)
+    if docs_only and final_round:
         return approver_for(policy, "merge-docs-only-final-revise-no-must-fix")
     return "blocked"
 
@@ -149,6 +157,8 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     chk = sub.add_parser("check-round", help="may the next review round run?")
     chk.add_argument("--tier", required=True)
     chk.add_argument("--label", action="append", default=[])
+    chk.add_argument("--morgan-ok", action="store_true",
+                     help="the cap+1 approver already said yes; allow that one round")
     src = chk.add_mutually_exclusive_group(required=True)
     src.add_argument("--pr", help="PR number or URL (reads gh pr view)")
     src.add_argument("--pr-json", type=Path, help="saved `gh pr view --json headRefOid,comments,labels`")
@@ -160,6 +170,8 @@ def _check_round(policy: dict, args: argparse.Namespace) -> int:
     labels = list(args.label) + [lab.get("name", "") for lab in data.get("labels", [])]
     history = verdicts_from_comments(data.get("comments", []))
     status, round_no = next_round(policy, history, data["headRefOid"], args.tier, labels)
+    if args.morgan_ok and status.startswith("cap_plus_one_needs_"):
+        status = "ok"
     print(f"{status} round={round_no} cap={cap_for(policy, args.tier, labels)}")
     return 0 if status == "ok" else 3
 

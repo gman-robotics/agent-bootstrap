@@ -15,6 +15,7 @@
     "toolchain-in-dev": "self",
     "rm-container": "self",
     "merge-greenfield-poc-no-ci": "self",
+    "merge-approved-pr": "morgan",
     "system-install-pinned": "morgan",
     "review-cap-plus-one-small": "morgan",
     "merge-docs-only-final-revise-no-must-fix": "morgan",
