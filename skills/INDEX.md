@@ -20,7 +20,7 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 ### adversarial-coordination-workflow
 **File**: `skills/adversarial-coordination-workflow/SKILL.md`  
 **Trigger**: An Orchestrator (human or automated) needs to run a planner harness and an implementer harness as adversarial peers through a full plan → implement → adversarial-review → PR loop.  
-**What it does**: Step A–E workflow — full-context planning gate (no production code), TDD implementation on an isolated branch, cumulative `git diff main...HEAD` adversarial review loop (max 3 iterations), then PR submission. Same underlying pattern as `multi-harness-coordination`, framed around an explicit human Orchestrator role. Includes an optional four-field envelope markdown stanza (`type`/`to`/`priority`/`task`) for handoff headers.
+**What it does**: Step A–E workflow — full-context planning gate (no production code), TDD implementation on an isolated branch, cumulative `git diff main...HEAD` adversarial review loop (capped by `docs/shared/review-autonomy-policy.md`), then PR submission. Same underlying pattern as `multi-harness-coordination`, framed around an explicit human Orchestrator role. Includes an optional four-field envelope markdown stanza (`type`/`to`/`priority`/`task`) for handoff headers.
 
 ---
 

@@ -112,7 +112,7 @@ This is the default process for any non-trivial task. It enforces the "Plan firs
 4. Hands back to QA for re-review.
 5. Repeat until QA gives clean APPROVE.
 
-**Limit**: Max 3 iterations before escalating to Architect for plan adjustment (rare).
+**Limit**: the review cap in `docs/shared/review-autonomy-policy.md` before escalating to Architect for plan adjustment (rare).
 
 ### Phase 5: FINALIZE & KNOWLEDGE CAPTURE
 1. **QA Approves** — "This looks great. Approved!"

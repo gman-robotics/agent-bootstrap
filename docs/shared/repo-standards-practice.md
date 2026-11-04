@@ -31,6 +31,8 @@ Hub skills and shared docs live at `skills/<name>/SKILL.md` and `docs/shared/` â
 | **T2** | Larger feature, new module, or cross-cutting behavior change |
 | **T3** | Infra, migration, or new service / major architectural move |
 
+Review round caps and autonomy approvers per tier: `docs/shared/review-autonomy-policy.md` (data in `docs/shared/policy/review-autonomy.json`).
+
 `create-repo-standards` copies this table into each generated `standards-<repo>` skill. Repeat tier hints in an HTML comment **under** the `Tier:` line in `.github/PULL_REQUEST_TEMPLATE.md` (not only in one top-of-file comment block).
 
 ## Generated artifact

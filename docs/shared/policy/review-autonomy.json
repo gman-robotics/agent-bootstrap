@@ -1,0 +1,28 @@
+{
+  "version": "v1",
+  "review": {
+    "model": "grok-4.7 high",
+    "caps": {"T0": 2, "T1": 2, "T2": 4, "T3": 4},
+    "small_tiers": ["T0"],
+    "small_labels": ["small"],
+    "cap_plus_one_approver": "morgan"
+  },
+  "approvers": ["self", "morgan", "tom"],
+  "default_approver": "tom",
+  "actions": {
+    "clone-in-dev": "self",
+    "worktree-in-dev": "self",
+    "toolchain-in-dev": "self",
+    "rm-container": "self",
+    "merge-greenfield-poc-no-ci": "self",
+    "system-install-pinned": "morgan",
+    "review-cap-plus-one-small": "morgan",
+    "merge-docs-only-final-revise-no-must-fix": "morgan",
+    "clear-defaults": "morgan",
+    "prod-migration": "tom",
+    "aws": "tom",
+    "outside-send": "tom",
+    "budget": "tom",
+    "strategy": "tom"
+  }
+}
