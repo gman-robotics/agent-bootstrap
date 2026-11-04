@@ -25,10 +25,15 @@ Gates:
 
 - `python3 -m unittest discover -s tests` — exit 0
 
+## Blast radius
+
+<!-- What could this change break, and who depends on it? See skills/blast-radius/SKILL.md. Docs-only PRs: write `N/A (docs-only)`. Required: ub-gates fails if this section is missing or empty. -->
+
+- [ ] Blast radius considered (`skills/blast-radius/SKILL.md`) for non-docs diffs
+
 ## Checklist
 
 - [ ] Tests or verify skill run recorded above
-- [ ] Blast radius considered (`skills/blast-radius/SKILL.md`) for non-docs diffs
 - [ ] PR body matches `standards-<repo>` when that skill exists in this repo
 
 <!-- Canonical source: docs/shared/hub-pull-request-template.md — edit there first, then copy to this file. -->
