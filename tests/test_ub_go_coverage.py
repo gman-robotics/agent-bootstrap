@@ -2,10 +2,12 @@
 
 import io
 import subprocess
+import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts.ub_go_coverage import main, missing_files, modules, profile_paths, rewrite_profile, rewrite_tree
 
@@ -69,6 +71,31 @@ class RewriteProfileTests(unittest.TestCase):
         twice = rewrite_profile(once, self._mods())
         self.assertEqual(twice, once)
 
+    def test_single_char_module_path_maps(self) -> None:
+        text = "mode: set\nb/file.go:1.1,2.2 1 0\n"
+        out = rewrite_profile(text, [("b", ".")])
+        self.assertEqual(out.splitlines()[1].split(":")[0], "file.go")
+
+    def test_equal_module_path_keeps_the_first_dir(self) -> None:
+        text = "mode: set\nexample.com/m/file.go:1.1,2.2 1 0\n"
+        mods = [("example.com/m", "first"), ("example.com/m", "second")]
+        out = rewrite_profile(text, mods)
+        self.assertEqual(out.splitlines()[1].split(":")[0], "first/file.go")
+
+    def test_repo_file_key_stays_on_the_second_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dest = root / "b" / "a"
+            dest.mkdir(parents=True)
+            (dest / "file.go").write_text("package a\n", encoding="utf-8")
+            mods = [("b", "b/a")]
+            text = "mode: set\nb/file.go:1.1,2.2 1 1\n"
+            once = rewrite_profile(text, mods, root)
+            self.assertEqual(once.splitlines()[1].split(":")[0], "b/a/file.go")
+            self.assertEqual(rewrite_profile(once, mods, root), once)
+            github = rewrite_profile(PROFILE, self._mods(), root)
+            self.assertEqual(rewrite_profile(github, self._mods(), root), github)
+
     def test_rewritten_parts_match_mutator_suffix_rank(self) -> None:
         source = "/tmp/app/adapters/engram/internal/front/server.go"
         import_key = f"{NESTED_MOD}/engram/internal/front/server.go"
@@ -105,6 +132,13 @@ class ModulesTests(unittest.TestCase):
             found = dict(modules(root))
             self.assertEqual(found["github.com/acme/root"], ".")
             self.assertEqual(found["github.com/acme/root/adapters"], "adapters")
+
+    def test_module_line_comment_is_not_the_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _git_init(root)
+            (root / "go.mod").write_text("module example.com/m // note\n", encoding="utf-8")
+            self.assertEqual(modules(root), [("example.com/m", ".")])
 
     def test_modules_skip_ignored_and_non_git(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -166,11 +200,20 @@ class ProfileTreeTests(unittest.TestCase):
             self.assertEqual(code, 0)
             self.assertIn("main.go:", profile.read_text(encoding="utf-8"))
             self.assertEqual(main(["check", "--root", str(root), "main.go"]), 0)
+            self.assertEqual(main(["check", "--root", str(root)]), 0)
             stdout = io.StringIO()
             with redirect_stdout(stdout):
                 code = main(["check", "--root", str(root), "missing.go"])
             self.assertEqual(code, 0)
             self.assertEqual(stdout.getvalue().splitlines(), ["absent: missing.go"])
+
+    def test_main_reads_sys_argv_when_argv_is_omitted(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "coverage.out").write_text("mode: set\npkg/main.go:1.1,1.2 1 1\n", encoding="utf-8")
+            argv = ["ub_go_coverage.py", "check", "--root", str(root)]
+            with patch.object(sys, "argv", argv):
+                self.assertEqual(main(), 0)
 
     def test_check_no_profile_exits_1(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

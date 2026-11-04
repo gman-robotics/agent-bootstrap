@@ -294,6 +294,16 @@ class UbGatesContainerTests(unittest.TestCase):
             self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
             self.assertIn("UB_GATES_IMAGE", proc.stderr)
 
+    def test_pick_image_go_dash_mod_is_not_a_go_module(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            _git_repo(work)
+            _write_lock(work, rust="rust:from-lock", go="golang:1.26")
+            (work / "go-mod").write_text("not a module\n", encoding="utf-8")
+            proc = _pick_image(work)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            self.assertEqual(proc.stdout.strip(), "rust:from-lock")
+
     def test_pick_image_git_failure_uses_rust_image(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             work = Path(tmp)

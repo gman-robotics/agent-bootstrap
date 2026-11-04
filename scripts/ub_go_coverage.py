@@ -25,10 +25,10 @@ def modules(root: Path) -> list[tuple[str, str]]:
     return found
 
 
-def rewrite_profile(text: str, mods: list[tuple[str, str]]) -> str:
+def rewrite_profile(text: str, mods: list[tuple[str, str]], root: Path | None = None) -> str:
     """Return `text` with import-path keys replaced. Idempotent."""
 
-    lines = [_rewrite_line(line, mods) for line in _kept_lines(text)]
+    lines = [_rewrite_line(line, mods, root) for line in _kept_lines(text)]
     return "".join(lines)
 
 
@@ -37,7 +37,7 @@ def rewrite_tree(root: Path) -> None:
 
     mods = modules(root)
     for path in profile_paths(root):
-        _rewrite_file(path, mods)
+        _rewrite_file(path, mods, root)
 
 
 def profile_paths(root: Path) -> list[Path]:
@@ -233,7 +233,7 @@ def _head(hits: list[str]) -> str | None:
 
 
 def _module_directive(line: str) -> str | None:
-    stripped = line.split("//", 1)[0].strip()
+    stripped = line.split("//")[0].strip()
     parts = stripped.split()
     if not _is_module_line(parts):
         return None
@@ -259,11 +259,11 @@ def _kept_lines(text: str) -> list[str]:
     return text.splitlines(keepends=True)
 
 
-def _rewrite_line(raw: str, mods: list[tuple[str, str]]) -> str:
+def _rewrite_line(raw: str, mods: list[tuple[str, str]], root: Path | None) -> str:
     body = _body(raw)
     if _keep_line(body):
         return raw
-    return _mapped_record(body, mods) + _ending(raw)
+    return _mapped_record(body, mods, root) + _ending(raw)
 
 
 def _body(raw: str) -> str:
@@ -291,7 +291,7 @@ def _keep_line(body: str) -> bool:
     return stripped.startswith("mode:")
 
 
-def _mapped_record(body: str, mods: list[tuple[str, str]]) -> str:
+def _mapped_record(body: str, mods: list[tuple[str, str]], root: Path | None) -> str:
     fields = body.split()
     _require_three(fields, body)
     token = fields[0]
@@ -299,7 +299,7 @@ def _mapped_record(body: str, mods: list[tuple[str, str]]) -> str:
     key, span = token.rsplit(":", 1)
     _require_nonempty(key, body)
     _require_nonempty(span, body)
-    mapped = _map_key(key, mods)
+    mapped = _map_key(key, mods, root)
     return f"{mapped}:{span} {fields[1]} {fields[2]}"
 
 
@@ -321,11 +321,23 @@ def _require_nonempty(text: str, body: str) -> None:
     raise ValueError(f"malformed coverage line: {body!r}")
 
 
-def _map_key(key: str, mods: list[tuple[str, str]]) -> str:
+def _map_key(key: str, mods: list[tuple[str, str]], root: Path | None) -> str:
+    if _is_repo_file(root, key):
+        return key
+    return _mapped_import(key, mods)
+
+
+def _mapped_import(key: str, mods: list[tuple[str, str]]) -> str:
     match = _longest_module(key, mods)
     if match is None:
         return key
     return _join_rest(match[0], match[1], key)
+
+
+def _is_repo_file(root: Path | None, key: str) -> bool:
+    if root is None:
+        return False
+    return (root / key).is_file()
 
 
 def _join_rest(mod: str, reldir: str, key: str) -> str:
@@ -336,33 +348,18 @@ def _join_rest(mod: str, reldir: str, key: str) -> str:
 
 
 def _longest_module(key: str, mods: list[tuple[str, str]]) -> tuple[str, str] | None:
-    best: tuple[str, str] | None = None
-    best_len = -1
-    for mod, reldir in mods:
-        best, best_len = _prefer(best, best_len, mod, reldir, key)
-    return best
+    matches = [m for m in mods if key.startswith(m[0] + "/")]
+    return max(matches, key=lambda m: len(m[0]), default=None)
 
 
-def _prefer(best, best_len: int, mod: str, reldir: str, key: str):
-    if not key.startswith(mod + "/"):
-        return best, best_len
-    return _prefer_len(best, best_len, mod, reldir)
-
-
-def _prefer_len(best, best_len: int, mod: str, reldir: str):
-    if len(mod) <= best_len:
-        return best, best_len
-    return (mod, reldir), len(mod)
-
-
-def _rewrite_file(path: Path, mods: list[tuple[str, str]]) -> None:
+def _rewrite_file(path: Path, mods: list[tuple[str, str]], root: Path) -> None:
     text = path.read_text(encoding="utf-8")
-    path.write_text(_rewrite_or_raise(path, text, mods), encoding="utf-8")
+    path.write_text(_rewrite_or_raise(path, text, mods, root), encoding="utf-8")
 
 
-def _rewrite_or_raise(path: Path, text: str, mods: list[tuple[str, str]]) -> str:
+def _rewrite_or_raise(path: Path, text: str, mods: list[tuple[str, str]], root: Path) -> str:
     try:
-        return rewrite_profile(text, mods)
+        return rewrite_profile(text, mods, root)
     except ValueError as exc:
         raise ValueError(f"{path}: {exc}") from exc
 

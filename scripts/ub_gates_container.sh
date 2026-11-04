@@ -137,7 +137,7 @@ read_lock_images() {
 file_listed() {
   local listing="$1"
   local name="$2"
-  grep -Eq "(^|/)${name}$" "${listing}"
+  grep -Eq "(^|/)${name//./\\.}$" "${listing}"
 }
 
 choose_image() {
