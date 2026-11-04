@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -32,6 +34,51 @@ PSTACK_SKILLS = (
 
 
 class PstackSkillsTests(unittest.TestCase):
+    def _tmp_skills(self) -> Path:
+        """Copy skills/ to a temp dir so no test edits the real skill files."""
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name) / "skills"
+        shutil.copytree(REPO_ROOT / "skills", root)
+        return root
+
+    def test_poison_tests_leave_real_skills_untouched(self) -> None:
+        real = REPO_ROOT / "skills" / "show-me" / "SKILL.md"
+        before = real.read_text(encoding="utf-8")
+        self.test_companion_validator_rejects_stripped_show_me_companion_row()
+        self.assertEqual(real.read_text(encoding="utf-8"), before)
+
+    def test_validator_main_in_process_honors_skills_root(self) -> None:
+        import contextlib
+        import io
+
+        from scripts import validate_pstack_skill as vps
+
+        real_dir = vps.SKILLS_DIR
+        self.addCleanup(setattr, vps, "SKILLS_DIR", real_dir)
+        root = self._tmp_skills()
+        md = root / "swarm" / "SKILL.md"
+        md.write_text(md.read_text(encoding="utf-8") + "\n.cursor/skills/test\n", encoding="utf-8")
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            self.assertEqual(vps.main(["v", "--skills-root", str(root), "swarm"]), 1)
+            self.assertEqual(vps.SKILLS_DIR, root)
+            self.assertEqual(vps.main(["v", "--skills-root", str(root), "no-such-skill"]), 1)
+            self.assertEqual(vps.main(["v", "--skills-root", str(root), "how"]), 0)
+            self.assertEqual(vps.main(["v", "how"]), 0)
+            self.assertEqual(vps.main(["v"]), 2)
+            self.assertEqual(vps.main(["v", "--root", str(root), "how"]), 2)
+        self.assertIn(".cursor/skills", err.getvalue())
+        self.assertIn("unknown pstack skill name: no-such-skill", err.getvalue())
+        self.assertIn("OK: how", out.getvalue())
+        self.assertIn("usage: validate_pstack_skill.py [--skills-root DIR] <skill-name>", err.getvalue())
+
+    def test_validator_usage_errors_exit_2(self) -> None:
+        for args in ([], ["--skills-root", "x"], ["--root", "x", "how"]):
+            result = subprocess.run([sys.executable, str(VALIDATOR), *args],
+                                    cwd=REPO_ROOT, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 2, args)
+            self.assertIn("--skills-root", result.stderr)
     def test_validator_script_exists(self) -> None:
         self.assertTrue(VALIDATOR.is_file())
 
@@ -59,7 +106,8 @@ class PstackSkillsTests(unittest.TestCase):
         self.assertIn("does NOT override", text)
 
     def test_validator_rejects_invalid_yaml_frontmatter(self) -> None:
-        skill_md = REPO_ROOT / "skills" / "how" / "SKILL.md"
+        root = self._tmp_skills()
+        skill_md = root / "how" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")
         broken = original.replace(
             "description: >-",
@@ -69,7 +117,7 @@ class PstackSkillsTests(unittest.TestCase):
         skill_md.write_text(broken, encoding="utf-8")
         try:
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "how"],
+                [sys.executable, str(VALIDATOR), "--skills-root", str(root), "how"],
                 cwd=REPO_ROOT,
                 capture_output=True,
                 text=True,
@@ -97,13 +145,14 @@ class PstackSkillsTests(unittest.TestCase):
         self.assertNotIn("Default: proceed directly to implementation", text)
 
     def test_validator_rejects_cursor_leftover_tokens(self) -> None:
-        skill_md = REPO_ROOT / "skills" / "swarm" / "SKILL.md"
+        root = self._tmp_skills()
+        skill_md = root / "swarm" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")
         poisoned = original + "\n.cursor/skills/test\n"
         skill_md.write_text(poisoned, encoding="utf-8")
         try:
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "swarm"],
+                [sys.executable, str(VALIDATOR), "--skills-root", str(root), "swarm"],
                 cwd=REPO_ROOT,
                 capture_output=True,
                 text=True,
@@ -114,13 +163,14 @@ class PstackSkillsTests(unittest.TestCase):
             skill_md.write_text(original, encoding="utf-8")
 
     def test_validator_rejects_run_in_background_leftover(self) -> None:
-        skill_md = REPO_ROOT / "skills" / "arena" / "SKILL.md"
+        root = self._tmp_skills()
+        skill_md = root / "arena" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")
         poisoned = original + "\nrun_in_background: true\n"
         skill_md.write_text(poisoned, encoding="utf-8")
         try:
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "arena"],
+                [sys.executable, str(VALIDATOR), "--skills-root", str(root), "arena"],
                 cwd=REPO_ROOT,
                 capture_output=True,
                 text=True,
@@ -131,13 +181,14 @@ class PstackSkillsTests(unittest.TestCase):
             skill_md.write_text(original, encoding="utf-8")
 
     def test_validator_rejects_cloud_base_branch_override_leftover(self) -> None:
-        skill_md = REPO_ROOT / "skills" / "swarm" / "SKILL.md"
+        root = self._tmp_skills()
+        skill_md = root / "swarm" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")
         poisoned = original + "\nbase branch override for cloud subagents\n"
         skill_md.write_text(poisoned, encoding="utf-8")
         try:
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "swarm"],
+                [sys.executable, str(VALIDATOR), "--skills-root", str(root), "swarm"],
                 cwd=REPO_ROOT,
                 capture_output=True,
                 text=True,
@@ -231,7 +282,8 @@ class PstackSkillsTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
 
     def test_companion_validator_rejects_stripped_show_me_companion_row(self) -> None:
-        skill_md = REPO_ROOT / "skills" / "show-me" / "SKILL.md"
+        root = self._tmp_skills()
+        skill_md = root / "show-me" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")
         poisoned = original.replace(
             "| `show-me-your-work` | Decision log for long-running work; this skill owns per-reply shape visuals only |\n",
@@ -240,7 +292,7 @@ class PstackSkillsTests(unittest.TestCase):
         skill_md.write_text(poisoned, encoding="utf-8")
         try:
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "show-me"],
+                [sys.executable, str(VALIDATOR), "--skills-root", str(root), "show-me"],
                 cwd=REPO_ROOT,
                 capture_output=True,
                 text=True,
@@ -251,7 +303,8 @@ class PstackSkillsTests(unittest.TestCase):
             skill_md.write_text(original, encoding="utf-8")
 
     def test_companion_validator_rejects_stripped_show_me_your_work_companion_row(self) -> None:
-        skill_md = REPO_ROOT / "skills" / "show-me-your-work" / "SKILL.md"
+        root = self._tmp_skills()
+        skill_md = root / "show-me-your-work" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")
         poisoned = original.replace(
             "| `show-me` | Shape visuals in status replies; this skill owns the decision log format |\n",
@@ -260,7 +313,7 @@ class PstackSkillsTests(unittest.TestCase):
         skill_md.write_text(poisoned, encoding="utf-8")
         try:
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "show-me-your-work"],
+                [sys.executable, str(VALIDATOR), "--skills-root", str(root), "show-me-your-work"],
                 cwd=REPO_ROOT,
                 capture_output=True,
                 text=True,
@@ -271,7 +324,8 @@ class PstackSkillsTests(unittest.TestCase):
             skill_md.write_text(original, encoding="utf-8")
 
     def test_companion_validator_rejects_stripped_expert_pr_review_companion_row(self) -> None:
-        skill_md = REPO_ROOT / "skills" / "expert-pr-review" / "SKILL.md"
+        root = self._tmp_skills()
+        skill_md = root / "expert-pr-review" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")
         poisoned = original.replace(
             "| `interrogate` | Multi-model stress-test on a diff or branch when there is no open PR workflow |\n",
@@ -280,7 +334,7 @@ class PstackSkillsTests(unittest.TestCase):
         skill_md.write_text(poisoned, encoding="utf-8")
         try:
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "expert-pr-review"],
+                [sys.executable, str(VALIDATOR), "--skills-root", str(root), "expert-pr-review"],
                 cwd=REPO_ROOT,
                 capture_output=True,
                 text=True,
@@ -291,7 +345,8 @@ class PstackSkillsTests(unittest.TestCase):
             skill_md.write_text(original, encoding="utf-8")
 
     def test_companion_validator_rejects_stripped_interrogate_companion_row(self) -> None:
-        skill_md = REPO_ROOT / "skills" / "interrogate" / "SKILL.md"
+        root = self._tmp_skills()
+        skill_md = root / "interrogate" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")
         poisoned = original.replace(
             "| `expert-pr-review` | When the target is a GitHub PR with threads, build/test, and posting gates |\n",
@@ -300,7 +355,7 @@ class PstackSkillsTests(unittest.TestCase):
         skill_md.write_text(poisoned, encoding="utf-8")
         try:
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "interrogate"],
+                [sys.executable, str(VALIDATOR), "--skills-root", str(root), "interrogate"],
                 cwd=REPO_ROOT,
                 capture_output=True,
                 text=True,
@@ -311,7 +366,8 @@ class PstackSkillsTests(unittest.TestCase):
             skill_md.write_text(original, encoding="utf-8")
 
     def test_companion_validator_rejects_stripped_do_not_use_citation(self) -> None:
-        skill_md = REPO_ROOT / "skills" / "show-me" / "SKILL.md"
+        root = self._tmp_skills()
+        skill_md = root / "show-me" / "SKILL.md"
         original = skill_md.read_text(encoding="utf-8")
         poisoned = original.replace(
             "- A reviewable TSV decision trail for long-running or unattended work — that is `show-me-your-work`.\n",
@@ -320,7 +376,7 @@ class PstackSkillsTests(unittest.TestCase):
         skill_md.write_text(poisoned, encoding="utf-8")
         try:
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "show-me"],
+                [sys.executable, str(VALIDATOR), "--skills-root", str(root), "show-me"],
                 cwd=REPO_ROOT,
                 capture_output=True,
                 text=True,

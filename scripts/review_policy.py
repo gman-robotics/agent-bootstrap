@@ -158,7 +158,7 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     chk.add_argument("--tier", required=True)
     chk.add_argument("--label", action="append", default=[])
     chk.add_argument("--morgan-ok", action="store_true",
-                     help="the cap+1 approver already said yes; allow that one round")
+                     help="morgan already said yes to the cap+1 round; allow that one round")
     src = chk.add_mutually_exclusive_group(required=True)
     src.add_argument("--pr", help="PR number or URL (reads gh pr view)")
     src.add_argument("--pr-json", type=Path, help="saved `gh pr view --json headRefOid,comments,labels`")
@@ -170,7 +170,8 @@ def _check_round(policy: dict, args: argparse.Namespace) -> int:
     labels = list(args.label) + [lab.get("name", "") for lab in data.get("labels", [])]
     history = verdicts_from_comments(data.get("comments", []))
     status, round_no = next_round(policy, history, data["headRefOid"], args.tier, labels)
-    if args.morgan_ok and status.startswith("cap_plus_one_needs_"):
+    if args.morgan_ok and policy["review"]["cap_plus_one_approver"] == "morgan" \
+            and status == "cap_plus_one_needs_morgan":
         status = "ok"
     print(f"{status} round={round_no} cap={cap_for(policy, args.tier, labels)}")
     return 0 if status == "ok" else 3

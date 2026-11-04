@@ -24,7 +24,7 @@ def _policy_tiers() -> list[str]:
 def _tier_warnings(body: str) -> list[str]:
     try:
         tiers = _policy_tiers()
-    except (OSError, ValueError, KeyError) as err:
+    except (OSError, ValueError, KeyError, TypeError) as err:
         return [f"Review policy unreadable, tier not checked: {err}"]
     tier = TIER_LINE.search(body)
     if tier and tier.group(1) not in tiers:

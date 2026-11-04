@@ -224,7 +224,46 @@ class CliArgTests(unittest.TestCase):
         )
 
 
+class MorganOkTests(unittest.TestCase):
+    def _check(self, data: dict, *extra: str, policy: dict | None = None) -> tuple[int, str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            pr = Path(tmp) / "pr.json"
+            pr.write_text(json.dumps(data))
+            args = ["check-round", "--tier", "T1", "--morgan-ok", "--pr-json", str(pr), *extra]
+            if policy is not None:
+                pol = Path(tmp) / "policy.json"
+                pol.write_text(json.dumps(policy))
+                args = ["--policy", str(pol), *args]
+            return _run(*args)[:2]
+
+    def _two_rounds(self, head: str, labels: list[str]) -> dict:
+        return {"headRefOid": head, "labels": [{"name": n} for n in labels], "comments": [
+            {"body": "Verdict: REVISE @aaaaaaa (round 1/2, grok-4.7 high)"},
+            {"body": "Verdict: REVISE @ccccccc (round 2/2, grok-4.7 high)"},
+        ]}
+
+    def test_morgan_ok_does_not_lift_cap_reached(self) -> None:
+        self.assertEqual(self._check(self._two_rounds("bbbbbbb", [])), (3, "cap_reached round=3 cap=2"))
+
+    def test_morgan_ok_does_not_lift_unchanged_sha(self) -> None:
+        self.assertEqual(self._check(self._two_rounds("ccccccc", ["small"])),
+                         (3, "unchanged_sha round=3 cap=2"))
+
+    def test_morgan_ok_only_counts_when_morgan_is_the_cap_plus_one_approver(self) -> None:
+        policy = json.loads(json.dumps(POLICY))
+        policy["review"]["cap_plus_one_approver"] = "tom"
+        self.assertEqual(self._check(self._two_rounds("bbbbbbb", ["small"]), policy=policy),
+                         (3, "cap_plus_one_needs_tom round=3 cap=2"))
+
+
 class AdvisoryTierTests(unittest.TestCase):
+    def test_wrong_shape_policy_warns_instead_of_raising(self) -> None:
+        from unittest import mock
+
+        with mock.patch.object(rp, "load_policy", return_value={"review": None}):
+            warnings = check_body("Tier: T1\nModels: x\nLinear: N/A\nSummary: x\nGates: x\nPoteto\n")
+        self.assertTrue(any(w.startswith("Review policy unreadable") for w in warnings))
+
     def test_unreadable_policy_warns_instead_of_raising(self) -> None:
         from unittest import mock
 
