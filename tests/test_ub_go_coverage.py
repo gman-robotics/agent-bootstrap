@@ -82,19 +82,33 @@ class RewriteProfileTests(unittest.TestCase):
         out = rewrite_profile(text, mods)
         self.assertEqual(out.splitlines()[1].split(":")[0], "first/file.go")
 
-    def test_repo_file_key_stays_on_the_second_pass(self) -> None:
+    def test_nested_module_maps_and_stays_without_a_file(self) -> None:
+        mods = [("b", "b/a")]
+        text = "mode: set\nb/file.go:1.1,2.2 1 1\n"
+        once = rewrite_profile(text, mods)
+        self.assertEqual(once.splitlines()[1].split(":")[0], "b/a/file.go")
+        self.assertEqual(rewrite_profile(once, mods), once)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            dest = root / "b" / "a"
-            dest.mkdir(parents=True)
-            (dest / "file.go").write_text("package a\n", encoding="utf-8")
-            mods = [("b", "b/a")]
-            text = "mode: set\nb/file.go:1.1,2.2 1 1\n"
-            once = rewrite_profile(text, mods, root)
-            self.assertEqual(once.splitlines()[1].split(":")[0], "b/a/file.go")
-            self.assertEqual(rewrite_profile(once, mods, root), once)
-            github = rewrite_profile(PROFILE, self._mods(), root)
-            self.assertEqual(rewrite_profile(github, self._mods(), root), github)
+            mapped = rewrite_profile(text, mods, root)
+            self.assertEqual(mapped.splitlines()[1].split(":")[0], "b/a/file.go")
+            self.assertEqual(rewrite_profile(mapped, mods, root), mapped)
+            (root / "b").mkdir()
+            (root / "b" / "file.go").write_text("package b\n", encoding="utf-8")
+            stray = rewrite_profile(text, mods, root)
+            self.assertEqual(stray.splitlines()[1].split(":")[0], "b/a/file.go")
+
+    def test_root_module_keeps_a_key_only_when_the_file_exists(self) -> None:
+        text = "mode: set\nb/file.go:1.1,2.2 1 0\n"
+        mods = [("b", ".")]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            missing = rewrite_profile(text, mods, root)
+            self.assertEqual(missing.splitlines()[1].split(":")[0], "file.go")
+            (root / "b").mkdir()
+            (root / "b" / "file.go").write_text("package b\n", encoding="utf-8")
+            kept = rewrite_profile(text, mods, root)
+            self.assertEqual(kept.splitlines()[1].split(":")[0], "b/file.go")
 
     def test_rewritten_parts_match_mutator_suffix_rank(self) -> None:
         source = "/tmp/app/adapters/engram/internal/front/server.go"

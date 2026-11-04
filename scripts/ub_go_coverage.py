@@ -5,8 +5,10 @@
 
 Crapper writes `go test` profiles with import-path keys. Mutator matches a
 key only when it and the source path are path suffixes of each other. This
-module rewrites those keys to repo-relative paths. `check` prints in-scope
-files a profile does not name. It exits 1 only when no profile holds a record.
+module rewrites those keys to repo-relative paths. A nested module keeps a
+key that already starts with its directory. The root module keeps a key when
+`root/key` is a file. `check` prints in-scope files a profile does not name.
+It exits 1 only when no profile holds a record.
 """
 
 from __future__ import annotations
@@ -26,7 +28,13 @@ def modules(root: Path) -> list[tuple[str, str]]:
 
 
 def rewrite_profile(text: str, mods: list[tuple[str, str]], root: Path | None = None) -> str:
-    """Return `text` with import-path keys replaced. Idempotent."""
+    """Return `text` with import-path keys replaced.
+
+    When the matched module directory is `.`, keep the key when `root/key` is
+    a file. Otherwise keep the key when it already starts with `<dir>/`. That
+    prefix keep ignores the disk: module `b` in `b/a` maps `b/file.go` to
+    `b/a/file.go`, and a later pass leaves `b/a/file.go` in place.
+    """
 
     lines = [_rewrite_line(line, mods, root) for line in _kept_lines(text)]
     return "".join(lines)
@@ -322,16 +330,23 @@ def _require_nonempty(text: str, body: str) -> None:
 
 
 def _map_key(key: str, mods: list[tuple[str, str]], root: Path | None) -> str:
-    if _is_repo_file(root, key):
-        return key
-    return _mapped_import(key, mods)
-
-
-def _mapped_import(key: str, mods: list[tuple[str, str]]) -> str:
     match = _longest_module(key, mods)
     if match is None:
         return key
-    return _join_rest(match[0], match[1], key)
+    return _map_match(key, match, root)
+
+
+def _map_match(key: str, match: tuple[str, str], root: Path | None) -> str:
+    mod, reldir = match
+    if _keep_matched(key, reldir, root):
+        return key
+    return _join_rest(mod, reldir, key)
+
+
+def _keep_matched(key: str, reldir: str, root: Path | None) -> bool:
+    if reldir == ".":
+        return _is_repo_file(root, key)
+    return key.startswith(f"{reldir}/")
 
 
 def _is_repo_file(root: Path | None, key: str) -> bool:

@@ -137,7 +137,7 @@ read_lock_images() {
 file_listed() {
   local listing="$1"
   local name="$2"
-  grep -Eq "(^|/)${name//./\\.}$" "${listing}"
+  while IFS= read -r line; do [[ "${line##*/}" == "${name}" ]] && return 0; done < "${listing}"; return 1
 }
 
 choose_image() {
