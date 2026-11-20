@@ -473,6 +473,13 @@ New cross-skill invariants (spec-gate/clarify cards, stable task names, the opti
 
 ---
 
+### training-phase-selection
+**File**: `skills/training-phase-selection/SKILL.md`  
+**Trigger**: Choosing the next training phase or program family.  
+**What it does**: Coaching principles for picking the next training phase: choose the priority before the program, answer five fit questions, judge progress on the right timescale, keep the dose sustainable, allow substitutions, and treat preference as a legitimate variable.
+
+---
+
 ## Adding a New Skill
 
 1. Create `skills/<name>/SKILL.md` following the style of existing skills: YAML frontmatter (`name`, `description`, `version`; quote the description or avoid inner `: ` — unquoted YAML breaks on colon+space), then purpose, trigger, when to use, numbered steps, stack-specific tips, last updated footer.

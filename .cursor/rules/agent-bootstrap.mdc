@@ -76,6 +76,7 @@ When any skill is triggered, read the full skill file (`skills/<name>.md`) befor
 | `ideate.md` | Direction not chosen; six frames and an adversarial cut |
 | `strategy.md` | Create or update STRATEGY.md |
 | `lfg.md` | Run the loop hands-off; do not merge unless granted |
+| `training-phase-selection.md` | Choosing the next training phase or program family |
 
 ## Global Rules (Summary)
 

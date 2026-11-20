@@ -73,6 +73,7 @@ When any skill is triggered (see trigger conditions in skills/INDEX.md), read th
 - `ideate.md`    → Direction not chosen; six frames and an adversarial cut
 - `strategy.md`    → Create or update STRATEGY.md
 - `lfg.md`    → Run the loop hands-off; do not merge unless granted
+- `training-phase-selection.md` → Choosing the next training phase or program family
 
 ## Key Principles
 

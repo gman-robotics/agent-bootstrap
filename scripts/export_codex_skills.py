@@ -1007,6 +1007,23 @@ SKILL_CONFIGS: dict[str, SkillConfig] = {
             "Put real results on the PR Gates line. Blocking findings on changed code are fixed or escalated to the CoS.",
         ),
     ),
+    "training-phase-selection": SkillConfig(
+        description=(
+            "Use when choosing the next training phase or program family. "
+            "Set the phase priority first, then pick a sustainable program that matches "
+            "that priority, recent training, schedule, specificity, and preference."
+        ),
+        short_description="Choose the next training phase",
+        trigger_summary=(
+            "Triggers when a lifter or coach asks what to train next, which program "
+            "to run next, or how to choose the next training phase."
+        ),
+        quick_start=(
+            "Read `references/source.md` before acting.",
+            "Choose the priority before the program. Program families differ in emphasis, not in kind.",
+            "Answer the five fit questions, keep the dose sustainable, allow substitutions, and treat preference as a legitimate variable.",
+        ),
+    ),
 }
 
 

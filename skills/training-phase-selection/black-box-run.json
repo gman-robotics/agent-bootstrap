@@ -1,0 +1,42 @@
+{
+  "captured_at": "2026-11-20T23:49:47.093332+00:00",
+  "captured_by": "scripts/run_black_box_fixture.py",
+  "case_name": "skill-structure-check",
+  "description": "Structure and principle-text check for skills/training-phase-selection/SKILL.md (GMA-647 coaching skill).",
+  "exit_code": 0,
+  "expected": {
+    "exit_code": 0,
+    "stdout_contains": [
+      "OK: training-phase-selection"
+    ]
+  },
+  "fixture": "skills/training-phase-selection/fixtures/skill-structure-check",
+  "input": {
+    "command": [
+      "python3",
+      "-c",
+      "import re, sys\nfrom pathlib import Path\nname, phrases = sys.argv[1], sys.argv[2:]\ntext = Path(\"skills/%s/SKILL.md\" % name).read_text(encoding=\"utf-8\")\nm = re.match(r\"---\\n(.*?)\\n---\\n\", text, re.S)\nassert m, \"missing frontmatter\"\nfm = m.group(1)\nassert re.search(r\"^name: %s$\" % re.escape(name), fm, re.M), \"frontmatter name must be \" + name\nassert re.search(r'^description: \".+\"$', fm, re.M), \"description must be one quoted line\"\nassert re.search(r\"^version: \\d+\\.\\d+\\.\\d+$\", fm, re.M), \"version missing\"\nfor marker in (\"**Purpose**\", \"**Trigger**\", \"Last updated: \"):\n    assert marker in text, \"missing \" + marker\nassert not re.search(r\"[\\w.+-]+@[\\w-]+\\.[\\w.]+|\\+\\d[\\d ().-]{8,}\\d|\\(?\\d{3}\\)?[ .-]\\d{3}[ .-]\\d{4}\", text), \"email or phone found\"\nfor p in phrases:\n    assert p in text, \"rule text missing: \" + p\nprint(\"OK: \" + name)\n",
+      "training-phase-selection",
+      "Choose the priority before the program",
+      "Program families differ in emphasis, not in kind",
+      "What is the emphasis for this phase?",
+      "What does recent training history suggest?",
+      "What schedule and dose can really be sustained?",
+      "How much specificity does the goal need?",
+      "Which of the good options does the lifter prefer?",
+      "Experience level means how fast progress can be detected above noise",
+      "For experienced lifters, judge progress over weeks or months",
+      "The plan must survive real life",
+      "Prefer a sustainable dose over a theoretically better schedule that keeps getting missed",
+      "Specificity is not rigidity",
+      "Substitutions are fine for equipment, anatomy, symptoms, or preference",
+      "Preference is a legitimate variable"
+    ],
+    "cwd": "."
+  },
+  "mismatches": [],
+  "skill_sha256": "cc44d69275af95c3f9f1262d7e03c0ff3d44ae05b405b59ce014a441bf166f93",
+  "stderr_tail": "",
+  "stdout_tail": "OK: training-phase-selection\n",
+  "verdict": "pass"
+}
