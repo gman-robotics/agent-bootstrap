@@ -1,4 +1,7 @@
 ## Current Focus
+**GMA-647 training-phase-selection** (2026-11-20, branch `bo/training-phase-selection`): Add a generic hub skill with coaching principles for choosing the next training phase. Docs and skills only. Do not self-merge.
+
+## Prior Focus
 **GMA-410 follow-up** (2026-10-26, branch `dex/gma-410-followup`, PR #48): Blair REVISE on #47 — unified `Tier:` PR template copy + grok `source.md` sync test; CI green at `570319f`.
 
 ## Prior Focus

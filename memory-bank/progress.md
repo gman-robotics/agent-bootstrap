@@ -1,5 +1,11 @@
 # Progress: Multi-Agent Skills Hub
 
+## 2026-11-20 — GMA-647 training-phase-selection skill
+
+**Task**: Branch `bo/training-phase-selection` — add a generic hub skill with coaching principles for choosing the next training phase, paraphrased from the Barbell Medicine post "What should you train next?" (17 November 2026). Public repo: no personal training data or names.
+
+**Verification**: live-gate `check_skill_live.py training-phase-selection` exit 0 before INDEX listing; `python3 -m unittest discover -s tests`; grok skills re-exported.
+
 ## 2026-10-26 — GMA-410 PR template + grok sync follow-up (PR #48)
 
 **Task**: Branch `dex/gma-410-followup` from `main` `3c1c78c` — #47 review comment 6420368486.
